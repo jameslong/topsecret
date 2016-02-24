@@ -1,0 +1,21 @@
+{
+        "name": "sample_message_0",
+        "threadSubject": "sample_message_subject",
+        "position": {
+                "x": 110,
+                "y": 110
+        },
+        "endGame": false,
+        "message": {
+                "from": "james",
+                "to": [],
+                "body": [
+                        "sample_messag_0_body"
+                ]
+        },
+        "encrypted": true,
+        "receiver": null,
+        "replyOptions": [],
+        "children": [],
+        "fallback": null
+}

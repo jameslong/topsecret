@@ -1,0 +1,132 @@
+{
+        "schema": "http://json-schema.org/draft-04/schema#",
+        "title": "Message",
+        "description": "Describes an in-game email, and its narrative context",
+        "definitions": {
+                "threadDelay": {
+                        "type": "object",
+                        "properties": {
+                                "name": { "type": "string" },
+                                "delayMins": { "type": "number" }
+                        },
+                        "required": ["name", "delayMins"]
+                },
+                "coord": {
+                        "type": "object",
+                        "properties": {
+                                "x": { "type": "number" },
+                                "y": { "type": "number" }
+                        },
+                        "required": ["x", "y"]
+                },
+                "keywordReplyOption": {
+                        "type": "object",
+                        "properties": {
+                                "type": { "enum": ["keyword"] },
+                                "parameters": {
+                                        "type": "object",
+                                        "properties": {
+                                                "matches": {
+                                                        "type": "array",
+                                                        "items": {
+                                                                "type": "string"
+                                                        },
+                                                        "minItems": 1,
+                                                        "uniqueItems": true
+                                                }
+                                        },
+                                        "required": ["matches"]
+                                },
+                                "messageDelay": { "$ref": "#/definitions/threadDelay" }
+                        },
+                        "required": ["type", "parameters", "messageDelay"]
+                },
+                "defaultReplyOption": {
+                        "type": "object",
+                        "properties": {
+                                "type": { "enum": ["default", "validPGPKey"] },
+                                "parameters": { "type": "object" },
+                                "messageDelay": { "$ref": "#/definitions/threadDelay" }
+                        },
+                        "required": ["type", "parameters", "messageDelay"]
+                }
+        },
+        "type": "object",
+        "properties": {
+                "name": { "type": "string" },
+                "threadSubject": {
+                        "anyOf": [
+                                {
+                                        "type": "string"
+                                }, {
+                                        "type": "null"
+                                }
+                        ]
+                },
+                "endGame": { "type": "boolean" },
+                "encrypted": { "type": "boolean" },
+                "receiver": {
+                        "anyOf": [
+                                {
+                                        "type": "string"
+                                }, {
+                                        "type": "null"
+                                }
+                        ]
+                },
+                "position": { "$ref": "#/definitions/coord" },
+                "message": {
+                        "type": "object",
+                        "properties": {
+                                "from": { "type": "string" },
+                                "to": {
+                                        "type": "array",
+                                        "items": { "type": "string" },
+                                        "minItems": 0,
+                                        "uniqueItems": true
+                                },
+                                "body": {
+                                        "type": "array",
+                                        "items": { "type": "string" },
+                                        "minItems": 1,
+                                        "uniqueItems": true
+                                }
+                        },
+                        "required": ["from", "to", "body"]
+                },
+                "replyOptions": {
+                        "type": "array",
+                        "items": {
+                                "anyOf": [
+                                        { "$ref": "#/definitions/keywordReplyOption" },
+                                        { "$ref": "#/definitions/defaultReplyOption" }
+                                ]
+                        }
+                },
+                "children": {
+                        "type": "array",
+                        "items": { "$ref": "#/definitions/threadDelay" }
+                },
+                "fallback": {
+                        "anyOf": [
+                                {
+                                        "$ref": "#/definitions/threadDelay"
+                                }, {
+                                        "type": "null"
+                                }
+                        ]
+                }
+        },
+        "required": [
+                "name",
+                "threadSubject",
+                "position",
+                "endGame",
+                "message",
+                "encrypted",
+                "receiver",
+                "replyOptions",
+                "children",
+                "fallback"
+        ]
+}
