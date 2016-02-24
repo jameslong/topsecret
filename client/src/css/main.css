@@ -59,7 +59,7 @@ body {
         font-family: monospace;
         line-height: 1.25;
         font-size: 110%;
-        background-image: url('../assets/nsa_logo.png');
+        background-image: url('../../assets/nsa_logo.png');
         background-size: contain;
         background-repeat: no-repeat;
         background-position: center;

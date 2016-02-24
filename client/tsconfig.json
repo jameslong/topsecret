@@ -6,9 +6,9 @@
                 "module": "amd",
                 "sourceMap": true,
                 "noEmitOnError": true,
-                "outDir": "build"
+                "outDir": "src/build"
         },
         "files": [
-                "src/main.ts"
+                "src/app/main.ts"
         ]
 }
