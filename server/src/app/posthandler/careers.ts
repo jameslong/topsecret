@@ -1,11 +1,11 @@
 import App = require('../app');
 import Demo = require('./demo');
-import Message = require('../game/message');
+import Message = require('../../../../game/message');
 import PostHandler = require('./posthandler');
 import Reply = require('./reply');
-import Request = require('../game/requesttypes');
-import Str = require('../game/utils/string');
-import Updater = require('../game/updater');
+import Request = require('../../../../game/requesttypes');
+import Str = require('../../../../game/utils/string');
+import Updater = require('../../../../game/updater');
 
 export function handleCareersEmail (
         state: App.State,

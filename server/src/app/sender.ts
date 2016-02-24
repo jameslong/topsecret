@@ -1,6 +1,6 @@
 import Mailgun = require('./mailgun');
-import Message = require('./game/message');
-import Request = require('./game/requesttypes');
+import Message = require('./../../../game/message');
+import Request = require('./../../../game/requesttypes');
 import Server = require('./server');
 
 export type SendFn = (

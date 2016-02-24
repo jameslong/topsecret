@@ -1,14 +1,14 @@
-/// <reference path='../typings/aws-sdk/aws-sdk.d.ts'/>
-/// <reference path='../typings/aws-sdk/dynamodb-doc.d.ts'/>
+/// <reference path='../../../../typings/aws-sdk/aws-sdk.d.ts'/>
+/// <reference path='../../../../typings/aws-sdk/dynamodb-doc.d.ts'/>
 
 import Config = require('../config');
-import DBTypes = require('../game/dbtypes');
-import Log = require('../game/log/log');
-import Map = require('../game/utils/map');
-import Message = require('../game/message');
-import MessageHelpers = require('../game/messagehelpers');
-import Player = require('../game/player');
-import Request = require('../game/requesttypes');
+import DBTypes = require('../../../../game/dbtypes');
+import Log = require('../../../../game/log/log');
+import Map = require('../../../../game/utils/map');
+import Message = require('../../../../game/message');
+import MessageHelpers = require('../../../../game/messagehelpers');
+import Player = require('../../../../game/player');
+import Request = require('../../../../game/requesttypes');
 
 import AWS = require('aws-sdk');
 import DOC = require('dynamodb-doc');

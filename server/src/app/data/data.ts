@@ -1,14 +1,14 @@
-import Arr = require('../game/utils/array');
+import Arr = require('../../../../game/utils/array');
 import Config = require('../config');
 import DataValidation = require('./datavalidation');
 import FileSystem = require('./filesystem');
-import Kbpgp = require('../game/kbpgp');
-import Log = require('../game/log/log');
-import Map = require('../game/utils/map');
-import Message = require('../game/message');
-import Profile = require('../game/profile');
-import Request = require('../game/requesttypes');
-import Updater = require('../game/updater');
+import Kbpgp = require('../../../../game/kbpgp');
+import Log = require('../../../../game/log/log');
+import Map = require('../../../../game/utils/map');
+import Message = require('../../../../game/message');
+import Profile = require('../../../../game/profile');
+import Request = require('../../../../game/requesttypes');
+import Updater = require('../../../../game/updater');
 
 export interface Path {
         basename: (path: string, ext?: string) => string;

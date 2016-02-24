@@ -1,7 +1,7 @@
 import Config = require('../config');
-import DBTypes = require('../game/dbtypes');
-import Log = require('../game/log/log');
-import Request = require('../game/requesttypes');
+import DBTypes = require('../../../../game/dbtypes');
+import Log = require('../../../../game/log/log');
+import Request = require('../../../../game/requesttypes');
 import DynamoDB = require('./dynamodb');
 import LocalDB = require('./localdb');
 

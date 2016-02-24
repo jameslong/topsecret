@@ -1,18 +1,18 @@
-import Profile = require('./game/profile');
+import Profile = require('./../../../game/profile');
 import Config = require('./config');
 import Data = require('./data/data');
-import DBHelpers = require('./game/dbhelpers');
+import DBHelpers = require('./../../../game/dbhelpers');
 import DBSetup = require('./db/dbsetup');
-import DBTypes = require('./game/dbtypes');
-import KBPGP = require('./game/kbpgp');
-import Log = require('./game/log/log');
-import Map = require('./game/utils/map');
-import Message = require('./game/message');
+import DBTypes = require('./../../../game/dbtypes');
+import KBPGP = require('./../../../game/kbpgp');
+import Log = require('./../../../game/log/log');
+import Map = require('./../../../game/utils/map');
+import Message = require('./../../../game/message');
 import PostHandler = require('./posthandler/posthandler');
-import Request = require('./game/requesttypes');
+import Request = require('./../../../game/requesttypes');
 import Sender = require('./sender');
 import Server = require('./server');
-import Updater = require('./game/updater');
+import Updater = require('./../../../game/updater');
 
 export interface State {
         config: Config.ConfigState;

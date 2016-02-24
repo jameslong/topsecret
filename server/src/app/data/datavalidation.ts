@@ -1,8 +1,8 @@
-/// <reference path='../typings/is-my-json-valid/is-my-json-valid.d.ts'/>
+/// <reference path='../../../../typings/is-my-json-valid/is-my-json-valid.d.ts'/>
 
 import Data = require('./data');
 import FileSystem = require('./filesystem');
-import Map = require('../game/utils/map');
+import Map = require('../../../../game/utils/map');
 
 import validator = require('is-my-json-valid');
 

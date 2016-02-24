@@ -1,10 +1,10 @@
 import App = require('../app');
 import Careers = require('./careers');
-import DBHelpers = require('../game/dbhelpers');
-import Log = require('../game/log/log');
-import Player = require('../game/player');
-import Request = require('../game/requesttypes');
-import Updater = require('../game/updater');
+import DBHelpers = require('../../../../game/dbhelpers');
+import Log = require('../../../../game/log/log');
+import Player = require('../../../../game/player');
+import Request = require('../../../../game/requesttypes');
+import Updater = require('../../../../game/updater');
 
 export function beginDemo (
         state: App.State,

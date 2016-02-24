@@ -1,7 +1,7 @@
-import DBHelpers = require('../game/dbhelpers');
-import ReplyOption = require('../game/replyoption');
+import DBHelpers = require('../../../../game/dbhelpers');
+import ReplyOption = require('../../../../game/replyoption');
 import PostHandler = require('./posthandler');
-import Request = require('../game/requesttypes');
+import Request = require('../../../../game/requesttypes');
 
 export function handleCreateTableRequest (
         tableName: string, requestFn: Request.CreateTableRequest, res: any)
