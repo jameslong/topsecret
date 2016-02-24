@@ -1,10 +1,10 @@
-/// <reference path='../../typings/body-parser/body-parser.d.ts'/>
-/// <reference path='../../typings/express/express.d.ts'/>
-/// <reference path='../../typings/multer/multer.d.ts'/>
+/// <reference path='typings/body-parser/body-parser.d.ts'/>
+/// <reference path='typings/express/express.d.ts'/>
+/// <reference path='typings/multer/multer.d.ts'/>
 
-import Log = require('../game/log/log');
-import Message = require('../game/message');
-import Request = require('../game/requesttypes');
+import Log = require('./game/log/log');
+import Message = require('./game/message');
+import Request = require('./game/requesttypes');
 
 import express = require('express');
 import bodyParser = require('body-parser');

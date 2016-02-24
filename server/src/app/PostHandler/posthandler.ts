@@ -10,7 +10,7 @@ import Player = require('../game/player');
 import Players = require('./players');
 import Reply = require('./reply');
 import Request = require('../game/requesttypes');
-import Server = require('../Server/server');
+import Server = require('../server');
 import Tables = require('./tables');
 import Updater = require('../game/updater');
 

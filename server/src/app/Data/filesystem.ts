@@ -1,4 +1,4 @@
-/// <reference path="../../typings/node/node.d.ts"/>
+/// <reference path="../typings/node/node.d.ts"/>
 
 import Arr = require('../game/utils/array');
 import Data = require('./data');

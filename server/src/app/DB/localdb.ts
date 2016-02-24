@@ -1,5 +1,5 @@
 import Arr = require('../game/utils/array');
-import Config = require('../Config/config');
+import Config = require('../config');
 import DBTypes = require('../game/dbtypes');
 import Map = require('../game/utils/map');
 import Message = require('../game/message');

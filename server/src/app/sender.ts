@@ -1,7 +1,7 @@
-import Mailgun = require('../Mailgun/mailgun');
-import Message = require('../game/message');
-import Request = require('../game/requesttypes');
-import Server = require('../Server/server');
+import Mailgun = require('./mailgun');
+import Message = require('./game/message');
+import Request = require('./game/requesttypes');
+import Server = require('./server');
 
 export type SendFn = (
         data: Message.MessageData,

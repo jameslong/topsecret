@@ -1,8 +1,8 @@
-import App = require('./TS/app');
-import ConfigData = require('./config');
-import Data = require('./TS/Data/data');
-import Log = require('./TS/game/log/log');
-import Request = require('./TS/game/requesttypes');
+import App = require('./app');
+import ConfigData = require('./configdata');
+import Data = require('./Data/data');
+import Log = require('./game/log/log');
+import Request = require('./game/requesttypes');
 
 var config = ConfigData.config;
 

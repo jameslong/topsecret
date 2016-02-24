@@ -1,5 +1,5 @@
 import Profile = require('./game/profile');
-import Config = require('./Config/config');
+import Config = require('./config');
 import Data = require('./Data/data');
 import DBHelpers = require('./game/dbhelpers');
 import DBSetup = require('./DB/dbsetup');
@@ -10,8 +10,8 @@ import Map = require('./game/utils/map');
 import Message = require('./game/message');
 import PostHandler = require('./PostHandler/posthandler');
 import Request = require('./game/requesttypes');
-import Sender = require('./Sender/sender');
-import Server = require('./Server/server');
+import Sender = require('./sender');
+import Server = require('./server');
 import Updater = require('./game/updater');
 
 export interface State {

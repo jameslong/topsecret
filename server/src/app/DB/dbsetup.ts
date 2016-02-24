@@ -1,4 +1,4 @@
-import Config = require('../Config/config');
+import Config = require('../config');
 import DBTypes = require('../game/dbtypes');
 import Log = require('../game/log/log');
 import Request = require('../game/requesttypes');

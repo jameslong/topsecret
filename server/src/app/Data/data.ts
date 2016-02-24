@@ -1,5 +1,5 @@
 import Arr = require('../game/utils/array');
-import Config = require('../Config/config');
+import Config = require('../config');
 import DataValidation = require('./datavalidation');
 import FileSystem = require('./filesystem');
 import Kbpgp = require('../game/kbpgp');

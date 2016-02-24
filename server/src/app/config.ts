@@ -1,81 +1,54 @@
-import Config = require('./TS/Config/config');
-
-var debugConfig: Config.ConfigState = {
-        mode: Config.AppMode.Local,
-        port: '3000',
-        privateConfigPath: 'privateconfig.json',
-        useEmail: false,
-        debugDBTimeoutMs: 1000,
-        logging: {
-                console: true,
-        },
-        dynamoDBConfig: {
-                configFilepath: 'credentials/awsconfig.json',
-                messagesTableName: 'messages-dev',
-                playersTableName: 'players-dev',
-        },
-        emailDomain: 'testmail.playtopsecret.com',
-        emailAPIKey: null,
-        client: {
-                localURL: 'http://localhost',
-                elbURL: null,
-                postDest: Config.ClientPost.Local,
-        },
-        update: {
-                maxMessagesRequestedPerUpdate: 2,
-                updateIntervalMs: 1000,
-                minMessageUpdateIntervalMs: 10000,
-        },
-        content: {
-                validApplicationThread: 'transferRequest_valid',
-                validApplicationThreadPGP: 'transferRequest_valid_pgp',
-                invalidApplicationThread: 'transferRequest_invalid',
-                resignationThread: 'resignation_0',
-                narrativeFolder: '../content',
-                defaultNarrativeGroup: 'sample_data',
-        },
-        timeFactor: (1/60) * 1000,
-        immediateReplies: true,
+export enum AppMode {
+        Local,
+        DynamoDB,
 };
 
-var releaseConfig: Config.ConfigState = {
-        mode: Config.AppMode.DynamoDB,
-        port: '3000',
-        privateConfigPath: 'privateconfig.json',
-        useEmail: true,
-        debugDBTimeoutMs: 1000,
-        logging: {
-                console: false,
-        },
-        dynamoDBConfig: {
-                configFilepath: 'credentials/awsconfig.json',
-                messagesTableName: 'messages',
-                playersTableName: 'players',
-        },
-        emailDomain: 'testmail.playtopsecret.com',
-        emailAPIKey: null,
-        client: {
-                localURL: 'http://localhost',
-                elbURL: null,
-                postDest: Config.ClientPost.Local,
-        },
-        update: {
-                maxMessagesRequestedPerUpdate: 2,
-                updateIntervalMs: 1000,
-                minMessageUpdateIntervalMs: 120000,
-        },
-        content: {
-                validApplicationThread: 'transferRequest_valid',
-                validApplicationThreadPGP: 'transferRequest_valid_pgp',
-                invalidApplicationThread: 'transferRequest_invalid',
-                resignationThread: 'resignation_0',
-                narrativeFolder: '../content',
-                defaultNarrativeGroup: 'sample_data',
-        },
-        timeFactor: 1,
-        immediateReplies: false,
+export var ClientPost = {
+        Local: 'Local',
+        ELB: 'ELB',
 };
 
-export var releaseMode = false;
+export interface DynamoDBConfig {
+        configFilepath: string;
+        messagesTableName: string;
+        playersTableName: string;
+}
 
-export var config = releaseMode ? releaseConfig : debugConfig;
+export interface PrivateConfigState {
+        emailAPIKey: string;
+        elbURL: string;
+}
+
+export interface ConfigState {
+        mode: AppMode;
+        port: string;
+        privateConfigPath: string;
+        client: {
+                localURL: string;
+                elbURL: string;
+                postDest: string;
+        };
+        useEmail: boolean;
+        debugDBTimeoutMs: number;
+        dynamoDBConfig: DynamoDBConfig;
+        emailDomain: string;
+        emailAPIKey: string;
+        logging: {
+                console: boolean;
+        },
+        update: {
+                maxMessagesRequestedPerUpdate: number;
+                updateIntervalMs: number;
+                minMessageUpdateIntervalMs: number;
+        },
+        content: {
+                narrativeFolder: string;
+                defaultNarrativeGroup: string;
+                validApplicationThread: string;
+                validApplicationThreadPGP: string;
+                invalidApplicationThread: string;
+                resignationThread: string;
+        },
+        timeFactor: number;
+        immediateReplies: boolean;
+}
