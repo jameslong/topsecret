@@ -1,0 +1,24 @@
+.infobar {
+        background-color: var(--infobar-bg-colour);
+        color: var(--infobar-font-colour);
+        font-weight: bold;
+}
+
+.infobar ul {
+        padding: 0;
+        margin: 0;
+}
+
+.infobar ul li {
+        display: inline;
+        text-decoration: none;
+        padding-right: 1rem;
+}
+
+.infobar-minor {
+        padding-right: 2em;
+}
+
+.infobar-major {
+        padding-right: 4em;
+}

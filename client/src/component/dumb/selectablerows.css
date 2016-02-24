@@ -1,0 +1,12 @@
+.selectable-rows {
+        width: 100%;
+}
+
+.selectable-rows-highlighted {
+        color: var(--unread-font-colour);
+}
+
+.selectable-rows-selected {
+        background-color: var(--selected-row-bg-colour);
+        color: var(--main-bg-colour);
+}

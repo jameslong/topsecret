@@ -1,0 +1,7 @@
+.meta {
+        padding-bottom: 1rem;
+}
+
+.meta-subject {
+        color: var(--highlighted-font-colour);
+}

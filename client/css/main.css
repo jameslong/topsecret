@@ -1,0 +1,75 @@
+/* B&W */
+/*:root {
+        --main-bg-colour: black;
+        --main-font-colour: white;
+        --highlighted-font-colour: white;
+        --unread-font-colour: white;
+        --infobar-bg-colour: black;
+        --infobar-font-colour: white;
+        --selected-row-bg-colour: white;
+}*/
+
+/* Black and blue */
+/*:root {
+        --main-bg-colour: black;
+        --main-font-colour: white;
+        --highlighted-font-colour: white;
+        --unread-font-colour: white;
+        --infobar-bg-colour: #0000EE;
+        --infobar-font-colour: #00FF00;
+        --selected-row-bg-colour: #00CECE;
+}*/
+
+/* B&W + logo */
+/*:root {
+        --main-bg-colour: rgba(0, 0, 0, 0.90);
+        --main-font-colour: white;
+        --highlighted-font-colour: white;
+        --unread-font-colour: white;
+        --infobar-bg-colour: rgba(0, 0, 0, 0.5);
+        --infobar-font-colour: white;
+        --selected-row-bg-colour: white;
+}*/
+
+/* Hacker green */
+/*:root {
+        --main-bg-colour: #191919;
+        --main-font-colour: #01F60E;
+        --highlighted-font-colour: #01F60E;
+        --unread-font-colour: #01F60E;
+        --infobar-bg-colour: #191919;
+        --infobar-font-colour: #01F60E;
+        --selected-row-bg-colour: #01F60E;
+}*/
+
+/* Solarized */
+:root {
+        --main-bg-colour: #002833;
+        --main-font-colour: #839496;
+        --highlighted-font-colour: #268BB4;
+        --unread-font-colour: #2AA198;
+        --infobar-bg-colour: #003541;
+        --infobar-font-colour: #839496;
+        --selected-row-bg-colour: #B58900;
+}
+
+body {
+        margin: 0;
+        color: var(--main-font-colour);
+        font-family: monospace;
+        line-height: 1.25;
+        font-size: 110%;
+        background-image: url('../assets/nsa_logo.png');
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+}
+
+#wrapper {
+        height: 100vh;
+        background-color: var(--main-bg-colour);
+}
+
+p {
+        padding-bottom: 1em;
+}

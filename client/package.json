@@ -1,0 +1,25 @@
+{
+  "name": "topsecret-offline",
+  "version": "1.0.0",
+  "description": "Offline version of Top Secret, a video game about the Snowden leaks.",
+  "main": "src/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jameslong/topsecret-offline.git"
+  },
+  "author": "James Long",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/jameslong/topsecret-offline/issues"
+  },
+  "homepage": "https://github.com/jameslong/topsecret-offline#readme",
+  "dependencies": {
+    "jquery": "^2.1.4",
+    "react": "^0.14.6",
+    "react-dom": "^0.14.6"
+  },
+  "devDependencies": {}
+}

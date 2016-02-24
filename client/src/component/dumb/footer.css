@@ -1,0 +1,4 @@
+.footer {
+        background-color: var(--main-bg-colour);
+        flex-shrink: 0;
+}
