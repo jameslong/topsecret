@@ -1,0 +1,24 @@
+.node {
+        padding: 0.3rem;
+        box-sizing: border-box;
+        border: 4px solid hsl(240, 5%, 90%);
+        cursor: pointer;
+}
+
+.node-invalid {
+        background-color: hsla(0, 50%, 60%, 0.4);
+        border: 4px solid hsl(0, 50%, 60%);
+}
+
+.node-selected {
+        background-color: hsla(240, 5%, 90%, 0.4);
+}
+
+.node-title {
+        word-wrap: break-word;
+        color: hsl(240, 5%, 90%);
+        font-size: 0.8rem;
+        width: 50px;
+        height: 50px;
+        overflow: hidden;
+}

@@ -1,0 +1,7 @@
+.menu-bar {
+        width: 100%;
+        text-align: right;
+        position: fixed;
+        top: 0;
+        left: 0;
+}

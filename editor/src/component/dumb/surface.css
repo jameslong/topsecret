@@ -1,0 +1,10 @@
+.surface, .surface-svg {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+}
+
+.surface-dragzone {
+        width: 100%;
+        height: 100%;
+}

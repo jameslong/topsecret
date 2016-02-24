@@ -1,0 +1,14 @@
+body {
+        font-family: sans-serif;
+        font-size: 90%;
+        margin: 0;
+        line-height: 125%;
+}
+
+body.open-modal {
+        overflow: hidden;
+}
+
+#wrapper {
+        height: 100vh;
+}

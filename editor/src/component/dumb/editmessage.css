@@ -1,0 +1,75 @@
+.edit-message {
+        color: hsl(0, 0%, 80%);
+}
+
+.edit-message-header {
+        text-align: right;
+}
+
+.edit-message input, .edit-message textarea {
+        width: 100%;
+        box-sizing: border-box;
+}
+
+.edit-message input.invalid, .edit-message textarea.invalid {
+        border: 2px solid red;
+        background-color: #ffdddd;
+}
+
+.edit-message input[type=checkbox] {
+        width: auto;
+}
+
+.edit-message textarea {
+        height: 10rem;
+}
+
+.edit-message-group-title {
+        background-color: hsl(0, 0%, 10%);
+        padding: 1rem;
+}
+
+.edit-message-group-content {
+        margin: 1rem;
+}
+
+.edit-message-subgroup, .edit-message .multiple-child {
+        margin-bottom: 1rem;
+        overflow: auto;
+}
+
+.edit-message .label {
+        display: table;
+        width: 100%;
+}
+
+.edit-message .label-name, .edit-message .label-value {
+        display: table-cell;
+}
+
+.edit-message .label-name {
+        min-width: 80px;
+}
+
+.edit-message .label-value {
+        width: 100%;
+}
+
+.edit-message .message-delay .label-value {
+        display: table;
+}
+
+.edit-message .message-delay-name, .edit-message .message-delay-mins {
+        display: table-cell;
+        width: 100%;
+}
+
+.edit-message .message-delay-mins {
+        display: table-cell;
+        min-width: 30px;
+}
+
+.edit-message .button-remove {
+        float: right;
+}
+
