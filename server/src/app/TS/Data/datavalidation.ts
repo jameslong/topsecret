@@ -1,4 +1,4 @@
-/// <reference path='../../../typings/is-my-json-valid/is-my-json-valid.d.ts'/>
+/// <reference path='../../typings/is-my-json-valid/is-my-json-valid.d.ts'/>
 
 import Data = require('./data');
 import FileSystem = require('./filesystem');
@@ -13,11 +13,11 @@ interface ValidateFn<T> {
 
 export function getDataErrors (data: Data.NarrativeData): string
 {
-        const profileSchema = FileSystem.loadJSONSync('src/TS/Data/profileschema.json');
+        const profileSchema = FileSystem.loadJSONSync('src/app/TS/Data/profileschema.json');
         const profiles = Map.arrayFromMap(data.profiles);
         const profileErrors = getJSONDirErrors(profileSchema, profiles);
 
-        const messageSchema = FileSystem.loadJSONSync('src/TS/Data/messageschema.json');
+        const messageSchema = FileSystem.loadJSONSync('src/app/TS/Data/messageschema.json');
         const messages = Map.arrayFromMap(data.messages);
         const messageErrors = getJSONDirErrors(messageSchema, messages);
 
