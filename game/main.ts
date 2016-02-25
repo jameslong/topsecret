@@ -26,7 +26,9 @@ export function updateMessage (
         const threadData = groupData.threadData;
         const messageData = threadData[message.name];
 
-        const children = pendingChildren();
+        const children = hasPendingChildren(message) ?
+                pendingChildren() :
+                [];
         const response = hasSentReply(message) ?
                         [] :
                         hasReply(message) ?
@@ -68,6 +70,11 @@ function update ()
         return [promiseFactory<UpdateInfo>()];
 }
 
+function hasPendingChildren (message: Message.MessageState)
+{
+        return Arr.some(message.childrenSent, sent => !sent);
+}
+
 function hasSentReply (message: Message.MessageState)
 {
         return (message.replySent);
@@ -87,10 +94,8 @@ function isExpired (
         message: Message.MessageState,
         messageData: Message.ThreadMessage)
 {
-        const childrenSent = Arr.arrayEvery(message.childrenSent, Fun.identity);
-        const replySent = (message.replySent || !messageData.fallback);
-
-        return (childrenSent && replySent);
+        return !hasPendingChildren(message) &&
+                (hasSentReply(message) || !hasFallback(messageData));
 }
 
 function executeSequentially<T> (
