@@ -1,9 +1,13 @@
 /// <reference path="global.d.ts"/>
 
+import Arr = require('./utils/array');
+import Fun = require('./utils/function');
 import Message = require('./message');
+import MessageHelpers = require('./messagehelpers');
 import Player = require('./player');
 import Request = require('./requesttypes');
 import State = require('./state');
+import Updater = require('./updater');
 
 interface UpdateInfo {
         message: Message.MessageState;
@@ -17,16 +21,23 @@ export function updateMessage (
         player: Player.PlayerState,
         callback: (error: Request.Error) => void)
 {
+        const groupName = MessageHelpers.getMessageGroup(message);
+        const groupData = Updater.getGroupData(app, groupName);
+        const threadData = groupData.threadData;
+        const messageData = threadData[message.name];
+
         const children = pendingChildren();
-        const response = hasReply() ?
-                reply() :
-                (hasFallback() ? fallback() : []);
+        const response = hasSentReply(message) ?
+                        [] :
+                        hasReply(message) ?
+                                reply() :
+                                (hasFallback(messageData) ? fallback() : []);
         const promiseFactories = children.concat(response);
 
         const state = { message, player };
 
         executeSequentially(promiseFactories, state).then(state =>
-                isExpired(state.message) ? expired() : update()
+                isExpired(state.message, messageData) ? expired() : update()
         ).then(state =>
                 callback(null)
         ).catch(error => callback(error));
@@ -57,19 +68,29 @@ function update ()
         return [promiseFactory<UpdateInfo>()];
 }
 
-function hasReply ()
+function hasSentReply (message: Message.MessageState)
 {
-        return true;
+        return (message.replySent);
 }
 
-function hasFallback ()
+function hasReply (message: Message.MessageState)
 {
-        return true;
+        return (message.reply);
 }
 
-function isExpired (message: Message.MessageState)
+function hasFallback (messageData: Message.ThreadMessage)
 {
-        return false;
+        return messageData.fallback !== null;
+}
+
+function isExpired (
+        message: Message.MessageState,
+        messageData: Message.ThreadMessage)
+{
+        const childrenSent = Arr.arrayEvery(message.childrenSent, Fun.identity);
+        const replySent = (message.replySent || !messageData.fallback);
+
+        return (childrenSent && replySent);
 }
 
 function executeSequentially<T> (
