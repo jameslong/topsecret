@@ -27,7 +27,7 @@ tsc
 
 ### Server
 
-1. Run the following in the *server* directory: `node build/main.js`
+1. Run the following in the *server* directory: `node build/server/src/app/main.js`
 
 ### Editor
 
