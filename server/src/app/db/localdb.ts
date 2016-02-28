@@ -78,6 +78,13 @@ export function createLocalDBCalls (config: Config.ConfigState): DBTypes.DBCalls
                         addPlayerLocal(db, config, params, callback);
                 };
 
+        var updatePlayer = function (
+                        params: Request.UpdatePlayerParams,
+                        callback: Request.UpdatePlayerCallback)
+                {
+                        updatePlayerLocal(db, config, params, callback);
+                };
+
         var removePlayer = function (
                         params: Request.RemovePlayerParams,
                         callback: Request.RemovePlayerCallback)
@@ -105,6 +112,13 @@ export function createLocalDBCalls (config: Config.ConfigState): DBTypes.DBCalls
                         callback: Request.StoreMessageCallback)
                 {
                         storeMessageLocal(db, config, params, callback);
+                };
+
+        var updateMessage = function (
+                        params: Request.UpdateMessageParams,
+                        callback: Request.UpdateMessageCallback)
+                {
+                        updateMessageLocal(db, config, params, callback);
                 };
 
         var deleteMessage = function (
@@ -196,10 +210,12 @@ export function createLocalDBCalls (config: Config.ConfigState): DBTypes.DBCalls
                 createMessageTable: createMessageTable,
                 deleteTable: deleteTable,
                 addPlayer: addPlayer,
+                updatePlayer: updatePlayer,
                 removePlayer: removePlayer,
                 deleteAllMessages: deleteAllMessages,
                 getMessageUID: getMessageUID,
                 storeMessage: storeMessage,
+                updateMessage: updateMessage,
                 deleteMessage: deleteMessage,
                 getMessage: getMessage,
                 getMessages: getMessages,
@@ -334,6 +350,30 @@ export function addPlayerLocal (
                 config.debugDBTimeoutMs);
 }
 
+export function updatePlayerLocal (
+        db: DBState,
+        config: Config.ConfigState,
+        playerState: Request.UpdatePlayerParams,
+        callback: Request.UpdatePlayerCallback)
+{
+        var error: Request.Error = undefined;
+
+        var email = playerState.email;
+        var inUse = (db.players[email] === undefined);
+
+        if (!inUse) {
+                error = {
+                        code: 'UPDATE PLAYER',
+                        message: 'could not find player',
+                };
+        } else {
+                db.players[email] = playerState;
+        }
+
+        setTimeout(function () { callback(error, playerState) },
+                config.debugDBTimeoutMs);
+}
+
 export function removePlayerLocal (
         db: DBState,
         config: Config.ConfigState,
@@ -406,6 +446,22 @@ export function storeMessageLocal (
         var error: Request.Error = undefined;
 
         var messageState = params.messageState;
+        var messageId = messageState.messageId;
+
+        db.messages[messageId] = messageState;
+
+        setTimeout(function () { callback(error, messageState) },
+                config.debugDBTimeoutMs);
+}
+
+export function updateMessageLocal (
+        db: DBState,
+        config: Config.ConfigState,
+        messageState: Request.UpdateMessageParams,
+        callback: Request.UpdateMessageCallback)
+{
+        var error: Request.Error = undefined;
+
         var messageId = messageState.messageId;
 
         db.messages[messageId] = messageState;

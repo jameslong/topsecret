@@ -4,15 +4,17 @@ export interface DBCalls {
         createPlayerTable: Request.CreateTableRequest;
         createMessageTable: Request.CreateTableRequest;
         deleteTable: Request.DeleteTableRequest;
+
         addPlayer: Request.AddPlayerRequest;
+        updatePlayer: Request.UpdatePlayerRequest;
         removePlayer: Request.RemovePlayerRequest;
         deleteAllMessages: Request.DeleteAllMessagesRequest;
+        storeMessage: Request.StoreMessageRequest;
+        updateMessage: Request.UpdateMessageRequest;
+        deleteMessage: Request.DeleteMessageRequest;
+
         getMessageUID: (params: Request.GetMessageUIDParams,
                 callback: Request.GetMessageUIDCallback)=>void;
-        storeMessage: (params: Request.StoreMessageParams,
-                callback: Request.StoreMessageCallback)=>void;
-        deleteMessage: (params: Request.DeleteMessageParams,
-                callback: Request.DeleteMessageCallback)=>void;
         getMessage: (params: Request.GetMessageParams,
                 callback: Request.GetMessageCallback)=>void;
         getMessages: (params: Request.GetMessagesParams,

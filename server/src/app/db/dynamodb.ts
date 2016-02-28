@@ -123,6 +123,14 @@ export function createDynamoDBCalls (config: Config.ConfigState): DBTypes.DBCall
                                 docClient, playersTableName, params, callback);
                 };
 
+        var updatePlayerLocal = function (
+                        params: Request.UpdatePlayerParams,
+                        callback: Request.UpdatePlayerCallback)
+                {
+                        updatePlayer(
+                                docClient, playersTableName, params, callback);
+                };
+
         var removePlayerLocal = function (
                         params: Request.RemovePlayerParams,
                         callback: Request.RemovePlayerCallback)
@@ -152,6 +160,14 @@ export function createDynamoDBCalls (config: Config.ConfigState): DBTypes.DBCall
                         callback: Request.StoreMessageCallback)
                 {
                         storeMessage(
+                                docClient, messagesTableName, params, callback);
+                };
+
+        var updateMessageLocal = function (
+                        params: Request.UpdateMessageParams,
+                        callback: Request.UpdateMessageCallback)
+                {
+                        updateMessage(
                                 docClient, messagesTableName, params, callback);
                 };
 
@@ -256,10 +272,12 @@ export function createDynamoDBCalls (config: Config.ConfigState): DBTypes.DBCall
                 createMessageTable: createMessageTableLocal,
                 deleteTable: deleteTableLocal,
                 addPlayer: addPlayerLocal,
+                updatePlayer: updatePlayerLocal,
                 removePlayer: removePlayerLocal,
                 deleteAllMessages: deleteAllMessagesLocal,
                 getMessageUID: getMessageUIDLocal,
                 storeMessage: storeMessageLocal,
+                updateMessage: updateMessageLocal,
                 deleteMessage: deleteMessageLocal,
                 getMessage: getMessageLocal,
                 getMessages: getMessagesLocal,
@@ -383,6 +401,20 @@ export function addPlayer (
         docClient.putItem(awsParams, callback);
 };
 
+export function updatePlayer (
+        docClient: DOC.DynamoDB,
+        playersTableName: string,
+        params: Request.UpdatePlayerParams,
+        callback: Request.UpdatePlayerCallback)
+{
+        var awsParams: PutItemParams<Player.PlayerState> = {
+                Item: params,
+                TableName: playersTableName,
+        };
+
+        docClient.putItem(awsParams, callback);
+};
+
 export function removePlayer (
         docClient: DOC.DynamoDB,
         playersTableName: string,
@@ -446,6 +478,32 @@ export function storeMessage (
                 function (error, data)
                 {
                         Log.debug('Stored message dynamo', data);
+                        return callback(error, messageState);
+                };
+
+        var awsParams: PutItemParams<Message.MessageState> = {
+                Item: messageState,
+                TableName: messagesTableName,
+                ReturnValues: 'NONE',
+        };
+
+        docClient.putItem(awsParams, returnMessage);
+};
+
+export function updateMessage (
+        docClient: DOC.DynamoDB,
+        messagesTableName: string,
+        params: Request.UpdateMessageParams,
+        callback: Request.UpdateMessageCallback)
+{
+        var messageState = params;
+
+        Log.debug('Updating message dynamo', params);
+
+        var returnMessage: Request.MessageStateCallback =
+                function (error, data)
+                {
+                        Log.debug('Updated message dynamo', data);
                         return callback(error, messageState);
                 };
 

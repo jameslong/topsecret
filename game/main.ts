@@ -5,6 +5,7 @@ import Fun = require('./utils/function');
 import Message = require('./message');
 import MessageHelpers = require('./messagehelpers');
 import Player = require('./player');
+import Promises = require('./promises');
 import Request = require('./requesttypes');
 import State = require('./state');
 import Updater = require('./updater');
@@ -21,6 +22,8 @@ export function updateMessage (
         player: Player.PlayerState,
         callback: (error: Request.Error) => void)
 {
+        const requests = Promises.createPromiseFactories(app.send, app.db);
+
         const groupName = MessageHelpers.getMessageGroup(message);
         const groupData = Updater.getGroupData(app, groupName);
         const threadData = groupData.threadData;
@@ -48,6 +51,11 @@ export function updateMessage (
 function pendingChildren ()
 {
         return [promiseFactory<UpdateInfo>()];
+}
+
+function pendingChild ()
+{
+        return promiseFactory<UpdateInfo>();
 }
 
 function reply ()

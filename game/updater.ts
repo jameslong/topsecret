@@ -10,6 +10,8 @@ import Player = require('./player');
 import Profile = require('./profile');
 import Request = require('./requesttypes');
 
+import Main = require('./main');
+
 export interface GameData {
         name: string;
         keyManagers: Kbpgp.KeyManagers

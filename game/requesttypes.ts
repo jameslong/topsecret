@@ -51,6 +51,12 @@ export interface AddPlayerRequest {
         (params: AddPlayerParams, callback: AddPlayerCallback): void;
 }
 
+export type UpdatePlayerParams = Player.PlayerState;
+export interface UpdatePlayerCallback extends Callback<{}> {}
+export interface UpdatePlayerRequest {
+        (params: UpdatePlayerParams, callback: UpdatePlayerCallback): void;
+}
+
 export interface RemovePlayerParams {
         email: string;
 }
@@ -81,6 +87,12 @@ export interface StoreMessageParams {
 export interface StoreMessageCallback extends MessageStateCallback {}
 export interface StoreMessageRequest {
         (params: StoreMessageParams, callback: StoreMessageCallback): void;
+}
+
+export type UpdateMessageParams = Message.MessageState;
+export interface UpdateMessageCallback extends MessageStateCallback {}
+export interface UpdateMessageRequest {
+        (params: UpdateMessageParams, callback: UpdateMessageCallback): void;
 }
 
 export interface DeleteMessageParams {
@@ -204,6 +216,11 @@ export interface MarkReplySentCallback extends Callback<Message.MessageState> {}
 export interface MarkReplySentRequest {
         (params: MarkReplySentParams, callback: MarkReplySentCallback): void;
 }
+
+export type SendRequest = (
+        data: Message.MessageData,
+        callback: Callback<string>)
+        => void;
 
 export function seq2<T, U, V> (
         requestA: RequestFunc<T, U>,
