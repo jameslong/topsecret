@@ -10,11 +10,6 @@ import Request = require('./requesttypes');
 import State = require('./state');
 import Updater = require('./updater');
 
-interface UpdateInfo {
-        message: Message.MessageState;
-        player: Player.PlayerState;
-}
-
 export function updateMessage (
         app: State.State,
         timestampMs: number,
@@ -50,32 +45,32 @@ export function updateMessage (
 
 function pendingChildren ()
 {
-        return [promiseFactory<UpdateInfo>()];
+        return [promiseFactory<Promises.UpdateInfo>()];
 }
 
 function pendingChild ()
 {
-        return promiseFactory<UpdateInfo>();
+        return promiseFactory<Promises.UpdateInfo>();
 }
 
 function reply ()
 {
-        return [promiseFactory<UpdateInfo>()];
+        return [promiseFactory<Promises.UpdateInfo>()];
 }
 
 function fallback ()
 {
-        return [promiseFactory<UpdateInfo>()];
+        return [promiseFactory<Promises.UpdateInfo>()];
 }
 
 function expired ()
 {
-        return [promiseFactory<UpdateInfo>()];
+        return [promiseFactory<Promises.UpdateInfo>()];
 }
 
 function update ()
 {
-        return [promiseFactory<UpdateInfo>()];
+        return [promiseFactory<Promises.UpdateInfo>()];
 }
 
 function hasPendingChildren (message: Message.MessageState)
