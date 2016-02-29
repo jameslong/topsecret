@@ -1,83 +1,53 @@
 import DBTypes = require('./dbtypes');
-import Helpers = require('./utils/helpers');
+import Kbpgp = require('kbpgp');
+import KbpgpHelpers = require('./kbpgp');
 import Message = require('./message');
 import Player = require('./player');
-import RequestTypes = require('./requesttypes');
+import Request = require('./requesttypes');
 
-export interface UpdateInfo {
-        message: Message.MessageState;
-        player: Player.PlayerState;
+export interface PromiseFactories {
+        send: PromiseFactory<Message.MessageData, string>;
+        encrypt: (
+                from: Kbpgp.KeyManagerInstance,
+                to: Kbpgp.KeyManagerInstance,
+                text: string) => Promise<string>;
+        addMessage: PromiseFactory<Message.MessageState, Message.MessageState>;
+        updateMessage: PromiseFactory<Message.MessageState, Message.MessageState>;
+        deleteMessage: PromiseFactory<Message.MessageState, Message.MessageState>;
+        addPlayer: PromiseFactory<Player.PlayerState, Player.PlayerState>;
+        updatePlayer: PromiseFactory<Player.PlayerState, Player.PlayerState>;
+        deletePlayer: PromiseFactory<Request.RemovePlayerParams, Player.PlayerState>;
 }
 
 export function createPromiseFactories (
-        send: RequestTypes.SendRequest,
+        send: Request.SendRequest,
         dbCalls: DBTypes.DBCalls)
 {
         return {
-                sendMessage: sendPromiseFactory(send),
-                addMessage: promiseFactory(dbCalls.storeMessage, messagePromise),
-                updateMessage: promiseFactory(dbCalls.updateMessage, messagePromise),
-                deleteMessage: promiseFactory(dbCalls.deleteMessage, messagePromise),
-                addPlayer: promiseFactory(dbCalls.addPlayer, playerPromise),
-                updatePlayer: promiseFactory(dbCalls.updatePlayer, playerPromise),
-                deletePlayer: promiseFactory(dbCalls.removePlayer, playerPromise),
+                send: promiseFactory(send),
+                encrypt: (
+                        from: Kbpgp.KeyManagerInstance,
+                        to: Kbpgp.KeyManagerInstance,
+                        text: string) => KbpgpHelpers.signEncrypt(from, to, text),
+                addMessage: promiseFactory(dbCalls.storeMessage),
+                updateMessage: promiseFactory(dbCalls.updateMessage),
+                deleteMessage: promiseFactory(dbCalls.deleteMessage),
+                deleteAllMessages: promiseFactory(dbCalls.deleteAllMessages),
+                addPlayer: promiseFactory(dbCalls.addPlayer),
+                updatePlayer: promiseFactory(dbCalls.updatePlayer),
+                deletePlayer: promiseFactory(dbCalls.removePlayer),
         };
 }
 
-export function sendPromiseFactory (requestFn: RequestTypes.SendRequest)
-{
-        return (state: UpdateInfo, data: Message.MessageData) =>
-                sendPromise(requestFn, state, data);
-}
+type PromiseFactory<T, U> = (data: T) => Promise<U>;
 
-export function sendPromise (
-        requestFn: RequestTypes.RequestFunc<Message.MessageData, string>,
-        state: UpdateInfo,
-        messageData: Message.MessageData)
+export function promiseFactory<T, U> (requestFn: Request.RequestFunc<T, U>)
 {
-        return new Promise<UpdateInfo>((resolve, reject) =>
-                requestFn(messageData, (error, player) => {
-                        error ? reject(error) : resolve(state);
-                })
-        );
-}
-
-export function playerPromise (
-        requestFn: RequestTypes.RequestFunc<Player.PlayerState, Player.PlayerState>,
-        state: UpdateInfo)
-{
-        return new Promise<UpdateInfo>((resolve, reject) =>
-                requestFn(state.player, (error, player) => {
-                        const newState = Helpers.assign(state, { player });
-                        error ? reject(error) : resolve(newState);
-                })
-        );
-}
-
-export function messagePromise (
-        requestFn: RequestTypes.RequestFunc<Message.MessageState, Message.MessageState>,
-        state: UpdateInfo)
-{
-        return new Promise<UpdateInfo>((resolve, reject) =>
-                requestFn(state.message, (error, message) => {
-                        const newState = Helpers.assign(state, { message });
-                        error ? reject(error) : resolve(newState);
-                })
-        );
-}
-
-type PromiseCtor = <T, U>(
-        requestFn: RequestTypes.RequestFunc<T, U>, data: T) => Promise<U>;
-
-export function promiseFactory<T, U> (
-        requestFn: RequestTypes.RequestFunc<T, U>,
-        promiseCtor: PromiseCtor)
-{
-        return (data: T) => promiseCtor(requestFn, data);
+        return (data: T) => requestPromise(requestFn, data);
 }
 
 export function requestPromise<T, U> (
-        requestFn: RequestTypes.RequestFunc<T, U>,
+        requestFn: Request.RequestFunc<T, U>,
         data: T)
 {
         return new Promise<U>((resolve, reject) =>

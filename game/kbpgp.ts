@@ -174,3 +174,20 @@ export function decryptMessage (
 
         kbpgp.unbox(params, onUnbox);
 }
+
+export function signEncrypt (
+        from: Kbpgp.KeyManagerInstance,
+        to: Kbpgp.KeyManagerInstance,
+        text: string)
+{
+        var params = {
+                msg: text,
+                encrypt_for: to,
+                sign_with: from,
+        };
+
+        return new Promise((resolve, reject) => {
+                Kbpgp.box(params, (err, result) =>
+                        err ? reject(err) : resolve(result))
+        });
+}

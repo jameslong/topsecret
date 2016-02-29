@@ -10,6 +10,11 @@ import Request = require('./requesttypes');
 import State = require('./state');
 import Updater = require('./updater');
 
+interface UpdateInfo {
+        message: Message.MessageState;
+        player: Player.PlayerState;
+}
+
 export function updateMessage (
         app: State.State,
         timestampMs: number,
@@ -24,8 +29,10 @@ export function updateMessage (
         const threadData = groupData.threadData;
         const messageData = threadData[message.name];
 
+        const state = { message, player };
+
         const children = hasPendingChildren(message) ?
-                pendingChildren() :
+                pendingChildren(app, groupData, state, timestampMs, requests) :
                 [];
         const response = hasSentReply(message) ?
                         [] :
@@ -34,7 +41,6 @@ export function updateMessage (
                                 (hasFallback(messageData) ? fallback() : []);
         const promiseFactories = children.concat(response);
 
-        const state = { message, player };
 
         executeSequentially(promiseFactories, state).then(state =>
                 isExpired(state.message, messageData) ? expired() : update()
@@ -43,34 +49,123 @@ export function updateMessage (
         ).catch(error => callback(error));
 }
 
-function pendingChildren ()
+function pendingChildren (
+        app: State.State,
+        groupData: Updater.GameData,
+        state: UpdateInfo,
+        timestampMs: number,
+        promises: Promises.PromiseFactories)
 {
-        return [promiseFactory<Promises.UpdateInfo>()];
+        const message = state.message;
+        const player = state.player;
+
+        const messageName = message.name;
+        const messageData = groupData.threadData[messageName];
+        const children = messageData.children;
+
+        const timeFactor = app.timeFactor;
+        const sentTimestampMs = message.sentTimestampMs;
+        const timeDelayMs = ((timestampMs - sentTimestampMs) * timeFactor);
+
+        const indices = children.map((child, index) => index);
+        const unsent = indices.filter(index => message.childrenSent[index]);
+        const expired = unsent.filter(index =>
+                Updater.isExpiredThreadDelay(children[index], timeDelayMs)
+        );
+        const childrenData = expired.map(index =>
+                MessageHelpers.createMessageData(
+                        groupData.threadData,
+                        message.name,
+                        message.threadStartName,
+                        player.email,
+                        app.emailDomain,
+                        groupData.profiles,
+                        groupData.strings,
+                        player.vars)
+        );
+        return childrenData.map((data, index) =>
+                pendingChild(groupData, data, expired[index], promises)
+        );
 }
 
-function pendingChild ()
+function pendingChild (
+        groupData: Updater.GameData,
+        data: Message.MessageData,
+        childIndex: number,
+        promises: Promises.PromiseFactories)
 {
-        return promiseFactory<Promises.UpdateInfo>();
+        return (state: UpdateInfo) => {
+                const from = groupData.keyManagers[data.from];
+                const to = groupData.keyManagers[state.player.email];
+                return promises.encrypt(from, to, data.body)
+                .then(body => {
+                        data.body = body;
+                        return promises.send(data);
+                })
+                .then(messageId => {
+                        const messageState = createMessageState(
+                                groupData,
+                                state.player.email,
+                                messageId,
+                                name,
+                                state.message.threadStartName);
+                        return promises.addMessage(messageState);
+                })
+                .then(message => {
+                        state.message.childrenSent[childIndex] = true;
+                        return state;
+                })
+        };
+}
+
+function createMessageState (
+        groupData: Updater.GameData,
+        playerEmail: string,
+        messageId: string,
+        name: string,
+        threadStartName: string)
+{
+        const newThreadMessage = groupData.threadData[name];
+        const numberOfChildren = newThreadMessage.children.length;
+        const newThreadStartName = newThreadMessage.threadSubject ?
+                newThreadMessage.name : threadStartName;
+
+        return MessageHelpers.createMessageState(
+                playerEmail,
+                groupData.name,
+                messageId,
+                name,
+                newThreadStartName,
+                numberOfChildren);
 }
 
 function reply ()
 {
-        return [promiseFactory<Promises.UpdateInfo>()];
+        // return encrypt()
+        //         .then(state => send(state, data))
+        //         .then(state => addMessage(state))
+        //         .then(state => markReplySent(state));
 }
 
 function fallback ()
 {
-        return [promiseFactory<Promises.UpdateInfo>()];
+        // return encrypt()
+        //         .then(state => send(state, data))
+        //         .then(state => addMessage(state))
+        //         .then(state => markReplySent(state));
 }
 
 function expired ()
 {
-        return [promiseFactory<Promises.UpdateInfo>()];
+        // return endGame ?
+        //         deleteAllMessages()
+        //                 .then(state => deletePlayer(state)) :
+        //         deleteMessage();
 }
 
 function update ()
 {
-        return [promiseFactory<Promises.UpdateInfo>()];
+        // return updateMessage();
 }
 
 function hasPendingChildren (message: Message.MessageState)
