@@ -15,6 +15,8 @@ interface UpdateInfo {
         player: Player.PlayerState;
 }
 
+type PromiseFactoryList = Promises.PromiseFactory<UpdateInfo, UpdateInfo>[];
+
 export function updateMessage (
         app: State.State,
         timestampMs: number,
@@ -35,12 +37,23 @@ export function updateMessage (
                 pendingChildren(app, groupData, state, timestampMs, requests) :
                 [];
         const response = hasSentReply(message) ?
-                        [] :
+                        <PromiseFactoryList>[] :
                         hasReply(message) ?
-                                reply() :
-                                (hasFallback(messageData) ? fallback() : []);
+                                [pendingReply(
+                                        app,
+                                        groupData,
+                                        state,
+                                        timestampMs,
+                                        requests)] :
+                                (hasFallback(messageData) ?
+                                        [pendingFallback(
+                                                app,
+                                                groupData,
+                                                state,
+                                                timestampMs,
+                                                requests)] :
+                                        <PromiseFactoryList>[]);
         const promiseFactories = children.concat(response);
-
 
         executeSequentially(promiseFactories, state).then(state =>
                 isExpired(state.message, messageData) ? expired() : update()
@@ -97,6 +110,7 @@ function pendingChild (
         return (state: UpdateInfo) => {
                 const from = groupData.keyManagers[data.from];
                 const to = groupData.keyManagers[state.player.email];
+
                 return promises.encrypt(from, to, data.body)
                 .then(body => {
                         data.body = body;
@@ -139,20 +153,111 @@ function createMessageState (
                 numberOfChildren);
 }
 
-function reply ()
+function pendingReply (
+        app: State.State,
+        groupData: Updater.GameData,
+        state: UpdateInfo,
+        timestampMs: number,
+        promises: Promises.PromiseFactories)
 {
-        // return encrypt()
-        //         .then(state => send(state, data))
-        //         .then(state => addMessage(state))
-        //         .then(state => markReplySent(state));
+        const message = state.message;
+        const player = state.player;
+
+        const messageName = message.name;
+        const threadMessage = groupData.threadData[messageName];
+
+        const playerEmail = player.email;
+        const parentId = message.messageId;
+        const replyState = message.reply;
+
+        const timeFactor = app.timeFactor;
+        const sentTimestampMs = message.sentTimestampMs;
+        const timeDelayMs = ((timestampMs - sentTimestampMs) * timeFactor);
+
+        const threadStartName = message.threadStartName;
+
+        const replyIndex = replyState.replyIndex;
+        const replyDelay = MessageHelpers.getReplyDelay(
+                replyIndex, threadMessage);
+
+        const replyData = MessageHelpers.createMessageData(
+                groupData.threadData,
+                replyDelay.name,
+                message.threadStartName,
+                player.email,
+                app.emailDomain,
+                groupData.profiles,
+                groupData.strings,
+                player.vars)
+
+        return reply(groupData, replyData, promises);
 }
 
-function fallback ()
+function reply (
+        groupData: Updater.GameData,
+        data: Message.MessageData,
+        promises: Promises.PromiseFactories)
 {
-        // return encrypt()
-        //         .then(state => send(state, data))
-        //         .then(state => addMessage(state))
-        //         .then(state => markReplySent(state));
+        return (state: UpdateInfo) => {
+                const from = groupData.keyManagers[data.from];
+                const to = groupData.keyManagers[state.player.email];
+
+                return promises.encrypt(from, to, data.body)
+                .then(body => {
+                        data.body = body;
+                        return promises.send(data);
+                })
+                .then(messageId => {
+                        const messageState = createMessageState(
+                                groupData,
+                                state.player.email,
+                                messageId,
+                                name,
+                                state.message.threadStartName);
+                        return promises.addMessage(messageState);
+                })
+                .then(message => {
+                        state.message.replySent = true;
+                        return state;
+                })
+        };
+}
+
+function pendingFallback (
+        app: State.State,
+        groupData: Updater.GameData,
+        state: UpdateInfo,
+        timestampMs: number,
+        promises: Promises.PromiseFactories)
+{
+        const message = state.message;
+        const player = state.player;
+
+        const messageName = message.name;
+        const threadMessage = groupData.threadData[messageName];
+
+        const playerEmail = player.email;
+        const parentId = message.messageId;
+        const replyState = message.reply;
+
+        const timeFactor = app.timeFactor;
+        const sentTimestampMs = message.sentTimestampMs;
+        const timeDelayMs = ((timestampMs - sentTimestampMs) * timeFactor);
+
+        const threadStartName = message.threadStartName;
+        const fallbackDelay = threadMessage.fallback;
+
+        const fallbackData = MessageHelpers.createMessageData(
+                groupData.threadData,
+                fallbackDelay.name,
+                message.threadStartName,
+                player.email,
+                app.emailDomain,
+                groupData.profiles,
+                groupData.strings,
+                player.vars)
+
+        return reply(groupData, fallbackData, promises);
 }
 
 function expired ()

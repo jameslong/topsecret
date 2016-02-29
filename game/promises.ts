@@ -39,7 +39,7 @@ export function createPromiseFactories (
         };
 }
 
-type PromiseFactory<T, U> = (data: T) => Promise<U>;
+export type PromiseFactory<T, U> = (data: T) => Promise<U>;
 
 export function promiseFactory<T, U> (requestFn: Request.RequestFunc<T, U>)
 {
