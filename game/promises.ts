@@ -14,6 +14,7 @@ export interface PromiseFactories {
         addMessage: PromiseFactory<Message.MessageState, Message.MessageState>;
         updateMessage: PromiseFactory<Message.MessageState, Message.MessageState>;
         deleteMessage: PromiseFactory<Message.MessageState, Message.MessageState>;
+        deleteAllMessages: PromiseFactory<Request.DeleteAllMessagesParams, {}>;
         addPlayer: PromiseFactory<Player.PlayerState, Player.PlayerState>;
         updatePlayer: PromiseFactory<Player.PlayerState, Player.PlayerState>;
         deletePlayer: PromiseFactory<Request.RemovePlayerParams, Player.PlayerState>;

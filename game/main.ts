@@ -8,7 +8,6 @@ import Player = require('./player');
 import Promises = require('./promises');
 import Request = require('./requesttypes');
 import State = require('./state');
-import Updater = require('./updater');
 
 interface UpdateInfo {
         message: Message.MessageState;
@@ -27,7 +26,7 @@ export function updateMessage (
         const requests = Promises.createPromiseFactories(app.send, app.db);
 
         const groupName = MessageHelpers.getMessageGroup(message);
-        const groupData = Updater.getGroupData(app, groupName);
+        const groupData = app.data[groupName];
         const threadData = groupData.threadData;
         const messageData = threadData[message.name];
 
@@ -56,15 +55,24 @@ export function updateMessage (
         const promiseFactories = children.concat(response);
 
         executeSequentially(promiseFactories, state).then(state =>
-                isExpired(state.message, messageData) ? expired() : update()
+                isExpired(state.message, messageData) ?
+                        expired(groupData, state, requests) :
+                        update(state, requests)
         ).then(state =>
                 callback(null)
         ).catch(error => callback(error));
 }
 
+export function isExpiredThreadDelay (
+        threadDelay: Message.ThreadDelay, delayMs: number): boolean
+{
+        var requiredDelayMs = (threadDelay.delayMins * 1000 * 60);
+        return (delayMs > requiredDelayMs);
+}
+
 function pendingChildren (
         app: State.State,
-        groupData: Updater.GameData,
+        groupData: State.GameData,
         state: UpdateInfo,
         timestampMs: number,
         promises: Promises.PromiseFactories)
@@ -83,7 +91,7 @@ function pendingChildren (
         const indices = children.map((child, index) => index);
         const unsent = indices.filter(index => message.childrenSent[index]);
         const expired = unsent.filter(index =>
-                Updater.isExpiredThreadDelay(children[index], timeDelayMs)
+                isExpiredThreadDelay(children[index], timeDelayMs)
         );
         const childrenData = expired.map(index =>
                 MessageHelpers.createMessageData(
@@ -102,7 +110,7 @@ function pendingChildren (
 }
 
 function pendingChild (
-        groupData: Updater.GameData,
+        groupData: State.GameData,
         data: Message.MessageData,
         childIndex: number,
         promises: Promises.PromiseFactories)
@@ -133,7 +141,7 @@ function pendingChild (
 }
 
 function createMessageState (
-        groupData: Updater.GameData,
+        groupData: State.GameData,
         playerEmail: string,
         messageId: string,
         name: string,
@@ -155,7 +163,7 @@ function createMessageState (
 
 function pendingReply (
         app: State.State,
-        groupData: Updater.GameData,
+        groupData: State.GameData,
         state: UpdateInfo,
         timestampMs: number,
         promises: Promises.PromiseFactories)
@@ -194,7 +202,7 @@ function pendingReply (
 }
 
 function reply (
-        groupData: Updater.GameData,
+        groupData: State.GameData,
         data: Message.MessageData,
         promises: Promises.PromiseFactories)
 {
@@ -225,7 +233,7 @@ function reply (
 
 function pendingFallback (
         app: State.State,
-        groupData: Updater.GameData,
+        groupData: State.GameData,
         state: UpdateInfo,
         timestampMs: number,
         promises: Promises.PromiseFactories)
@@ -260,17 +268,29 @@ function pendingFallback (
         return reply(groupData, fallbackData, promises);
 }
 
-function expired ()
+function expired (
+        groupData: State.GameData,
+        state: UpdateInfo,
+        promises: Promises.PromiseFactories)
 {
-        // return endGame ?
-        //         deleteAllMessages()
-        //                 .then(state => deletePlayer(state)) :
-        //         deleteMessage();
+        const { message, player } = state;
+        const email = player.email;
+        const messageName = message.name;
+        const messageData = groupData.threadData[messageName];
+
+        return (state: UpdateInfo) =>
+                messageData.endGame ?
+                        promises.deleteAllMessages({ email })
+                                .then(result =>
+                                        promises.deletePlayer({ email })) :
+                        promises.deleteMessage(state.message);
 }
 
-function update ()
+function update (state: UpdateInfo, promises: Promises.PromiseFactories)
 {
-        // return updateMessage();
+        return (state: UpdateInfo) => {
+                return promises.updateMessage(state.message);
+        };
 }
 
 function hasPendingChildren (message: Message.MessageState)
