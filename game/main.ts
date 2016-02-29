@@ -32,7 +32,7 @@ export function updateMessage (
                 isExpired(state.message, messageData) ?
                         Promises.expired(groupData, state, promises) :
                         Promises.update(state, promises)
-        ).then(state => callback(null)
+        ).then(result => callback(null)
         ).catch(error => callback(error));
 }
 

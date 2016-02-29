@@ -8,7 +8,7 @@ import Map = require('../../../../game/utils/map');
 import Message = require('../../../../game/message');
 import Profile = require('../../../../game/profile');
 import Request = require('../../../../game/requesttypes');
-import Updater = require('../../../../game/updater');
+import State = require('../../../../game/state');
 
 export interface Path {
         basename: (path: string, ext?: string) => string;
@@ -37,14 +37,14 @@ export function loadPrivateConfig(config: Config.ConfigState)
 
 export function loadAllGameData (
         config: Config.ConfigState,
-        callback: Request.Callback<Updater.GameData[]>)
+        callback: Request.Callback<State.GameData[]>)
 {
         var content = config.content;
         var narrativeFolderPath = content.narrativeFolder;
         var groupNames = FileSystem.loadDirectoryNamesSync(narrativeFolderPath);
 
         var tasks = groupNames.map((groupName) => {
-                        return (callback: Request.Callback<Updater.GameData>) =>
+                        return (callback: Request.Callback<State.GameData>) =>
                                 loadGameData(narrativeFolderPath, groupName, callback);
                 });
 
@@ -59,7 +59,7 @@ export function join (...paths: string[]): string
 export function loadGameData (
         path: string,
         name: string,
-        callback: Request.Callback<Updater.GameData>)
+        callback: Request.Callback<State.GameData>)
 {
         var groupData = loadGroupData(path, name);
 
@@ -78,8 +78,8 @@ export function loadGameData (
 }
 
 export function createKeyManagerCallback (
-        groupData: Updater.GameData,
-        callback: Request.Callback<Updater.GameData>)
+        groupData: State.GameData,
+        callback: Request.Callback<State.GameData>)
 {
         return (error: Request.Error, keyManagers: Kbpgp.KeyManagers) =>
                 {
@@ -88,7 +88,7 @@ export function createKeyManagerCallback (
                 };
 }
 
-export function loadGroupData (path: string, name: string): Updater.GameData
+export function loadGroupData (path: string, name: string): State.GameData
 {
         var data = loadNarrative(path, name);
         var dataErrors = DataValidation.getDataErrors(data);

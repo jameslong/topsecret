@@ -70,11 +70,19 @@ export function child (
         promises: PromiseFactories)
 {
         return (state: UpdateInfo) => {
-                return (encryptSendStoreChild(groupData, data, state, promises)
-                ).then(state => {
-                        state.message.childrenSent[childIndex] = true;
-                        return state;
-                })
+                const { message, player } = state;
+                const threadStartName = message.threadStartName;
+
+                return encryptSendStoreChild(
+                        groupData,
+                        data,
+                        player,
+                        threadStartName,
+                        promises).then(message => {
+                                message.childrenSent[childIndex] = true;
+                                state.message = message;
+                                return state;
+                        });
         };
 }
 
@@ -84,10 +92,18 @@ export function reply (
         promises: PromiseFactories)
 {
         return (state: UpdateInfo) => {
-                return (encryptSendStoreChild(groupData, data, state, promises)
-                ).then(state => {
-                        state.message.replySent = true;
-                        return state;
+                const { message, player } = state;
+                const threadStartName = message.threadStartName;
+
+                return encryptSendStoreChild(
+                        groupData,
+                        data,
+                        player,
+                        threadStartName,
+                        promises).then(message => {
+                                message.replySent = true;
+                                state.message = message;
+                                return state;
                 })
         };
 }
@@ -95,11 +111,12 @@ export function reply (
 export function encryptSendStoreChild (
         groupData: State.GameData,
         data: Message.MessageData,
-        state: UpdateInfo,
+        player: Player.PlayerState,
+        threadStartName: string,
         promises: PromiseFactories)
 {
         const from = groupData.keyManagers[data.from];
-        const to = groupData.keyManagers[state.player.email];
+        const to = groupData.keyManagers[player.email];
 
         return promises.encrypt(from, to, data.body).then(body => {
                 data.body = body;
@@ -107,36 +124,60 @@ export function encryptSendStoreChild (
         }).then(messageId => {
                 const messageState = createMessageState(
                         groupData,
-                        state.player.email,
+                        player.email,
                         messageId,
                         name,
-                        state.message.threadStartName);
+                        threadStartName);
                 return promises.addMessage(messageState);
-        }).then(messageState => state);
+        });
+}
+
+export function update (state: UpdateInfo, promises: PromiseFactories)
+{
+        return promises.updateMessage(state.message);
 }
 
 export function expired (
         groupData: State.GameData,
         state: UpdateInfo,
-        promises: PromiseFactories)
+        promises: PromiseFactories): Promise<any>
 {
         const { message, player } = state;
         const email = player.email;
         const messageData = groupData.threadData[message.name];
 
-        return (state: UpdateInfo) =>
-                messageData.endGame ?
-                        promises.deleteAllMessages({ email })
-                                .then(result =>
-                                        promises.deletePlayer({ email })) :
-                        promises.deleteMessage(state.message);
+        return messageData.endGame ?
+                endGame(player, promises) :
+                promises.deleteMessage(state.message);
 }
 
-export function update (state: UpdateInfo, promises: PromiseFactories)
+export function endGame (
+        player: Player.PlayerState,
+        promises: PromiseFactories): Promise<any>
 {
-        return (state: UpdateInfo) => {
-                return promises.updateMessage(state.message);
-        };
+        const email = player.email;
+
+        return promises.deleteAllMessages({ email }).then(result =>
+                promises.deletePlayer({ email }));
+}
+
+export function beginGame (
+        groupData: State.GameData,
+        player: Player.PlayerState,
+        data: Message.MessageData,
+        promises: PromiseFactories)
+{
+        return promises.addPlayer(player).then(player =>
+                encryptSendStoreChild(groupData, data, player, null, promises));
+}
+
+export function resign (
+        data: Message.MessageData,
+        player: Player.PlayerState,
+        promises: PromiseFactories)
+{
+        return promises.send(data).then(messageId =>
+                endGame(player, promises));
 }
 
 function createMessageState (
