@@ -123,7 +123,7 @@ export function handleExpiredMessage (
                 Log.debug('Deleting message', messageState);
                 var deleteMessageFn = db.deleteMessage;
                 DBHelpers.deleteMessage(
-                        deleteMessageFn, messageState.messageId, callback);
+                        deleteMessageFn, messageState, callback);
         }
 }
 
@@ -140,7 +140,7 @@ export function deleteMessages (
                         });
         };
         messageStates.forEach((messageState) => DBHelpers.deleteMessage(
-                deleteMessageFn, messageState.messageId, onDelete));
+                deleteMessageFn, messageState, onDelete));
 }
 
 export function generatePendingChildren (
@@ -366,11 +366,6 @@ export function sendPendingMessage (
                                         pendingMessage,
                                         playerState,
                                         callback);
-                        } else {
-                                deletePlayerlessMessage(
-                                        app,
-                                        pendingMessage.parentId,
-                                        callback);
                         }
                 }
 
@@ -383,13 +378,13 @@ export function sendPendingMessage (
 
 export function deletePlayerlessMessage (
         app: State,
-        messageId: string,
+        messageState: Message.MessageState,
         callback: Request.MarkReplySentCallback)
 {
         var db = app.db;
         DBHelpers.deleteMessage(
                 db.deleteMessage,
-                messageId,
+                messageState,
                 callback);
 }
 

@@ -327,12 +327,10 @@ export function deleteMessageTableLocal (
 export function addPlayerLocal (
         db: DBState,
         config: Config.ConfigState,
-        params: Request.AddPlayerParams,
+        playerState: Request.AddPlayerParams,
         callback: Request.AddPlayerCallback)
 {
         var error: Request.Error = undefined;
-
-        var playerState = params.playerState;
 
         var email = playerState.email;
         var inUse = (db.players[email] !== undefined);
@@ -440,12 +438,11 @@ export function getMessageUIDLocal (
 export function storeMessageLocal (
         db: DBState,
         config: Config.ConfigState,
-        params: Request.StoreMessageParams,
+        messageState: Request.StoreMessageParams,
         callback: Request.StoreMessageCallback)
 {
         var error: Request.Error = undefined;
 
-        var messageState = params.messageState;
         var messageId = messageState.messageId;
 
         db.messages[messageId] = messageState;
@@ -473,10 +470,10 @@ export function updateMessageLocal (
 export function deleteMessageLocal (
         db: DBState,
         config: Config.ConfigState,
-        params: Request.DeleteMessageParams,
+        messageState: Request.DeleteMessageParams,
         callback: Request.DeleteMessageCallback)
 {
-        var messageId = params.messageId;
+        var messageId = messageState.messageId;
 
         var error: Request.Error = undefined;
 

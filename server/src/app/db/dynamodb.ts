@@ -390,11 +390,11 @@ export function createMessageTable (
 export function addPlayer (
         docClient: DOC.DynamoDB,
         playersTableName: string,
-        params: Request.AddPlayerParams,
+        playerState: Request.AddPlayerParams,
         callback: Request.AddPlayerCallback)
 {
         var awsParams: PutItemParams<Player.PlayerState> = {
-                Item: params.playerState,
+                Item: playerState,
                 TableName: playersTableName,
         };
 
@@ -404,11 +404,11 @@ export function addPlayer (
 export function updatePlayer (
         docClient: DOC.DynamoDB,
         playersTableName: string,
-        params: Request.UpdatePlayerParams,
+        playerState: Request.UpdatePlayerParams,
         callback: Request.UpdatePlayerCallback)
 {
         var awsParams: PutItemParams<Player.PlayerState> = {
-                Item: params,
+                Item: playerState,
                 TableName: playersTableName,
         };
 
@@ -467,12 +467,10 @@ export function getMessageUID (
 export function storeMessage (
         docClient: DOC.DynamoDB,
         messagesTableName: string,
-        params: Request.StoreMessageParams,
+        messageState: Request.StoreMessageParams,
         callback: Request.StoreMessageCallback)
 {
-        var messageState = params.messageState;
-
-        Log.debug('Storing message dynamo', params);
+        Log.debug('Storing message dynamo', messageState);
 
         var returnMessage: Request.MessageStateCallback =
                 function (error, data)
@@ -573,14 +571,14 @@ export function getMessages (
 export function deleteMessage (
         docClient: DOC.DynamoDB,
         messagesTableName: string,
-        params: Request.DeleteMessageParams,
+        messageState: Request.DeleteMessageParams,
         callback: Request.DeleteMessageCallback)
 {
         var returnCallback = extractAttributes(callback);
 
         var awsParams= {
                 Key: {
-                        messageId: params.messageId,
+                        messageId: messageState.messageId,
                 },
                 TableName: messagesTableName,
                 ReturnValues: 'ALL_OLD',

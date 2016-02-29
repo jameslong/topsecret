@@ -26,8 +26,7 @@ export function addPlayer (
         requestFn: Request.AddPlayerRequest,
         callback: Request.AddPlayerCallback)
 {
-        var params = { playerState };
-        requestFn(params, callback);
+        requestFn(playerState, callback);
 }
 
 export function removePlayer (
@@ -62,17 +61,15 @@ export function storeMessage (
         messageState: Message.MessageState,
         callback: Request.Callback<Message.MessageState>)
 {
-        var params = { messageState };
-        storeMessageFn(params, callback);
+        storeMessageFn(messageState, callback);
 }
 
 export function deleteMessage (
         deleteMessageFn: Request.DeleteMessageRequest,
-        messageId: string,
+        messageState: Message.MessageState,
         callback: Request.Callback<Message.MessageState>)
 {
-        var params = { messageId };
-        deleteMessageFn(params, callback);
+        deleteMessageFn(messageState, callback);
 }
 
 export function getMessage (

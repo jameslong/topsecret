@@ -43,9 +43,7 @@ export interface DeleteTableRequest {
         (params: DeleteTableParams, callback: DeleteTableCallback): void;
 }
 
-export interface AddPlayerParams {
-        playerState: Player.PlayerState;
-}
+export type AddPlayerParams = Player.PlayerState;
 export interface AddPlayerCallback extends Callback<{}> {}
 export interface AddPlayerRequest {
         (params: AddPlayerParams, callback: AddPlayerCallback): void;
@@ -81,9 +79,7 @@ export interface GetMessageUIDRequest {
         (params: GetMessageUIDParams, callback: GetMessageUIDCallback): void;
 }
 
-export interface StoreMessageParams {
-        messageState: Message.MessageState;
-}
+export type StoreMessageParams = Message.MessageState;
 export interface StoreMessageCallback extends MessageStateCallback {}
 export interface StoreMessageRequest {
         (params: StoreMessageParams, callback: StoreMessageCallback): void;
@@ -95,9 +91,7 @@ export interface UpdateMessageRequest {
         (params: UpdateMessageParams, callback: UpdateMessageCallback): void;
 }
 
-export interface DeleteMessageParams {
-        messageId: string;
-}
+export type DeleteMessageParams = Message.MessageState;
 export interface DeleteMessageCallback extends MessageStateCallback {}
 export interface DeleteMessageRequest {
         (params: DeleteMessageParams, callback: DeleteMessageCallback): void;
