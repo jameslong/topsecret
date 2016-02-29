@@ -5,6 +5,7 @@ import Fun = require('./utils/function');
 import Message = require('./message');
 import MessageHelpers = require('./messagehelpers');
 import Player = require('./player');
+import Prom = require('./utils/promise');
 import Promises = require('./promises');
 import Request = require('./requesttypes');
 import State = require('./state');
@@ -14,7 +15,7 @@ interface UpdateInfo {
         player: Player.PlayerState;
 }
 
-type PromiseFactoryList = Promises.PromiseFactory<UpdateInfo, UpdateInfo>[];
+type PromiseFactoryList = Prom.Factory<UpdateInfo, UpdateInfo>[];
 
 export function updateMessage (
         app: State.State,
@@ -54,20 +55,13 @@ export function updateMessage (
                                         <PromiseFactoryList>[]);
         const promiseFactories = children.concat(response);
 
-        executeSequentially(promiseFactories, state).then(state =>
+        Prom.executeSequentially(promiseFactories, state).then(state =>
                 isExpired(state.message, messageData) ?
                         expired(groupData, state, requests) :
                         update(state, requests)
         ).then(state =>
                 callback(null)
         ).catch(error => callback(error));
-}
-
-export function isExpiredThreadDelay (
-        threadDelay: Message.ThreadDelay, delayMs: number): boolean
-{
-        var requiredDelayMs = (threadDelay.delayMins * 1000 * 60);
-        return (delayMs > requiredDelayMs);
 }
 
 function pendingChildren (
@@ -306,22 +300,6 @@ function isExpired (
                 (hasSentReply(message) || !hasFallback(messageData));
 }
 
-function executeSequentially<T> (
-        promiseFactories: ((data: T) => Promise<T>)[],
-        value: T)
-{
-        let result = Promise.resolve<T>(value);
-        promiseFactories.forEach(factory => {
-                result = result.then(factory);
-        });
-        return result;
-}
-
-function promiseFactory<T> ()
-{
-        return (data: T) => new Promise<T>((resolve, reject) => resolve(data));
-}
-
 function getTimeDelayMs (
         timestampMs: number,
         timeFactor: number,
@@ -329,4 +307,11 @@ function getTimeDelayMs (
 {
         const sentTimestampMs = message.sentTimestampMs;
         return ((timestampMs - sentTimestampMs) * timeFactor);
+}
+
+export function isExpiredThreadDelay (
+        threadDelay: Message.ThreadDelay, delayMs: number): boolean
+{
+        var requiredDelayMs = (threadDelay.delayMins * 1000 * 60);
+        return (delayMs > requiredDelayMs);
 }

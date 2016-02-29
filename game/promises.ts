@@ -3,21 +3,22 @@ import Kbpgp = require('kbpgp');
 import KbpgpHelpers = require('./kbpgp');
 import Message = require('./message');
 import Player = require('./player');
+import Prom = require('./utils/promise');
 import Request = require('./requesttypes');
 
 export interface PromiseFactories {
-        send: PromiseFactory<Message.MessageData, string>;
+        send: Prom.Factory<Message.MessageData, string>;
         encrypt: (
                 from: Kbpgp.KeyManagerInstance,
                 to: Kbpgp.KeyManagerInstance,
                 text: string) => Promise<string>;
-        addMessage: PromiseFactory<Message.MessageState, Message.MessageState>;
-        updateMessage: PromiseFactory<Message.MessageState, Message.MessageState>;
-        deleteMessage: PromiseFactory<Message.MessageState, Message.MessageState>;
-        deleteAllMessages: PromiseFactory<Request.DeleteAllMessagesParams, {}>;
-        addPlayer: PromiseFactory<Player.PlayerState, Player.PlayerState>;
-        updatePlayer: PromiseFactory<Player.PlayerState, Player.PlayerState>;
-        deletePlayer: PromiseFactory<Request.RemovePlayerParams, Player.PlayerState>;
+        addMessage: Prom.Factory<Message.MessageState, Message.MessageState>;
+        updateMessage: Prom.Factory<Message.MessageState, Message.MessageState>;
+        deleteMessage: Prom.Factory<Message.MessageState, Message.MessageState>;
+        deleteAllMessages: Prom.Factory<Request.DeleteAllMessagesParams, {}>;
+        addPlayer: Prom.Factory<Player.PlayerState, Player.PlayerState>;
+        updatePlayer: Prom.Factory<Player.PlayerState, Player.PlayerState>;
+        deletePlayer: Prom.Factory<Request.RemovePlayerParams, Player.PlayerState>;
 }
 
 export function createPromiseFactories (
@@ -39,8 +40,6 @@ export function createPromiseFactories (
                 deletePlayer: promiseFactory(dbCalls.removePlayer),
         };
 }
-
-export type PromiseFactory<T, U> = (data: T) => Promise<U>;
 
 export function promiseFactory<T, U> (requestFn: Request.RequestFunc<T, U>)
 {
