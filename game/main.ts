@@ -84,9 +84,7 @@ function pendingChildren (
         const messageData = groupData.threadData[messageName];
         const children = messageData.children;
 
-        const timeFactor = app.timeFactor;
-        const sentTimestampMs = message.sentTimestampMs;
-        const timeDelayMs = ((timestampMs - sentTimestampMs) * timeFactor);
+        const timeDelayMs = getTimeDelayMs(timestampMs, app.timeFactor, message);
 
         const indices = children.map((child, index) => index);
         const unsent = indices.filter(index => message.childrenSent[index]);
@@ -178,9 +176,7 @@ function pendingReply (
         const parentId = message.messageId;
         const replyState = message.reply;
 
-        const timeFactor = app.timeFactor;
-        const sentTimestampMs = message.sentTimestampMs;
-        const timeDelayMs = ((timestampMs - sentTimestampMs) * timeFactor);
+        const timeDelayMs = getTimeDelayMs(timestampMs, app.timeFactor, message);
 
         const threadStartName = message.threadStartName;
 
@@ -248,9 +244,7 @@ function pendingFallback (
         const parentId = message.messageId;
         const replyState = message.reply;
 
-        const timeFactor = app.timeFactor;
-        const sentTimestampMs = message.sentTimestampMs;
-        const timeDelayMs = ((timestampMs - sentTimestampMs) * timeFactor);
+        const timeDelayMs = getTimeDelayMs(timestampMs, app.timeFactor, message);
 
         const threadStartName = message.threadStartName;
         const fallbackDelay = threadMessage.fallback;
@@ -335,4 +329,13 @@ function executeSequentially<T> (
 function promiseFactory<T> ()
 {
         return (data: T) => new Promise<T>((resolve, reject) => resolve(data));
+}
+
+function getTimeDelayMs (
+        timestampMs: number,
+        timeFactor: number,
+        message: Message.MessageState)
+{
+        const sentTimestampMs = message.sentTimestampMs;
+        return ((timestampMs - sentTimestampMs) * timeFactor);
 }
