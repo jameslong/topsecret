@@ -71,11 +71,9 @@ function pendingChildren (
         timestampMs: number,
         promises: Promises.PromiseFactories)
 {
-        const message = state.message;
-        const player = state.player;
+        const { message, player } = state;
 
-        const messageName = message.name;
-        const messageData = groupData.threadData[messageName];
+        const messageData = groupData.threadData[message.name];
         const children = messageData.children;
 
         const timeDelayMs = getTimeDelayMs(timestampMs, app.timeFactor, message);
@@ -86,15 +84,12 @@ function pendingChildren (
                 isExpiredThreadDelay(children[index], timeDelayMs)
         );
         const childrenData = expired.map(index =>
-                MessageHelpers.createMessageData(
-                        groupData.threadData,
+                createMessageData(
+                        groupData,
+                        player,
                         message.name,
                         message.threadStartName,
-                        player.email,
-                        app.emailDomain,
-                        groupData.profiles,
-                        groupData.strings,
-                        player.vars)
+                        app.emailDomain)
         );
         return childrenData.map((data, index) =>
                 pendingChild(groupData, data, expired[index], promises)
@@ -139,27 +134,6 @@ function encryptSendStoreChild (
         }).then(messageState => state);
 }
 
-function createMessageState (
-        groupData: State.GameData,
-        playerEmail: string,
-        messageId: string,
-        name: string,
-        threadStartName: string)
-{
-        const newThreadMessage = groupData.threadData[name];
-        const numberOfChildren = newThreadMessage.children.length;
-        const newThreadStartName = newThreadMessage.threadSubject ?
-                newThreadMessage.name : threadStartName;
-
-        return MessageHelpers.createMessageState(
-                playerEmail,
-                groupData.name,
-                messageId,
-                name,
-                newThreadStartName,
-                numberOfChildren);
-}
-
 function pendingReply (
         app: State.State,
         groupData: State.GameData,
@@ -167,33 +141,24 @@ function pendingReply (
         timestampMs: number,
         promises: Promises.PromiseFactories)
 {
-        const message = state.message;
-        const player = state.player;
+        const { message, player } = state;
 
         const messageName = message.name;
         const threadMessage = groupData.threadData[messageName];
 
-        const playerEmail = player.email;
-        const parentId = message.messageId;
-        const replyState = message.reply;
-
         const timeDelayMs = getTimeDelayMs(timestampMs, app.timeFactor, message);
 
-        const threadStartName = message.threadStartName;
-
+        const replyState = message.reply;
         const replyIndex = replyState.replyIndex;
         const replyDelay = MessageHelpers.getReplyDelay(
                 replyIndex, threadMessage);
 
-        const replyData = MessageHelpers.createMessageData(
-                groupData.threadData,
+        const replyData = createMessageData(
+                groupData,
+                player,
                 replyDelay.name,
                 message.threadStartName,
-                player.email,
-                app.emailDomain,
-                groupData.profiles,
-                groupData.strings,
-                player.vars)
+                app.emailDomain);
 
         return reply(groupData, replyData, promises);
 }
@@ -219,30 +184,21 @@ function pendingFallback (
         timestampMs: number,
         promises: Promises.PromiseFactories)
 {
-        const message = state.message;
-        const player = state.player;
+        const { message, player } = state;
 
         const messageName = message.name;
         const threadMessage = groupData.threadData[messageName];
 
-        const playerEmail = player.email;
-        const parentId = message.messageId;
-        const replyState = message.reply;
-
         const timeDelayMs = getTimeDelayMs(timestampMs, app.timeFactor, message);
 
-        const threadStartName = message.threadStartName;
         const fallbackDelay = threadMessage.fallback;
 
-        const fallbackData = MessageHelpers.createMessageData(
-                groupData.threadData,
+        const fallbackData = createMessageData(
+                groupData,
+                player,
                 fallbackDelay.name,
                 message.threadStartName,
-                player.email,
-                app.emailDomain,
-                groupData.profiles,
-                groupData.strings,
-                player.vars)
+                app.emailDomain);
 
         return reply(groupData, fallbackData, promises);
 }
@@ -254,8 +210,7 @@ function expired (
 {
         const { message, player } = state;
         const email = player.email;
-        const messageName = message.name;
-        const messageData = groupData.threadData[messageName];
+        const messageData = groupData.threadData[message.name];
 
         return (state: UpdateInfo) =>
                 messageData.endGame ?
@@ -312,6 +267,45 @@ function getTimeDelayMs (
 export function isExpiredThreadDelay (
         threadDelay: Message.ThreadDelay, delayMs: number): boolean
 {
-        var requiredDelayMs = (threadDelay.delayMins * 1000 * 60);
+        const requiredDelayMs = (threadDelay.delayMins * 1000 * 60);
         return (delayMs > requiredDelayMs);
+}
+
+function createMessageState (
+        groupData: State.GameData,
+        playerEmail: string,
+        messageId: string,
+        name: string,
+        threadStartName: string)
+{
+        const newThreadMessage = groupData.threadData[name];
+        const numberOfChildren = newThreadMessage.children.length;
+        const newThreadStartName = newThreadMessage.threadSubject ?
+                newThreadMessage.name : threadStartName;
+
+        return MessageHelpers.createMessageState(
+                playerEmail,
+                groupData.name,
+                messageId,
+                name,
+                newThreadStartName,
+                numberOfChildren);
+}
+
+function createMessageData (
+        groupData: State.GameData,
+        player: Player.PlayerState,
+        messageName: string,
+        threadStartName: string,
+        emailDomain: string)
+{
+        return MessageHelpers.createMessageData(
+                groupData.threadData,
+                messageName,
+                threadStartName,
+                player.email,
+                emailDomain,
+                groupData.profiles,
+                groupData.strings,
+                player.vars)
 }
