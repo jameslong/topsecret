@@ -344,7 +344,7 @@ export function addPlayerLocal (
                 db.players[email] = playerState;
         }
 
-        setTimeout(function () { callback(error, params) },
+        setTimeout(function () { callback(error, playerState) },
                 config.debugDBTimeoutMs);
 }
 
