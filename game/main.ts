@@ -114,28 +114,35 @@ function pendingChild (
         promises: Promises.PromiseFactories)
 {
         return (state: UpdateInfo) => {
-                const from = groupData.keyManagers[data.from];
-                const to = groupData.keyManagers[state.player.email];
-
-                return promises.encrypt(from, to, data.body)
-                .then(body => {
-                        data.body = body;
-                        return promises.send(data);
-                })
-                .then(messageId => {
-                        const messageState = createMessageState(
-                                groupData,
-                                state.player.email,
-                                messageId,
-                                name,
-                                state.message.threadStartName);
-                        return promises.addMessage(messageState);
-                })
-                .then(message => {
+                return (encryptSendStoreChild(groupData, data, state, promises)
+                ).then(state => {
                         state.message.childrenSent[childIndex] = true;
                         return state;
                 })
         };
+}
+
+function encryptSendStoreChild (
+        groupData: State.GameData,
+        data: Message.MessageData,
+        state: UpdateInfo,
+        promises: Promises.PromiseFactories)
+{
+        const from = groupData.keyManagers[data.from];
+        const to = groupData.keyManagers[state.player.email];
+
+        return promises.encrypt(from, to, data.body).then(body => {
+                data.body = body;
+                return promises.send(data);
+        }).then(messageId => {
+                const messageState = createMessageState(
+                        groupData,
+                        state.player.email,
+                        messageId,
+                        name,
+                        state.message.threadStartName);
+                return promises.addMessage(messageState);
+        }).then(messageState => state);
 }
 
 function createMessageState (
@@ -203,24 +210,8 @@ function reply (
         promises: Promises.PromiseFactories)
 {
         return (state: UpdateInfo) => {
-                const from = groupData.keyManagers[data.from];
-                const to = groupData.keyManagers[state.player.email];
-
-                return promises.encrypt(from, to, data.body)
-                .then(body => {
-                        data.body = body;
-                        return promises.send(data);
-                })
-                .then(messageId => {
-                        const messageState = createMessageState(
-                                groupData,
-                                state.player.email,
-                                messageId,
-                                name,
-                                state.message.threadStartName);
-                        return promises.addMessage(messageState);
-                })
-                .then(message => {
+                return (encryptSendStoreChild(groupData, data, state, promises)
+                ).then(state => {
                         state.message.replySent = true;
                         return state;
                 })
