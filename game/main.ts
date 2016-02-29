@@ -10,13 +10,6 @@ import Promises = require('./promises');
 import Request = require('./requesttypes');
 import State = require('./state');
 
-interface UpdateInfo {
-        message: Message.MessageState;
-        player: Player.PlayerState;
-}
-
-type PromiseFactoryList = Prom.Factory<UpdateInfo, UpdateInfo>[];
-
 export function updateMessage (
         app: State.State,
         timestampMs: number,
@@ -37,8 +30,8 @@ export function updateMessage (
 
         Prom.executeSequentially(sequence, state).then(state =>
                 isExpired(state.message, messageData) ?
-                        expired(groupData, state, promises) :
-                        update(state, promises)
+                        Promises.expired(groupData, state, promises) :
+                        Promises.update(state, promises)
         ).then(state => callback(null)
         ).catch(error => callback(error));
 }
@@ -46,7 +39,7 @@ export function updateMessage (
 function pendingChildren (
         app: State.State,
         groupData: State.GameData,
-        state: UpdateInfo,
+        state: Promises.UpdateInfo,
         timestampMs: number,
         promises: Promises.PromiseFactories)
 {
@@ -72,14 +65,14 @@ function pendingChildren (
                         app.emailDomain)
         );
         return childrenData.map((data, index) =>
-                child(groupData, data, expired[index], promises)
+                Promises.child(groupData, data, expired[index], promises)
         );
 }
 
 function pendingResponse (
         app: State.State,
         groupData: State.GameData,
-        state: UpdateInfo,
+        state: Promises.UpdateInfo,
         timestampMs: number,
         promises: Promises.PromiseFactories)
 {
@@ -108,7 +101,7 @@ function pendingResponse (
 
 function pendingReply (
         groupData: State.GameData,
-        state: UpdateInfo,
+        state: Promises.UpdateInfo,
         promises: Promises.PromiseFactories,
         emailDomain: string)
 {
@@ -125,12 +118,12 @@ function pendingReply (
                 message.threadStartName,
                 emailDomain);
 
-        return reply(groupData, replyData, promises);
+        return Promises.reply(groupData, replyData, promises);
 }
 
 function pendingFallback (
         groupData: State.GameData,
-        state: UpdateInfo,
+        state: Promises.UpdateInfo,
         promises: Promises.PromiseFactories,
         emailDomain: string)
 {
@@ -146,83 +139,7 @@ function pendingFallback (
                 message.threadStartName,
                 emailDomain);
 
-        return reply(groupData, fallbackData, promises);
-}
-
-function child (
-        groupData: State.GameData,
-        data: Message.MessageData,
-        childIndex: number,
-        promises: Promises.PromiseFactories)
-{
-        return (state: UpdateInfo) => {
-                return (encryptSendStoreChild(groupData, data, state, promises)
-                ).then(state => {
-                        state.message.childrenSent[childIndex] = true;
-                        return state;
-                })
-        };
-}
-
-function reply (
-        groupData: State.GameData,
-        data: Message.MessageData,
-        promises: Promises.PromiseFactories)
-{
-        return (state: UpdateInfo) => {
-                return (encryptSendStoreChild(groupData, data, state, promises)
-                ).then(state => {
-                        state.message.replySent = true;
-                        return state;
-                })
-        };
-}
-
-function encryptSendStoreChild (
-        groupData: State.GameData,
-        data: Message.MessageData,
-        state: UpdateInfo,
-        promises: Promises.PromiseFactories)
-{
-        const from = groupData.keyManagers[data.from];
-        const to = groupData.keyManagers[state.player.email];
-
-        return promises.encrypt(from, to, data.body).then(body => {
-                data.body = body;
-                return promises.send(data);
-        }).then(messageId => {
-                const messageState = createMessageState(
-                        groupData,
-                        state.player.email,
-                        messageId,
-                        name,
-                        state.message.threadStartName);
-                return promises.addMessage(messageState);
-        }).then(messageState => state);
-}
-
-function expired (
-        groupData: State.GameData,
-        state: UpdateInfo,
-        promises: Promises.PromiseFactories)
-{
-        const { message, player } = state;
-        const email = player.email;
-        const messageData = groupData.threadData[message.name];
-
-        return (state: UpdateInfo) =>
-                messageData.endGame ?
-                        promises.deleteAllMessages({ email })
-                                .then(result =>
-                                        promises.deletePlayer({ email })) :
-                        promises.deleteMessage(state.message);
-}
-
-function update (state: UpdateInfo, promises: Promises.PromiseFactories)
-{
-        return (state: UpdateInfo) => {
-                return promises.updateMessage(state.message);
-        };
+        return Promises.reply(groupData, fallbackData, promises);
 }
 
 function hasPendingChildren (message: Message.MessageState)
@@ -298,27 +215,6 @@ function getReplyDelay (
         const replyIndex = replyState.replyIndex;
         return MessageHelpers.getReplyDelay(
                 replyIndex, threadMessage);
-}
-
-function createMessageState (
-        groupData: State.GameData,
-        playerEmail: string,
-        messageId: string,
-        name: string,
-        threadStartName: string)
-{
-        const newThreadMessage = groupData.threadData[name];
-        const numberOfChildren = newThreadMessage.children.length;
-        const newThreadStartName = newThreadMessage.threadSubject ?
-                newThreadMessage.name : threadStartName;
-
-        return MessageHelpers.createMessageState(
-                playerEmail,
-                groupData.name,
-                messageId,
-                name,
-                newThreadStartName,
-                numberOfChildren);
 }
 
 function createMessageData (
