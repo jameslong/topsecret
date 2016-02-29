@@ -33,34 +33,17 @@ export function updateMessage (
 
         const state = { message, player };
 
-        const children = hasPendingChildren(message) ?
-                pendingChildren(app, groupData, state, timestampMs, requests) :
-                [];
-        const response = hasSentReply(message) ?
-                        <PromiseFactoryList>[] :
-                        hasReply(message) ?
-                                [pendingReply(
-                                        app,
-                                        groupData,
-                                        state,
-                                        timestampMs,
-                                        requests)] :
-                                (hasFallback(messageData) ?
-                                        [pendingFallback(
-                                                app,
-                                                groupData,
-                                                state,
-                                                timestampMs,
-                                                requests)] :
-                                        <PromiseFactoryList>[]);
+        const children = pendingChildren(
+                app, groupData, state, timestampMs, requests);
+        const response = pendingResponse(
+                app, groupData, state, timestampMs, requests);
         const promiseFactories = children.concat(response);
 
         Prom.executeSequentially(promiseFactories, state).then(state =>
                 isExpired(state.message, messageData) ?
                         expired(groupData, state, requests) :
                         update(state, requests)
-        ).then(state =>
-                callback(null)
+        ).then(state => callback(null)
         ).catch(error => callback(error));
 }
 
@@ -111,6 +94,36 @@ function pendingChild (
         };
 }
 
+function pendingResponse (
+        app: State.State,
+        groupData: State.GameData,
+        state: UpdateInfo,
+        timestampMs: number,
+        promises: Promises.PromiseFactories)
+{
+        const message = state.message;
+        const messageData = groupData.threadData[message.name];
+        const delayMs = getTimeDelayMs(timestampMs, app.timeFactor, message);
+
+        if (hasReply(message) && !hasSentReply(message)) {
+                if (hasPendingReply(message, messageData, delayMs)) {
+                        return [pendingReply(
+                                groupData,
+                                state,
+                                promises,
+                                app.emailDomain)];
+                } else if (hasPendingFallback(message, messageData, delayMs)) {
+                        return [pendingFallback(
+                                groupData,
+                                state,
+                                promises,
+                                app.emailDomain)];
+                }
+        }
+
+        return [];
+}
+
 function encryptSendStoreChild (
         groupData: State.GameData,
         data: Message.MessageData,
@@ -135,18 +148,15 @@ function encryptSendStoreChild (
 }
 
 function pendingReply (
-        app: State.State,
         groupData: State.GameData,
         state: UpdateInfo,
-        timestampMs: number,
-        promises: Promises.PromiseFactories)
+        promises: Promises.PromiseFactories,
+        emailDomain: string)
 {
         const { message, player } = state;
 
         const messageName = message.name;
         const threadMessage = groupData.threadData[messageName];
-
-        const timeDelayMs = getTimeDelayMs(timestampMs, app.timeFactor, message);
 
         const replyState = message.reply;
         const replyIndex = replyState.replyIndex;
@@ -158,7 +168,7 @@ function pendingReply (
                 player,
                 replyDelay.name,
                 message.threadStartName,
-                app.emailDomain);
+                emailDomain);
 
         return reply(groupData, replyData, promises);
 }
@@ -178,27 +188,22 @@ function reply (
 }
 
 function pendingFallback (
-        app: State.State,
         groupData: State.GameData,
         state: UpdateInfo,
-        timestampMs: number,
-        promises: Promises.PromiseFactories)
+        promises: Promises.PromiseFactories,
+        emailDomain: string)
 {
         const { message, player } = state;
 
         const messageName = message.name;
         const threadMessage = groupData.threadData[messageName];
 
-        const timeDelayMs = getTimeDelayMs(timestampMs, app.timeFactor, message);
-
-        const fallbackDelay = threadMessage.fallback;
-
         const fallbackData = createMessageData(
                 groupData,
                 player,
-                fallbackDelay.name,
+                threadMessage.fallback.name,
                 message.threadStartName,
-                app.emailDomain);
+                emailDomain);
 
         return reply(groupData, fallbackData, promises);
 }
@@ -230,6 +235,27 @@ function update (state: UpdateInfo, promises: Promises.PromiseFactories)
 function hasPendingChildren (message: Message.MessageState)
 {
         return Arr.some(message.childrenSent, sent => !sent);
+}
+
+function hasPendingReply (
+        message: Message.MessageState,
+        messageData: Message.ThreadMessage,
+        delayMs: number)
+{
+        const reply = message.reply;
+        const replyIndex = reply.replyIndex;
+        const replyDelay = MessageHelpers.getReplyDelay(
+                replyIndex, messageData);
+
+        return isExpiredThreadDelay(replyDelay, delayMs);
+}
+
+function hasPendingFallback (
+        message: Message.MessageState,
+        messageData: Message.ThreadMessage,
+        delayMs: number)
+{
+        return isExpiredThreadDelay(messageData.fallback, delayMs);
 }
 
 function hasSentReply (message: Message.MessageState)
