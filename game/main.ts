@@ -24,25 +24,21 @@ export function updateMessage (
         player: Player.PlayerState,
         callback: (error: Request.Error) => void)
 {
-        const requests = Promises.createPromiseFactories(app.send, app.db);
-
-        const groupName = MessageHelpers.getMessageGroup(message);
-        const groupData = app.data[groupName];
-        const threadData = groupData.threadData;
-        const messageData = threadData[message.name];
-
+        const promises = Promises.createPromiseFactories(app.send, app.db);
+        const groupData = app.data[message.version];
+        const messageData = groupData.threadData[message.name];
         const state = { message, player };
 
         const children = pendingChildren(
-                app, groupData, state, timestampMs, requests);
+                app, groupData, state, timestampMs, promises);
         const response = pendingResponse(
-                app, groupData, state, timestampMs, requests);
-        const promiseFactories = children.concat(response);
+                app, groupData, state, timestampMs, promises);
+        const sequence = children.concat(response);
 
-        Prom.executeSequentially(promiseFactories, state).then(state =>
+        Prom.executeSequentially(sequence, state).then(state =>
                 isExpired(state.message, messageData) ?
-                        expired(groupData, state, requests) :
-                        update(state, requests)
+                        expired(groupData, state, promises) :
+                        update(state, promises)
         ).then(state => callback(null)
         ).catch(error => callback(error));
 }
@@ -59,7 +55,8 @@ function pendingChildren (
         const messageData = groupData.threadData[message.name];
         const children = messageData.children;
 
-        const timeDelayMs = getTimeDelayMs(timestampMs, app.timeFactor, message);
+        const timeDelayMs = getTimeDelayMs(
+                timestampMs, app.timeFactor, message);
 
         const indices = children.map((child, index) => index);
         const unsent = indices.filter(index => message.childrenSent[index]);
@@ -75,23 +72,8 @@ function pendingChildren (
                         app.emailDomain)
         );
         return childrenData.map((data, index) =>
-                pendingChild(groupData, data, expired[index], promises)
+                child(groupData, data, expired[index], promises)
         );
-}
-
-function pendingChild (
-        groupData: State.GameData,
-        data: Message.MessageData,
-        childIndex: number,
-        promises: Promises.PromiseFactories)
-{
-        return (state: UpdateInfo) => {
-                return (encryptSendStoreChild(groupData, data, state, promises)
-                ).then(state => {
-                        state.message.childrenSent[childIndex] = true;
-                        return state;
-                })
-        };
 }
 
 function pendingResponse (
@@ -124,29 +106,6 @@ function pendingResponse (
         return [];
 }
 
-function encryptSendStoreChild (
-        groupData: State.GameData,
-        data: Message.MessageData,
-        state: UpdateInfo,
-        promises: Promises.PromiseFactories)
-{
-        const from = groupData.keyManagers[data.from];
-        const to = groupData.keyManagers[state.player.email];
-
-        return promises.encrypt(from, to, data.body).then(body => {
-                data.body = body;
-                return promises.send(data);
-        }).then(messageId => {
-                const messageState = createMessageState(
-                        groupData,
-                        state.player.email,
-                        messageId,
-                        name,
-                        state.message.threadStartName);
-                return promises.addMessage(messageState);
-        }).then(messageState => state);
-}
-
 function pendingReply (
         groupData: State.GameData,
         state: UpdateInfo,
@@ -157,11 +116,7 @@ function pendingReply (
 
         const messageName = message.name;
         const threadMessage = groupData.threadData[messageName];
-
-        const replyState = message.reply;
-        const replyIndex = replyState.replyIndex;
-        const replyDelay = MessageHelpers.getReplyDelay(
-                replyIndex, threadMessage);
+        const replyDelay = getReplyDelay(message, threadMessage);
 
         const replyData = createMessageData(
                 groupData,
@@ -171,20 +126,6 @@ function pendingReply (
                 emailDomain);
 
         return reply(groupData, replyData, promises);
-}
-
-function reply (
-        groupData: State.GameData,
-        data: Message.MessageData,
-        promises: Promises.PromiseFactories)
-{
-        return (state: UpdateInfo) => {
-                return (encryptSendStoreChild(groupData, data, state, promises)
-                ).then(state => {
-                        state.message.replySent = true;
-                        return state;
-                })
-        };
 }
 
 function pendingFallback (
@@ -206,6 +147,58 @@ function pendingFallback (
                 emailDomain);
 
         return reply(groupData, fallbackData, promises);
+}
+
+function child (
+        groupData: State.GameData,
+        data: Message.MessageData,
+        childIndex: number,
+        promises: Promises.PromiseFactories)
+{
+        return (state: UpdateInfo) => {
+                return (encryptSendStoreChild(groupData, data, state, promises)
+                ).then(state => {
+                        state.message.childrenSent[childIndex] = true;
+                        return state;
+                })
+        };
+}
+
+function reply (
+        groupData: State.GameData,
+        data: Message.MessageData,
+        promises: Promises.PromiseFactories)
+{
+        return (state: UpdateInfo) => {
+                return (encryptSendStoreChild(groupData, data, state, promises)
+                ).then(state => {
+                        state.message.replySent = true;
+                        return state;
+                })
+        };
+}
+
+function encryptSendStoreChild (
+        groupData: State.GameData,
+        data: Message.MessageData,
+        state: UpdateInfo,
+        promises: Promises.PromiseFactories)
+{
+        const from = groupData.keyManagers[data.from];
+        const to = groupData.keyManagers[state.player.email];
+
+        return promises.encrypt(from, to, data.body).then(body => {
+                data.body = body;
+                return promises.send(data);
+        }).then(messageId => {
+                const messageState = createMessageState(
+                        groupData,
+                        state.player.email,
+                        messageId,
+                        name,
+                        state.message.threadStartName);
+                return promises.addMessage(messageState);
+        }).then(messageState => state);
 }
 
 function expired (
@@ -295,6 +288,16 @@ export function isExpiredThreadDelay (
 {
         const requiredDelayMs = (threadDelay.delayMins * 1000 * 60);
         return (delayMs > requiredDelayMs);
+}
+
+function getReplyDelay (
+        message: Message.MessageState,
+        threadMessage: Message.ThreadMessage)
+{
+        const replyState = message.reply;
+        const replyIndex = replyState.replyIndex;
+        return MessageHelpers.getReplyDelay(
+                replyIndex, threadMessage);
 }
 
 function createMessageState (
