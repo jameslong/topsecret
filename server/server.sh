@@ -1,1 +1,1 @@
-node build/main.js
+node build/server/src/app/main.js

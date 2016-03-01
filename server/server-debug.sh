@@ -1,1 +1,1 @@
-node --debug-brk build/main.js
+node --debug-brk build/server/src/app/main.js
