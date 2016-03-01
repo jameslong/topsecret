@@ -1,59 +1,39 @@
 import Config = require('../config');
 import DBTypes = require('../../../../game/dbtypes');
+import Kbpgp = require('../../../../game/kbpgp');
 import Log = require('../../../../game/log/log');
+import Message = require('../../../../game/message');
+import Prom = require('../../../../game/utils/promise');
 import Request = require('../../../../game/requesttypes');
 import DynamoDB = require('./dynamodb');
 import LocalDB = require('./localdb');
 
-export function createDBCalls (config: Config.ConfigState): DBTypes.DBCalls
+export function createPromiseFactories (
+        config: Config.ConfigState,
+        send: Prom.Factory<Message.MessageData, string>,
+        encrypt: Prom.Factory<Kbpgp.EncryptData, string>)
 {
         const mode = config.mode;
         const calls = mode === Config.AppMode.Local ?
                 LocalDB.createLocalDBCalls(config) :
                 DynamoDB.createDynamoDBCalls(config);
 
-        return addLogs(calls);
-}
-
-function addLogs(calls: DBTypes.DBCalls): DBTypes.DBCalls
-{
         return {
-                createPlayerTable: addLog(calls.createPlayerTable, 'createPlayerTable'),
-                createMessageTable: addLog(calls.createMessageTable, 'createMessageTable'),
-                deleteTable: addLog(calls.deleteTable, 'deleteTable'),
-                addPlayer: addLog(calls.addPlayer, 'addPlayer'),
-                updatePlayer: addLog(calls.updatePlayer, 'updatePlayer'),
-                removePlayer: addLog(calls.removePlayer, 'removePlayer'),
-                deleteAllMessages: addLog(calls.deleteAllMessages, 'deleteAllMessages'),
-                getMessageUID: addLog(calls.getMessageUID, 'getMessageUID'),
-                storeMessage: addLog(calls.storeMessage, 'storeMessage'),
-                updateMessage: addLog(calls.updateMessage, 'updateMessage'),
-                deleteMessage: addLog(calls.deleteMessage, 'deleteMessage'),
-                getMessage: addLog(calls.getMessage, 'getMessage'),
-                getMessages: addLog(calls.getMessages, 'getMessages'),
-                storeReply: addLog(calls.storeReply, 'storeReply'),
-                storePublicKey: addLog(calls.storePublicKey, 'storePublicKey'),
-                getPublicKey: addLog(calls.getPublicKey, 'getPublicKey'),
-                storeEmptyMessageId: addLog(calls.storeEmptyMessageId, 'storeEmptyMessageId'),
-                getEmptyMessageId: addLog(calls.getEmptyMessageId, 'getEmptyMessageId'),
-                deleteEmptyMessageId: addLog(calls.deleteEmptyMessageId, 'deleteEmptyMessageId'),
-                getPlayerState: addLog(calls.getPlayerState, 'getPlayerState'),
-                markChildSent: addLog(calls.markChildSent, 'markChildSent'),
-                markReplySent: addLog(calls.markReplySent, 'markReplySent'),
+                send,
+                encrypt,
+                createPlayerTable: calls.createPlayerTable,
+                createMessageTable: calls.createMessageTable,
+                deleteTable: calls.deleteTable,
+                addPlayer: calls.addPlayer,
+                updatePlayer: calls.updatePlayer,
+                removePlayer: calls.removePlayer,
+                deleteAllMessages: calls.deleteAllMessages,
+                storeMessage: calls.storeMessage,
+                updateMessage: calls.updateMessage,
+                deleteMessage: calls.deleteMessage,
+                getMessage: calls.getMessage,
+                getMessages: calls.getMessages,
+                getPlayerState: calls.getPlayerState,
+
         };
-
-}
-
-export function addLog<T, U> (
-        requestFn: Request.RequestFunc<T, U>, desc: string)
-        : Request.RequestFunc<T, U>
-{
-        return (params: T, callback: Request.Callback<U>) =>
-                requestFn(params, (error, data) => {
-                        error ?
-                                Log.info('awsRequestError', { desc, error }) :
-                                Log.debug(`request success: ${desc}`);
-
-                        callback(error, data);
-                });
 }

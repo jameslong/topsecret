@@ -67,22 +67,33 @@ export interface UpdateData<T> {
 
 export interface GetMessageUIDData extends UpdateData<{messageUID: number; }> {}
 
-// export interface DocClientRequestFn {
-//         <T>(params: Object, callback: Request.Callback<T>): void;
-// }
-//
-// export interface DocClient {
-//         Condition: <T>(name: string, op: string, value: T) => Object;
-//         batchWriteItem: DocClientRequestFn;
-//         createTable: DocClientRequestFn;
-//         deleteItem: DocClientRequestFn;
-//         deleteTable: DocClientRequestFn;
-//         getItem: DocClientRequestFn;
-//         scan: DocClientRequestFn;
-//         putItem: DocClientRequestFn;
-//         updateItem: DocClientRequestFn;
-//         query: DocClientRequestFn;
-// }
+function tablePromiseFactory<T, U> (
+        docClient: DOC.DynamoDB,
+        requestFn: (
+                docClient: DOC.DynamoDB,
+                params: T,
+                callback: Request.Callback<U>) => void)
+{
+        return (params: T) =>
+                new Promise((resolve, reject) =>
+                        requestFn(docClient, params, (err, result) =>
+                                err ? reject(err) : resolve(result)));
+}
+
+function promiseFactory<T, U> (
+        docClient: DOC.DynamoDB,
+        tableName: string,
+        requestFn: (
+                docClient: DOC.DynamoDB,
+                tableName: string,
+                params: T,
+                callback: Request.Callback<U>) => void)
+{
+        return (params: T) =>
+                new Promise((resolve, reject) =>
+                        requestFn(docClient, tableName, params, (err, result) =>
+                                err ? reject(err) : resolve(result)));
+}
 
 export function createDynamoDBCalls (config: Config.ConfigState): DBTypes.DBCalls
 {
@@ -92,180 +103,33 @@ export function createDynamoDBCalls (config: Config.ConfigState): DBTypes.DBCall
 
         AWS.config.loadFromPath(dynamoConfig.configFilepath);
 
-        var docClient = new DOC.DynamoDB();
+        const docClient = new DOC.DynamoDB();
 
-        var createPlayerTableLocal = function (
-                        params: Request.CreateTableParams,
-                        callback: Request.CreateTableCallback)
-                {
-                        createPlayerTable(docClient, params, callback);
-                };
-
-        var createMessageTableLocal = function (
-                        params: Request.CreateTableParams,
-                        callback: Request.CreateTableCallback)
-                {
-                        createMessageTable(docClient, params, callback);
-                };
-
-        var deleteTableLocal = function (
-                        params: Request.DeleteTableParams,
-                        callback: Request.DeleteTableCallback)
-                {
-                        deleteTable(docClient, params, callback);
-                };
-
-        var addPlayerLocal = function (
-                        params: Request.AddPlayerParams,
-                        callback: Request.AddPlayerCallback)
-                {
-                        addPlayer(
-                                docClient, playersTableName, params, callback);
-                };
-
-        var updatePlayerLocal = function (
-                        params: Request.UpdatePlayerParams,
-                        callback: Request.UpdatePlayerCallback)
-                {
-                        updatePlayer(
-                                docClient, playersTableName, params, callback);
-                };
-
-        var removePlayerLocal = function (
-                        params: Request.RemovePlayerParams,
-                        callback: Request.RemovePlayerCallback)
-                {
-                        removePlayer(
-                                docClient, playersTableName, params, callback);
-                };
-
-        var deleteAllMessagesLocal = function (
-                        params: Request.DeleteAllMessagesParams,
-                        callback: Request.DeleteAllMessagesCallback)
-                {
-                        deleteAllMessages(
-                                docClient, messagesTableName, params, callback);
-                };
-
-        var getMessageUIDLocal = function (
-                        params: Request.GetMessageUIDParams,
-                        callback: Request.GetMessageUIDCallback)
-                {
-                        getMessageUID(
-                                docClient, playersTableName, params, callback);
-                };
-
-        var storeMessageLocal = function (
-                        params: Request.StoreMessageParams,
-                        callback: Request.StoreMessageCallback)
-                {
-                        storeMessage(
-                                docClient, messagesTableName, params, callback);
-                };
-
-        var updateMessageLocal = function (
-                        params: Request.UpdateMessageParams,
-                        callback: Request.UpdateMessageCallback)
-                {
-                        updateMessage(
-                                docClient, messagesTableName, params, callback);
-                };
-
-        var deleteMessageLocal = function (
-                        params: Request.DeleteMessageParams,
-                        callback: Request.DeleteMessageCallback)
-                {
-                        deleteMessage(
-                                docClient, messagesTableName, params, callback);
-                };
-
-        var getMessageLocal = function (
-                        params: Request.GetMessageParams,
-                        callback: Request.GetMessageCallback)
-                {
-                        getMessage(
-                                docClient, messagesTableName, params, callback);
-                };
-
-        var getMessagesLocal = function (
-                        params: Request.GetMessagesParams,
-                        callback: Request.GetMessagesCallback)
-                {
-                        getMessages(
-                                docClient, messagesTableName, params, callback);
-                };
-
-        var storeReplyLocal = function (
-                        params: Request.StoreReplyParams,
-                        callback: Request.StoreReplyCallback)
-                {
-                        storeReply(
-                                docClient, messagesTableName, params, callback);
-                };
-
-        var storePublicKeyLocal = function (
-                        params: Request.StorePublicKeyParams,
-                        callback: Request.StorePublicKeyCallback)
-                {
-                        storePublicKey(
-                                docClient, playersTableName, params, callback);
-                };
-
-        var getPublicKeyLocal = function (
-                        params: Request.GetPublicKeyParams,
-                        callback: Request.GetPublicKeyCallback)
-                {
-                        getPublicKey(
-                                docClient, playersTableName, params, callback);
-                };
-
-        var storeEmptyMessageIdLocal = function (
-                        params: Request.StoreEmptyMessageIdParams,
-                        callback: Request.StoreEmptyMessageIdCallback)
-                {
-                        storeEmptyMessageId(
-                                docClient, playersTableName, params, callback);
-                };
-
-        var getEmptyMessageIdLocal = function (
-                        params: Request.GetEmptyMessageIdParams,
-                        callback: Request.GetEmptyMessageIdCallback)
-                {
-                        getEmptyMessageId(
-                                docClient, playersTableName, params, callback);
-                };
-
-        var deleteEmptyMessageIdLocal = function (
-                        params: Request.DeleteEmptyMessageIdParams,
-                        callback: Request.DeleteEmptyMessageIdCallback)
-                {
-                        deleteEmptyMessageId(
-                                docClient, playersTableName, params, callback);
-                };
-
-        var getPlayerStateLocal = function (
-                        params: Request.GetPlayerStateParams,
-                        callback: Request.GetPlayerStateCallback)
-                {
-                        getPlayerState(
-                                docClient, playersTableName, params, callback);
-                };
-
-        var markChildSentLocal = function (
-                        params: Request.MarkChildSentParams,
-                        callback: Request.MarkChildSentCallback)
-                {
-                        markChildSent(
-                                docClient, messagesTableName, params, callback);
-                };
-
-        var markReplySentLocal = function (
-                        params: Request.MarkReplySentParams,
-                        callback: Request.MarkReplySentCallback)
-                {
-                        markReplySent(
-                                docClient, messagesTableName, params, callback);
-                };
+        const createPlayerTableLocal = tablePromiseFactory(
+                docClient, createPlayerTable);
+        const createMessageTableLocal = tablePromiseFactory(
+                docClient, createMessageTable);
+        const deleteTableLocal = tablePromiseFactory(docClient, deleteTable);
+        const addPlayerLocal = promiseFactory(
+                docClient, playersTableName, addPlayer);
+        const updatePlayerLocal = promiseFactory(
+                docClient, playersTableName, updatePlayer);
+        const removePlayerLocal = promiseFactory(
+                docClient, playersTableName, removePlayer);
+        const deleteAllMessagesLocal = promiseFactory(
+                docClient, messagesTableName, deleteAllMessages);
+        const storeMessageLocal = promiseFactory(
+                docClient, messagesTableName, storeMessage);
+        const updateMessageLocal = promiseFactory(
+                docClient, messagesTableName, updateMessage);
+        const deleteMessageLocal = promiseFactory(
+                docClient, messagesTableName, deleteMessage);
+        const getMessageLocal = promiseFactory(
+                docClient, messagesTableName, getMessage);
+        const getMessagesLocal = promiseFactory(
+                docClient, messagesTableName, getMessages);
+        const getPlayerStateLocal = promiseFactory(
+                docClient, messagesTableName, getPlayerState);
 
         return {
                 createPlayerTable: createPlayerTableLocal,
@@ -275,21 +139,12 @@ export function createDynamoDBCalls (config: Config.ConfigState): DBTypes.DBCall
                 updatePlayer: updatePlayerLocal,
                 removePlayer: removePlayerLocal,
                 deleteAllMessages: deleteAllMessagesLocal,
-                getMessageUID: getMessageUIDLocal,
                 storeMessage: storeMessageLocal,
                 updateMessage: updateMessageLocal,
                 deleteMessage: deleteMessageLocal,
                 getMessage: getMessageLocal,
                 getMessages: getMessagesLocal,
-                storeReply: storeReplyLocal,
-                storePublicKey: storePublicKeyLocal,
-                getPublicKey: getPublicKeyLocal,
-                storeEmptyMessageId: storeEmptyMessageIdLocal,
-                getEmptyMessageId: getEmptyMessageIdLocal,
-                deleteEmptyMessageId: deleteEmptyMessageIdLocal,
                 getPlayerState: getPlayerStateLocal,
-                markChildSent: markChildSentLocal,
-                markReplySent: markReplySentLocal,
         };
 }
 
@@ -430,40 +285,6 @@ export function removePlayer (
         docClient.deleteItem(awsParams, callback);
 };
 
-export function getMessageUID (
-        docClient: DOC.DynamoDB,
-        playersTableName: string,
-        params: Request.GetMessageUIDParams,
-        callback: Request.GetMessageUIDCallback)
-{
-        var extractResult: Request.Callback<GetMessageUIDData> =
-                function (error, data)
-                {
-                        var messageUID =
-                                (data ? data.Attributes.messageUID : null);
-                        var formattedId = MessageHelpers.createMessageId(
-                                params.email, messageUID);
-
-                        Log.debug('New message id', formattedId);
-
-                        return callback(error, formattedId);
-                };
-
-        var awsParams: GetUIDParams = {
-                Key: {
-                        email: params.email,
-                },
-                UpdateExpression: 'set messageUID = messageUID + :inc',
-                ExpressionAttributeValues: {
-                        ":inc" : 1,
-                },
-                ReturnValues: 'UPDATED_NEW',
-                TableName: playersTableName,
-        };
-
-        docClient.updateItem(awsParams, extractResult);
-};
-
 export function storeMessage (
         docClient: DOC.DynamoDB,
         messagesTableName: string,
@@ -587,29 +408,6 @@ export function deleteMessage (
         docClient.deleteItem(awsParams, returnCallback);
 };
 
-export function storeReply (
-        docClient: DOC.DynamoDB,
-        messagesTableName: string,
-        params: Request.StoreReplyParams,
-        callback: Request.StoreReplyCallback)
-{
-        var returnMessage = extractAttributes(callback);
-
-        var awsParams: UpdateMessageParams = {
-                Key: {
-                        messageId: params.messageId,
-                },
-                UpdateExpression: 'set reply = :reply',
-                ExpressionAttributeValues: {
-                        ":reply" : params.reply,
-                },
-                ReturnValues: 'ALL_NEW',
-                TableName: messagesTableName,
-        };
-
-        docClient.updateItem(awsParams, returnMessage);
-};
-
 export function deleteAllMessages (
         docClient: DOC.DynamoDB,
         messagesTableName: string,
@@ -650,125 +448,6 @@ export function deleteAllMessages (
         seq(params, callback);
 };
 
-export function storePublicKey (
-        docClient: DOC.DynamoDB,
-        playersTableName: string,
-        params: Request.StorePublicKeyParams,
-        callback: Request.StorePublicKeyCallback)
-{
-        var awsParams: UpdatePlayerParams = {
-                Key: {
-                        email: params.email,
-                },
-                UpdateExpression: 'set publicKey = :publicKey',
-                ExpressionAttributeValues: {
-                        ":publicKey" : params.publicKey,
-                },
-                ReturnValues: 'ALL_NEW',
-                TableName: playersTableName,
-        };
-
-        docClient.updateItem(awsParams, callback);
-};
-
-export function getPublicKey (
-        docClient: DOC.DynamoDB,
-        playersTableName: string,
-        params: Request.GetPublicKeyParams,
-        callback: Request.GetPublicKeyCallback)
-{
-        var returnCallback = extractItem(callback);
-
-        var awsParams = {
-                Key: {
-                        email: params.email,
-                },
-                ProjectionExpression: 'email, publicKey',
-                TableName: playersTableName,
-        };
-
-        docClient.getItem(awsParams, returnCallback);
-};
-
-export function storeEmptyMessageId (
-        docClient: DOC.DynamoDB,
-        playersTableName: string,
-        params: Request.StoreEmptyMessageIdParams,
-        callback: Request.StoreEmptyMessageIdCallback)
-{
-        var returnCallback = extractAttributes(callback);
-
-        var awsParams: UpdatePlayerParams = {
-                Key: {
-                        email: params.email,
-                },
-                UpdateExpression: 'set emptyMessages.' + params.profileName + ' = :messageId',
-                ExpressionAttributeValues: {
-                        ":messageId" : params.messageId,
-                },
-                ReturnValues: 'ALL_NEW',
-                TableName: playersTableName,
-        };
-
-        docClient.updateItem(awsParams, returnCallback);
-};
-
-export function getEmptyMessageId (
-        docClient: DOC.DynamoDB,
-        playersTableName: string,
-        params: Request.GetEmptyMessageIdParams,
-        callback: Request.GetEmptyMessageIdCallback)
-{
-        var profileName = params.profileName;
-
-        var returnCallback = function (
-                        error: Request.Error,
-                        data: {email: string, emptyMessages: Map.Map<string>;})
-                {
-                        var result: Request.GetEmptyMessageIdResult = {
-                                email: data.email,
-                                messageId: null,
-                        };
-
-                        if (data) {
-                                result.messageId =
-                                        data.emptyMessages[profileName]
-                        }
-
-                        callback(error, result);
-                };
-
-        var awsParams = {
-                Key: {
-                        email: params.email,
-                },
-                ProjectionExpression: 'email, emptyMessages.' + profileName,
-                TableName: playersTableName,
-        };
-
-        docClient.getItem(awsParams, extractItem(returnCallback));
-};
-
-export function deleteEmptyMessageId (
-        docClient: DOC.DynamoDB,
-        playersTableName: string,
-        params: Request.DeleteEmptyMessageIdParams,
-        callback: Request.DeleteEmptyMessageIdCallback)
-{
-        var returnCallback = extractAttributes(callback);
-
-        var awsParams: UpdatePlayerParams = {
-                Key: {
-                        email: params.email,
-                },
-                UpdateExpression: 'remove emptyMessages.' + params.profileName,
-                ReturnValues: 'ALL_NEW',
-                TableName: playersTableName,
-        };
-
-        docClient.updateItem(awsParams, returnCallback);
-};
-
 export function getPlayerState (
         docClient: DOC.DynamoDB,
         playersTableName: string,
@@ -785,52 +464,6 @@ export function getPlayerState (
         };
 
         docClient.getItem(awsParams, returnCallback);
-};
-
-export function markChildSent (
-        docClient: DOC.DynamoDB,
-        messagesTableName: string,
-        params: Request.MarkChildSentParams,
-        callback: Request.MarkChildSentCallback)
-{
-        var returnCallback = extractAttributes(callback);
-
-        var awsParams: UpdateMessageParams = {
-                Key: {
-                        messageId: params.messageId,
-                },
-                UpdateExpression: 'set childrenSent[' + params.childIndex + '] = :sent',
-                ExpressionAttributeValues: {
-                        ":sent" : true,
-                },
-                ReturnValues: 'ALL_NEW',
-                TableName: messagesTableName,
-        };
-
-        docClient.updateItem(awsParams, returnCallback);
-};
-
-export function markReplySent (
-        docClient: DOC.DynamoDB,
-        messagesTableName: string,
-        params: Request.MarkReplySentParams,
-        callback: Request.MarkReplySentCallback)
-{
-        var returnCallback = extractAttributes(callback);
-
-        var awsParams: UpdateMessageParams = {
-                Key: {
-                        messageId: params.messageId,
-                },
-                UpdateExpression: 'set replySent = :sent',
-                ExpressionAttributeValues: {
-                        ":sent" : true,
-                },
-                ReturnValues: 'ALL_NEW',
-                TableName: messagesTableName,
-        };
-
-        docClient.updateItem(awsParams, returnCallback);
 };
 
 export function extractAttributes<T> (callback: Request.Callback<T>)

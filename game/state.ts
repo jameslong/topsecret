@@ -18,8 +18,5 @@ export interface State {
         timeFactor: number;
         immediateReplies: boolean;
         data: Map.Map<GameData>;
-        send: (
-                data: Message.MessageData,
-                callback: Request.Callback<string>) => void;
-        db: DBTypes.DBCalls;
+        db: DBTypes.PromiseFactories;
 }

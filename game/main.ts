@@ -1,6 +1,7 @@
 /// <reference path="global.d.ts"/>
 
 import Arr = require('./utils/array');
+import DBTypes = require('./dbtypes');
 import Fun = require('./utils/function');
 import Message = require('./message');
 import MessageHelpers = require('./messagehelpers');
@@ -17,7 +18,7 @@ export function update (
         player: Player.PlayerState,
         callback: (error: Request.Error) => void)
 {
-        const promises = Promises.createPromiseFactories(app.send, app.db);
+        const promises = app.db;
         const groupData = app.data[message.version];
         const messageData = groupData.threadData[message.name];
         const state = { message, player };
@@ -41,7 +42,7 @@ function pendingChildren (
         groupData: State.GameData,
         state: Promises.UpdateInfo,
         timestampMs: number,
-        promises: Promises.PromiseFactories)
+        promises: DBTypes.PromiseFactories)
 {
         const { message, player } = state;
 
@@ -74,7 +75,7 @@ function pendingResponse (
         groupData: State.GameData,
         state: Promises.UpdateInfo,
         timestampMs: number,
-        promises: Promises.PromiseFactories)
+        promises: DBTypes.PromiseFactories)
 {
         const message = state.message;
         const messageData = groupData.threadData[message.name];
@@ -102,7 +103,7 @@ function pendingResponse (
 function pendingReply (
         groupData: State.GameData,
         state: Promises.UpdateInfo,
-        promises: Promises.PromiseFactories,
+        promises: DBTypes.PromiseFactories,
         emailDomain: string)
 {
         const { message, player } = state;
@@ -124,7 +125,7 @@ function pendingReply (
 function pendingFallback (
         groupData: State.GameData,
         state: Promises.UpdateInfo,
-        promises: Promises.PromiseFactories,
+        promises: DBTypes.PromiseFactories,
         emailDomain: string)
 {
         const { message, player } = state;
@@ -217,7 +218,24 @@ function getReplyDelay (
                 replyIndex, threadMessage);
 }
 
-function createMessageData (
+export function createPlayerlessMessageData (
+        groupData: State.GameData,
+        email: string,
+        messageName: string,
+        threadStartName: string,
+        emailDomain: string)
+{
+        return MessageHelpers.createMessageData(
+                groupData.threadData,
+                messageName,
+                threadStartName,
+                email,
+                emailDomain,
+                groupData.profiles,
+                groupData.strings,
+                null);
+}
+export function createMessageData (
         groupData: State.GameData,
         player: Player.PlayerState,
         messageName: string,
@@ -232,5 +250,5 @@ function createMessageData (
                 emailDomain,
                 groupData.profiles,
                 groupData.strings,
-                player.vars)
+                player.vars);
 }

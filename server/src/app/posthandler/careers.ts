@@ -1,11 +1,13 @@
 import App = require('../app');
 import Demo = require('./demo');
+import Main = require('../../../../game/main');
 import Message = require('../../../../game/message');
 import PostHandler = require('./posthandler');
+import Promises = require('../../../../game/promises');
 import Reply = require('./reply');
 import Request = require('../../../../game/requesttypes');
 import Str = require('../../../../game/utils/string');
-import Updater = require('../../../../game/updater');
+import State = require('../../../../game/state');
 
 export function handleCareersEmail (
         state: App.State,
@@ -52,51 +54,29 @@ export function handleCareersEmail (
 
 export function handleResignation (
         state: App.State,
-        groupData: Updater.GameData,
+        groupData: State.GameData,
         email: string,
         callback: Request.Callback<any>)
 {
-        var resignationName = state.config.content.resignationThread;
-        var parentId: string = null;
-        var childIndex: number = null;
+        const app = state.app;
+        const promises = app.db;
+
+        const messageName = state.config.content.resignationThread;
         const threadStartName: string = null;
-
-        var pendingMessage = Updater.generatePendingMessage(
-                resignationName,
+        const data = Main.createPlayerlessMessageData(
+                groupData,
                 email,
-                parentId,
-                childIndex,
-                threadStartName);
-
-        var sendPendingMessageLocal = (
-                        pendingMessage: Message.PendingMessage,
-                        callback: Request.Callback<Message.MessageState>) =>
-                {
-                        Updater.sendPendingMessage(
-                                state.app, groupData, pendingMessage, callback);
-                };
-
-        var endDemoLocal = (
-                        messageState: Message.MessageState,
-                        callback: Request.Callback<string>) =>
-                {
-                        var db = state.app.db;
-                        Updater.endDemo(email,
-                                db.removePlayer,
-                                db.deleteAllMessages,
-                                callback);
-                };
-
-        var seq = Request.seq2(
-                sendPendingMessageLocal,
-                endDemoLocal);
-
-        seq(pendingMessage, callback);
+                messageName,
+                threadStartName,
+                app.emailDomain);
+        return Promises.resign(data, email, promises).then(result =>
+                callback(null, result)
+        ).catch(error => callback(error, null));
 }
 
 export function handleValidApplication (
         state: App.State,
-        groupData: Updater.GameData,
+        groupData: State.GameData,
         email: string,
         playerData: PlayerApplicationData,
         callback: Request.Callback<any>)
@@ -118,25 +98,22 @@ export function handleValidApplication (
 
 export function handleInvalidApplication (
         state: App.State,
-        groupData: Updater.GameData,
+        groupData: State.GameData,
         email: string,
         callback: Request.Callback<any>)
 {
-        var invalidName = state.config.content.invalidApplicationThread;
-
-        var parentId: string = null;
-        var childIndex: number = null;
-        const threadStartName: string = null;
-
-        var pendingMessage = Updater.generatePendingMessage(
-                invalidName,
+        const app = state.app;
+        const messageName = state.config.content.invalidApplicationThread;
+        const threadStartName: string = null    ;
+        const data = Main.createPlayerlessMessageData(
+                groupData,
                 email,
-                parentId,
-                childIndex,
-                threadStartName);
-
-        Updater.sendPendingMessageWithoutPlayer(
-                state.app, groupData, pendingMessage, callback);
+                messageName,
+                threadStartName,
+                app.emailDomain);
+        return app.db.send(data).then(
+                messageId => callback(null, messageId)
+        ).catch(error => callback(error, null));
 }
 
 export function isCareersEmail (to: string): boolean

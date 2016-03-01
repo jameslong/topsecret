@@ -12,7 +12,6 @@ import Reply = require('./reply');
 import Request = require('../../../../game/requesttypes');
 import Server = require('../server');
 import Tables = require('./tables');
-import Updater = require('../../../../game/updater');
 
 export function addRequestEndpoints (
         state: App.State)
@@ -196,10 +195,7 @@ export function createEndDemoCallback (state: App.State)
                         var callback = createRequestCallback(res);
                         var db = state.app.db;
 
-                        Updater.endDemo(data.email,
-                                db.removePlayer,
-                                db.deleteAllMessages,
-                                callback);
+                        Demo.endDemo(state, data.email, callback);
                 };
 }
 

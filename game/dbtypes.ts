@@ -1,34 +1,29 @@
+import Kbpgp = require('./kbpgp');
+import Message = require('./message');
 import Request = require('./requesttypes');
+import Player = require('./player');
+import Prom = require('./utils/promise');
+
+export interface PromiseFactories extends DBCalls {
+        encrypt: Prom.Factory<Kbpgp.EncryptData, string>;
+        send: Prom.Factory<Message.MessageData, string>;
+}
 
 export interface DBCalls {
-        createPlayerTable: Request.CreateTableRequest;
-        createMessageTable: Request.CreateTableRequest;
-        deleteTable: Request.DeleteTableRequest;
+        createPlayerTable: Prom.Factory<Request.CreateTableParams, {}>;
+        createMessageTable: Prom.Factory<Request.CreateTableParams, {}>;
+        deleteTable: Prom.Factory<Request.DeleteTableParams, {}>;
 
-        addPlayer: Request.AddPlayerRequest;
-        updatePlayer: Request.UpdatePlayerRequest;
-        removePlayer: Request.RemovePlayerRequest;
-        deleteAllMessages: Request.DeleteAllMessagesRequest;
-        storeMessage: Request.StoreMessageRequest;
-        updateMessage: Request.UpdateMessageRequest;
-        deleteMessage: Request.DeleteMessageRequest;
+        addPlayer: Prom.Factory<Request.AddPlayerParams, {}>;
+        updatePlayer: Prom.Factory<Request.UpdatePlayerParams, {}>;
+        removePlayer: Prom.Factory<Request.RemovePlayerParams, Request.RemovePlayerParams>;
+        deleteAllMessages: Prom.Factory<Request.DeleteAllMessagesParams, {}>;
+        storeMessage: Prom.Factory<Request.StoreMessageParams, Message.MessageState>;
+        updateMessage: Prom.Factory<Request.UpdateMessageParams, Message.MessageState>;
+        deleteMessage: Prom.Factory<Request.DeleteMessageParams, Message.MessageState>;
 
-        getMessageUID: (params: Request.GetMessageUIDParams,
-                callback: Request.GetMessageUIDCallback)=>void;
-        getMessage: (params: Request.GetMessageParams,
-                callback: Request.GetMessageCallback)=>void;
-        getMessages: (params: Request.GetMessagesParams,
-                callback: Request.GetMessagesCallback)=>void;
-        storeReply: (params: Request.StoreReplyParams,
-                callback: Request.StoreReplyCallback)=>void;
-        storePublicKey: Request.StorePublicKeyRequest;
-        getPublicKey: Request.GetPublicKeyRequest;
-        storeEmptyMessageId: Request.StoreEmptyMessageIdRequest;
-        getEmptyMessageId: Request.GetEmptyMessageIdRequest;
-        deleteEmptyMessageId: Request.DeleteEmptyMessageIdRequest;
-        getPlayerState: Request.GetPlayerStateRequest;
-        markChildSent: (params: Request.MarkChildSentParams,
-                callback: Request.MarkChildSentCallback)=>void;
-        markReplySent: (params: Request.MarkReplySentParams,
-                callback: Request.MarkReplySentCallback)=>void;
+        getMessage: Prom.Factory<Request.GetMessageParams, Message.MessageState>;
+        getMessages: Prom.Factory<Request.GetMessagesParams, Request.GetMessagesResult>;
+
+        getPlayerState: Prom.Factory<Request.GetPlayerStateParams, Player.PlayerState>;
 }

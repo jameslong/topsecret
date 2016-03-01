@@ -56,42 +56,39 @@ export function createGameState (
         server: Server.ServerState,
         callback: Request.Callback<State.State>)
 {
-        var db = DBSetup.createDBCalls(config);
-        var sendFn = Sender.createSendFn(
+        Data.loadAllGameData(config, (err, gameData) =>
+                onGameData(config, server, err, gameData, callback));
+}
+
+export function onGameData (
+        config: Config.ConfigState,
+        server: Server.ServerState,
+        err: Request.Error,
+        gameData: State.GameData[],
+        callback: Request.Callback<State.State>)
+{
+        const encrypt = KBPGP.signEncrypt;
+        const send = Sender.createSendFn(
                 server.io,
                 config.useEmail,
                 config.emailAPIKey,
                 config.emailDomain);
+        const db = DBSetup.createPromiseFactories(config, send, encrypt);
 
-        var gameDataCallback = createGameDataCallback(
-                config, sendFn, db, callback);
-        Data.loadAllGameData(config, gameDataCallback);
-}
+        const gameState: State.State = {
+                emailDomain: config.emailDomain,
+                timeFactor: config.timeFactor,
+                immediateReplies: config.immediateReplies,
+                data: null,
+                db,
+        };
 
-export function createGameDataCallback (
-        config: Config.ConfigState,
-        send: Sender.SendFn,
-        db: DBTypes.DBCalls,
-        callback: Request.Callback<State.State>)
-{
-        return (error: Request.Error, gameData: State.GameData[]) =>
-                {
-                        var gameState: State.State = {
-                                emailDomain: config.emailDomain,
-                                timeFactor: config.timeFactor,
-                                immediateReplies: config.immediateReplies,
-                                data: null,
-                                send,
-                                db,
-                        };
+        if (gameData) {
+                var mappedGameData = Map.mapFromArray(gameData);
+                gameState.data = mappedGameData;
+        }
 
-                        if (gameData) {
-                                var mappedGameData = Map.mapFromArray(gameData);
-                                gameState.data = mappedGameData;
-                        }
-
-                        callback(error, gameState);
-                };
+        callback(err, gameState);
 }
 
 export function updateGameState (

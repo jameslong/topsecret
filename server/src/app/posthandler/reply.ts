@@ -205,7 +205,7 @@ export function handleTimelyReply (
                         handleDecryptedReplyMessage(
                                 state,
                                 groupData,
-                                reply.from,
+                                playerState,
                                 plaintext,
                                 reply.timestampMs,
                                 messageState,
@@ -227,7 +227,7 @@ export function handleTimelyReply (
 export function handleDecryptedReplyMessage (
         state: App.State,
         groupData: State.GameData,
-        playerEmail: string,
+        player: Player.PlayerState,
         body: string,
         timestampMs: number,
         messageState: Message.MessageState,
@@ -240,7 +240,7 @@ export function handleDecryptedReplyMessage (
         handleSelectedReply(
                 state,
                 threadMessage,
-                playerEmail,
+                player,
                 body,
                 timestampMs,
                 messageState,
@@ -251,7 +251,7 @@ export function handleDecryptedReplyMessage (
 export function handleSelectedReply (
         state: App.State,
         threadMessage: Message.ThreadMessage,
-        playerEmail: string,
+        player: Player.PlayerState,
         body: string,
         timestampMs: number,
         messageState: Message.MessageState,
@@ -266,10 +266,10 @@ export function handleSelectedReply (
                 const validOption = <ReplyOption.ReplyOptionValidPGPKey>selectedOption;
                 handleReplyOptionValidPGPKey(
                         state,
-                        playerEmail,
+                        player,
+                        messageState,
                         body,
                         timestampMs,
-                        messageId,
                         replyIndex,
                         callback);
                 break;
@@ -277,8 +277,8 @@ export function handleSelectedReply (
         default:
                 handleReplyOptionDefault(
                         state,
+                        messageState,
                         timestampMs,
-                        messageId,
                         replyIndex,
                         callback);
                 break;
@@ -287,55 +287,40 @@ export function handleSelectedReply (
 
 export function handleReplyOptionDefault (
         state: App.State,
+        message: Message.MessageState,
         timestampMs: number,
-        messageId: string,
         replyIndex: number,
         callback: Request.Callback<Message.MessageState>)
 {
-        var storeReplyFn = state.app.db.storeReply;
-        DBHelpers.storeReply(
-                storeReplyFn, messageId, replyIndex, timestampMs, callback);
+        const promises = state.app.db;
+
+        message.reply.replyIndex = replyIndex;
+        message.reply.timestampMs = timestampMs;
+
+        promises.storeMessage(message).then(message =>
+                callback(null, message)
+        ).catch(error => callback(error, null));
 }
 
 export function handleReplyOptionValidPGPKey(
         state: App.State,
-        playerEmail: string,
+        player: Player.PlayerState,
+        message: Message.MessageState,
         body: string,
         timestampMs: number,
-        messageId: string,
         replyIndex: number,
         callback: Request.Callback<Message.MessageState>)
 {
-        var publicKey = ReplyOption.extractPublicKey(body);
+        const promises = state.app.db;
 
-        var storePublicKeyLocal = function (
-                data: any,
-                callback: Request.Callback<any>)
-                {
-                        var storePublicKeyFn = state.app.db.storePublicKey;
-                        DBHelpers.storePublicKey(
-                                storePublicKeyFn,
-                                playerEmail,
-                                publicKey,
-                                callback);
-                };
+        const publicKey = ReplyOption.extractPublicKey(body);
+        player.publicKey = publicKey;
 
-        var storeReplyLocal = function (
-                data: any,
-                callback: Request.Callback<Message.MessageState>)
-                {
-                        var storeReplyFn = state.app.db.storeReply;
-                        DBHelpers.storeReply(
-                                storeReplyFn,
-                                messageId,
-                                replyIndex,
-                                timestampMs,
-                                callback);
-                };
+        promises.updatePlayer(player).then(player => {
+                message.reply.replyIndex = replyIndex;
+                message.reply.timestampMs = timestampMs;
 
-        var seq = Request.seq2(
-                storePublicKeyLocal,
-                storeReplyLocal);
-
-        seq(null, callback);
+                return promises.updateMessage(message)
+        }).then(message => callback(null, message)
+        ).catch(error => callback(error, null));
 }

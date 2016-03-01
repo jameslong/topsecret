@@ -71,14 +71,6 @@ export interface DeleteAllMessagesRequest {
         (params: DeleteAllMessagesParams, callback: DeleteAllMessagesCallback): void;
 }
 
-export interface GetMessageUIDParams {
-        email: string;
-}
-export interface GetMessageUIDCallback extends MessageUIDCallback {}
-export interface GetMessageUIDRequest {
-        (params: GetMessageUIDParams, callback: GetMessageUIDCallback): void;
-}
-
 export type StoreMessageParams = Message.MessageState;
 export interface StoreMessageCallback extends MessageStateCallback {}
 export interface StoreMessageRequest {
@@ -118,97 +110,12 @@ export interface GetMessagesRequest {
         (params: GetMessagesParams, callback: GetMessagesCallback): void;
 }
 
-export interface StoreReplyParams {
-        messageId: string;
-        reply: Message.ReplyState;
-}
-export interface StoreReplyCallback extends MessageStateCallback {}
-export interface StoreReplyRequest {
-        (params: StoreReplyParams, callback: StoreReplyCallback): void;
-}
-
-export interface StorePublicKeyParams {
-        email: string;
-        publicKey: string;
-}
-export interface StorePublicKeyCallback extends Callback<any> {}
-export interface StorePublicKeyRequest {
-        (params: StorePublicKeyParams, callback: StorePublicKeyCallback): void;
-}
-
-export interface StoreEmptyMessageIdParams {
-        email: string;
-        messageId: string;
-        profileName: string;
-}
-export interface StoreEmptyMessageIdCallback extends Callback<Player.PlayerState> {}
-export interface StoreEmptyMessageIdRequest {
-        (params: StoreEmptyMessageIdParams, callback: StoreEmptyMessageIdCallback): void;
-}
-
-export interface GetEmptyMessageIdParams {
-        email: string;
-        profileName: string;
-}
-export interface GetEmptyMessageIdResult {
-        email: string;
-        messageId: string;
-}
-export interface GetEmptyMessageIdCallback extends Callback<GetEmptyMessageIdResult> {}
-export interface GetEmptyMessageIdRequest {
-        (params: GetEmptyMessageIdParams, callback: GetEmptyMessageIdCallback): void;
-}
-
-export interface DeleteEmptyMessageIdParams {
-        email: string;
-        profileName: string;
-}
-export interface DeleteEmptyMessageIdCallback extends Callback<Player.PlayerState> {}
-export interface DeleteEmptyMessageIdRequest {
-        (params: DeleteEmptyMessageIdParams, callback: DeleteEmptyMessageIdCallback): void;
-}
-
-export interface SetSentTimestampParams {
-        messageId: string;
-        timestampMs: number;
-}
-export interface SetSentTimestampCallback extends MessageStateCallback {}
-
-export interface GetPublicKeyParams {
-        email: string;
-}
-export interface PublicKeyData {
-        email: string;
-        publicKey: string;
-}
-export interface GetPublicKeyCallback extends Callback<PublicKeyData> {}
-export interface GetPublicKeyRequest {
-        (params: GetPublicKeyParams, callback: GetPublicKeyCallback): void;
-}
-
 export interface GetPlayerStateParams {
         email: string;
 }
 export interface GetPlayerStateCallback extends Callback<Player.PlayerState> {}
 export interface GetPlayerStateRequest {
         (params: GetPlayerStateParams, callback: GetPlayerStateCallback): void;
-}
-
-export interface MarkChildSentParams {
-        messageId: string;
-        childIndex: number;
-}
-export interface MarkChildSentCallback extends Callback<Message.MessageState> {}
-export interface MarkChildSentRequest {
-        (params: MarkChildSentParams, callback: MarkChildSentCallback): void;
-}
-
-export interface MarkReplySentParams {
-        messageId: string;
-}
-export interface MarkReplySentCallback extends Callback<Message.MessageState> {}
-export interface MarkReplySentRequest {
-        (params: MarkReplySentParams, callback: MarkReplySentCallback): void;
 }
 
 export type SendRequest = (
