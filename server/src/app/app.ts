@@ -6,19 +6,20 @@ import DBSetup = require('./db/dbsetup');
 import DBTypes = require('./../../../game/dbtypes');
 import KBPGP = require('./../../../game/kbpgp');
 import Log = require('./../../../game/log/log');
+import Main = require('./../../../game/main');
 import Map = require('./../../../game/utils/map');
 import Message = require('./../../../game/message');
 import PostHandler = require('./posthandler/posthandler');
 import Request = require('./../../../game/requesttypes');
 import Sender = require('./sender');
 import Server = require('./server');
-import Updater = require('./../../../game/updater');
+import State = require('./../../../game/state');
 
 export interface State {
         config: Config.ConfigState;
         server: Server.ServerState;
         update: UpdateState;
-        app: Updater.State;
+        app: State.State;
 }
 
 export function createState (
@@ -32,7 +33,7 @@ export function createState (
         );
 }
 
-export function getGroupData (app: Updater.State, groupName: string)
+export function getGroupData (app: State.State, groupName: string)
 {
         return app.data[groupName];
 }
@@ -53,7 +54,7 @@ function createUpdateState (): UpdateState
 export function createGameState (
         config: Config.ConfigState,
         server: Server.ServerState,
-        callback: Request.Callback<Updater.State>)
+        callback: Request.Callback<State.State>)
 {
         var db = DBSetup.createDBCalls(config);
         var sendFn = Sender.createSendFn(
@@ -71,11 +72,11 @@ export function createGameDataCallback (
         config: Config.ConfigState,
         send: Sender.SendFn,
         db: DBTypes.DBCalls,
-        callback: Request.Callback<Updater.State>)
+        callback: Request.Callback<State.State>)
 {
-        return (error: Request.Error, gameData: Updater.GameData[]) =>
+        return (error: Request.Error, gameData: State.GameData[]) =>
                 {
-                        var gameState: Updater.State = {
+                        var gameState: State.State = {
                                 emailDomain: config.emailDomain,
                                 timeFactor: config.timeFactor,
                                 immediateReplies: config.immediateReplies,
@@ -94,12 +95,12 @@ export function createGameDataCallback (
 }
 
 export function updateGameState (
-        state: State, callback: Request.Callback<Updater.State>)
+        state: State, callback: Request.Callback<State.State>)
 {
-        var onGameState = (error: Request.Error, gameState: Updater.State) =>
+        var onGameState = (error: Request.Error, gameState: State.State) =>
                 {
                         if (!error) {
-                                Log.debug('Updater.State updated');
+                                Log.debug('State.State updated');
                                 state.app = gameState;
                         }
                         callback(error, gameState);
@@ -196,7 +197,18 @@ export function onGetMessages (state: State, data: Request.GetMessagesResult)
                 onUpdateEnd(state);
 
         if (message) {
-                Updater.update(gameState, timestampMs, message, onUpdateEndLocal);
+                DBHelpers.getPlayerState(
+                        gameState.db.getPlayerState,
+                        message.email,
+                        (err, player) => err ?
+                                onUpdateEndLocal(err) :
+                                Main.update(
+                                        gameState,
+                                        timestampMs,
+                                        message,
+                                        player,
+                                        onUpdateEndLocal)
+                );
         } else {
                 onUpdateEndLocal(null);
         }

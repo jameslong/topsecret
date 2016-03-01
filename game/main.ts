@@ -10,7 +10,7 @@ import Promises = require('./promises');
 import Request = require('./requesttypes');
 import State = require('./state');
 
-export function updateMessage (
+export function update (
         app: State.State,
         timestampMs: number,
         message: Message.MessageState,

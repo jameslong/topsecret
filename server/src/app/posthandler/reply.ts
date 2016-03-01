@@ -10,7 +10,7 @@ import PostHandler = require('./posthandler');
 import Profile = require('../../../../game/profile');
 import ReplyOption = require('../../../../game/replyoption');
 import Request = require('../../../../game/requesttypes');
-import Updater = require('../../../../game/updater');
+import State = require('../../../../game/state');
 
 export function handleReplyRequest (
         state: App.State,
@@ -226,7 +226,7 @@ export function handleTimelyReply (
 
 export function handleDecryptedReplyMessage (
         state: App.State,
-        groupData: Updater.GameData,
+        groupData: State.GameData,
         playerEmail: string,
         body: string,
         timestampMs: number,
