@@ -5,6 +5,7 @@ import DBHelpers = require('./../../../core/src/app/dbhelpers');
 import DBSetup = require('./db/dbsetup');
 import DBTypes = require('./../../../core/src/app/dbtypes');
 import KBPGP = require('./../../../core/src/app/kbpgp');
+import Helpers = require('./../../../core/src/app/utils/helpers');
 import Log = require('./../../../core/src/app/log/log');
 import Main = require('./../../../core/src/app/main');
 import Map = require('./../../../core/src/app/utils/map');
@@ -84,7 +85,7 @@ export function onGameData (
         };
 
         if (gameData) {
-                var mappedGameData = Map.mapFromArray(gameData);
+                var mappedGameData = Helpers.mapFromNameArray(gameData);
                 gameState.data = mappedGameData;
         }
 

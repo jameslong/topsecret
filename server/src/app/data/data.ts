@@ -2,6 +2,7 @@ import Arr = require('../../../../core/src/app/utils/array');
 import Config = require('../config');
 import DataValidation = require('./datavalidation');
 import FileSystem = require('./filesystem');
+import Helpers = require('../../../../core/src/app/utils/helpers');
 import Kbpgp = require('../../../../core/src/app/kbpgp');
 import Log = require('../../../../core/src/app/log/log');
 import Map = require('../../../../core/src/app/utils/map');
@@ -115,7 +116,7 @@ export function loadNarratives (path: string): Map.Map<NarrativeData>
         const narratives = narrativeNames.map(
                 name => loadNarrative(path, name));
 
-        return Map.mapFromArray(narratives);
+        return Helpers.mapFromNameArray(narratives);
 }
 
 export function loadNarrative (stem: string, name: string): NarrativeData
@@ -131,8 +132,8 @@ export function loadNarrative (stem: string, name: string): NarrativeData
 
         return {
                 name: name,
-                profiles: Map.mapFromArray(profiles),
-                messages: Map.mapFromArray(messages),
+                profiles: Helpers.mapFromNameArray(profiles),
+                messages: Helpers.mapFromNameArray(messages),
                 strings: strings,
         };
 }

@@ -1,18 +1,37 @@
-import Map = require('./map');
+import MathUtil = require('./math');
 
-interface Predicate<T> {
-    (list: T): boolean;
+export interface Iteratee<T, U> {
+        (value: T, index: number, array: T[]): U;
 }
 
-export function createArray<T> (length: number, defaultValue: T): T[]
-{
-        var result: T[] = [];
+export interface Predicate<T> {
+        (value: T, index: number, array: T[]): boolean;
+}
 
-        for (var index = 0; index < length; index += 1) {
+export function createArray<T> (length: number, defaultValue: T)
+{
+        const result: T[] = [];
+        for (let index = 0; index < length; index += 1) {
                 result.push(defaultValue);
         }
-
         return result;
+}
+
+export function every<T> (list: T[], predicate: Predicate<T>)
+{
+        return (list.filter(predicate)).length === list.length;
+}
+
+export function find<T>(array: T[], predicate: Predicate<T>)
+{
+        const length = array.length;
+        for (let i = 0; i < length; i += 1) {
+                if (predicate(array[i], i, array)) {
+                        return i;
+                }
+        }
+
+        return -1;
 }
 
 export function flatten<T> (list: T[][]): T[]
@@ -20,41 +39,16 @@ export function flatten<T> (list: T[][]): T[]
         return [].concat.apply([], list);
 }
 
-export function find<T> (list: T[], predicate: Predicate<T>): number
+export function nextValue<T>(array: T[], value: T)
 {
-        var length = list.length;
-
-        for (var index = 0; index < length; index += 1) {
-                if (predicate(list[index])) {
-                        return index;
-                }
+        const index = array.indexOf(value);
+        if (index !== -1) {
+                const nextIndex = MathUtil.inRange(
+                        0, array.length - 1, index + 1);
+                return array[nextIndex];
+        } else {
+                return null;
         }
-
-    return -1;
-}
-
-export function arrayValueOf<T> (list: T[], predicate: Predicate<T>): T
-{
-        var length = list.length;
-
-        for (var index = 0; index < length; index += 1) {
-                var value = list[index];
-                if (predicate(value)) {
-                        return value;
-                }
-        }
-
-        return null;
-}
-
-export function arrayEvery<T> (list: T[], predicate: Predicate<T>): boolean
-{
-        return ((list.filter(predicate)).length === list.length);
-}
-
-export function some<T> (list: T[], predicate: Predicate<T>): boolean
-{
-        return (find(list, predicate) !== -1);
 }
 
 export function partition<T> (list: T[], predicate: Predicate<T>): T[][]
@@ -62,45 +56,46 @@ export function partition<T> (list: T[], predicate: Predicate<T>): T[][]
         var pass: T[] = [];
         var fail: T[] = [];
 
-        list.forEach(function (value, index)
+        list.forEach(function (value, index, list)
         {
-                (predicate(value) ? pass : fail).push(value);
+                (predicate(value, index, list) ? pass : fail).push(value);
         });
 
         return [pass, fail];
 }
 
-export function mapTruthy<T, U> (
-        list: T[], iteratee: (value: T, index: number) => U): U[]
+export function previousValue<T>(array: T[], value: T)
 {
-        return list.reduce((result, value, index) => {
-                        var mapped = iteratee(value, index);
-                        if (mapped) {
-                                result.push(mapped);
-                        }
-                        return result;
-                }, []);
+        const index = array.indexOf(value);
+        if (index !== -1) {
+                const nextIndex = MathUtil.inRange(
+                        0, array.length - 1, index - 1);
+                return array[nextIndex];
+        } else {
+                return null;
+        }
 }
 
-export function mapFlatten<T, U> (
-        list: T[], iteratee: (value: T, index: number) => U[]): U[]
+export function some<T> (list: T[], predicate: Predicate<T>)
 {
-        var nested = list.map(iteratee);
-        return flatten(nested);
+        return find(list, predicate) !== -1;
 }
 
-export function arrayToMap<T, U> (
-        keys: string[],
-        values: T[],
-        iteratee: (value: T, index: number) => U)
-        : Map.Map<U>
+export function valueOf<T> (list: T[], predicate: Predicate<T>): T
 {
-        let result: Map.Map<U> = {};
+        var length = list.length;
 
-        return values.reduce((result, value, index) => {
-                const key = keys[index];
-                const mappedValue = iteratee(value, index);
-                result[key] = mappedValue;
-                return result;
-        }, result);
+        for (var index = 0; index < length; index += 1) {
+                var value = list[index];
+                if (predicate(value, index, list)) {
+                        return value;
+                }
+        }
+
+        return null;
+}
+
+export function zip<T, U>(left: T[], right: U[])
+{
+        return left.map((value, index) => <[T, U]>[value, right[index]]);
 }

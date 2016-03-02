@@ -1,6 +1,7 @@
 import Arr = require('../../../../core/src/app/utils/array');
 import Config = require('../config');
 import DBTypes = require('../../../../core/src/app/dbtypes');
+import Helpers = require('../../../../core/src/app/utils/helpers');
 import Map = require('../../../../core/src/app/utils/map');
 import Message = require('../../../../core/src/app/message');
 import MessageHelpers = require('../../../../core/src/app/messagehelpers');
@@ -361,7 +362,8 @@ export function getMessagesLocal (
 {
         var error: Request.Error = undefined;
 
-        var messageStates = Map.arrayFromMap(db.messages);
+        var messageStates = <Message.MessageState[]>Helpers.arrayFromMap(
+                db.messages);
         var length = messageStates.length;
 
         var startKey = params.startKey;

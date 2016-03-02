@@ -97,8 +97,8 @@ export function getSelectedReply (
 {
         var replyBodyLower = reply.toLowerCase();
 
-        var selectedOption = Arr.arrayValueOf(options, (option) => {
-                        return Arr.arrayEvery(option.matches, (match) =>
+        var selectedOption = Arr.valueOf(options, (option) => {
+                        return Arr.every(option.matches, (match) =>
                                 Str.containsWord(replyBodyLower, match))
                 });
 
