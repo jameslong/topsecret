@@ -1,14 +1,14 @@
-import Arr = require('../../../../game/src/app/utils/array');
+import Arr = require('../../../../core/src/app/utils/array');
 import Config = require('../config');
 import DataValidation = require('./datavalidation');
 import FileSystem = require('./filesystem');
-import Kbpgp = require('../../../../game/src/app/kbpgp');
-import Log = require('../../../../game/src/app/log/log');
-import Map = require('../../../../game/src/app/utils/map');
-import Message = require('../../../../game/src/app/message');
-import Profile = require('../../../../game/src/app/profile');
-import Request = require('../../../../game/src/app/requesttypes');
-import State = require('../../../../game/src/app/state');
+import Kbpgp = require('../../../../core/src/app/kbpgp');
+import Log = require('../../../../core/src/app/log/log');
+import Map = require('../../../../core/src/app/utils/map');
+import Message = require('../../../../core/src/app/message');
+import Profile = require('../../../../core/src/app/profile');
+import Request = require('../../../../core/src/app/requesttypes');
+import State = require('../../../../core/src/app/state');
 
 export interface Path {
         basename: (path: string, ext?: string) => string;

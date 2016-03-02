@@ -1,10 +1,10 @@
 import Config = require('../config');
-import DBTypes = require('../../../../game/src/app/dbtypes');
-import Kbpgp = require('../../../../game/src/app/kbpgp');
-import Log = require('../../../../game/src/app/log/log');
-import Message = require('../../../../game/src/app/message');
-import Prom = require('../../../../game/src/app/utils/promise');
-import Request = require('../../../../game/src/app/requesttypes');
+import DBTypes = require('../../../../core/src/app/dbtypes');
+import Kbpgp = require('../../../../core/src/app/kbpgp');
+import Log = require('../../../../core/src/app/log/log');
+import Message = require('../../../../core/src/app/message');
+import Prom = require('../../../../core/src/app/utils/promise');
+import Request = require('../../../../core/src/app/requesttypes');
 import DynamoDB = require('./dynamodb');
 import LocalDB = require('./localdb');
 

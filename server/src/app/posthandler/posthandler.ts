@@ -4,12 +4,12 @@ import Data = require('../data/data');
 import DataValidation = require('../data/datavalidation');
 import Demo = require('./demo');
 import FileSystem = require('../data/filesystem');
-import Log = require('../../../../game/src/app/log/log');
-import Message = require('../../../../game/src/app/message');
-import Player = require('../../../../game/src/app/player');
+import Log = require('../../../../core/src/app/log/log');
+import Message = require('../../../../core/src/app/message');
+import Player = require('../../../../core/src/app/player');
 import Players = require('./players');
 import Reply = require('./reply');
-import Request = require('../../../../game/src/app/requesttypes');
+import Request = require('../../../../core/src/app/requesttypes');
 import Server = require('../server');
 import Tables = require('./tables');
 

@@ -1,12 +1,12 @@
 import App = require('../app');
 import Careers = require('./careers');
-import DBHelpers = require('../../../../game/src/app/dbhelpers');
-import Log = require('../../../../game/src/app/log/log');
-import Main = require('../../../../game/src/app/main');
-import Player = require('../../../../game/src/app/player');
-import Promises = require('../../../../game/src/app/promises');
-import Request = require('../../../../game/src/app/requesttypes');
-import State = require('../../../../game/src/app/state');
+import DBHelpers = require('../../../../core/src/app/dbhelpers');
+import Log = require('../../../../core/src/app/log/log');
+import Main = require('../../../../core/src/app/main');
+import Player = require('../../../../core/src/app/player');
+import Promises = require('../../../../core/src/app/promises');
+import Request = require('../../../../core/src/app/requesttypes');
+import State = require('../../../../core/src/app/state');
 
 export function beginDemo (
         state: App.State,
