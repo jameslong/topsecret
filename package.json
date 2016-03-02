@@ -1,0 +1,41 @@
+{
+  "name": "topsecret",
+  "version": "0.0.1",
+  "description": "A game about the Snowden leaks",
+  "main": "client/index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jameslong/topsecret.git"
+  },
+  "keywords": [
+    "topsecret",
+    "snowden"
+  ],
+  "author": "James Long",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/jameslong/topsecret/issues"
+  },
+  "homepage": "https://github.com/jameslong/topsecret#readme",
+  "dependencies": {
+    "aws-sdk": "^2.2.40",
+    "body-parser": "^1.15.0",
+    "dynamodb-doc": "^1.0.0",
+    "express": "^4.13.4",
+    "immutable": "^3.7.6",
+    "is-my-json-valid": "^2.13.1",
+    "jquery": "^2.2.1",
+    "kbpgp": "^2.0.52",
+    "mailgun-js": "^0.7.7",
+    "mkdirp": "^0.5.1",
+    "multer": "^0.1.8",
+    "node-inspector": "^0.12.7",
+    "react": "^0.14.7",
+    "react-dom": "^0.14.7",
+    "socket.io": "^1.4.5",
+    "winston": "^2.2.0"
+  }
+}

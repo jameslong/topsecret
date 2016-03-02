@@ -1,9 +1,9 @@
 /// <reference path="../../../../typings/node/node.d.ts"/>
 
-import Arr = require('../../../../game/utils/array');
+import Arr = require('../../../../core/src/app/utils/array');
 import Data = require('./data');
-import Map = require('../../../../game/utils/map');
-import Str = require('../../../../game/utils/string');
+import Map = require('../../../../core/src/app/utils/map');
+import Str = require('../../../../core/src/app/utils/string');
 
 import fs = require('fs');
 

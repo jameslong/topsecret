@@ -1,11 +1,11 @@
-import Arr = require('../../../../game/utils/array');
+import Arr = require('../../../../core/src/app/utils/array');
 import Config = require('../config');
-import DBTypes = require('../../../../game/dbtypes');
-import Map = require('../../../../game/utils/map');
-import Message = require('../../../../game/message');
-import MessageHelpers = require('../../../../game/messagehelpers');
-import Player = require('../../../../game/player');
-import Request = require('../../../../game/requesttypes');
+import DBTypes = require('../../../../core/src/app/dbtypes');
+import Map = require('../../../../core/src/app/utils/map');
+import Message = require('../../../../core/src/app/message');
+import MessageHelpers = require('../../../../core/src/app/messagehelpers');
+import Player = require('../../../../core/src/app/player');
+import Request = require('../../../../core/src/app/requesttypes');
 
 /*
 
