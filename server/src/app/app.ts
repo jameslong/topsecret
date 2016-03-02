@@ -57,8 +57,9 @@ export function createGameState (
         server: Server.ServerState,
         callback: Request.Callback<State.State>)
 {
-        Data.loadAllGameData(config, (err, gameData) =>
-                onGameData(config, server, err, gameData, callback));
+        Data.loadAllGameData(config).then(gameData =>
+                onGameData(config, server, null, gameData, callback)
+        ).catch(err => onGameData(config, server, err, null, callback));
 }
 
 export function onGameData (

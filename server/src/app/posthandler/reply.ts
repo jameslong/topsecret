@@ -218,7 +218,11 @@ export function handleTimelyReply (
                 var profile = Profile.getProfileByEmail(reply.to, profiles);
                 var keyManager = groupData.keyManagers[profile.name];
 
-                KBPGP.decryptMessage(keyManager, reply.body, onDecrypt);
+                KBPGP.decryptVerify(keyManager, reply.body).then(plaintext =>
+                        onDecrypt(null, plaintext)
+                ).catch(err => {
+                        onDecrypt(err, null);
+                });
         } else {
                 onDecrypt(null, reply.body);
         }
