@@ -1,4 +1,4 @@
-/// <reference path='../../../../typings/is-my-json-valid/is-my-json-valid.d.ts'/>
+/// <reference path='../../../typings/is-my-json-valid/is-my-json-valid.d.ts'/>
 
 import Data = require('./data');
 import FileSystem = require('./filesystem');

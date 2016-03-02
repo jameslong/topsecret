@@ -1,5 +1,5 @@
-/// <reference path='../../../../typings/aws-sdk/aws-sdk.d.ts'/>
-/// <reference path='../../../../typings/aws-sdk/dynamodb-doc.d.ts'/>
+/// <reference path='../../../typings/aws-sdk/aws-sdk.d.ts'/>
+/// <reference path='../../../typings/aws-sdk/dynamodb-doc.d.ts'/>
 
 import Config = require('../config');
 import DBTypes = require('../../../../game/src/app/dbtypes');
