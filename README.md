@@ -9,8 +9,6 @@
 
 ## Installing
 
-Run the following in the *server*, *client*, and *editor* directories.
-
 ```
 npm install
 ```
