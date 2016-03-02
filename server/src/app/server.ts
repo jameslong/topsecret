@@ -1,6 +1,6 @@
-/// <reference path='../../typings/body-parser/body-parser.d.ts'/>
-/// <reference path='../../typings/express/express.d.ts'/>
-/// <reference path='../../typings/multer/multer.d.ts'/>
+/// <reference path='../../../typings/body-parser/body-parser.d.ts'/>
+/// <reference path='../../../typings/express/express.d.ts'/>
+/// <reference path='../../../typings/multer/multer.d.ts'/>
 
 import Log = require('./../../../game/src/app/log/log');
 import Message = require('./../../../game/src/app/message');

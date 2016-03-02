@@ -1,3 +1,5 @@
+/// <reference path="../../../../typings/react/react-dom.d.ts"/>
+
 module Flux {
         export interface Action<T> {
                 type: string;
@@ -26,6 +28,6 @@ module Flux {
                 wrapper: HTMLElement)
         {
                 const root = rootComponent(state);
-                React.render(root, wrapper);
+                ReactDOM.render(root, wrapper);
         }
 }

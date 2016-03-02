@@ -1,4 +1,4 @@
-/// <reference path='../../typings/mailgun-js/mailgun-js.d.ts'/>
+/// <reference path='../../../typings/mailgun-js/mailgun-js.d.ts'/>
 
 import Log = require('./../../../game/src/app/log/log');
 import Message = require('./../../../game/src/app/message');

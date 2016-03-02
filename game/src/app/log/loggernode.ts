@@ -1,4 +1,4 @@
-/// <reference path='../../../../server/typings/winston/winston.d.ts'/>
+/// <reference path='../../../../typings/winston/winston.d.ts'/>
 
 import Logger = require('./logger');
 import winston = require('winston');
