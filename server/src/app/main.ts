@@ -1,8 +1,8 @@
 import App = require('./app');
 import ConfigData = require('./configdata');
 import Data = require('./data/data');
-import Log = require('./../../../game/log/log');
-import Request = require('./../../../game/requesttypes');
+import Log = require('./../../../game/src/app/log/log');
+import Request = require('./../../../game/src/app/requesttypes');
 
 var config = ConfigData.config;
 

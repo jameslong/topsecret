@@ -1,7 +1,7 @@
 import Mailgun = require('./mailgun');
-import Message = require('./../../../game/message');
-import Prom = require('./../../../game/utils/promise');
-import Request = require('./../../../game/requesttypes');
+import Message = require('./../../../game/src/app/message');
+import Prom = require('./../../../game/src/app/utils/promise');
+import Request = require('./../../../game/src/app/requesttypes');
 import Server = require('./server');
 
 export function createSendFn (

@@ -2,9 +2,9 @@
 /// <reference path='../../../typings/express/express.d.ts'/>
 /// <reference path='../../../typings/multer/multer.d.ts'/>
 
-import Log = require('./../../../game/log/log');
-import Message = require('./../../../game/message');
-import Request = require('./../../../game/requesttypes');
+import Log = require('./../../../game/src/app/log/log');
+import Message = require('./../../../game/src/app/message');
+import Request = require('./../../../game/src/app/requesttypes');
 
 import express = require('express');
 import bodyParser = require('body-parser');

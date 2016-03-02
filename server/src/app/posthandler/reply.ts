@@ -1,16 +1,16 @@
 import App = require('../app');
 import Careers = require('./careers');
-import DBHelpers = require('../../../../game/dbhelpers');
-import KBPGP = require('../../../../game/kbpgp');
-import Log = require('../../../../game/log/log');
-import Message = require('../../../../game/message');
-import MessageHelpers = require('../../../../game/messagehelpers');
-import Player = require('../../../../game/player');
+import DBHelpers = require('../../../../game/src/app/dbhelpers');
+import KBPGP = require('../../../../game/src/app/kbpgp');
+import Log = require('../../../../game/src/app/log/log');
+import Message = require('../../../../game/src/app/message');
+import MessageHelpers = require('../../../../game/src/app/messagehelpers');
+import Player = require('../../../../game/src/app/player');
 import PostHandler = require('./posthandler');
-import Profile = require('../../../../game/profile');
-import ReplyOption = require('../../../../game/replyoption');
-import Request = require('../../../../game/requesttypes');
-import State = require('../../../../game/state');
+import Profile = require('../../../../game/src/app/profile');
+import ReplyOption = require('../../../../game/src/app/replyoption');
+import Request = require('../../../../game/src/app/requesttypes');
+import State = require('../../../../game/src/app/state');
 
 export function handleReplyRequest (
         state: App.State,

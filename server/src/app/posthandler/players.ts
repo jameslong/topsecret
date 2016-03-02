@@ -1,6 +1,6 @@
-import DBHelpers = require('../../../../game/dbhelpers');
-import Request = require('../../../../game/requesttypes');
-import Player = require('../../../../game/player');
+import DBHelpers = require('../../../../game/src/app/dbhelpers');
+import Request = require('../../../../game/src/app/requesttypes');
+import Player = require('../../../../game/src/app/player');
 import PostHandler = require('./posthandler');
 
 export function handleAddPlayerRequest (

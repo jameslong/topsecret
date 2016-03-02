@@ -2,7 +2,7 @@
 
 import Data = require('./data');
 import FileSystem = require('./filesystem');
-import Map = require('../../../../game/utils/map');
+import Map = require('../../../../game/src/app/utils/map');
 
 import validator = require('is-my-json-valid');
 
