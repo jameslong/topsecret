@@ -1,4 +1,4 @@
-/// <reference path='../../../typings/kbpgp/kbpgp.d.ts'/>
+/// <reference path='../../typings/kbpgp/kbpgp.d.ts'/>
 
 import Map = require('./utils/map');
 import Log = require('./log/log');
