@@ -54,7 +54,7 @@ export function loadPublicKeys (keys: string[])
 
 export function loadKey (key: string, passphrase?: string)
 {
-        return new Promise((resolve, reject) => {
+        return new Promise<Kbpgp.KeyManagerInstance>((resolve, reject) => {
                 const params = { armored: key };
                 Kbpgp.KeyManager.import_from_armored_pgp(params,
                         (err, instance) => err ?
