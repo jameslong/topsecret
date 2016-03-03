@@ -3,7 +3,7 @@
                 "noImplicitAny": true,
                 "removeComments": true,
                 "preserveConstEnums": true,
-                "out": "build/main.js",
+                "outFile": "build/main.js",
                 "sourceMap": true
         },
         "files": [

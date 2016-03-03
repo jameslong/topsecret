@@ -5,7 +5,7 @@
 ## Dependencies
 
 - [Node.js](https://nodejs.org/en/) v4.3.1 or above
-- [Typescript](http://www.typescriptlang.org/) v1.8.0 or above
+- [Grunt CLI](http://gruntjs.com/) v0.1.13 or above
 
 ## Installing
 
@@ -15,10 +15,8 @@ npm install
 
 ##Building
 
-Run the following in the *server*, *client*, and *editor* directories.
-
 ```
-tsc
+grunt
 ```
 
 ##Usage
