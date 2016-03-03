@@ -1,6 +1,5 @@
 import App = require('../app');
 import Careers = require('./careers');
-import DBHelpers = require('../../../../core/src/app/dbhelpers');
 import Log = require('../../../../core/src/app/log/log');
 import Main = require('../../../../core/src/app/main');
 import Player = require('../../../../core/src/app/player');

@@ -121,12 +121,12 @@ export function createPlayerTableLocal (
 export function deleteTableLocal (
         db: DBState,
         config: Config.ConfigState,
-        params: Request.CreateTableParams,
+        tableName: Request.CreateTableParams,
         callback: Request.CreateTableCallback)
 {
-        params.tableName === 'messages' ?
-                deleteMessageTableLocal(db, config, params, callback) :
-                deletePlayerTableLocal(db, config, params, callback);
+        tableName === 'messages' ?
+                deleteMessageTableLocal(db, config, tableName, callback) :
+                deletePlayerTableLocal(db, config, tableName, callback);
 }
 
 export function deletePlayerTableLocal (
@@ -250,12 +250,11 @@ export function updatePlayerLocal (
 export function deletePlayerLocal (
         db: DBState,
         config: Config.ConfigState,
-        params: Request.DeletePlayerParams,
+        email: Request.DeletePlayerParams,
         callback: Request.DeletePlayerCallback)
 {
         var error: Request.Error = undefined;
 
-        var email = params.email;
         var playerExists = (db.players[email] !== undefined);
 
         if (playerExists) {
@@ -267,7 +266,7 @@ export function deletePlayerLocal (
                 };
         }
 
-        setTimeout(function () { callback(error, params) },
+        setTimeout(function () { callback(error, email) },
                 config.debugDBTimeoutMs);
 }
 
@@ -342,12 +341,11 @@ export function deleteMessageLocal (
 export function getMessageLocal (
         db: DBState,
         config: Config.ConfigState,
-        params: Request.GetMessageParams,
+        messageId: Request.GetMessageParams,
         callback: Request.GetMessageCallback)
 {
         var error: Request.Error = undefined;
 
-        var messageId = params.messageId;
         var messageState = (db.messages[messageId] || null);
 
         setTimeout(function () { callback(error, messageState) },
@@ -399,12 +397,10 @@ export function getMessagesLocal (
 export function getPlayerLocal (
         db: DBState,
         config: Config.ConfigState,
-        params: Request.GetPlayerParams,
+        email: Request.GetPlayerParams,
         callback: Request.GetPlayerCallback)
 {
         var error: Request.Error = undefined;
-
-        var email = params.email;
 
         var data = db.players[email];
 

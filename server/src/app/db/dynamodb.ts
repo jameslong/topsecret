@@ -150,11 +150,11 @@ export function createDynamoDBCalls (config: Config.ConfigState): DBTypes.DBCall
 
 export function deleteTable (
         docClient: DOC.DynamoDB,
-        params: Request.CreateTableParams,
+        tableName: Request.CreateTableParams,
         callback: Request.CreateTableCallback)
 {
         var awsParams = {
-                TableName: params.tableName,
+                TableName: tableName,
         };
 
         docClient.deleteTable(awsParams, callback);
@@ -162,11 +162,11 @@ export function deleteTable (
 
 export function createPlayerTable (
         docClient: DOC.DynamoDB,
-        params: Request.CreateTableParams,
+        tableName: Request.CreateTableParams,
         callback: Request.CreateTableCallback)
 {
         var awsParams = {
-                TableName: params.tableName,
+                TableName: tableName,
                 AttributeDefinitions: [
                         {
                                 AttributeName: 'email',
@@ -190,11 +190,11 @@ export function createPlayerTable (
 
 export function createMessageTable (
         docClient: DOC.DynamoDB,
-        params: Request.CreateTableParams,
+        tableName: Request.CreateTableParams,
         callback: Request.CreateTableCallback)
 {
         var awsParams = {
-                TableName: params.tableName,
+                TableName: tableName,
                 AttributeDefinitions: [
                         {
                                 AttributeName: 'messageId',
@@ -273,12 +273,11 @@ export function updatePlayer (
 export function deletePlayer (
         docClient: DOC.DynamoDB,
         playersTableName: string,
-        params: Request.DeletePlayerParams,
+        email: Request.DeletePlayerParams,
         callback: Request.DeletePlayerCallback)
 {
-        var awsParams: DeleteItemParams<
-                        Request.DeletePlayerParams> = {
-                Key: { email: params.email },
+        var awsParams: DeleteItemParams<{ email: string }> = {
+                Key: { email: email },
                 TableName: playersTableName,
         };
 
@@ -338,14 +337,14 @@ export function updateMessage (
 export function getMessage (
         docClient: DOC.DynamoDB,
         messagesTableName: string,
-        params: Request.GetMessageParams,
+        messageId: Request.GetMessageParams,
         callback: Request.GetMessageCallback)
 {
         var returnCallback = extractItem(callback);
 
         var awsParams = {
                 Key: {
-                        messageId: params.messageId,
+                        messageId: messageId,
                 },
                 TableName: messagesTableName,
         };
@@ -451,14 +450,14 @@ export function deleteAllMessages (
 export function getPlayer (
         docClient: DOC.DynamoDB,
         playersTableName: string,
-        params: Request.GetPlayerParams,
+        email: Request.GetPlayerParams,
         callback: Request.GetPlayerCallback)
 {
         var returnCallback = extractItem(callback);
 
         var awsParams = {
                 Key: {
-                        email: params.email,
+                        email: email,
                 },
                 TableName: playersTableName,
         };

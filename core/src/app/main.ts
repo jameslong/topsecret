@@ -15,8 +15,7 @@ export function update (
         app: State.State,
         timestampMs: number,
         message: Message.MessageState,
-        player: Player.PlayerState,
-        callback: (error: Request.Error) => void)
+        player: Player.PlayerState)
 {
         const promises = app.promises;
         const groupData = app.data[message.version];
@@ -29,12 +28,11 @@ export function update (
                 app, groupData, state, timestampMs, promises);
         const sequence = children.concat(response);
 
-        Prom.executeSequentially(sequence, state).then(state =>
+        return Prom.executeSequentially(sequence, state).then(state =>
                 isExpired(state.message, messageData) ?
                         Promises.expired(groupData, state, promises) :
                         Promises.update(state, promises)
-        ).then(result => callback(null)
-        ).catch(error => callback(error));
+        );
 }
 
 function pendingChildren (

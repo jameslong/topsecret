@@ -1,7 +1,6 @@
 import Profile = require('./../../../core/src/app/profile');
 import Config = require('./config');
 import Data = require('./data/data');
-import DBHelpers = require('./../../../core/src/app/dbhelpers');
 import DBSetup = require('./db/dbsetup');
 import DBTypes = require('./../../../core/src/app/dbtypes');
 import KBPGP = require('./../../../core/src/app/kbpgp');
@@ -139,26 +138,24 @@ export function update (state: State)
 {
         Log.debug('Update');
 
-        var gameState = state.app;
-        var updateState = state.update;
-        var config = state.config;
-        var server = state.server;
+        const gameState = state.app;
+        const updateState = state.update;
+        const config = state.config;
+        const server = state.server;
 
-        var callback = (error: Request.Error, data: Request.GetMessagesResult) => {
-                        if (!error) {
-                                Log.debug('Get Messages: ', data);
-                                onGetMessages(state, data);
-                        } else {
-                                updateState.lastEvaluatedKey = null;
-                                onUpdateEnd(state);
-                        }
-                };
-
-        var lastEvaluatedKey = updateState.lastEvaluatedKey;
+        const lastEvaluatedKey = updateState.lastEvaluatedKey;
         Log.debug('Last evaluated key', lastEvaluatedKey);
-        var maxResults = config.update.maxMessagesRequestedPerUpdate;
-        var getMessagesFn = gameState.promises.getMessages;
-        DBHelpers.getMessages(lastEvaluatedKey, maxResults, getMessagesFn, callback);
+        const maxResults = config.update.maxMessagesRequestedPerUpdate;
+
+        const getMessages = gameState.promises.getMessages;
+        const params = { startKey: lastEvaluatedKey, maxResults };
+
+        getMessages(params).then(data =>
+                onGetMessages(state, data)
+        ).catch(err => {
+                updateState.lastEvaluatedKey = null;
+                onUpdateEnd(state);
+        });
 }
 
 export function onUpdateEnd (state: State)
@@ -191,23 +188,19 @@ export function onGetMessages (state: State, data: Request.GetMessagesResult)
         } else {
                 message = (messages.length ? messages[messages.length - 1] : null);
         }
-
         const onUpdateEndLocal = (error: Request.Error) =>
                 onUpdateEnd(state);
 
         if (message) {
-                DBHelpers.getPlayer(
-                        gameState.promises.getPlayer,
-                        message.email,
-                        (err, player) => err ?
-                                onUpdateEndLocal(err) :
-                                Main.update(
-                                        gameState,
-                                        timestampMs,
-                                        message,
-                                        player,
-                                        onUpdateEndLocal)
-                );
+                gameState.promises.getPlayer(message.email).then(player =>
+                        Main.update(
+                                gameState,
+                                timestampMs,
+                                message,
+                                player)
+                ).then(result =>
+                        onUpdateEndLocal(null)
+                ).catch(onUpdateEndLocal);
         } else {
                 onUpdateEndLocal(null);
         }

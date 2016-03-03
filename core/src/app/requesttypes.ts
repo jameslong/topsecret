@@ -27,17 +27,13 @@ export interface MessageUIDCallback extends Callback<string> {}
 
 export interface MessageStateCallback extends Callback<Message.MessageState> {}
 
-export interface CreateTableParams {
-        tableName: string;
-}
+export type CreateTableParams = string;
 export interface CreateTableCallback extends Callback<{}> {}
 export interface CreateTableRequest {
         (params: CreateTableParams, callback: CreateTableCallback): void;
 }
 
-export interface DeleteTableParams {
-        tableName: string;
-}
+export type DeleteTableParams = string;
 export interface DeleteTableCallback extends Callback<{}> {}
 export interface DeleteTableRequest {
         (params: DeleteTableParams, callback: DeleteTableCallback): void;
@@ -55,9 +51,7 @@ export interface UpdatePlayerRequest {
         (params: UpdatePlayerParams, callback: UpdatePlayerCallback): void;
 }
 
-export interface DeletePlayerParams {
-        email: string;
-}
+export type DeletePlayerParams = string;
 export interface DeletePlayerCallback extends Callback<DeletePlayerParams> {}
 export interface DeletePlayerRequest {
         (params: DeletePlayerParams, callback: DeletePlayerCallback): void;
@@ -89,9 +83,7 @@ export interface DeleteMessageRequest {
         (params: DeleteMessageParams, callback: DeleteMessageCallback): void;
 }
 
-export interface GetMessageParams {
-        messageId: string;
-}
+export type GetMessageParams = string;
 export interface GetMessageCallback extends MessageStateCallback {}
 export interface GetMessageRequest {
         (params: GetMessageParams, callback: GetMessageCallback): void;
@@ -110,9 +102,7 @@ export interface GetMessagesRequest {
         (params: GetMessagesParams, callback: GetMessagesCallback): void;
 }
 
-export interface GetPlayerParams {
-        email: string;
-}
+export type GetPlayerParams = string;
 export interface GetPlayerCallback extends Callback<Player.PlayerState> {}
 export interface GetPlayerRequest {
         (params: GetPlayerParams, callback: GetPlayerCallback): void;

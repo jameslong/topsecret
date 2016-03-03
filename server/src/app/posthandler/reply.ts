@@ -1,6 +1,5 @@
 import App = require('../app');
 import Careers = require('./careers');
-import DBHelpers = require('../../../../core/src/app/dbhelpers');
 import KBPGP = require('../../../../core/src/app/kbpgp');
 import Log = require('../../../../core/src/app/log/log');
 import Message = require('../../../../core/src/app/message');
@@ -75,7 +74,9 @@ export function handleReplyMessage (
                 email: string,
                 callback: Request.GetPlayerCallback) =>
         {
-                DBHelpers.getPlayer(promises.getPlayer, email, callback);
+                promises.getPlayer(email).then(player =>
+                        callback(null, player)
+                ).catch(err => callback(err, null));
         };
 
         var getTargetedMessageLocal = (
@@ -141,8 +142,9 @@ export function getTargetedMessage (
                         callback: Request.GetMessageCallback)
                 {
                         if (messageId !== null) {
-                                DBHelpers.getMessage(
-                                        promises.getMessage, messageId, callback);
+                                promises.getMessage(messageId).then(message =>
+                                        callback(null, message)
+                                ).catch(err => callback(err, null));
                         } else {
                                 callback(null, null);
                         }

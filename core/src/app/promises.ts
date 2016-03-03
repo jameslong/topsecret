@@ -105,7 +105,7 @@ export function endGame (
         promises: DBTypes.PromiseFactories): Promise<any>
 {
         return promises.deleteAllMessages({ email }).then(result =>
-                promises.deletePlayer({ email }));
+                promises.deletePlayer(email));
 }
 
 export function beginGame (

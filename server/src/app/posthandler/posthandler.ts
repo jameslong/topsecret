@@ -7,11 +7,9 @@ import FileSystem = require('../data/filesystem');
 import Log = require('../../../../core/src/app/log/log');
 import Message = require('../../../../core/src/app/message');
 import Player = require('../../../../core/src/app/player');
-import Players = require('./players');
 import Reply = require('./reply');
 import Request = require('../../../../core/src/app/requesttypes');
 import Server = require('../server');
-import Tables = require('./tables');
 
 export function addRequestEndpoints (
         state: App.State)
@@ -99,8 +97,9 @@ export function createCreatePlayerTableCallback (state: App.State)
                         var config = state.config;
                         var tableName = config.dynamoDBConfig.playersTableName;
 
-                        Tables.handleCreateTableRequest(
-                                tableName, promises.createPlayerTable, res);
+                        promises.createPlayerTable(tableName).then(result =>
+                                res.sendStatus(200)
+                        ).catch(err => res.sentStatus(500));
                 };
 }
 
@@ -113,8 +112,9 @@ export function createDeletePlayerTableCallback (state: App.State)
                         var config = state.config;
                         var tableName = config.dynamoDBConfig.playersTableName;
 
-                        Tables.handleDeleteTableRequest(
-                                tableName, promises.deleteTable, res);
+                        promises.deleteTable(tableName).then(result =>
+                                res.sendStatus(200)
+                        ).catch(err => res.sentStatus(500));
                 };
 }
 
@@ -127,8 +127,9 @@ export function createCreateMessageTableCallback (state: App.State)
                         var config = state.config;
                         var tableName = config.dynamoDBConfig.messagesTableName;
 
-                        Tables.handleCreateTableRequest(
-                                tableName, promises.createMessageTable, res);
+                        promises.createMessageTable(tableName).then(result =>
+                                res.sendStatus(200)
+                        ).catch(err => res.sentStatus(500));
                 };
 }
 
@@ -141,8 +142,9 @@ export function createDeleteMessageTableCallback (state: App.State)
                         var config = state.config;
                         var tableName = config.dynamoDBConfig.messagesTableName;
 
-                        Tables.handleDeleteTableRequest(
-                                tableName, promises.deleteTable, res);
+                        promises.deleteTable(tableName).then(result =>
+                                res.sendStatus(200)
+                        ).catch(err => res.sentStatus(500));
                 };
 }
 
@@ -217,13 +219,12 @@ export function createAddPlayerCallback (state: App.State)
                         var app = state.app;
                         var promises = app.promises;
 
-                        Players.handleAddPlayerRequest(
-                                email,
-                                publicKey,
-                                firstName,
-                                lastName,
-                                promises.addPlayer,
-                                res);
+                        const player = Player.createPlayerState(
+                                email, publicKey, firstName, lastName);
+
+                        promises.addPlayer(player).then(player =>
+                                res(200)
+                        ).catch(err => res(500));
                 };
 }
 
@@ -236,8 +237,9 @@ export function createDeletePlayerCallback (state: App.State)
                         var app = state.app;
                         var promises = app.promises;
 
-                        Players.handleDeletePlayerRequest(
-                                email, promises.deletePlayer, res);
+                        promises.deletePlayer(email).then(player =>
+                                res(200)
+                        ).catch(err => res(500));
                 };
 }
 
