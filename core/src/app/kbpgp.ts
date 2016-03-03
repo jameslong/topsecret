@@ -71,7 +71,7 @@ export function loadKey (key: string, passphrase?: string)
 
 export function generateKeyPair (userid: string)
 {
-        return new Promise((resolve, reject) => {
+        return new Promise<Kbpgp.KeyManagerInstance>((resolve, reject) => {
                 Kbpgp.KeyManager.generate_rsa({ userid }, (err, instance) => {
                         err ?
                                 reject(err) :

@@ -1,0 +1,14 @@
+{
+        "compilerOptions": {
+                "noImplicitAny": true,
+                "removeComments": true,
+                "preserveConstEnums": true,
+                "module": "commonjs",
+                "sourceMap": false,
+                "noEmitOnError": true,
+                "outDir": "build"
+        },
+        "files": [
+                "core.kbpgp.ts"
+        ]
+}
