@@ -1,3 +1,4 @@
+/// <reference path="global.d.ts"/>
 /// <reference path='../../../typings/kbpgp/kbpgp.d.ts'/>
 
 import Arr = require('./utils/array');
@@ -8,9 +9,9 @@ import Profile = require('./profile');
 import Request = require('./requesttypes');
 import Str = require('./utils/string');
 
-import kbpgp = require('kbpgp');
+import Kbpgp = require('kbpgp');
 
-export type KeyManagers = Map.Map<kbpgp.KeyManagerInstance>;
+export type KeyManagers = Map.Map<Kbpgp.KeyManagerInstance>;
 
 export interface KeyData {
         id: string;
