@@ -16,14 +16,14 @@ export interface DBCalls {
 
         addPlayer: Prom.Factory<Request.AddPlayerParams, {}>;
         updatePlayer: Prom.Factory<Request.UpdatePlayerParams, {}>;
-        removePlayer: Prom.Factory<Request.RemovePlayerParams, Request.RemovePlayerParams>;
+        deletePlayer: Prom.Factory<Request.DeletePlayerParams, Request.DeletePlayerParams>;
         deleteAllMessages: Prom.Factory<Request.DeleteAllMessagesParams, {}>;
-        storeMessage: Prom.Factory<Request.StoreMessageParams, Message.MessageState>;
+        addMessage: Prom.Factory<Request.AddMessageParams, Message.MessageState>;
         updateMessage: Prom.Factory<Request.UpdateMessageParams, Message.MessageState>;
         deleteMessage: Prom.Factory<Request.DeleteMessageParams, Message.MessageState>;
 
         getMessage: Prom.Factory<Request.GetMessageParams, Message.MessageState>;
         getMessages: Prom.Factory<Request.GetMessagesParams, Request.GetMessagesResult>;
 
-        getPlayerState: Prom.Factory<Request.GetPlayerStateParams, Player.PlayerState>;
+        getPlayer: Prom.Factory<Request.GetPlayerParams, Player.PlayerState>;
 }

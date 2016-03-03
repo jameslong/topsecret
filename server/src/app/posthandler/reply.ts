@@ -69,13 +69,13 @@ export function handleReplyMessage (
         reply: Reply,
         callback: Request.Callback<any>)
 {
-        var db = state.app.db;
+        var promises = state.app.promises;
 
-        var getPlayerStateLocal = (
+        var getPlayerLocal = (
                 email: string,
-                callback: Request.GetPlayerStateCallback) =>
+                callback: Request.GetPlayerCallback) =>
         {
-                DBHelpers.getPlayerState(db.getPlayerState, email, callback);
+                DBHelpers.getPlayer(promises.getPlayer, email, callback);
         };
 
         var getTargetedMessageLocal = (
@@ -116,7 +116,7 @@ export function handleReplyMessage (
         };
 
         var seq = Request.seq3(
-                getPlayerStateLocal,
+                getPlayerLocal,
                 getTargetedMessageLocal,
                 handleTimelyReplyNewLocal);
 
@@ -134,7 +134,7 @@ export function getTargetedMessage (
         playerState: Player.PlayerState,
         callback: Request.GetMessageCallback)
 {
-        var db = state.app.db;
+        var promises = state.app.promises;
 
         var getMessageStateLocal = function (
                         messageId: string,
@@ -142,7 +142,7 @@ export function getTargetedMessage (
                 {
                         if (messageId !== null) {
                                 DBHelpers.getMessage(
-                                        db.getMessage, messageId, callback);
+                                        promises.getMessage, messageId, callback);
                         } else {
                                 callback(null, null);
                         }
@@ -173,7 +173,7 @@ export function getTargetedMessage (
                                 // var emptyMessages = playerState.emptyMessages;
                                 // var messageId = emptyMessages[toProfile.name];
                                 // DB.getMessage(
-                                //         db.getMessage, messageId, callback);
+                                //         promises.getMessage, messageId, callback);
                         }
                 };
 
@@ -296,12 +296,12 @@ export function handleReplyOptionDefault (
         replyIndex: number,
         callback: Request.Callback<Message.MessageState>)
 {
-        const promises = state.app.db;
+        const promises = state.app.promises;
 
         message.reply.replyIndex = replyIndex;
         message.reply.timestampMs = timestampMs;
 
-        promises.storeMessage(message).then(message =>
+        promises.addMessage(message).then(message =>
                 callback(null, message)
         ).catch(error => callback(error, null));
 }
@@ -315,7 +315,7 @@ export function handleReplyOptionValidPGPKey(
         replyIndex: number,
         callback: Request.Callback<Message.MessageState>)
 {
-        const promises = state.app.db;
+        const promises = state.app.promises;
 
         const publicKey = ReplyOption.extractPublicKey(body);
         player.publicKey = publicKey;

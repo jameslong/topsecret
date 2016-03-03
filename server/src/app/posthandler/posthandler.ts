@@ -37,7 +37,7 @@ export function addRequestEndpoints (
         addPost(app, '/begindemo', createBeginDemoCallback, state);
         addPost(app, '/enddemo', createEndDemoCallback, state);
         addPost(app, '/addplayer', createAddPlayerCallback, state);
-        addPost(app, '/removeplayer', createRemovePlayerCallback, state);
+        addPost(app, '/removeplayer', createDeletePlayerCallback, state);
 
         // Author only
         addPost(app, '/loadmessage', createLoadMessageCallback, state);
@@ -95,12 +95,12 @@ export function createCreatePlayerTableCallback (state: App.State)
         return (req: any, res: any) =>
                 {
                         var app = state.app;
-                        var db = app.db;
+                        var promises = app.promises;
                         var config = state.config;
                         var tableName = config.dynamoDBConfig.playersTableName;
 
                         Tables.handleCreateTableRequest(
-                                tableName, db.createPlayerTable, res);
+                                tableName, promises.createPlayerTable, res);
                 };
 }
 
@@ -109,12 +109,12 @@ export function createDeletePlayerTableCallback (state: App.State)
         return (req: any, res: any) =>
                 {
                         var app = state.app;
-                        var db = app.db;
+                        var promises = app.promises;
                         var config = state.config;
                         var tableName = config.dynamoDBConfig.playersTableName;
 
                         Tables.handleDeleteTableRequest(
-                                tableName, db.deleteTable, res);
+                                tableName, promises.deleteTable, res);
                 };
 }
 
@@ -123,12 +123,12 @@ export function createCreateMessageTableCallback (state: App.State)
         return (req: any, res: any) =>
                 {
                         var app = state.app;
-                        var db = app.db;
+                        var promises = app.promises;
                         var config = state.config;
                         var tableName = config.dynamoDBConfig.messagesTableName;
 
                         Tables.handleCreateTableRequest(
-                                tableName, db.createMessageTable, res);
+                                tableName, promises.createMessageTable, res);
                 };
 }
 
@@ -137,12 +137,12 @@ export function createDeleteMessageTableCallback (state: App.State)
         return (req: any, res: any) =>
                 {
                         var app = state.app;
-                        var db = app.db;
+                        var promises = app.promises;
                         var config = state.config;
                         var tableName = config.dynamoDBConfig.messagesTableName;
 
                         Tables.handleDeleteTableRequest(
-                                tableName, db.deleteTable, res);
+                                tableName, promises.deleteTable, res);
                 };
 }
 
@@ -193,7 +193,7 @@ export function createEndDemoCallback (state: App.State)
                                 } = req.body;
 
                         var callback = createRequestCallback(res);
-                        var db = state.app.db;
+                        var promises = state.app.promises;
 
                         Demo.endDemo(state, data.email, callback);
                 };
@@ -215,28 +215,29 @@ export function createAddPlayerCallback (state: App.State)
                         var lastName = data.lastName;
 
                         var app = state.app;
-                        var db = app.db;
+                        var promises = app.promises;
 
                         Players.handleAddPlayerRequest(
                                 email,
                                 publicKey,
                                 firstName,
                                 lastName,
-                                db.addPlayer,
+                                promises.addPlayer,
                                 res);
                 };
 }
 
-export function createRemovePlayerCallback (state: App.State)
+export function createDeletePlayerCallback (state: App.State)
 {
         return (req: any, res: any) =>
                 {
                         var email = req.body.email;
 
                         var app = state.app;
-                        var db = app.db;
+                        var promises = app.promises;
 
-                        Players.handleRemovePlayerRequest(email, db.removePlayer, res);
+                        Players.handleDeletePlayerRequest(
+                                email, promises.deletePlayer, res);
                 };
 }
 

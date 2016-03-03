@@ -17,7 +17,7 @@ export function beginDemo (
         callback: Request.Callback<any>)
 {
         const app = state.app;
-        const promises = app.db;
+        const promises = app.promises;
 
         const publicKey: string = null;
         const firstName = playerData.firstName;
@@ -43,7 +43,7 @@ export function endDemo (
         state: App.State, email: string, callback: Request.Callback<any>)
 {
         const app = state.app;
-        const promises = app.db;
+        const promises = app.promises;
 
         Promises.endGame(email, promises).then(result =>
                 callback(null, result)

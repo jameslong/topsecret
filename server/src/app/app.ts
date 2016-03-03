@@ -75,14 +75,14 @@ export function onGameData (
                 config.useEmail,
                 config.emailAPIKey,
                 config.emailDomain);
-        const db = DBSetup.createPromiseFactories(config, send, encrypt);
+        const promises = DBSetup.createPromiseFactories(config, send, encrypt);
 
         const gameState: State.State = {
                 emailDomain: config.emailDomain,
                 timeFactor: config.timeFactor,
                 immediateReplies: config.immediateReplies,
                 data: null,
-                db,
+                promises,
         };
 
         if (gameData) {
@@ -157,7 +157,7 @@ export function update (state: State)
         var lastEvaluatedKey = updateState.lastEvaluatedKey;
         Log.debug('Last evaluated key', lastEvaluatedKey);
         var maxResults = config.update.maxMessagesRequestedPerUpdate;
-        var getMessagesFn = gameState.db.getMessages;
+        var getMessagesFn = gameState.promises.getMessages;
         DBHelpers.getMessages(lastEvaluatedKey, maxResults, getMessagesFn, callback);
 }
 
@@ -196,8 +196,8 @@ export function onGetMessages (state: State, data: Request.GetMessagesResult)
                 onUpdateEnd(state);
 
         if (message) {
-                DBHelpers.getPlayerState(
-                        gameState.db.getPlayerState,
+                DBHelpers.getPlayer(
+                        gameState.promises.getPlayer,
                         message.email,
                         (err, player) => err ?
                                 onUpdateEndLocal(err) :

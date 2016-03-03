@@ -18,7 +18,7 @@ export function update (
         player: Player.PlayerState,
         callback: (error: Request.Error) => void)
 {
-        const promises = app.db;
+        const promises = app.promises;
         const groupData = app.data[message.version];
         const messageData = groupData.threadData[message.name];
         const state = { message, player };

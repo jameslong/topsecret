@@ -68,15 +68,15 @@ export function createLocalDBCalls (config: Config.ConfigState): DBTypes.DBCalls
         const deleteTable = promiseFactory(db, config, deleteTableLocal);
         const addPlayer = promiseFactory(db, config, addPlayerLocal);
         const updatePlayer = promiseFactory(db, config, updatePlayerLocal);
-        const removePlayer = promiseFactory(db, config, removePlayerLocal);
+        const deletePlayer = promiseFactory(db, config, deletePlayerLocal);
         const deleteAllMessages = promiseFactory(
                 db, config, deleteAllMessagesLocal);
-        const storeMessage = promiseFactory(db, config, storeMessageLocal);
+        const addMessage = promiseFactory(db, config, addMessageLocal);
         const updateMessage = promiseFactory(db, config, updateMessageLocal);
         const deleteMessage = promiseFactory(db, config, deleteMessageLocal);
         const getMessage = promiseFactory(db, config, getMessageLocal);
         const getMessages = promiseFactory(db, config, getMessagesLocal);
-        const getPlayerState = promiseFactory(db, config, getPlayerStateLocal);
+        const getPlayer = promiseFactory(db, config, getPlayerLocal);
 
         return {
                 createPlayerTable,
@@ -84,14 +84,14 @@ export function createLocalDBCalls (config: Config.ConfigState): DBTypes.DBCalls
                 deleteTable,
                 addPlayer,
                 updatePlayer,
-                removePlayer,
+                deletePlayer,
                 deleteAllMessages,
-                storeMessage,
+                addMessage,
                 updateMessage,
                 deleteMessage,
                 getMessage,
                 getMessages,
-                getPlayerState,
+                getPlayer,
         };
 }
 
@@ -247,11 +247,11 @@ export function updatePlayerLocal (
                 config.debugDBTimeoutMs);
 }
 
-export function removePlayerLocal (
+export function deletePlayerLocal (
         db: DBState,
         config: Config.ConfigState,
-        params: Request.RemovePlayerParams,
-        callback: Request.RemovePlayerCallback)
+        params: Request.DeletePlayerParams,
+        callback: Request.DeletePlayerCallback)
 {
         var error: Request.Error = undefined;
 
@@ -290,11 +290,11 @@ export function deleteAllMessagesLocal (
                 config.debugDBTimeoutMs);
 }
 
-export function storeMessageLocal (
+export function addMessageLocal (
         db: DBState,
         config: Config.ConfigState,
-        messageState: Request.StoreMessageParams,
-        callback: Request.StoreMessageCallback)
+        messageState: Request.AddMessageParams,
+        callback: Request.AddMessageCallback)
 {
         var error: Request.Error = undefined;
 
@@ -396,11 +396,11 @@ export function getMessagesLocal (
                 config.debugDBTimeoutMs);
 }
 
-export function getPlayerStateLocal (
+export function getPlayerLocal (
         db: DBState,
         config: Config.ConfigState,
-        params: Request.GetPlayerStateParams,
-        callback: Request.GetPlayerStateCallback)
+        params: Request.GetPlayerParams,
+        callback: Request.GetPlayerCallback)
 {
         var error: Request.Error = undefined;
 

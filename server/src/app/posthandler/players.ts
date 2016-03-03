@@ -19,12 +19,12 @@ export function handleAddPlayerRequest (
         DBHelpers.addPlayer(playerState, requestFn, callback);
 }
 
-export function handleRemovePlayerRequest (
+export function handleDeletePlayerRequest (
         email: string,
-        requestFn: Request.RemovePlayerRequest,
+        requestFn: Request.DeletePlayerRequest,
         res: any)
 {
         var callback = PostHandler.createRequestCallback(res);
 
-        DBHelpers.removePlayer(email, requestFn, callback);
+        DBHelpers.deletePlayer(email, requestFn, callback);
 }

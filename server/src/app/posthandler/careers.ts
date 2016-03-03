@@ -59,7 +59,7 @@ export function handleResignation (
         callback: Request.Callback<any>)
 {
         const app = state.app;
-        const promises = app.db;
+        const promises = app.promises;
 
         const messageName = state.config.content.resignationThread;
         const threadStartName: string = null;
@@ -111,7 +111,7 @@ export function handleInvalidApplication (
                 messageName,
                 threadStartName,
                 app.emailDomain);
-        return app.db.send(data).then(
+        return app.promises.send(data).then(
                 messageId => callback(null, messageId)
         ).catch(error => callback(error, null));
 }

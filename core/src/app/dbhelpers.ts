@@ -29,10 +29,10 @@ export function addPlayer (
         requestFn(playerState, callback);
 }
 
-export function removePlayer (
+export function deletePlayer (
         email: string,
-        requestFn: Request.RemovePlayerRequest,
-        callback: Request.RemovePlayerCallback)
+        requestFn: Request.DeletePlayerRequest,
+        callback: Request.DeletePlayerCallback)
 {
         var params = { email };
         requestFn(params, callback);
@@ -47,12 +47,12 @@ export function deleteAllMessages (
         requestFn(params, callback);
 }
 
-export function storeMessage (
-        storeMessageFn: Request.StoreMessageRequest,
+export function addMessage (
+        addMessageFn: Request.AddMessageRequest,
         messageState: Message.MessageState,
         callback: Request.Callback<Message.MessageState>)
 {
-        storeMessageFn(messageState, callback);
+        addMessageFn(messageState, callback);
 }
 
 export function deleteMessage (
@@ -82,11 +82,11 @@ export function getMessages (
         requestFn(params, callback);
 }
 
-export function getPlayerState (
-        getPlayerState: Request.GetPlayerStateRequest,
+export function getPlayer (
+        getPlayer: Request.GetPlayerRequest,
         email: string,
-        callback: Request.GetPlayerStateCallback)
+        callback: Request.GetPlayerCallback)
 {
         var params = { email };
-        getPlayerState(params, callback);
+        getPlayer(params, callback);
 }

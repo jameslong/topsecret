@@ -77,7 +77,7 @@ export function encryptSendStoreChild (
                         messageId,
                         name,
                         threadStartName);
-                return promises.storeMessage(messageState);
+                return promises.addMessage(messageState);
         });
 }
 
@@ -105,7 +105,7 @@ export function endGame (
         promises: DBTypes.PromiseFactories): Promise<any>
 {
         return promises.deleteAllMessages({ email }).then(result =>
-                promises.removePlayer({ email }));
+                promises.deletePlayer({ email }));
 }
 
 export function beginGame (

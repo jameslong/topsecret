@@ -114,12 +114,12 @@ export function createDynamoDBCalls (config: Config.ConfigState): DBTypes.DBCall
                 docClient, playersTableName, addPlayer);
         const updatePlayerLocal = promiseFactory(
                 docClient, playersTableName, updatePlayer);
-        const removePlayerLocal = promiseFactory(
-                docClient, playersTableName, removePlayer);
+        const deletePlayerLocal = promiseFactory(
+                docClient, playersTableName, deletePlayer);
         const deleteAllMessagesLocal = promiseFactory(
                 docClient, messagesTableName, deleteAllMessages);
-        const storeMessageLocal = promiseFactory(
-                docClient, messagesTableName, storeMessage);
+        const addMessageLocal = promiseFactory(
+                docClient, messagesTableName, addMessage);
         const updateMessageLocal = promiseFactory(
                 docClient, messagesTableName, updateMessage);
         const deleteMessageLocal = promiseFactory(
@@ -128,8 +128,8 @@ export function createDynamoDBCalls (config: Config.ConfigState): DBTypes.DBCall
                 docClient, messagesTableName, getMessage);
         const getMessagesLocal = promiseFactory(
                 docClient, messagesTableName, getMessages);
-        const getPlayerStateLocal = promiseFactory(
-                docClient, messagesTableName, getPlayerState);
+        const getPlayerLocal = promiseFactory(
+                docClient, messagesTableName, getPlayer);
 
         return {
                 createPlayerTable: createPlayerTableLocal,
@@ -137,14 +137,14 @@ export function createDynamoDBCalls (config: Config.ConfigState): DBTypes.DBCall
                 deleteTable: deleteTableLocal,
                 addPlayer: addPlayerLocal,
                 updatePlayer: updatePlayerLocal,
-                removePlayer: removePlayerLocal,
+                deletePlayer: deletePlayerLocal,
                 deleteAllMessages: deleteAllMessagesLocal,
-                storeMessage: storeMessageLocal,
+                addMessage: addMessageLocal,
                 updateMessage: updateMessageLocal,
                 deleteMessage: deleteMessageLocal,
                 getMessage: getMessageLocal,
                 getMessages: getMessagesLocal,
-                getPlayerState: getPlayerStateLocal,
+                getPlayer: getPlayerLocal,
         };
 }
 
@@ -270,14 +270,14 @@ export function updatePlayer (
         docClient.putItem(awsParams, callback);
 };
 
-export function removePlayer (
+export function deletePlayer (
         docClient: DOC.DynamoDB,
         playersTableName: string,
-        params: Request.RemovePlayerParams,
-        callback: Request.RemovePlayerCallback)
+        params: Request.DeletePlayerParams,
+        callback: Request.DeletePlayerCallback)
 {
         var awsParams: DeleteItemParams<
-                        Request.RemovePlayerParams> = {
+                        Request.DeletePlayerParams> = {
                 Key: { email: params.email },
                 TableName: playersTableName,
         };
@@ -285,11 +285,11 @@ export function removePlayer (
         docClient.deleteItem(awsParams, callback);
 };
 
-export function storeMessage (
+export function addMessage (
         docClient: DOC.DynamoDB,
         messagesTableName: string,
-        messageState: Request.StoreMessageParams,
-        callback: Request.StoreMessageCallback)
+        messageState: Request.AddMessageParams,
+        callback: Request.AddMessageCallback)
 {
         Log.debug('Storing message dynamo', messageState);
 
@@ -448,11 +448,11 @@ export function deleteAllMessages (
         seq(params, callback);
 };
 
-export function getPlayerState (
+export function getPlayer (
         docClient: DOC.DynamoDB,
         playersTableName: string,
-        params: Request.GetPlayerStateParams,
-        callback: Request.GetPlayerStateCallback)
+        params: Request.GetPlayerParams,
+        callback: Request.GetPlayerCallback)
 {
         var returnCallback = extractItem(callback);
 

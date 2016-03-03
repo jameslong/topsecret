@@ -55,12 +55,12 @@ export interface UpdatePlayerRequest {
         (params: UpdatePlayerParams, callback: UpdatePlayerCallback): void;
 }
 
-export interface RemovePlayerParams {
+export interface DeletePlayerParams {
         email: string;
 }
-export interface RemovePlayerCallback extends Callback<RemovePlayerParams> {}
-export interface RemovePlayerRequest {
-        (params: RemovePlayerParams, callback: RemovePlayerCallback): void;
+export interface DeletePlayerCallback extends Callback<DeletePlayerParams> {}
+export interface DeletePlayerRequest {
+        (params: DeletePlayerParams, callback: DeletePlayerCallback): void;
 }
 
 export interface DeleteAllMessagesParams {
@@ -71,10 +71,10 @@ export interface DeleteAllMessagesRequest {
         (params: DeleteAllMessagesParams, callback: DeleteAllMessagesCallback): void;
 }
 
-export type StoreMessageParams = Message.MessageState;
-export interface StoreMessageCallback extends MessageStateCallback {}
-export interface StoreMessageRequest {
-        (params: StoreMessageParams, callback: StoreMessageCallback): void;
+export type AddMessageParams = Message.MessageState;
+export interface AddMessageCallback extends MessageStateCallback {}
+export interface AddMessageRequest {
+        (params: AddMessageParams, callback: AddMessageCallback): void;
 }
 
 export type UpdateMessageParams = Message.MessageState;
@@ -110,12 +110,12 @@ export interface GetMessagesRequest {
         (params: GetMessagesParams, callback: GetMessagesCallback): void;
 }
 
-export interface GetPlayerStateParams {
+export interface GetPlayerParams {
         email: string;
 }
-export interface GetPlayerStateCallback extends Callback<Player.PlayerState> {}
-export interface GetPlayerStateRequest {
-        (params: GetPlayerStateParams, callback: GetPlayerStateCallback): void;
+export interface GetPlayerCallback extends Callback<Player.PlayerState> {}
+export interface GetPlayerRequest {
+        (params: GetPlayerParams, callback: GetPlayerCallback): void;
 }
 
 export type SendRequest = (

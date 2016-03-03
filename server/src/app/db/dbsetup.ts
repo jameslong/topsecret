@@ -26,14 +26,14 @@ export function createPromiseFactories (
                 deleteTable: calls.deleteTable,
                 addPlayer: calls.addPlayer,
                 updatePlayer: calls.updatePlayer,
-                removePlayer: calls.removePlayer,
+                deletePlayer: calls.deletePlayer,
                 deleteAllMessages: calls.deleteAllMessages,
-                storeMessage: calls.storeMessage,
+                addMessage: calls.addMessage,
                 updateMessage: calls.updateMessage,
                 deleteMessage: calls.deleteMessage,
                 getMessage: calls.getMessage,
                 getMessages: calls.getMessages,
-                getPlayerState: calls.getPlayerState,
+                getPlayer: calls.getPlayer,
 
         };
 }

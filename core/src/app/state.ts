@@ -18,5 +18,5 @@ export interface State {
         timeFactor: number;
         immediateReplies: boolean;
         data: Map.Map<GameData>;
-        db: DBTypes.PromiseFactories;
+        promises: DBTypes.PromiseFactories;
 }
