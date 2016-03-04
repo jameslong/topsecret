@@ -12,3 +12,9 @@ export function executeSequentially<T> (
         });
         return result;
 }
+
+export function delay (delayMs: number)
+{
+        return new Promise((resolve, reject) =>
+                setTimeout(resolve, delayMs));
+}

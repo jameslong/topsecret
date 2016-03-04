@@ -56,13 +56,12 @@ function promiseFactory<T, U> (
         return (params: T) => requestFn(docClient, tableName, params);
 }
 
-export function createDynamoDBCalls (config: Config.ConfigState): DBTypes.DBCalls
+export function createDynamoDBCalls (config: Config.DynamoDBConfig): DBTypes.DBCalls
 {
-        var dynamoConfig = config.dynamoDBConfig;
-        var messagesTableName = dynamoConfig.messagesTableName;
-        var playersTableName = dynamoConfig.playersTableName;
+        var messagesTableName = config.messagesTableName;
+        var playersTableName = config.playersTableName;
 
-        AWS.config.loadFromPath(dynamoConfig.configFilepath);
+        AWS.config.loadFromPath(config.configFilepath);
 
         const docClient = new DOC.DynamoDB();
 

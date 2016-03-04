@@ -15,8 +15,8 @@ export function createPromiseFactories (
 {
         const mode = config.mode;
         const calls = mode === Config.AppMode.Local ?
-                LocalDB.createLocalDBCalls(config) :
-                DynamoDB.createDynamoDBCalls(config);
+                LocalDB.createLocalDBCalls(config.debugDBTimeoutMs) :
+                DynamoDB.createDynamoDBCalls(config.dynamoDBConfig);
 
         return {
                 send,
