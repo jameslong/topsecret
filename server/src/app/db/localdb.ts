@@ -211,23 +211,23 @@ export function addPlayerLocal (
 
 export function updatePlayerLocal (
         db: DBState,
-        playerState: DBTypes.UpdatePlayerParams)
+        player: DBTypes.UpdatePlayerParams)
 {
         var error: Request.Error = undefined;
 
-        var email = playerState.email;
-        var inUse = (db.players[email] === undefined);
+        var email = player.email;
+        var inUse = (db.players[email] !== undefined);
 
-        if (!inUse) {
+        if (inUse) {
+                db.players[email] = player;
+        } else {
                 error = {
                         code: 'UPDATE PLAYER',
                         message: 'could not find player',
                 };
-        } else {
-                db.players[email] = playerState;
         }
 
-        return returnPromise(error, playerState);
+        return returnPromise(error, player);
 }
 
 export function deletePlayerLocal (
@@ -357,9 +357,6 @@ export function getPlayerLocal (
         db: DBState,
         email: DBTypes.GetPlayerParams)
 {
-        var error: Request.Error = undefined;
-
-        var data = db.players[email];
-
-        return returnPromise(error, data);
+        var data = db.players[email] || null;
+        return returnPromise(null, data);
 }
