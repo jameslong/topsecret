@@ -12,8 +12,7 @@ export function beginDemo (
         groupData: State.GameData,
         email: string,
         playerData: Careers.PlayerApplicationData,
-        threadMessageName: string,
-        callback: Request.Callback<any>)
+        threadMessageName: string)
 {
         const app = state.app;
         const promises = app.promises;
@@ -33,18 +32,13 @@ export function beginDemo (
                 threadStartName,
                 app.emailDomain);
 
-        Promises.beginGame(groupData, player, data, promises).then(message =>
-                callback(null, message)
-        ).catch(error => callback(error, null));
+        return Promises.beginGame(groupData, player, data, promises);
 }
 
-export function endDemo (
-        state: App.State, email: string, callback: Request.Callback<any>)
+export function endDemo (state: App.State, email: string)
 {
         const app = state.app;
         const promises = app.promises;
 
-        Promises.endGame(email, promises).then(result =>
-                callback(null, result)
-        ).catch(error => callback(error, null));
+        return Promises.endGame(email, promises);
 }

@@ -17,8 +17,7 @@ export function handleReplyRequest (
         messageId: string,
         subject: string,
         body: string,
-        to: string,
-        res: any)
+        to: string)
 {
         var careersEmail = Careers.isCareersEmail(to);
 
@@ -39,9 +38,9 @@ export function handleReplyRequest (
                 });
 
         if (careersEmail) {
-                Careers.handleCareersEmail(state, reply, res);
+                return Careers.handleCareersEmail(state, reply);
         } else {
-                handleGameReplyRequest(state, reply, res);
+                return handleReplyMessage(state, reply);
         }
 }
 
@@ -54,180 +53,56 @@ export interface Reply {
         timestampMs: number;
 }
 
-export function handleGameReplyRequest (
-        state: App.State,
-        reply: Reply,
-        res: any)
+export function handleReplyMessage (state: App.State, reply: Reply)
 {
-        var callback = PostHandler.createRequestCallback(res);
-        handleReplyMessage(state, reply, callback);
-}
+        const promises = state.app.promises;
+        const email = reply.from;
+        const messageId = reply.messageId;
 
-export function handleReplyMessage (
-        state: App.State,
-        reply: Reply,
-        callback: Request.Callback<any>)
-{
-        var promises = state.app.promises;
-
-        var getPlayerLocal = (
-                email: string,
-                callback: Request.GetPlayerCallback) =>
-        {
-                promises.getPlayer(email).then(player =>
-                        callback(null, player)
-                ).catch(err => callback(err, null));
-        };
-
-        var getTargetedMessageLocal = (
-                playerState: Player.PlayerState,
-                callback: Request.Callback<TargetedMessageData>) =>
-        {
-                if (playerState) {
-                        var targetedCallback = (error: Request.Error,
-                                messageState: Message.MessageState) => {
-                                callback(error, {
-                                                messageState: messageState,
-                                                playerState: playerState,
-                                        });
-                        };
-
-                        getTargetedMessage(
-                                state, reply, playerState, targetedCallback);
-                } else {
-                        callback(null, null);
-                }
-        };
-
-        var handleTimelyReplyNewLocal = (
-                data: TargetedMessageData,
-                callback: Request.Callback<Message.MessageState>) =>
-        {
-                var messageState = (data ? data.messageState : null);
-                if (messageState && !messageState.reply) {
-                        handleTimelyReply(
-                                state,
-                                data.playerState,
-                                data.messageState,
-                                reply,
-                                callback);
-                } else {
-                        callback(null, null);
-                }
-        };
-
-        var seq = Request.seq3(
-                getPlayerLocal,
-                getTargetedMessageLocal,
-                handleTimelyReplyNewLocal);
-
-        seq(reply.from, callback);
-}
-
-export interface TargetedMessageData {
-        messageState: Message.MessageState;
-        playerState: Player.PlayerState;
-}
-
-export function getTargetedMessage (
-        state: App.State,
-        reply: Reply,
-        playerState: Player.PlayerState,
-        callback: Request.GetMessageCallback)
-{
-        var promises = state.app.promises;
-
-        var getMessageStateLocal = function (
-                        messageId: string,
-                        callback: Request.GetMessageCallback)
-                {
-                        if (messageId !== null) {
-                                promises.getMessage(messageId).then(message =>
-                                        callback(null, message)
-                                ).catch(err => callback(err, null));
-                        } else {
-                                callback(null, null);
-                        }
-                };
-
-        var getUnsolicitedMessageStateLocal = function (
-                        messageState: Message.MessageState,
-                        callback: Request.GetMessageCallback)
-                {
-                        var targetable = false;
-
-                        if (messageState) {
-                                var version = MessageHelpers.getMessageGroup(messageState);
-                                var groupData = App.getGroupData(state.app, version);
-                                var threadData = groupData.threadData;
-                                targetable = (messageState &&
-                                        MessageHelpers.hasReplyOptions(messageState.name, threadData));
-                        }
-
-                        if (targetable) {
-                                callback(null, messageState);
-                        } else {
-                                callback(null, null);
-                                // TODO - readd support for unsolicited messages (players must store the version they are on)
-                                // var profiles = groupData.profiles;
-                                // var toProfile = Profile.getProfileByEmail(
-                                //         reply.to, profiles);
-                                // var emptyMessages = playerState.emptyMessages;
-                                // var messageId = emptyMessages[toProfile.name];
-                                // DB.getMessage(
-                                //         promises.getMessage, messageId, callback);
-                        }
-                };
-
-        var seq = Request.seq2(
-                getMessageStateLocal,
-                getUnsolicitedMessageStateLocal);
-        seq(reply.messageId, callback);
+        return promises.getMessage(messageId).then(message =>
+                message && !message.reply ?
+                        promises.getPlayer(email).then(player =>
+                                handleTimelyReply(
+                                        state,
+                                        player,
+                                        message,
+                                        reply)) :
+                        null
+        );
 }
 
 export function handleTimelyReply (
         state: App.State,
-        playerState: Player.PlayerState,
-        messageState: Message.MessageState,
-        reply: Reply,
-        callback: Request.Callback<any>)
+        player: Player.PlayerState,
+        message: Message.MessageState,
+        reply: Reply)
 {
-        var groupName = MessageHelpers.getMessageGroup(messageState);
-        var groupData = App.getGroupData(state.app, groupName);
+        const groupName = MessageHelpers.getMessageGroup(message);
+        const groupData = App.getGroupData(state.app, groupName);
+        const ciphertext = reply.body;
+        const profiles = groupData.profiles;
+        const profile = Profile.getProfileByEmail(reply.to, profiles);
+        const keyManager = groupData.keyManagers[profile.name];
 
-        var onDecrypt = (error: string, plaintext: string) => {
-                if (error) {
-                        var awsError: Request.Error = {
-                                code: 'DECRYPT ERROR',
-                                message: error,
-                        };
+        const promises = state.app.promises;
 
-                        callback(awsError, null);
-                } else {
+        return player.publicKey ?
+                KBPGP.decryptVerify(keyManager, ciphertext).then(plaintext =>
                         handleDecryptedReplyMessage(
                                 state,
                                 groupData,
-                                playerState,
+                                player,
                                 plaintext,
                                 reply.timestampMs,
-                                messageState,
-                                callback);
-                }
-        };
-
-        if (playerState.publicKey) {
-                var profiles = groupData.profiles;
-                var profile = Profile.getProfileByEmail(reply.to, profiles);
-                var keyManager = groupData.keyManagers[profile.name];
-
-                KBPGP.decryptVerify(keyManager, reply.body).then(plaintext =>
-                        onDecrypt(null, plaintext)
-                ).catch(err => {
-                        onDecrypt(err, null);
-                });
-        } else {
-                onDecrypt(null, reply.body);
-        }
+                                message)
+                ) :
+                handleDecryptedReplyMessage(
+                        state,
+                        groupData,
+                        player,
+                        ciphertext,
+                        reply.timestampMs,
+                        message);
 }
 
 export function handleDecryptedReplyMessage (
@@ -236,8 +111,7 @@ export function handleDecryptedReplyMessage (
         player: Player.PlayerState,
         body: string,
         timestampMs: number,
-        messageState: Message.MessageState,
-        callback: Request.Callback<Message.MessageState>)
+        messageState: Message.MessageState)
 {
         const threadMessage = groupData.threadData[messageState.name];
         const replyOptions = threadMessage.replyOptions;
@@ -250,8 +124,7 @@ export function handleDecryptedReplyMessage (
                 body,
                 timestampMs,
                 messageState,
-                replyIndex,
-                callback);
+                replyIndex);
 }
 
 export function handleSelectedReply (
@@ -261,8 +134,7 @@ export function handleSelectedReply (
         body: string,
         timestampMs: number,
         messageState: Message.MessageState,
-        replyIndex: number,
-        callback: Request.Callback<Message.MessageState>)
+        replyIndex: number)
 {
         const selectedOption = threadMessage.replyOptions[replyIndex];
         const messageId = messageState.messageId;
@@ -270,24 +142,20 @@ export function handleSelectedReply (
         switch (selectedOption.type) {
         case ReplyOption.ReplyOptionType.ValidPGPKey:
                 const validOption = <ReplyOption.ReplyOptionValidPGPKey>selectedOption;
-                handleReplyOptionValidPGPKey(
+                return handleReplyOptionValidPGPKey(
                         state,
                         player,
                         messageState,
                         body,
                         timestampMs,
-                        replyIndex,
-                        callback);
-                break;
+                        replyIndex);
 
         default:
-                handleReplyOptionDefault(
+                return handleReplyOptionDefault(
                         state,
                         messageState,
                         timestampMs,
-                        replyIndex,
-                        callback);
-                break;
+                        replyIndex);
         }
 }
 
@@ -295,17 +163,14 @@ export function handleReplyOptionDefault (
         state: App.State,
         message: Message.MessageState,
         timestampMs: number,
-        replyIndex: number,
-        callback: Request.Callback<Message.MessageState>)
+        replyIndex: number)
 {
         const promises = state.app.promises;
 
         message.reply.replyIndex = replyIndex;
         message.reply.timestampMs = timestampMs;
 
-        promises.addMessage(message).then(message =>
-                callback(null, message)
-        ).catch(error => callback(error, null));
+        return promises.addMessage(message);
 }
 
 export function handleReplyOptionValidPGPKey(
@@ -314,19 +179,17 @@ export function handleReplyOptionValidPGPKey(
         message: Message.MessageState,
         body: string,
         timestampMs: number,
-        replyIndex: number,
-        callback: Request.Callback<Message.MessageState>)
+        replyIndex: number)
 {
         const promises = state.app.promises;
 
         const publicKey = ReplyOption.extractPublicKey(body);
         player.publicKey = publicKey;
 
-        promises.updatePlayer(player).then(player => {
+        return promises.updatePlayer(player).then(player => {
                 message.reply.replyIndex = replyIndex;
                 message.reply.timestampMs = timestampMs;
 
                 return promises.updateMessage(message)
-        }).then(message => callback(null, message)
-        ).catch(error => callback(error, null));
+        });
 }

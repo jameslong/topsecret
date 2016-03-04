@@ -14,12 +14,8 @@ if (ConfigData.releaseMode) {
 
 Data.loadPrivateConfig(config);
 
-var onLoadState = (error: Request.Error, state: App.State) =>
-        {
-                if (error) {
-                        Log.info('State warning', error);
-                }
-
-                App.init(state);
-        };
-App.createState(config, onLoadState);
+App.createState(config).then(state =>
+        App.init(state)
+).catch(err => {
+        Log.info('State warning', err);
+});

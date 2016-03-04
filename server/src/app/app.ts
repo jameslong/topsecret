@@ -22,15 +22,13 @@ export interface State {
         app: State.State;
 }
 
-export function createState (
-        config: Config.ConfigState,
-        callback: Request.Callback<State>)
+export function createState (config: Config.ConfigState)
 {
         const server = Server.createServerState();
         const update = createUpdateState();
-        createGameState(config, server, (error, app) =>
-                callback(error, { config, server, update, app })
-        );
+        return createGameState(config, server).then(app => {
+                return { config, server, update, app };
+        });
 }
 
 export function getGroupData (app: State.State, groupName: string)
@@ -53,20 +51,20 @@ function createUpdateState (): UpdateState
 
 export function createGameState (
         config: Config.ConfigState,
-        server: Server.ServerState,
-        callback: Request.Callback<State.State>)
+        server: Server.ServerState)
 {
-        Data.loadAllGameData(config).then(gameData =>
-                onGameData(config, server, null, gameData, callback)
-        ).catch(err => onGameData(config, server, err, null, callback));
+        return Data.loadAllGameData(config).then(gameData =>
+                onGameData(config, server, gameData)
+        ).catch(err => {
+                Log.info('createGameState error: ' + err);
+                return onGameData(config, server, null);
+        });
 }
 
 export function onGameData (
         config: Config.ConfigState,
         server: Server.ServerState,
-        err: Request.Error,
-        gameData: State.GameData[],
-        callback: Request.Callback<State.State>)
+        gameData: State.GameData[])
 {
         const encrypt = KBPGP.signEncrypt;
         const send = Sender.createSendFn(
@@ -89,23 +87,16 @@ export function onGameData (
                 gameState.data = mappedGameData;
         }
 
-        callback(err, gameState);
+        return gameState;
 }
 
-export function updateGameState (
-        state: State, callback: Request.Callback<State.State>)
+export function updateGameState (state: State)
 {
-        var onGameState = (error: Request.Error, gameState: State.State) =>
-                {
-                        if (!error) {
-                                Log.debug('State.State updated');
-                                state.app = gameState;
-                        }
-                        callback(error, gameState);
-                };
-
         var config = state.config;
-        createGameState(config, state.server, onGameState);
+        return createGameState(state.config, state.server).then(gameState => {
+                state.app = gameState;
+                return gameState;
+        });
 }
 
 export function init (state: State)
@@ -168,7 +159,7 @@ export function onUpdateEnd (state: State)
         setTimeout(updateFn, config.update.updateIntervalMs);
 }
 
-export function onGetMessages (state: State, data: Request.GetMessagesResult)
+export function onGetMessages (state: State, data: DBTypes.GetMessagesResult)
 {
         Log.debug('onGetMessages');
 

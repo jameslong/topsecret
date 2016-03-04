@@ -127,9 +127,8 @@ export function createCreateMessageTableCallback (state: App.State)
                         var config = state.config;
                         var tableName = config.dynamoDBConfig.messagesTableName;
 
-                        promises.createMessageTable(tableName).then(result =>
-                                res.sendStatus(200)
-                        ).catch(err => res.sentStatus(500));
+                        const promise = promises.createMessageTable(tableName);
+                        return createRequestCallback(res, promise);
                 };
 }
 
@@ -142,9 +141,8 @@ export function createDeleteMessageTableCallback (state: App.State)
                         var config = state.config;
                         var tableName = config.dynamoDBConfig.messagesTableName;
 
-                        promises.deleteTable(tableName).then(result =>
-                                res.sendStatus(200)
-                        ).catch(err => res.sentStatus(500));
+                        const promise = promises.deleteTable(tableName);
+                        return createRequestCallback(res, promise);
                 };
 }
 
@@ -174,15 +172,14 @@ export function createBeginDemoCallback (state: App.State)
 
                         var groupData = App.getGroupData(state.app, narrativeName);
 
-                        var callback = createRequestCallback(res);
-
-                        Demo.beginDemo(
+                        const promise = Demo.beginDemo(
                                 state,
                                 groupData,
                                 email,
                                 playerData,
-                                newMessageName,
-                                callback);
+                                newMessageName);
+
+                        createRequestCallback(res, promise);
                 };
 }
 
@@ -194,10 +191,10 @@ export function createEndDemoCallback (state: App.State)
                                         email: string;
                                 } = req.body;
 
-                        var callback = createRequestCallback(res);
                         var promises = state.app.promises;
 
-                        Demo.endDemo(state, data.email, callback);
+                        const promise = Demo.endDemo(state, data.email);
+                        return createRequestCallback(res, promise);
                 };
 }
 
@@ -222,9 +219,8 @@ export function createAddPlayerCallback (state: App.State)
                         const player = Player.createPlayerState(
                                 email, publicKey, firstName, lastName);
 
-                        promises.addPlayer(player).then(player =>
-                                res(200)
-                        ).catch(err => res(500));
+                        const promise = promises.addPlayer(player);
+                        return createRequestCallback(res, promise);
                 };
 }
 
@@ -237,9 +233,8 @@ export function createDeletePlayerCallback (state: App.State)
                         var app = state.app;
                         var promises = app.promises;
 
-                        promises.deletePlayer(email).then(player =>
-                                res(200)
-                        ).catch(err => res(500));
+                        const promise = promises.deletePlayer(email);
+                        return createRequestCallback(res, promise);
                 };
 }
 
@@ -261,14 +256,18 @@ export function createReplyCallback (state: App.State)
                         var to = data['To'];
                         var subject = data.subject;
 
-                        Reply.handleReplyRequest(
-                                state,
-                                playerEmail,
-                                messageId,
-                                subject,
-                                body,
-                                to,
-                                res);
+                        if (messageId !== null) {
+                                const promise = Reply.handleReplyRequest(
+                                        state,
+                                        playerEmail,
+                                        messageId,
+                                        subject,
+                                        body,
+                                        to);
+                                return createRequestCallback(res, promise);
+                        } else {
+                                res.sentStatus(200);
+                        }
                 };
 }
 
@@ -290,14 +289,14 @@ export function createLocalReplyCallback (state: App.State)
                         var to = data.to;
                         var subject = data.subject;
 
-                        Reply.handleReplyRequest(
+                        const promise = Reply.handleReplyRequest(
                                 state,
                                 playerEmail,
                                 messageId,
                                 subject,
                                 body,
-                                to,
-                                res);
+                                to);
+                        return createRequestCallback(res, promise);
                 };
 }
 
@@ -372,8 +371,8 @@ export function createSaveMessageCallback (state: App.State)
 
                         Log.debug('Message saved');
 
-                        var callback = createRequestCallback(res);
-                        App.updateGameState(state, callback);
+                        const promise = App.updateGameState(state);
+                        return createRequestCallback(res, promise);
                 };
 }
 
@@ -401,8 +400,8 @@ export function createDeleteMessageCallback (state: App.State)
 
                         Data.deleteMessage(messagePath);
 
-                        var callback = createRequestCallback(res);
-                        App.updateGameState(state, callback);
+                        const promise = App.updateGameState(state);
+                        return createRequestCallback(res, promise);
                 };
 }
 
@@ -431,8 +430,8 @@ export function createSaveStringCallback (state: App.State)
 
                         Log.debug('String saved: ' + data.name);
 
-                        var callback = createRequestCallback(res);
-                        App.updateGameState(state, callback);
+                        const promise = App.updateGameState(state);
+                        return createRequestCallback(res, promise);
                 };
 }
 
@@ -461,8 +460,8 @@ export function createDeleteStringCallback (state: App.State)
 
                         Log.debug('String deleted: ' + data.name);
 
-                        var callback = createRequestCallback(res);
-                        App.updateGameState(state, callback);
+                        const promise = App.updateGameState(state);
+                        return createRequestCallback(res, promise);
                 };
 }
 
@@ -501,14 +500,9 @@ export function createValidateDataCallback (state: App.State)
                 };
 }
 
-export function createRequestCallback (res: any)
+export function createRequestCallback (res: any, promise: Promise<any>)
 {
-        return (error: Request.Error, data: any) =>
-                {
-                        if (error) {
-                                res.sendStatus(500);
-                        } else {
-                                res.sendStatus(200);
-                        };
-                };
+        return promise.then(result =>
+                res.sendStatus(200)
+        ).catch(err => res.sendStatus(500));
 }

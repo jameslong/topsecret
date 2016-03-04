@@ -11,10 +11,7 @@ export function createMailgun (key: string, domain: string): any
         return MailgunModule({apiKey: key, domain: domain});
 }
 
-export function sendMail (
-        mailgun: any,
-        messageData: Message.MessageData,
-        callback: Request.Callback<string>)
+export function sendMail (mailgun: any, messageData: Message.MessageData)
 {
         var to = [messageData.playerEmail].concat(messageData.to);
 
@@ -25,15 +22,16 @@ export function sendMail (
                 text: messageData.body,
         };
 
-        var onError = function (error: any, body: {id: string;})
-                {
-                        if (error) {
-                                Log.debug('Mailgun send error', error);
-                        }
-
-                        var id = (body ? body.id : null);
-                        callback(error, id);
-                }
-
-        mailgun.messages().send(mailgunMessageData, onError);
+        return new Promise<string>((resolve, reject) => {
+                mailgun.messages().send(mailgunMessageData,
+                        (err: any, body: { id: string; }) => {
+                                if (err) {
+                                        Log.debug('Mailgun send error', err);
+                                        reject(err);
+                                } else {
+                                        const id = (body ? body.id : null);
+                                        resolve(id);
+                                }
+                        });
+        })
 }

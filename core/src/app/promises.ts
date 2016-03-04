@@ -97,14 +97,14 @@ export function expired (
 
         return messageData.endGame ?
                 endGame(email, promises) :
-                promises.deleteMessage(state.message);
+                promises.deleteMessage(state.message.messageId);
 }
 
 export function endGame (
         email: string,
         promises: DBTypes.PromiseFactories): Promise<any>
 {
-        return promises.deleteAllMessages({ email }).then(result =>
+        return promises.deleteAllMessages(email).then(result =>
                 promises.deletePlayer(email));
 }
 

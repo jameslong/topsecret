@@ -57,10 +57,7 @@ export function createServerState (): ServerState
         };
 }
 
-export function sendMail (
-        io: any,
-        messageData: Message.MessageData,
-        callback: Request.Callback<string>)
+export function sendMail (io: any, messageData: Message.MessageData)
 {
         const messageId = generateMessageId();
         var to = [messageData.playerEmail].concat(messageData.to);
@@ -74,7 +71,7 @@ export function sendMail (
         };
 
         io.sockets.emit('message', message);
-        callback(null, messageId);
+        return Promise.resolve(messageId);
 }
 
 // DEBUG ONLY
