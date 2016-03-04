@@ -251,16 +251,16 @@ export function createReplyCallback (state: App.State)
                                 } = req.body;
 
                         var playerEmail = data.sender;
-                        var messageId = data['In-Reply-To'];
+                        var id = data['In-Reply-To'];
                         var body = data['stripped-text'] || '';
                         var to = data['To'];
                         var subject = data.subject;
 
-                        if (messageId !== null) {
+                        if (id !== null) {
                                 const promise = Reply.handleReplyRequest(
                                         state,
                                         playerEmail,
-                                        messageId,
+                                        id,
                                         subject,
                                         body,
                                         to);
@@ -284,7 +284,7 @@ export function createLocalReplyCallback (state: App.State)
                                 } = req.body;
 
                         var playerEmail = data.from;
-                        var messageId = data.id;
+                        var id = data.id;
                         var body = data.body || '';
                         var to = data.to;
                         var subject = data.subject;
@@ -292,7 +292,7 @@ export function createLocalReplyCallback (state: App.State)
                         const promise = Reply.handleReplyRequest(
                                 state,
                                 playerEmail,
-                                messageId,
+                                id,
                                 subject,
                                 body,
                                 to);

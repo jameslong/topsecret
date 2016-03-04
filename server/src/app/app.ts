@@ -212,7 +212,7 @@ export function getMessagesToUpdate (
         : Message.MessageState[]
 {
         return messages.filter((message) =>
-                lastUpdated[message.messageId] === undefined);
+                lastUpdated[message.id] === undefined);
 }
 
 export function storeLastUpdated (
@@ -221,5 +221,5 @@ export function storeLastUpdated (
         timestampMs: number)
 {
         messages.forEach(
-                (message) => lastUpdated[message.messageId] = timestampMs);
+                (message) => lastUpdated[message.id] = timestampMs);
 }

@@ -8,7 +8,7 @@ export interface ReplyState {
 export interface MessageState {
         email: string;
         version: string;
-        messageId: string;
+        id: string;
         name: string;
         reply: ReplyState;
         sentTimestampMs: number;

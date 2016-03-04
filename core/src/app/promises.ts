@@ -70,11 +70,11 @@ export function encryptSendStoreChild (
         return promises.encrypt(encryptData).then(body => {
                 data.body = body;
                 return promises.send(data);
-        }).then(messageId => {
+        }).then(id => {
                 const messageState = createMessageState(
                         groupData,
                         player.email,
-                        messageId,
+                        id,
                         name,
                         threadStartName);
                 return promises.addMessage(messageState);
@@ -97,7 +97,7 @@ export function expired (
 
         return messageData.endGame ?
                 endGame(email, promises) :
-                promises.deleteMessage(state.message.messageId);
+                promises.deleteMessage(state.message.id);
 }
 
 export function endGame (
@@ -123,14 +123,14 @@ export function resign (
         email: string,
         promises: DBTypes.PromiseFactories)
 {
-        return promises.send(data).then(messageId =>
+        return promises.send(data).then(id =>
                 endGame(email, promises));
 }
 
 function createMessageState (
         groupData: State.GameData,
         playerEmail: string,
-        messageId: string,
+        id: string,
         name: string,
         threadStartName: string)
 {
@@ -142,7 +142,7 @@ function createMessageState (
         return MessageHelpers.createMessageState(
                 playerEmail,
                 groupData.name,
-                messageId,
+                id,
                 name,
                 newThreadStartName,
                 numberOfChildren);

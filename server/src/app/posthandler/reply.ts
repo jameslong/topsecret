@@ -14,7 +14,7 @@ import State = require('../../../../core/src/app/state');
 export function handleReplyRequest (
         state: App.State,
         email: string,
-        messageId: string,
+        id: string,
         subject: string,
         body: string,
         to: string)
@@ -26,7 +26,7 @@ export function handleReplyRequest (
                 to: to,
                 subject: subject,
                 body: body,
-                messageId: messageId,
+                id: id,
                 timestampMs: Date.now(),
         };
 
@@ -49,7 +49,7 @@ export interface Reply {
         to: string;
         subject: string;
         body: string;
-        messageId: string;
+        id: string;
         timestampMs: number;
 }
 
@@ -57,9 +57,9 @@ export function handleReplyMessage (state: App.State, reply: Reply)
 {
         const promises = state.app.promises;
         const email = reply.from;
-        const messageId = reply.messageId;
+        const id = reply.id;
 
-        return promises.getMessage(messageId).then(message =>
+        return promises.getMessage(id).then(message =>
                 message && !message.reply ?
                         promises.getPlayer(email).then(player =>
                                 handleTimelyReply(
@@ -137,7 +137,7 @@ export function handleSelectedReply (
         replyIndex: number)
 {
         const selectedOption = threadMessage.replyOptions[replyIndex];
-        const messageId = messageState.messageId;
+        const id = messageState.id;
 
         switch (selectedOption.type) {
         case ReplyOption.ReplyOptionType.ValidPGPKey:

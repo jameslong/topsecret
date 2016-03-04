@@ -9,7 +9,7 @@ import Str = require('./utils/string');
 export function createMessageState (
         email: string,
         version: string,
-        messageId: string,
+        id: string,
         name: string,
         threadStartName: string,
         numberOfChildren: number)
@@ -20,7 +20,7 @@ export function createMessageState (
         return {
                 email: email,
                 version: version,
-                messageId: messageId,
+                id: id,
                 name: name,
                 threadStartName: threadStartName,
                 reply: null,

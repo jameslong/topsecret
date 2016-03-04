@@ -59,11 +59,11 @@ export function createServerState (): ServerState
 
 export function sendMail (io: any, messageData: Message.MessageData)
 {
-        const messageId = generateMessageId();
+        const id = generateMessageId();
         var to = [messageData.playerEmail].concat(messageData.to);
 
         var message: Message.MessagePacket = {
-                id: messageId,
+                id: id,
                 from: messageData.from,
                 to: to,
                 subject: messageData.subject,
@@ -71,7 +71,7 @@ export function sendMail (io: any, messageData: Message.MessageData)
         };
 
         io.sockets.emit('message', message);
-        return Promise.resolve(messageId);
+        return Promise.resolve(id);
 }
 
 // DEBUG ONLY

@@ -20,7 +20,7 @@ playerId
 
 table: messages
 
-messageId
+id
         email: string;
         name: string;
         reply: ReplyState;
@@ -285,9 +285,9 @@ export function addMessageLocal (
 {
         var error: Request.Error = undefined;
 
-        var messageId = messageState.messageId;
+        var id = messageState.id;
 
-        db.messages[messageId] = messageState;
+        db.messages[id] = messageState;
 
         return returnPromise(config, error, messageState);
 }
@@ -299,9 +299,9 @@ export function updateMessageLocal (
 {
         var error: Request.Error = undefined;
 
-        var messageId = messageState.messageId;
+        var id = messageState.id;
 
-        db.messages[messageId] = messageState;
+        db.messages[id] = messageState;
 
         return returnPromise(config, error, messageState);
 }
@@ -309,12 +309,12 @@ export function updateMessageLocal (
 export function deleteMessageLocal (
         db: DBState,
         config: Config.ConfigState,
-        messageId: DBTypes.DeleteMessageParams)
+        id: DBTypes.DeleteMessageParams)
 {
         var error: Request.Error = undefined;
 
-        var messageState = db.messages[messageId];
-        delete db.messages[messageId];
+        var messageState = db.messages[id];
+        delete db.messages[id];
 
         return returnPromise(config, error, messageState);
 }
@@ -322,11 +322,11 @@ export function deleteMessageLocal (
 export function getMessageLocal (
         db: DBState,
         config: Config.ConfigState,
-        messageId: DBTypes.GetMessageParams)
+        id: DBTypes.GetMessageParams)
 {
         var error: Request.Error = undefined;
 
-        var messageState = (db.messages[messageId] || null);
+        var messageState = (db.messages[id] || null);
 
         return returnPromise(config, error, messageState);
 }
@@ -350,7 +350,7 @@ export function getMessagesLocal (
 
         if (length) {
                 var startIndex = Arr.find(messageStates, (messageState) =>
-                        (messageState.messageId === startKey));
+                        (messageState.id === startKey));
 
                 if (startIndex === -1) {
                         startIndex = 0;
@@ -360,7 +360,7 @@ export function getMessagesLocal (
                 resultList = messageStates.slice(startIndex, endIndex);
                 lastEvaluatedKey = (endIndex === length ?
                         null :
-                        messageStates[endIndex].messageId);
+                        messageStates[endIndex].id);
         }
 
         var result = {

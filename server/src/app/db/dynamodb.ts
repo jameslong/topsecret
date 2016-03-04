@@ -168,7 +168,7 @@ export function createMessageTable (
                 TableName: tableName,
                 AttributeDefinitions: [
                         {
-                                AttributeName: 'messageId',
+                                AttributeName: 'id',
                                 AttributeType: 'S',
                         },
                         {
@@ -178,7 +178,7 @@ export function createMessageTable (
                 ],
                 KeySchema: [
                         {
-                                AttributeName: 'messageId',
+                                AttributeName: 'id',
                                 KeyType: "HASH",
                         }
                 ],
@@ -191,7 +191,7 @@ export function createMessageTable (
                                                 KeyType: 'HASH'
                                         },
                                         {
-                                                AttributeName: 'messageId',
+                                                AttributeName: 'id',
                                                 KeyType: "RANGE"
                                         }
                                 ],
@@ -297,11 +297,11 @@ export function updateMessage (
 export function getMessage (
         docClient: DOC.DynamoDB,
         messagesTableName: string,
-        messageId: DBTypes.GetMessageParams)
+        id: DBTypes.GetMessageParams)
 {
         var awsParams = {
                 Key: {
-                        messageId: messageId,
+                        id: id,
                 },
                 TableName: messagesTableName,
         };
@@ -315,14 +315,14 @@ export function getMessages (
         messagesTableName: string,
         params: DBTypes.GetMessagesParams)
 {
-        const resultMap = (data: { Items: Message.MessageState[]; LastEvaluatedKey: { messageId: string;} }) => {
+        const resultMap = (data: { Items: Message.MessageState[]; LastEvaluatedKey: { id: string;} }) => {
                 let result: DBTypes.GetMessagesResult = {
                         messages: data.Items,
                         lastEvaluatedKey: null,
                 };
                 var lastEvaluatedKey = data ? data.LastEvaluatedKey : null;
                 result.lastEvaluatedKey = lastEvaluatedKey ?
-                        lastEvaluatedKey.messageId : null;
+                        lastEvaluatedKey.id : null;
 
                 return result;
         };
@@ -334,7 +334,7 @@ export function getMessages (
 
         if (params.startKey !== null) {
                 awsParams.ExclusiveStartKey = {
-                        messageId: params.startKey,
+                        id: params.startKey,
                 };
         }
 
@@ -344,11 +344,11 @@ export function getMessages (
 export function deleteMessage (
         docClient: DOC.DynamoDB,
         messagesTableName: string,
-        messageId: DBTypes.DeleteMessageParams)
+        id: DBTypes.DeleteMessageParams)
 {
         var awsParams= {
                 Key: {
-                        messageId: messageId,
+                        id: id,
                 },
                 TableName: messagesTableName,
                 ReturnValues: 'ALL_OLD',
@@ -407,7 +407,7 @@ export function extractItem<T> (data: { Item: T })
 export interface QueryByEmailData {
         Items: {
                 email: string;
-                messageId: number;
+                id: number;
         }[];
 }
 
@@ -439,7 +439,7 @@ export function deleteById (
                         return {
                                 DeleteRequest: {
                                         Key: {
-                                                messageId: item.messageId,
+                                                id: item.id,
                                         }
                                 }
                         };
