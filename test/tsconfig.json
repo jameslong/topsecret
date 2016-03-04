@@ -9,6 +9,7 @@
                 "outDir": "build"
         },
         "files": [
-                "core.kbpgp.ts"
+                "core.kbpgp.ts",
+                "server.db.ts"
         ]
 }
