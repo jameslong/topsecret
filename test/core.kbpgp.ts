@@ -38,8 +38,7 @@ const decryptVerifyTo1 = function (ciphertext: string) {
 };
 
 const encryptDecryptTo1 = function (text: string) {
-        const result = signEncryptFrom0To1(text).then(decryptVerifyTo1);
-        return Chai.assert.eventually.equal(result, text);
+        return signEncryptFrom0To1(text).then(decryptVerifyTo1);
 };
 
 describe('Kbpgp', function () {
@@ -63,7 +62,9 @@ describe('Kbpgp', function () {
 
         describe('decryptVerify', function () {
                 it('should decrypt without error', function () {
-                        return encryptDecryptTo1(secretMessage);
+                        const promise = encryptDecryptTo1(secretMessage);
+                        return Chai.assert.eventually.equal(
+                                promise, secretMessage);
                 })
         });
 });
