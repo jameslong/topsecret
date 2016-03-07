@@ -6,13 +6,14 @@ import DBTypes = require('../core/src/app/dbtypes');
 import Helpers = require('../core/src/app/utils/helpers');
 import LocalDB = require('../server/src/app/db/localdb');
 import Main = require('../core/src/app/main');
+import MessageHelpers = require('../core/src/app/messagehelpers');
 import Player = require('../core/src/app/player');
 
 import Chai = require('chai');
 import ChaiAsPromised = require('chai-as-promised');
 Chai.use(ChaiAsPromised);
 
-const delayMs = 500;
+const delayMs = 100;
 const db = LocalDB.createLocalDBCalls(delayMs);
 
 function createPlayer0 ()
@@ -22,6 +23,18 @@ function createPlayer0 ()
         const firstName = 'John';
         const lastName = 'Smith';
         return Player.createPlayerState(email, publicKey, firstName, lastName);
+}
+
+function createMessage0 ()
+{
+        const email = 'john@smith.com';
+        const id = '<0.john@smith.com>';
+        const version = 'Test';
+        const name = 'test';
+        const threadStartName: string = null;
+        const numberOfChildren = 3;
+        return MessageHelpers.createMessageState(
+                email, version, id, name, threadStartName, numberOfChildren);
 }
 
 describe('DB', function () {
@@ -58,7 +71,8 @@ describe('DB', function () {
                         ).then(updatedPlayer =>
                                 db.getPlayer(player.email)
                         );
-                        return Chai.assert.eventually.equal(promise, modifiedPlayer);
+                        return Chai.assert.eventually.equal(
+                                promise, modifiedPlayer);
                 })
         });
 
@@ -76,9 +90,61 @@ describe('DB', function () {
                                 Chai.assert.eventually.equal(deletePromise, player),
                                 Chai.assert.eventually.isNull(getPromise),
                         ]);
-
-
                 })
         });
 
+        describe('addMessage', function () {
+                it('should return new message', function () {
+                        const db = LocalDB.createLocalDBCalls(delayMs);
+                        const message = createMessage0();
+                        const promise = db.addMessage(message);
+                        return Chai.assert.eventually.equal(promise, message);
+                })
+        });
+
+        describe('getMessage', function () {
+                it('should return the message', function () {
+                        const db = LocalDB.createLocalDBCalls(delayMs);
+                        const message = createMessage0();
+                        const promise = db.addMessage(message).then(message =>
+                                db.getMessage(message.id)
+                        );
+                        return Chai.assert.eventually.equal(promise, message);
+                })
+        });
+
+        describe('updateMessage', function () {
+                it('should return the updated message', function () {
+                        const db = LocalDB.createLocalDBCalls(delayMs);
+                        const message = createMessage0();
+                        const replySent = true;
+                        const modifiedMessage = Helpers.assign(
+                                message, { replySent });
+
+                        const promise = db.addMessage(message).then(message =>
+                                db.updateMessage(modifiedMessage)
+                        ).then(updatedMessage =>
+                                db.getMessage(message.id)
+                        );
+                        return Chai.assert.eventually.equal(
+                                promise, modifiedMessage);
+                })
+        });
+
+        describe('deleteMessage', function () {
+                it('should return the deleted message', function () {
+                        const db = LocalDB.createLocalDBCalls(delayMs);
+                        const message = createMessage0();
+                        const deletePromise = db.addMessage(message).then(
+                                message => db.deleteMessage(message.id)
+                        );
+                        const getPromise = deletePromise.then(message =>
+                                db.getMessage(message.id)
+                        );
+                        return Promise.all([
+                                Chai.assert.eventually.equal(deletePromise, message),
+                                Chai.assert.eventually.isNull(getPromise),
+                        ]);
+                })
+        });
 });
