@@ -37,6 +37,18 @@ function createMessage0 ()
                 email, version, id, name, threadStartName, numberOfChildren);
 }
 
+function createMessage1 ()
+{
+        const email = 'john@smith.com';
+        const id = '<1.john@smith.com>';
+        const version = 'Test';
+        const name = 'test';
+        const threadStartName: string = null;
+        const numberOfChildren = 2;
+        return MessageHelpers.createMessageState(
+                email, version, id, name, threadStartName, numberOfChildren);
+}
+
 describe('DB', function () {
         describe('addPlayer', function () {
                 it('should return new player', function () {
@@ -147,4 +159,24 @@ describe('DB', function () {
                         ]);
                 })
         });
+
+        describe('deleteAllMessages', function () {
+                it('should delete all the player\'s messages in db', function () {
+                        const db = LocalDB.createLocalDBCalls(delayMs);
+                        const message0 = createMessage0();
+                        const message1 = createMessage1();
+                        const promise = db.addMessage(message0).then(message =>
+                                db.addMessage(message1)
+                        ).then(message => db.deleteAllMessages(message0.email));
+                        const get0Promise = promise.then(message =>
+                                db.getMessage(message0.id));
+                        const get1Promise = promise.then(message =>
+                                db.getMessage(message1.id));
+                        return Promise.all([
+                                Chai.assert.eventually.isNull(get0Promise),
+                                Chai.assert.eventually.isNull(get1Promise),
+                        ]);
+                })
+        });
+
 });
