@@ -35,7 +35,7 @@ export type GetMessageParams = string;
 export type GetMessageFact = Prom.Factory<GetMessageParams, Message.MessageState>;
 
 export interface GetMessagesParams {
-        startKey: string;
+        exclusiveStartKey: string;
         maxResults: number;
 }
 export interface GetMessagesResult {

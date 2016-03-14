@@ -125,6 +125,62 @@ describe('DB', function () {
                 })
         });
 
+        describe('getMessages', function () {
+                it('should return second message with exclusive start key', function () {
+                        const db = LocalDB.createLocalDBCalls(delayMs);
+                        const message0 = createMessage0();
+                        const message1 = createMessage1();
+
+                        const exclusiveStartKey = message0.id;
+                        const maxResults = 1;
+
+                        const promise = db.addMessage(message0).then(message =>
+                                db.addMessage(message1)
+                        ).then(message =>
+                                db.getMessages({exclusiveStartKey, maxResults})
+                        );
+                        return Chai.assert.eventually.deepEqual(promise, {
+                                lastEvaluatedKey: message1.id,
+                                messages: [message1]
+                        });
+                })
+
+                it('should return first message with null start key', function () {
+                        const db = LocalDB.createLocalDBCalls(delayMs);
+                        const message0 = createMessage0();
+                        const message1 = createMessage1();
+
+                        const exclusiveStartKey: string = null;
+                        const maxResults = 1;
+
+                        const promise = db.addMessage(message0).then(message =>
+                                db.addMessage(message1)
+                        ).then(message =>
+                                db.getMessages({exclusiveStartKey, maxResults})
+                        );
+                        return Chai.assert.eventually.deepEqual(promise, {
+                                lastEvaluatedKey: message0.id,
+                                messages: [message0]
+                        });
+                })
+
+                it('should return null lastEvaluatedKey', function () {
+                        const db = LocalDB.createLocalDBCalls(delayMs);
+                        const message0 = createMessage0();
+
+                        const exclusiveStartKey: string = null;
+                        const maxResults = 10;
+
+                        const promise = db.addMessage(message0).then(message =>
+                                db.getMessages({exclusiveStartKey, maxResults})
+                        );
+                        return Chai.assert.eventually.deepEqual(promise, {
+                                lastEvaluatedKey: null,
+                                messages: [message0]
+                        });
+                })
+        });
+
         describe('updateMessage', function () {
                 it('should return the updated message', function () {
                         const db = LocalDB.createLocalDBCalls(delayMs);
@@ -178,5 +234,4 @@ describe('DB', function () {
                         ]);
                 })
         });
-
 });

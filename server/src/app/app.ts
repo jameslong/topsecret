@@ -139,7 +139,7 @@ export function update (state: State)
         const maxResults = config.update.maxMessagesRequestedPerUpdate;
 
         const getMessages = gameState.promises.getMessages;
-        const params = { startKey: lastEvaluatedKey, maxResults };
+        const params = { exclusiveStartKey: lastEvaluatedKey, maxResults };
 
         getMessages(params).then(data =>
                 onGetMessages(state, data)

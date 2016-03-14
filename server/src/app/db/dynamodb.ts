@@ -331,9 +331,9 @@ export function getMessages (
                 TableName: messagesTableName,
         };
 
-        if (params.startKey !== null) {
+        if (params.exclusiveStartKey !== null) {
                 awsParams.ExclusiveStartKey = {
-                        id: params.startKey,
+                        id: params.exclusiveStartKey,
                 };
         }
 

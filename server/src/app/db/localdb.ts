@@ -3,6 +3,7 @@ import Config = require('../config');
 import DBTypes = require('../../../../core/src/app/dbtypes');
 import Helpers = require('../../../../core/src/app/utils/helpers');
 import Map = require('../../../../core/src/app/utils/map');
+import MathUtils = require('../../../../core/src/app/utils/math');
 import Message = require('../../../../core/src/app/message');
 import MessageHelpers = require('../../../../core/src/app/messagehelpers');
 import Player = require('../../../../core/src/app/player');
@@ -318,39 +319,34 @@ export function getMessagesLocal (
         db: DBState,
         params: DBTypes.GetMessagesParams)
 {
-        var error: Request.Error = undefined;
+        const exclusiveStartKey = params.exclusiveStartKey;
+        const maxResults = params.maxResults;
+        const keys = Object.keys(db.messages);
 
-        var messageStates = <Message.MessageState[]>Helpers.arrayFromMap(
-                db.messages);
-        var length = messageStates.length;
+        let lastEvaluatedKey: string = null;
+        let messages: Message.MessageState[] = [];
 
-        var startKey = params.startKey;
-        var maxResults = params.maxResults;
+        const exclusiveStartIndex = keys.indexOf(exclusiveStartKey);
+        const hasInclusiveStartKey =
+                exclusiveStartKey === null ||
+                exclusiveStartIndex !== -1;
 
-        var resultList: Message.MessageState[] = [];
-        var lastEvaluatedKey: string = null;
+        if (keys.length && hasInclusiveStartKey) {
+                const startIndex = exclusiveStartKey === null ?
+                        0 : exclusiveStartIndex + 1;
+                const desiredEndIndex = startIndex + maxResults;
+                const endIndex = Math.min(startIndex + maxResults, keys.length);
 
-        if (length) {
-                var startIndex = Arr.find(messageStates, (messageState) =>
-                        (messageState.id === startKey));
+                const selectedKeys = keys.slice(startIndex, endIndex);
+                messages = selectedKeys.map(key => db.messages[key]);
 
-                if (startIndex === -1) {
-                        startIndex = 0;
-                }
-
-                var endIndex = Math.min(startIndex + maxResults, length);
-                resultList = messageStates.slice(startIndex, endIndex);
-                lastEvaluatedKey = (endIndex === length ?
-                        null :
-                        messageStates[endIndex].id);
+                const lastSelectedKey = selectedKeys.length ?
+                        selectedKeys[selectedKeys.length - 1] : null;
+                lastEvaluatedKey = desiredEndIndex > endIndex ?
+                        null : lastSelectedKey;
         }
 
-        var result = {
-                lastEvaluatedKey: lastEvaluatedKey,
-                messages: resultList,
-        };
-
-        return returnPromise(error, result);
+        return returnPromise(null, { lastEvaluatedKey, messages });
 }
 
 export function getPlayerLocal (
