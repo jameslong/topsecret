@@ -2,22 +2,17 @@
 /// <reference path="../typings/mocha/mocha.d.ts" />
 /// <reference path="../core/src/app/global.d.ts"/>
 
-import DBTypes = require('../core/src/app/dbtypes');
 import Helpers = require('../core/src/app/utils/helpers');
-import LocalDB = require('../server/src/app/db/localdb');
-import Main = require('../core/src/app/main');
 import TestHelpers = require('./helpers');
 
 import Chai = require('chai');
 import ChaiAsPromised = require('chai-as-promised');
 Chai.use(ChaiAsPromised);
 
-const delayMs = 100;
-
 describe('DB', function () {
         describe('addPlayer', function () {
                 it('should return new player', function () {
-                        const db = LocalDB.createLocalDBCalls(delayMs);
+                        const db = TestHelpers.createDB();
                         const player = TestHelpers.createPlayer0();
                         const promise = db.addPlayer(player);
                         return Chai.assert.eventually.equal(promise, player);
@@ -26,7 +21,7 @@ describe('DB', function () {
 
         describe('getPlayer', function () {
                 it('should return the player', function () {
-                        const db = LocalDB.createLocalDBCalls(delayMs);
+                        const db = TestHelpers.createDB();
                         const player = TestHelpers.createPlayer0();
                         const promise = db.addPlayer(player).then(player =>
                                 db.getPlayer(player.email)
@@ -37,7 +32,7 @@ describe('DB', function () {
 
         describe('updatePlayer', function () {
                 it('should return the updated player', function () {
-                        const db = LocalDB.createLocalDBCalls(delayMs);
+                        const db = TestHelpers.createDB();
                         const player = TestHelpers.createPlayer0();
                         const publicKey = 'asdfadf';
                         const modifiedPlayer = Helpers.assign(
@@ -55,7 +50,7 @@ describe('DB', function () {
 
         describe('deletePlayer', function () {
                 it('should return the deleted player', function () {
-                        const db = LocalDB.createLocalDBCalls(delayMs);
+                        const db = TestHelpers.createDB();
                         const player = TestHelpers.createPlayer0();
                         const deletePromise = db.addPlayer(player).then(player =>
                                 db.deletePlayer(player.email)
@@ -72,7 +67,7 @@ describe('DB', function () {
 
         describe('addMessage', function () {
                 it('should return new message', function () {
-                        const db = LocalDB.createLocalDBCalls(delayMs);
+                        const db = TestHelpers.createDB();
                         const message = TestHelpers.createMessage0();
                         const promise = db.addMessage(message);
                         return Chai.assert.eventually.equal(promise, message);
@@ -81,7 +76,7 @@ describe('DB', function () {
 
         describe('getMessage', function () {
                 it('should return the message', function () {
-                        const db = LocalDB.createLocalDBCalls(delayMs);
+                        const db = TestHelpers.createDB();
                         const message = TestHelpers.createMessage0();
                         const promise = db.addMessage(message).then(message =>
                                 db.getMessage(message.id)
@@ -92,7 +87,7 @@ describe('DB', function () {
 
         describe('getMessages', function () {
                 it('should return second message with exclusive start key', function () {
-                        const db = LocalDB.createLocalDBCalls(delayMs);
+                        const db = TestHelpers.createDB();
                         const message0 = TestHelpers.createMessage0();
                         const message1 = TestHelpers.createMessage1();
 
@@ -111,7 +106,7 @@ describe('DB', function () {
                 })
 
                 it('should return first message with null start key', function () {
-                        const db = LocalDB.createLocalDBCalls(delayMs);
+                        const db = TestHelpers.createDB();
                         const message0 = TestHelpers.createMessage0();
                         const message1 = TestHelpers.createMessage1();
 
@@ -130,7 +125,7 @@ describe('DB', function () {
                 })
 
                 it('should return null lastEvaluatedKey', function () {
-                        const db = LocalDB.createLocalDBCalls(delayMs);
+                        const db = TestHelpers.createDB();
                         const message0 = TestHelpers.createMessage0();
 
                         const exclusiveStartKey: string = null;
@@ -148,7 +143,7 @@ describe('DB', function () {
 
         describe('updateMessage', function () {
                 it('should return the updated message', function () {
-                        const db = LocalDB.createLocalDBCalls(delayMs);
+                        const db = TestHelpers.createDB();
                         const message = TestHelpers.createMessage0();
                         const replySent = true;
                         const modifiedMessage = Helpers.assign(
@@ -166,7 +161,7 @@ describe('DB', function () {
 
         describe('deleteMessage', function () {
                 it('should return the deleted message', function () {
-                        const db = LocalDB.createLocalDBCalls(delayMs);
+                        const db = TestHelpers.createDB();
                         const message = TestHelpers.createMessage0();
                         const deletePromise = db.addMessage(message).then(
                                 message => db.deleteMessage(message.id)
@@ -183,7 +178,7 @@ describe('DB', function () {
 
         describe('deleteAllMessages', function () {
                 it('should delete all the player\'s messages in db', function () {
-                        const db = LocalDB.createLocalDBCalls(delayMs);
+                        const db = TestHelpers.createDB();
                         const message0 = TestHelpers.createMessage0();
                         const message1 = TestHelpers.createMessage1();
                         const promise = db.addMessage(message0).then(message =>

@@ -1,3 +1,4 @@
+import LocalDB = require('../server/src/app/db/localdb');
 import MessageHelpers = require('../core/src/app/messagehelpers');
 import Player = require('../core/src/app/player');
 
@@ -33,3 +34,6 @@ export function createMessage1 ()
         return MessageHelpers.createMessageState(
                 email, version, id, name, threadStartName, numberOfChildren);
 }
+
+const delayMs = 100;
+export const createDB = () => LocalDB.createLocalDBCalls(delayMs);
