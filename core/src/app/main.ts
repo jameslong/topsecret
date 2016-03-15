@@ -43,6 +43,7 @@ function pendingChildren (
         promises: DBTypes.PromiseFactories)
 {
         const { message, player } = state;
+        const domain = app.emailDomain;
 
         const messageData = groupData.threadData[message.name];
         const children = messageData.children;
@@ -55,16 +56,14 @@ function pendingChildren (
         const expired = unsent.filter(index =>
                 isExpiredThreadDelay(children[index], timeDelayMs)
         );
-        const childrenData = expired.map(index =>
-                createMessageData(
+
+        return expired.map(index =>
+                Promises.child(
+                        children[index].name,
+                        expired[index],
+                        domain,
                         groupData,
-                        player,
-                        message.name,
-                        message.threadStartName,
-                        app.emailDomain)
-        );
-        return childrenData.map((data, index) =>
-                Promises.child(groupData, data, expired[index], promises)
+                        promises)
         );
 }
 
@@ -110,14 +109,11 @@ function pendingReply (
         const threadMessage = groupData.threadData[messageName];
         const replyDelay = getReplyDelay(message, threadMessage);
 
-        const replyData = createMessageData(
-                groupData,
-                player,
+        return Promises.reply(
                 replyDelay.name,
-                message.threadStartName,
-                emailDomain);
-
-        return Promises.reply(groupData, replyData, promises);
+                emailDomain,
+                groupData,
+                promises);
 }
 
 function pendingFallback (
@@ -130,15 +126,13 @@ function pendingFallback (
 
         const messageName = message.name;
         const threadMessage = groupData.threadData[messageName];
+        const fallbackName = threadMessage.fallback.name;
 
-        const fallbackData = createMessageData(
+        return Promises.reply(
+                fallbackName,
+                emailDomain,
                 groupData,
-                player,
-                threadMessage.fallback.name,
-                message.threadStartName,
-                emailDomain);
-
-        return Promises.reply(groupData, fallbackData, promises);
+                promises);
 }
 
 function hasPendingChildren (message: Message.MessageState)

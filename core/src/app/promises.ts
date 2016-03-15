@@ -1,4 +1,6 @@
 import DBTypes = require('./dbtypes');
+import KbpgpHelpers = require('./kbpgp');
+import Main = require('./main');
 import Message = require('./message');
 import MessageHelpers = require('./messagehelpers');
 import Player = require('./player');
@@ -12,9 +14,10 @@ export interface UpdateInfo {
 }
 
 export function child (
-        groupData: State.GameData,
-        data: Message.MessageData,
+        name: string,
         childIndex: number,
+        domain: string,
+        groupData: State.GameData,
         promises: DBTypes.PromiseFactories)
 {
         return (state: UpdateInfo) => {
@@ -22,10 +25,11 @@ export function child (
                 const threadStartName = message.threadStartName;
 
                 return encryptSendStoreChild(
-                        groupData,
-                        data,
-                        player,
+                        name,
                         threadStartName,
+                        player,
+                        domain,
+                        groupData,
                         promises).then(message => {
                                 message.childrenSent[childIndex] = true;
                                 state.message = message;
@@ -35,8 +39,9 @@ export function child (
 }
 
 export function reply (
+        name: string,
+        domain: string,
         groupData: State.GameData,
-        data: Message.MessageData,
         promises: DBTypes.PromiseFactories)
 {
         return (state: UpdateInfo) => {
@@ -44,10 +49,11 @@ export function reply (
                 const threadStartName = message.threadStartName;
 
                 return encryptSendStoreChild(
-                        groupData,
-                        data,
-                        player,
+                        name,
                         threadStartName,
+                        player,
+                        domain,
+                        groupData,
                         promises).then(message => {
                                 message.replySent = true;
                                 state.message = message;
@@ -57,19 +63,29 @@ export function reply (
 }
 
 export function encryptSendStoreChild (
-        groupData: State.GameData,
-        data: Message.MessageData,
-        player: Player.PlayerState,
+        name: string,
         threadStartName: string,
+        player: Player.PlayerState,
+        domain: string,
+        groupData: State.GameData,
         promises: DBTypes.PromiseFactories)
 {
-        const from = groupData.keyManagers[data.from];
-        const to = groupData.keyManagers[player.email];
-        const encryptData = { from, to, text: data.body };
+        const data = Main.createMessageData(
+                groupData,
+                player,
+                name,
+                threadStartName,
+                domain);
 
-        return promises.encrypt(encryptData).then(body => {
-                data.body = body;
-                return promises.send(data);
+        const messageData = groupData.threadData[name];
+        const from = groupData.keyManagers[messageData.message.from];
+
+        return KbpgpHelpers.loadKey(player.publicKey).then(to => {
+                const encryptData = { from, to, text: data.body };
+                return promises.encrypt(encryptData);
+        }).then(body => {
+                        data.body = body;
+                        return promises.send(data);
         }).then(id => {
                 const messageState = createMessageState(
                         groupData,
@@ -109,13 +125,20 @@ export function endGame (
 }
 
 export function beginGame (
-        groupData: State.GameData,
+        name: string,
         player: Player.PlayerState,
-        data: Message.MessageData,
+        domain: string,
+        groupData: State.GameData,
         promises: DBTypes.PromiseFactories)
 {
         return promises.addPlayer(player).then(result =>
-                encryptSendStoreChild(groupData, data, player, null, promises));
+                encryptSendStoreChild(
+                        name,
+                        null,
+                        player,
+                        domain,
+                        groupData,
+                        promises));
 }
 
 export function resign (

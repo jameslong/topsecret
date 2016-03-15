@@ -15,6 +15,7 @@ export function beginDemo (
         threadMessageName: string)
 {
         const app = state.app;
+        const domain = app.emailDomain;
         const promises = app.promises;
 
         const publicKey: string = null;
@@ -24,16 +25,12 @@ export function beginDemo (
         const player = Player.createPlayerState(
                 email, publicKey, version, firstName, lastName);
 
-        const messageName = state.config.content.resignationThread;
-        const threadStartName: string = null;
-        const data = Main.createPlayerlessMessageData(
-                groupData,
-                email,
+        return Promises.beginGame(
                 threadMessageName,
-                threadStartName,
-                app.emailDomain);
-
-        return Promises.beginGame(groupData, player, data, promises);
+                player,
+                domain,
+                groupData,
+                promises);
 }
 
 export function endDemo (state: App.State, email: string)
