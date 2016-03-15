@@ -485,17 +485,22 @@ export function createValidateDataCallback (state: App.State)
 {
         return (req: any, res: any) =>
                 {
-                        var data: { narrativeName: string; } = req.query;
+                        const data: { narrativeName: string; } = req.query;
 
-                        var app = state.app;
-                        var config = state.config;
+                        const app = state.app;
+                        const config = state.config;
 
-                        var path = config.content.narrativeFolder;
+                        const path = config.content.narrativeFolder;
 
-                        var narrativeData = Data.loadNarrative(
+                        const narrativeData = Data.loadNarrative(
                                 path, data.narrativeName);
-                        var dataErrors = DataValidation.getDataErrors(
-                                narrativeData);
+                        const content = config.content;
+                        const profileSchema = FileSystem.loadJSONSync<JSON>(
+                                content.profileSchemaPath);
+                        const messageSchema = FileSystem.loadJSONSync<JSON>(
+                                content.messageSchemaPath);
+                        const dataErrors = DataValidation.getDataErrors(
+                                narrativeData, profileSchema, messageSchema);
 
                         res.send(dataErrors);
                 };

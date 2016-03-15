@@ -37,14 +37,24 @@ export function loadPrivateConfig(config: Config.ConfigState)
         config.client.elbURL = privateConfig.elbURL;
 }
 
-export function loadAllGameData (config: Config.ConfigState)
+export function loadAllGameData (
+        config: Config.ConfigState)
 {
-        var content = config.content;
-        var narrativeFolderPath = content.narrativeFolder;
-        var groupNames = FileSystem.loadDirectoryNamesSync(narrativeFolderPath);
+        const content = config.content;
+        const profileSchema = FileSystem.loadJSONSync<JSON>(
+                content.profileSchemaPath);
+        const messageSchema = FileSystem.loadJSONSync<JSON>(
+                content.messageSchemaPath);
 
-        var tasks = groupNames.map(name =>
-                loadGameData(narrativeFolderPath, name));
+        const narrativeFolderPath = content.narrativeFolder;
+        const groupNames = FileSystem.loadDirectoryNamesSync(narrativeFolderPath);
+
+        const tasks = groupNames.map(name =>
+                loadGameData(
+                        narrativeFolderPath,
+                        name,
+                        profileSchema,
+                        messageSchema));
 
         return Promise.all(tasks);
 }
@@ -54,9 +64,10 @@ export function join (...paths: string[]): string
         return paths.join('/');
 }
 
-export function loadGameData (path: string, name: string)
+export function loadGameData (
+        path: string, name: string, profileSchema: JSON, messageSchema: JSON)
 {
-        var groupData = loadGroupData(path, name);
+        var groupData = loadGroupData(path, name, profileSchema, messageSchema);
 
         if (groupData) {
                 const profiles = groupData.profiles;
@@ -77,10 +88,13 @@ export function loadGameData (path: string, name: string)
         }
 }
 
-export function loadGroupData (path: string, name: string): State.GameData
+export function loadGroupData (
+        path: string, name: string, profileSchema: JSON, messageSchema: JSON)
+        : State.GameData
 {
         var data = loadNarrative(path, name);
-        var dataErrors = DataValidation.getDataErrors(data);
+        var dataErrors = DataValidation.getDataErrors(
+                data, profileSchema, messageSchema);
 
         if (dataErrors.length) {
                 var errorText = JSON.stringify(dataErrors, null, 4);

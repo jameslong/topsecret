@@ -14,13 +14,14 @@ interface ValidateFn<T> {
         errors: Object[];
 }
 
-export function getDataErrors (data: Data.NarrativeData): string
+export function getDataErrors (
+        data: Data.NarrativeData,
+        profileSchema: JSON,
+        messageSchema: JSON): string
 {
-        const profileSchema = FileSystem.loadJSONSync('src/app/data/profileschema.json');
         const profiles = <Profile.Profile[]>Helpers.arrayFromMap(data.profiles);
         const profileErrors = getJSONDirErrors(profileSchema, profiles);
 
-        const messageSchema = FileSystem.loadJSONSync('src/app/data/messageschema.json');
         const messages = <Message.MessageState[]>Helpers.arrayFromMap(data.messages);
         const messageErrors = getJSONDirErrors(messageSchema, messages);
 
