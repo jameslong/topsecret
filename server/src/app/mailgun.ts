@@ -13,11 +13,9 @@ export function createMailgun (key: string, domain: string): any
 
 export function sendMail (mailgun: any, messageData: Message.MessageData)
 {
-        var to = [messageData.playerEmail].concat(messageData.to);
-
-        var mailgunMessageData = {
+        const mailgunMessageData = {
                 from: messageData.from,
-                to: to,
+                to: messageData.to,
                 subject: messageData.subject,
                 text: messageData.body,
         };

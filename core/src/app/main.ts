@@ -224,13 +224,11 @@ export function createPlayerlessMessageData (
         emailDomain: string)
 {
         return MessageHelpers.createMessageData(
-                groupData.threadData,
                 messageName,
                 threadStartName,
                 email,
                 emailDomain,
-                groupData.profiles,
-                groupData.strings,
+                groupData,
                 null);
 }
 export function createMessageData (
@@ -241,12 +239,10 @@ export function createMessageData (
         emailDomain: string)
 {
         return MessageHelpers.createMessageData(
-                groupData.threadData,
                 messageName,
                 threadStartName,
                 player.email,
                 emailDomain,
-                groupData.profiles,
-                groupData.strings,
+                groupData,
                 player.vars);
 }

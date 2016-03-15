@@ -4,6 +4,7 @@ import Map = require('./utils/map');
 import Message = require('./message');
 import Player = require('./player');
 import Profile = require('./profile');
+import State = require('./state');
 import Str = require('./utils/string');
 
 export function createMessageState (
@@ -29,43 +30,35 @@ export function createMessageState (
 }
 
 export function createMessageData (
-        threadMessages: Map.Map<Message.ThreadMessage>,
         name: string,
         threadStartName: string,
-        playerEmail: string,
+        to: string,
         domain: string,
-        profiles: Map.Map<Profile.Profile>,
-        strings: Map.Map<string>,
+        groupData: State.GameData,
         vars: Player.PlayerVars): Message.MessageData
 {
-        const threadMessage = threadMessages[name];
-        var message = threadMessage.message;
-        const threadStart = threadMessages[threadStartName];
+        const { threadData, strings, profiles } = groupData;
+
+        const threadMessage = threadData[name];
+        const message = threadMessage.message;
+        const threadStart = threadData[threadStartName];
         const threadSubject = strings[threadStart.threadSubject];
         const subject = name === threadStartName ?
                 threadSubject :
                 'Re: ' + threadSubject;
         Log.assert(subject !== null, 'No thread subject: ', threadStartName);
 
-        var fromProfile = profiles[message.from];
-        var from = generateFriendlyEmail(fromProfile, domain);
-
-        var to = message.to.map(function (profileName: string)
-                {
-                        var profile = profiles[profileName];
-                        return generateFriendlyEmail(profile, domain);
-                });
+        const fromProfile = profiles[message.from];
+        const from = generateFriendlyEmail(fromProfile, domain);
 
         const passages = message.body.map(text => strings[text]);
         const body = passages.join('\n\n');
-        var customBody = (vars ? insertMessageVars(body, vars) : body);
+        const customBody = (vars ? insertMessageVars(body, vars) : body);
 
         return {
-                name: threadMessage.name,
-                playerEmail: playerEmail,
-                from: from,
-                to: to,
-                subject: subject,
+                from,
+                to: [to],
+                subject,
                 body: customBody,
         };
 }

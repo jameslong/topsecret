@@ -60,12 +60,10 @@ export function createServerState (): ServerState
 export function sendMail (io: any, messageData: Message.MessageData)
 {
         const id = generateMessageId();
-        var to = [messageData.playerEmail].concat(messageData.to);
-
-        var message: Message.MessagePacket = {
+        const message: Message.MessagePacket = {
                 id: id,
                 from: messageData.from,
-                to: to,
+                to: messageData.to,
                 subject: messageData.subject,
                 body: messageData.body,
         };

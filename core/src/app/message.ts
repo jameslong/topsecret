@@ -71,8 +71,6 @@ export interface MessagePacket {
 }
 
 export interface MessageData {
-        name: string;
-        playerEmail: string;
         from: string;
         to: string[];
         subject: string;
