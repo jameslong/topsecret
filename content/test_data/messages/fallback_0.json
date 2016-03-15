@@ -1,0 +1,23 @@
+{
+        "name": "fallback_0",
+        "threadSubject": "",
+        "position": {
+                "x": 550,
+                "y": 220
+        },
+        "endGame": false,
+        "message": {
+                "from": "james",
+                "to": [
+                        "zoe"
+                ],
+                "body": [
+                        "fallback_0_body"
+                ]
+        },
+        "encrypted": true,
+        "receiver": null,
+        "replyOptions": [],
+        "children": [],
+        "fallback": null
+}

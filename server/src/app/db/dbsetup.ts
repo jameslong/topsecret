@@ -17,7 +17,14 @@ export function createPromiseFactories (
         const calls = mode === Config.AppMode.Local ?
                 LocalDB.createLocalDBCalls(config.debugDBTimeoutMs) :
                 DynamoDB.createDynamoDBCalls(config.dynamoDBConfig);
+        return createPromiseFactoriesFromCalls(calls, send, encrypt);
+}
 
+export function createPromiseFactoriesFromCalls (
+        calls: DBTypes.DBCalls,
+        send: Prom.Factory<Message.MessageData, string>,
+        encrypt: Prom.Factory<Kbpgp.EncryptData, string>)
+{
         return {
                 send,
                 encrypt,

@@ -53,14 +53,10 @@ export function handleResignation (
         const promises = app.promises;
 
         const messageName = state.config.content.resignationThread;
-        const threadStartName: string = null;
-        const data = Main.createPlayerlessMessageData(
-                groupData,
-                email,
-                messageName,
-                threadStartName,
-                app.emailDomain);
-        return Promises.resign(data, email, promises);
+        const domain = app.emailDomain;
+
+        return Promises.resign(
+                messageName, email, domain, groupData, promises);
 }
 
 export function handleValidApplication (

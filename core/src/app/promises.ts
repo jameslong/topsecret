@@ -14,52 +14,48 @@ export interface UpdateInfo {
 }
 
 export function child (
+        state: UpdateInfo,
         name: string,
         childIndex: number,
         domain: string,
         groupData: State.GameData,
         promises: DBTypes.PromiseFactories)
 {
-        return (state: UpdateInfo) => {
-                const { message, player } = state;
-                const threadStartName = message.threadStartName;
+        const { message, player } = state;
+        const threadStartName = message.threadStartName;
 
-                return encryptSendStoreChild(
-                        name,
-                        threadStartName,
-                        player,
-                        domain,
-                        groupData,
-                        promises).then(message => {
-                                message.childrenSent[childIndex] = true;
-                                state.message = message;
-                                return state;
-                        });
-        };
+        return encryptSendStoreChild(
+                name,
+                threadStartName,
+                player,
+                domain,
+                groupData,
+                promises).then(result => {
+                        message.childrenSent[childIndex] = true;
+                        return state;
+                });
 }
 
 export function reply (
+        state: UpdateInfo,
         name: string,
         domain: string,
         groupData: State.GameData,
         promises: DBTypes.PromiseFactories)
 {
-        return (state: UpdateInfo) => {
-                const { message, player } = state;
-                const threadStartName = message.threadStartName;
+        const { message, player } = state;
+        const threadStartName = message.threadStartName;
 
-                return encryptSendStoreChild(
-                        name,
-                        threadStartName,
-                        player,
-                        domain,
-                        groupData,
-                        promises).then(message => {
-                                message.replySent = true;
-                                state.message = message;
-                                return state;
-                })
-        };
+        return encryptSendStoreChild(
+                name,
+                threadStartName,
+                player,
+                domain,
+                groupData,
+                promises).then(result => {
+                        message.replySent = true;
+                        return state;
+                });
 }
 
 export function encryptSendStoreChild (
@@ -142,10 +138,15 @@ export function beginGame (
 }
 
 export function resign (
-        data: Message.MessageData,
+        name: string,
         email: string,
+        domain: string,
+        groupData: State.GameData,
         promises: DBTypes.PromiseFactories)
 {
+        const data = Main.createPlayerlessMessageData(
+                groupData, email, name, null, domain);
+
         return promises.send(data).then(id =>
                 endGame(email, promises));
 }

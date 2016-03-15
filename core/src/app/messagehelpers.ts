@@ -41,11 +41,13 @@ export function createMessageData (
 
         const threadMessage = threadData[name];
         const message = threadMessage.message;
-        const threadStart = threadData[threadStartName];
-        const threadSubject = strings[threadStart.threadSubject];
-        const subject = name === threadStartName ?
-                threadSubject :
-                'Re: ' + threadSubject;
+        const messageThreadSubject = threadMessage.threadSubject;
+        const parentThreadSubject = threadStartName ?
+                threadData[threadStartName].threadSubject :
+                null;
+        const subject = messageThreadSubject ?
+                strings[messageThreadSubject] :
+                'Re: ' + strings[parentThreadSubject];
         Log.assert(subject !== null, 'No thread subject: ', threadStartName);
 
         const fromProfile = profiles[message.from];

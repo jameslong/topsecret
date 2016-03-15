@@ -1,0 +1,23 @@
+{
+        "name": "resign",
+        "threadSubject": "resign_subject",
+        "position": {
+                "x": 110,
+                "y": 550
+        },
+        "endGame": false,
+        "message": {
+                "from": "james",
+                "to": [
+                        "zoe"
+                ],
+                "body": [
+                        "resign_body"
+                ]
+        },
+        "encrypted": true,
+        "receiver": null,
+        "replyOptions": [],
+        "children": [],
+        "fallback": null
+}

@@ -58,12 +58,14 @@ function pendingChildren (
         );
 
         return expired.map(index =>
-                Promises.child(
-                        children[index].name,
-                        expired[index],
-                        domain,
-                        groupData,
-                        promises)
+                (state: Promises.UpdateInfo) =>
+                        Promises.child(
+                                state,
+                                children[index].name,
+                                expired[index],
+                                domain,
+                                groupData,
+                                promises)
         );
 }
 
@@ -109,11 +111,13 @@ function pendingReply (
         const threadMessage = groupData.threadData[messageName];
         const replyDelay = getReplyDelay(message, threadMessage);
 
-        return Promises.reply(
-                replyDelay.name,
-                emailDomain,
-                groupData,
-                promises);
+        return (state: Promises.UpdateInfo) =>
+                Promises.reply(
+                        state,
+                        replyDelay.name,
+                        emailDomain,
+                        groupData,
+                        promises);
 }
 
 function pendingFallback (
@@ -128,11 +132,13 @@ function pendingFallback (
         const threadMessage = groupData.threadData[messageName];
         const fallbackName = threadMessage.fallback.name;
 
-        return Promises.reply(
-                fallbackName,
-                emailDomain,
-                groupData,
-                promises);
+        return (state: Promises.UpdateInfo) =>
+                Promises.reply(
+                        state,
+                        fallbackName,
+                        emailDomain,
+                        groupData,
+                        promises);
 }
 
 function hasPendingChildren (message: Message.MessageState)

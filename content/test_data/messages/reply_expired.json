@@ -1,0 +1,44 @@
+{
+        "name": "reply_expired",
+        "threadSubject": "reply_expired_subject",
+        "position": {
+                "x": 495,
+                "y": 385
+        },
+        "endGame": false,
+        "message": {
+                "from": "james",
+                "to": [
+                        "zoe"
+                ],
+                "body": [
+                        "reply_expired_body"
+                ]
+        },
+        "encrypted": true,
+        "receiver": null,
+        "replyOptions": [
+                {
+                        "type": "keyword",
+                        "parameters": {
+                                "matches": [
+                                        "reply"
+                                ]
+                        },
+                        "messageDelay": {
+                                "name": "reply_0",
+                                "delayMins": 0
+                        }
+                },
+                {
+                        "type": "default",
+                        "parameters": {},
+                        "messageDelay": {
+                                "name": "reply_default",
+                                "delayMins": 0
+                        }
+                }
+        ],
+        "children": [],
+        "fallback": null
+}
