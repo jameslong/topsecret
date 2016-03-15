@@ -8,7 +8,6 @@ import Str = require('./utils/string');
 
 export function createMessageState (
         email: string,
-        version: string,
         id: string,
         name: string,
         threadStartName: string,
@@ -19,7 +18,6 @@ export function createMessageState (
 
         return {
                 email: email,
-                version: version,
                 id: id,
                 name: name,
                 threadStartName: threadStartName,
@@ -28,11 +26,6 @@ export function createMessageState (
                 childrenSent: childrenSent,
                 replySent: false,
         };
-}
-
-export function getMessageGroup (messageState: Message.MessageState): string
-{
-        return messageState.version || 'Demo'; // This tides over first batch of players for whom version is undefined
 }
 
 export function createMessageData (

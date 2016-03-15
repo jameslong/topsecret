@@ -20,8 +20,9 @@ export function beginDemo (
         const publicKey: string = null;
         const firstName = playerData.firstName;
         const lastName = playerData.lastName;
+        const version = state.config.content.defaultNarrativeGroup;
         const player = Player.createPlayerState(
-                email, publicKey, firstName, lastName);
+                email, publicKey, version, firstName, lastName);
 
         const messageName = state.config.content.resignationThread;
         const threadStartName: string = null;

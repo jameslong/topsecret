@@ -7,7 +7,6 @@ export interface ReplyState {
 
 export interface MessageState {
         email: string;
-        version: string;
         id: string;
         name: string;
         reply: ReplyState;

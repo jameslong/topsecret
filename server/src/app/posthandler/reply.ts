@@ -77,7 +77,7 @@ export function handleTimelyReply (
         message: Message.MessageState,
         reply: Reply)
 {
-        const groupName = MessageHelpers.getMessageGroup(message);
+        const groupName = player.version;
         const groupData = App.getGroupData(state.app, groupName);
         const ciphertext = reply.body;
         const profiles = groupData.profiles;

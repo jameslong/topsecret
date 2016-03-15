@@ -141,7 +141,6 @@ function createMessageState (
 
         return MessageHelpers.createMessageState(
                 playerEmail,
-                groupData.name,
                 id,
                 name,
                 newThreadStartName,

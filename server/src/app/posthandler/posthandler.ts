@@ -216,8 +216,9 @@ export function createAddPlayerCallback (state: App.State)
                         var app = state.app;
                         var promises = app.promises;
 
+                        const version = state.config.content.defaultNarrativeGroup;
                         const player = Player.createPlayerState(
-                                email, publicKey, firstName, lastName);
+                                email, publicKey, version, firstName, lastName);
 
                         const promise = promises.addPlayer(player);
                         return createRequestCallback(res, promise);
