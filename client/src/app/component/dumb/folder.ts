@@ -1,5 +1,5 @@
 import FolderType = require('../../folder');
-import Map = require('../../map/map');
+import Map = require('../../../../../core/src/app/utils/map');
 import React = require('react');
 import SelectableRows = require('./selectablerows');
 

@@ -17,6 +17,16 @@ export function createArray<T> (length: number, defaultValue: T)
         return result;
 }
 
+export function push<T>(array: T[], value: T)
+{
+        return array.concat([value]);
+}
+
+export function remove<T>(array: T[], value: T)
+{
+        return array.filter(element => element !== value);
+}
+
 export function every<T> (list: T[], predicate: Predicate<T>)
 {
         return (list.filter(predicate)).length === list.length;

@@ -23,6 +23,18 @@ export function create<T>(pairs: [string, T][]): Map<T>
         return result;
 }
 
+export function set<T>(map: Map<T>, key: string, value: T)
+{
+        return Helpers.assign(map, { [key]: value });
+}
+
+export function remove<T>(map: Map<T>, key: string)
+{
+        const copy = Helpers.assign({}, map);
+        delete copy[key];
+        return copy;
+}
+
 export function every<T> (
         object: Map<T>, predicate: (value: T, key: string)=>boolean): boolean
 {

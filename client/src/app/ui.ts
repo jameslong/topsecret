@@ -1,4 +1,4 @@
-import Helpers = require('./utils/helpers');
+import Helpers = require('../../../core/src/app/utils/helpers');
 
 export const Modes = {
         INDEX_INBOX: 'INDEX_INBOX',

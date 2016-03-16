@@ -1,7 +1,7 @@
 import EncryptionType = require('../../folder');
 import Kbpgp = require('kbpgp');
 import KbpgpHelpers = require('../../../../../core/src/app/kbpgp');
-import Map = require('../../map/map');
+import Map = require('../../../../../core/src/app/utils/map');
 import React = require('react');
 import SelectableRows = require('./selectablerows');
 

@@ -1,5 +1,5 @@
 import Actions = require('./actions');
-import Helpers = require('../utils/helpers');
+import Helpers = require('../../../../core/src/app/utils/helpers');
 import Folder = require('../folder');
 import Redux = require('../redux/redux');
 import UI = require('../ui');

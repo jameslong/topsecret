@@ -1,11 +1,12 @@
 import ActionCreators = require('./actioncreators');
-import Arr = require('../utils/array');
+import Arr = require('../../../../core/src/app/utils/array');
 import Draft = require('../draft');
 import Folder = require('../folder');
-import Helpers = require('../utils/helpers');
+import Func = require('../../../../core/src/app/utils/function');
+import Helpers = require('../../../../core/src/app/utils/helpers');
 import Kbpgp = require('kbpgp');
 import KbpgpHelpers = require('../../../../core/src/app/kbpgp');
-import Map = require('../map/map');
+import Map = require('../../../../core/src/app/utils/map');
 import Redux = require('../redux/redux');
 import State = require('../state');
 import UI = require('../ui');
@@ -226,7 +227,7 @@ export function importKeys (state: State.State): Redux.Action<any>
 
         KbpgpHelpers.loadPublicKeys(armouredKeys).then(instances => {
                 const keyManagersById = Helpers.mapFromArray(
-                        instances, KbpgpHelpers.getUserId, Helpers.identity);
+                        instances, KbpgpHelpers.getUserId, Func.identity);
                 const action = ActionCreators.importKeys(keyManagersById)
                 Redux.handleAction(action);
         }).catch(err => console.log(err));

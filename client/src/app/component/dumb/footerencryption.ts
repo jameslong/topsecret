@@ -1,6 +1,6 @@
 import Kbpgp = require('kbpgp');
 import React = require('react');
-import Str = require('../../utils/string');
+import Str = require('../../../../../core/src/app/utils/string');
 
 import Core = require('../core');
 import Div = Core.Div;

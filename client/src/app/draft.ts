@@ -1,6 +1,6 @@
-import Helpers = require('./utils/helpers');
+import Helpers = require('../../../core/src/app/utils/helpers');
 import Message = require('./message');
-import StringUtil = require('./utils/string');
+import Str = require('../../../core/src/app/utils/string');
 
 export interface Draft {
         content: Message.MessageContent;
@@ -51,7 +51,7 @@ function isReplySubject (subject: string)
 
 function createReplyBody (body: string)
 {
-        return StringUtil.prependToLines('> ', body);
+        return Str.prependToLines('> ', body);
 }
 
 export function setBody (draft: Draft, body: string)

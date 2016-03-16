@@ -33,6 +33,21 @@ export function mapFromArray<T, U>(
         }, result);
 }
 
+export function mapFromParentArray<T, U>(
+        array: T[],
+        getChildren: ((value: T) => U[]),
+        getChildKey: (value: U) => string): Map.Map<U>
+{
+        const result: Map.Map<U> = {};
+        return array.reduce((result, value) => {
+                const children = getChildren(value);
+                const childMap = mapFromArray(
+                        children, getChildKey, Func.identity);
+                return Object.assign(result, childMap);
+        }, result);
+}
+
+
 export function mapFromNameArray<T extends { name: string }>(array: T[])
 {
         return mapFromArray<T, T>(array, Func.name, Func.identity);

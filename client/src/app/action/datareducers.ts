@@ -1,7 +1,7 @@
 import Actions = require('./actions');
 import Data = require('../data');
-import Helpers = require('../utils/helpers');
-import Map = require('../map/map');
+import Helpers = require('../../../../core/src/app/utils/helpers');
+import Map = require('../../../../core/src/app/utils/map');
 import Message = require('../message');
 import Redux = require('../redux/redux');
 

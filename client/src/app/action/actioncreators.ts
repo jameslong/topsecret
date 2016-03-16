@@ -1,5 +1,5 @@
 import Actions = require('./actions');
-import Arr = require('../utils/array');
+import Arr = require('../../../../core/src/app/utils/array');
 import Folder = require('../folder');
 import Redux = require('../redux/redux');
 import State = require('../state');

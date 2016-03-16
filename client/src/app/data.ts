@@ -1,9 +1,10 @@
-import Arr = require('./utils/array');
+import Arr = require('../../../core/src/app/utils/array');
 import Command = require('./command');
 import Folder = require('./folder');
-import Helpers = require('./utils/helpers');
+import Func = require('../../../core/src/app/utils/function');
+import Helpers = require('../../../core/src/app/utils/helpers');
 import Kbpgp = require('kbpgp');
-import Map = require('./map/map');
+import Map = require('../../../core/src/app/utils/map');
 import Message = require('./message');
 import Player = require('./player');
 
@@ -29,7 +30,7 @@ export function getId<T extends Id>(value: T)
 
 function idMapFromArray<T extends Id>(array: T[])
 {
-        return Helpers.mapFromArray(array, getId, Helpers.identity);
+        return Helpers.mapFromArray(array, getId, Func.identity);
 }
 
 function idMapFromParentArray<T, U extends Id>(

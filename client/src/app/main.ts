@@ -5,7 +5,6 @@ import CommandData = require('./data/commands');
 import KeyData = require('./data/keys');
 import PlayerData = require('./data/player');
 
-import Map = require('./map/map');
 import Redux = require('./redux/redux');
 import State = require('./state');
 import Root = require('./component/smart/root');
