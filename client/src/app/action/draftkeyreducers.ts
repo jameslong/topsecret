@@ -1,6 +1,6 @@
 import Actions = require('./actions');
 import Helpers = require('../utils/helpers');
-import Kbpgp = require('../kbpgp');
+import Kbpgp = require('../../../../core/src/app/kbpgp');
 import Redux = require('../redux/redux');
 
 export function draftKey (draftKey: Kbpgp.KeyData, action: Redux.Action<any>)

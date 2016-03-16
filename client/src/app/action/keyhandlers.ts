@@ -4,7 +4,7 @@ import Draft = require('../draft');
 import Folder = require('../folder');
 import Helpers = require('../utils/helpers');
 import Kbpgp = require('kbpgp');
-import KbpgpHelpers = require('../kbpgp');
+import KbpgpHelpers = require('../../../../core/src/app/kbpgp');
 import Map = require('../map/map');
 import Redux = require('../redux/redux');
 import State = require('../state');
@@ -80,16 +80,14 @@ export function encryptSend (state: State.State): Redux.Action<any>
         const playerId = state.data.player.activeKeyId;
         const from = KbpgpHelpers.getKeyManagerById(keyManagersById, playerId);
         const to = KbpgpHelpers.getKeyManagerById(keyManagersById, draftMessage.to[0]);
+        const text = draftMessage.body;
 
-        KbpgpHelpers.signEncrypt(from, to, draftMessage.body, (err, body) => {
-                if (err) {
-                        console.log('Encryption/signing error: ', err);
-                }
-
+        const encryptData = { from, to, text };
+        KbpgpHelpers.signEncrypt(encryptData).then(body => {
                 const message = Helpers.assign(draftMessage, { body });
                 const action = ActionCreators.sendMessage({ message, parentId });
-                setTimeout(() => Redux.handleAction(action), 750);
-        });
+                Redux.handleAction(action);
+        }).catch(err => console.log(err));
 
         return ActionCreators.sendingMessage(true);
 }
@@ -101,16 +99,18 @@ export function decrypt (state: State.State): Redux.Action<any>
         const body = message.body;
         const keyRing = KbpgpHelpers.createKeyRing(state.data.keyManagersById);
 
-        KbpgpHelpers.decryptVerify(keyRing, body, (err, decryptedBody) => {
-                if (err) {
-                        console.log('Decryption/verification error:', err);
-                        decryptedBody = body;
-                }
-
+        KbpgpHelpers.decryptVerify(keyRing, body).then(decryptedBody => {
                 const action = ActionCreators.decryptMessage({
                         messageId, decryptedBody
                 });
-                setTimeout(() => Redux.handleAction(action), 750);
+                Redux.handleAction(action);
+        }).catch(err => {
+                console.log(err);
+                const action = ActionCreators.decryptMessage({
+                        messageId,
+                        decryptedBody: body
+                });
+                Redux.handleAction(action);
         });
 
         return ActionCreators.decryptingMessage(true);
@@ -223,12 +223,13 @@ export function importKeys (state: State.State): Redux.Action<any>
 {
         const body = State.getActiveMessage(state).body;
         const armouredKeys = KbpgpHelpers.extractPublicKeys(body);
-        KbpgpHelpers.loadPublicKeys(armouredKeys, (err, instances) => {
+
+        KbpgpHelpers.loadPublicKeys(armouredKeys).then(instances => {
                 const keyManagersById = Helpers.mapFromArray(
                         instances, KbpgpHelpers.getUserId, Helpers.identity);
                 const action = ActionCreators.importKeys(keyManagersById)
                 Redux.handleAction(action);
-        });
+        }).catch(err => console.log(err));
 
         return null;
 }

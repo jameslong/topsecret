@@ -1,4 +1,4 @@
-/// <reference path="global.d.ts"/>
+/// <reference path="../../../core/src/app/global.d.ts"/>
 
 import MessageData = require('./data/messages');
 import CommandData = require('./data/commands');
@@ -11,29 +11,22 @@ import State = require('./state');
 import Root = require('./component/smart/root');
 import EventHandler = require('./eventhandler');
 import Reducers = require('./action/reducers');
-import KbpgpHelpers = require('./kbpgp');
+import KbpgpHelpers = require('../../../core/src/app/kbpgp');
 
 const wrapper = document.getElementById('wrapper');
-const keyManagersById = KbpgpHelpers.loadFromKeyData(
-        KeyData.keys, onKeyManagers);
+KbpgpHelpers.loadFromKeyData(KeyData.keys).then(keyManagersById => {
+        const state = State.createState(
+                PlayerData.player,
+                CommandData.commands,
+                CommandData.commandIdsByMode,
+                MessageData.folders,
+                keyManagersById);
 
-function onKeyManagers (
-        err: Error, keyManagersById: Map.Map<Kbpgp.KeyManagerInstance>)
-{
-        if (err) {
-                console.log('Key generation error', err);
-                throw err;
-        } else {
-                const state = State.createState(
-                        PlayerData.player,
-                        CommandData.commands,
-                        CommandData.commandIdsByMode,
-                        MessageData.folders,
-                        keyManagersById);
+        Redux.init(state, Reducers.reduce, Root, wrapper);
+        Redux.render(state, Root, wrapper);
 
-                Redux.init(state, Reducers.reduce, Root, wrapper);
-                Redux.render(state, Root, wrapper);
-
-                EventHandler.addKeyHandlers();
-        }
-}
+        EventHandler.addKeyHandlers();
+}).catch(err => {
+        console.log(err);
+        throw err;
+});

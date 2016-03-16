@@ -1,4 +1,4 @@
-import Kbpgp = require('../kbpgp');
+import Kbpgp = require('../../../../core/src/app/kbpgp');
 
 export const keys: Kbpgp.KeyData[] = [{
         id: 'Kylo Ren <darth.emo@aol.com>',

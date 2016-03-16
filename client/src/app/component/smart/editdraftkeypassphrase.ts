@@ -1,6 +1,6 @@
 import ActionCreators = require('../../action/actioncreators');
 import EditBar = require('../dumb/editbar');
-import Kbpgp = require('../../kbpgp');
+import Kbpgp = require('../../../../../core/src/app/kbpgp');
 import React = require('react');
 import Redux = require('../../redux/redux');
 
@@ -32,13 +32,13 @@ function onChange (
 {
         e.stopPropagation();
 
-        Kbpgp.generateKeyPair(userId, (err, keyManager) => {
+        Kbpgp.generateKeyPair(userId).then(keyManager => {
                 const action = ActionCreators.generatedKey({
                         id: keyId,
                         keyManager,
                 });
                 Redux.handleAction(action);
-        });
+        }).catch(err => console.log(err));
 
         const action = ActionCreators.setDraftKeyPassphrase(passphrase);
         Redux.handleAction(action);

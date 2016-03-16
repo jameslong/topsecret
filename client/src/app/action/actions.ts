@@ -1,3 +1,5 @@
+/// <reference path="../../../../typings/kbpgp/kbpgp.d.ts"/>
+
 import Map = require('../map/map');
 import Message = require('../message');
 import Redux = require('../redux/redux');
