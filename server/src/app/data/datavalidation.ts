@@ -2,7 +2,10 @@
 
 import Data = require('./data');
 import FileSystem = require('./filesystem');
-import Map = require('../../../../core/src/app/utils/map');
+import Func = require('../../../../core/src/app/utils/function');
+import Helpers = require('../../../../core/src/app/utils/helpers');
+import Message = require('../../../../core/src/app/message');
+import Profile = require('../../../../core/src/app/profile');
 
 import validator = require('is-my-json-valid');
 
@@ -11,14 +14,15 @@ interface ValidateFn<T> {
         errors: Object[];
 }
 
-export function getDataErrors (data: Data.NarrativeData): string
+export function getDataErrors (
+        data: Data.NarrativeData,
+        profileSchema: JSON,
+        messageSchema: JSON): string
 {
-        const profileSchema = FileSystem.loadJSONSync('src/app/data/profileschema.json');
-        const profiles = Map.arrayFromMap(data.profiles);
+        const profiles = <Profile.Profile[]>Helpers.arrayFromMap(data.profiles);
         const profileErrors = getJSONDirErrors(profileSchema, profiles);
 
-        const messageSchema = FileSystem.loadJSONSync('src/app/data/messageschema.json');
-        const messages = Map.arrayFromMap(data.messages);
+        const messages = <Message.MessageState[]>Helpers.arrayFromMap(data.messages);
         const messageErrors = getJSONDirErrors(messageSchema, messages);
 
         return (profileErrors + messageErrors);

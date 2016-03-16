@@ -7,11 +7,9 @@ import FileSystem = require('../data/filesystem');
 import Log = require('../../../../core/src/app/log/log');
 import Message = require('../../../../core/src/app/message');
 import Player = require('../../../../core/src/app/player');
-import Players = require('./players');
 import Reply = require('./reply');
 import Request = require('../../../../core/src/app/requesttypes');
 import Server = require('../server');
-import Tables = require('./tables');
 
 export function addRequestEndpoints (
         state: App.State)
@@ -37,7 +35,7 @@ export function addRequestEndpoints (
         addPost(app, '/begindemo', createBeginDemoCallback, state);
         addPost(app, '/enddemo', createEndDemoCallback, state);
         addPost(app, '/addplayer', createAddPlayerCallback, state);
-        addPost(app, '/removeplayer', createRemovePlayerCallback, state);
+        addPost(app, '/removeplayer', createDeletePlayerCallback, state);
 
         // Author only
         addPost(app, '/loadmessage', createLoadMessageCallback, state);
@@ -95,12 +93,13 @@ export function createCreatePlayerTableCallback (state: App.State)
         return (req: any, res: any) =>
                 {
                         var app = state.app;
-                        var db = app.db;
+                        var promises = app.promises;
                         var config = state.config;
                         var tableName = config.dynamoDBConfig.playersTableName;
 
-                        Tables.handleCreateTableRequest(
-                                tableName, db.createPlayerTable, res);
+                        promises.createPlayerTable(tableName).then(result =>
+                                res.sendStatus(200)
+                        ).catch(err => res.sentStatus(500));
                 };
 }
 
@@ -109,12 +108,13 @@ export function createDeletePlayerTableCallback (state: App.State)
         return (req: any, res: any) =>
                 {
                         var app = state.app;
-                        var db = app.db;
+                        var promises = app.promises;
                         var config = state.config;
                         var tableName = config.dynamoDBConfig.playersTableName;
 
-                        Tables.handleDeleteTableRequest(
-                                tableName, db.deleteTable, res);
+                        promises.deleteTable(tableName).then(result =>
+                                res.sendStatus(200)
+                        ).catch(err => res.sentStatus(500));
                 };
 }
 
@@ -123,12 +123,12 @@ export function createCreateMessageTableCallback (state: App.State)
         return (req: any, res: any) =>
                 {
                         var app = state.app;
-                        var db = app.db;
+                        var promises = app.promises;
                         var config = state.config;
                         var tableName = config.dynamoDBConfig.messagesTableName;
 
-                        Tables.handleCreateTableRequest(
-                                tableName, db.createMessageTable, res);
+                        const promise = promises.createMessageTable(tableName);
+                        return createRequestCallback(res, promise);
                 };
 }
 
@@ -137,12 +137,12 @@ export function createDeleteMessageTableCallback (state: App.State)
         return (req: any, res: any) =>
                 {
                         var app = state.app;
-                        var db = app.db;
+                        var promises = app.promises;
                         var config = state.config;
                         var tableName = config.dynamoDBConfig.messagesTableName;
 
-                        Tables.handleDeleteTableRequest(
-                                tableName, db.deleteTable, res);
+                        const promise = promises.deleteTable(tableName);
+                        return createRequestCallback(res, promise);
                 };
 }
 
@@ -172,15 +172,14 @@ export function createBeginDemoCallback (state: App.State)
 
                         var groupData = App.getGroupData(state.app, narrativeName);
 
-                        var callback = createRequestCallback(res);
-
-                        Demo.beginDemo(
+                        const promise = Demo.beginDemo(
                                 state,
                                 groupData,
                                 email,
                                 playerData,
-                                newMessageName,
-                                callback);
+                                newMessageName);
+
+                        createRequestCallback(res, promise);
                 };
 }
 
@@ -192,10 +191,10 @@ export function createEndDemoCallback (state: App.State)
                                         email: string;
                                 } = req.body;
 
-                        var callback = createRequestCallback(res);
-                        var db = state.app.db;
+                        var promises = state.app.promises;
 
-                        Demo.endDemo(state, data.email, callback);
+                        const promise = Demo.endDemo(state, data.email);
+                        return createRequestCallback(res, promise);
                 };
 }
 
@@ -215,28 +214,28 @@ export function createAddPlayerCallback (state: App.State)
                         var lastName = data.lastName;
 
                         var app = state.app;
-                        var db = app.db;
+                        var promises = app.promises;
 
-                        Players.handleAddPlayerRequest(
-                                email,
-                                publicKey,
-                                firstName,
-                                lastName,
-                                db.addPlayer,
-                                res);
+                        const version = state.config.content.defaultNarrativeGroup;
+                        const player = Player.createPlayerState(
+                                email, publicKey, version, firstName, lastName);
+
+                        const promise = promises.addPlayer(player);
+                        return createRequestCallback(res, promise);
                 };
 }
 
-export function createRemovePlayerCallback (state: App.State)
+export function createDeletePlayerCallback (state: App.State)
 {
         return (req: any, res: any) =>
                 {
                         var email = req.body.email;
 
                         var app = state.app;
-                        var db = app.db;
+                        var promises = app.promises;
 
-                        Players.handleRemovePlayerRequest(email, db.removePlayer, res);
+                        const promise = promises.deletePlayer(email);
+                        return createRequestCallback(res, promise);
                 };
 }
 
@@ -253,19 +252,23 @@ export function createReplyCallback (state: App.State)
                                 } = req.body;
 
                         var playerEmail = data.sender;
-                        var messageId = data['In-Reply-To'];
+                        var id = data['In-Reply-To'];
                         var body = data['stripped-text'] || '';
                         var to = data['To'];
                         var subject = data.subject;
 
-                        Reply.handleReplyRequest(
-                                state,
-                                playerEmail,
-                                messageId,
-                                subject,
-                                body,
-                                to,
-                                res);
+                        if (id !== null) {
+                                const promise = Reply.handleReplyRequest(
+                                        state,
+                                        playerEmail,
+                                        id,
+                                        subject,
+                                        body,
+                                        to);
+                                return createRequestCallback(res, promise);
+                        } else {
+                                res.sentStatus(200);
+                        }
                 };
 }
 
@@ -282,19 +285,19 @@ export function createLocalReplyCallback (state: App.State)
                                 } = req.body;
 
                         var playerEmail = data.from;
-                        var messageId = data.id;
+                        var id = data.id;
                         var body = data.body || '';
                         var to = data.to;
                         var subject = data.subject;
 
-                        Reply.handleReplyRequest(
+                        const promise = Reply.handleReplyRequest(
                                 state,
                                 playerEmail,
-                                messageId,
+                                id,
                                 subject,
                                 body,
-                                to,
-                                res);
+                                to);
+                        return createRequestCallback(res, promise);
                 };
 }
 
@@ -369,8 +372,8 @@ export function createSaveMessageCallback (state: App.State)
 
                         Log.debug('Message saved');
 
-                        var callback = createRequestCallback(res);
-                        App.updateGameState(state, callback);
+                        const promise = App.updateGameState(state);
+                        return createRequestCallback(res, promise);
                 };
 }
 
@@ -398,8 +401,8 @@ export function createDeleteMessageCallback (state: App.State)
 
                         Data.deleteMessage(messagePath);
 
-                        var callback = createRequestCallback(res);
-                        App.updateGameState(state, callback);
+                        const promise = App.updateGameState(state);
+                        return createRequestCallback(res, promise);
                 };
 }
 
@@ -428,8 +431,8 @@ export function createSaveStringCallback (state: App.State)
 
                         Log.debug('String saved: ' + data.name);
 
-                        var callback = createRequestCallback(res);
-                        App.updateGameState(state, callback);
+                        const promise = App.updateGameState(state);
+                        return createRequestCallback(res, promise);
                 };
 }
 
@@ -458,8 +461,8 @@ export function createDeleteStringCallback (state: App.State)
 
                         Log.debug('String deleted: ' + data.name);
 
-                        var callback = createRequestCallback(res);
-                        App.updateGameState(state, callback);
+                        const promise = App.updateGameState(state);
+                        return createRequestCallback(res, promise);
                 };
 }
 
@@ -482,30 +485,30 @@ export function createValidateDataCallback (state: App.State)
 {
         return (req: any, res: any) =>
                 {
-                        var data: { narrativeName: string; } = req.query;
+                        const data: { narrativeName: string; } = req.query;
 
-                        var app = state.app;
-                        var config = state.config;
+                        const app = state.app;
+                        const config = state.config;
 
-                        var path = config.content.narrativeFolder;
+                        const path = config.content.narrativeFolder;
 
-                        var narrativeData = Data.loadNarrative(
+                        const narrativeData = Data.loadNarrative(
                                 path, data.narrativeName);
-                        var dataErrors = DataValidation.getDataErrors(
-                                narrativeData);
+                        const content = config.content;
+                        const profileSchema = FileSystem.loadJSONSync<JSON>(
+                                content.profileSchemaPath);
+                        const messageSchema = FileSystem.loadJSONSync<JSON>(
+                                content.messageSchemaPath);
+                        const dataErrors = DataValidation.getDataErrors(
+                                narrativeData, profileSchema, messageSchema);
 
                         res.send(dataErrors);
                 };
 }
 
-export function createRequestCallback (res: any)
+export function createRequestCallback (res: any, promise: Promise<any>)
 {
-        return (error: Request.Error, data: any) =>
-                {
-                        if (error) {
-                                res.sendStatus(500);
-                        } else {
-                                res.sendStatus(200);
-                        };
-                };
+        return promise.then(result =>
+                res.sendStatus(200)
+        ).catch(err => res.sendStatus(500));
 }

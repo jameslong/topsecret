@@ -7,8 +7,7 @@ export interface ReplyState {
 
 export interface MessageState {
         email: string;
-        version: string;
-        messageId: string;
+        id: string;
         name: string;
         reply: ReplyState;
         sentTimestampMs: number;
@@ -71,26 +70,7 @@ export interface MessagePacket {
         body: string;
 }
 
-export interface PendingMessage {
-        name: string;
-        playerEmail: string;
-        parentId: string;
-        childIndex: number;
-        threadStartName: string;
-}
-
-export interface SentMessageData {
-        name: string;
-        playerEmail: string;
-        id: string;
-        parentId: string;
-        childIndex: number;
-        threadStartName: string;
-}
-
 export interface MessageData {
-        name: string;
-        playerEmail: string;
         from: string;
         to: string[];
         subject: string;

@@ -521,6 +521,7 @@ module Action {
 
                 return store.set('narratives', newNarratives)
                         .set('nameScratchpad', newScratchpad)
+                        .set('activeMessage', newName);
         }
 
         function setMessageProperty (

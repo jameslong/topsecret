@@ -1,0 +1,23 @@
+{
+        "name": "begingame",
+        "threadSubject": "begingame_subject",
+        "position": {
+                "x": 110,
+                "y": 385
+        },
+        "endGame": false,
+        "message": {
+                "from": "james",
+                "to": [
+                        "zoe"
+                ],
+                "body": [
+                        "begingame_body"
+                ]
+        },
+        "encrypted": true,
+        "receiver": null,
+        "replyOptions": [],
+        "children": [],
+        "fallback": null
+}

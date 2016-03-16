@@ -48,6 +48,8 @@ export interface ConfigState {
                 validApplicationThreadPGP: string;
                 invalidApplicationThread: string;
                 resignationThread: string;
+                messageSchemaPath: string;
+                profileSchemaPath: string;
         },
         timeFactor: number;
         immediateReplies: boolean;

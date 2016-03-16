@@ -1,0 +1,23 @@
+{
+        "name": "child_1",
+        "threadSubject": "",
+        "position": {
+                "x": 275,
+                "y": 220
+        },
+        "endGame": false,
+        "message": {
+                "from": "james",
+                "to": [
+                        "zoe"
+                ],
+                "body": [
+                        "child_1_body"
+                ]
+        },
+        "encrypted": true,
+        "receiver": null,
+        "replyOptions": [],
+        "children": [],
+        "fallback": null
+}

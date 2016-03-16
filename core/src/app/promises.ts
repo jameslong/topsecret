@@ -1,4 +1,6 @@
 import DBTypes = require('./dbtypes');
+import KbpgpHelpers = require('./kbpgp');
+import Main = require('./main');
 import Message = require('./message');
 import MessageHelpers = require('./messagehelpers');
 import Player = require('./player');
@@ -12,72 +14,82 @@ export interface UpdateInfo {
 }
 
 export function child (
-        groupData: State.GameData,
-        data: Message.MessageData,
+        state: UpdateInfo,
+        name: string,
         childIndex: number,
+        domain: string,
+        groupData: State.GameData,
         promises: DBTypes.PromiseFactories)
 {
-        return (state: UpdateInfo) => {
-                const { message, player } = state;
-                const threadStartName = message.threadStartName;
+        const { message, player } = state;
+        const threadStartName = message.threadStartName;
 
-                return encryptSendStoreChild(
-                        groupData,
-                        data,
-                        player,
-                        threadStartName,
-                        promises).then(message => {
-                                message.childrenSent[childIndex] = true;
-                                state.message = message;
-                                return state;
-                        });
-        };
+        return encryptSendStoreChild(
+                name,
+                threadStartName,
+                player,
+                domain,
+                groupData,
+                promises).then(result => {
+                        message.childrenSent[childIndex] = true;
+                        return state;
+                });
 }
 
 export function reply (
+        state: UpdateInfo,
+        name: string,
+        domain: string,
         groupData: State.GameData,
-        data: Message.MessageData,
         promises: DBTypes.PromiseFactories)
 {
-        return (state: UpdateInfo) => {
-                const { message, player } = state;
-                const threadStartName = message.threadStartName;
+        const { message, player } = state;
+        const threadStartName = message.threadStartName;
 
-                return encryptSendStoreChild(
-                        groupData,
-                        data,
-                        player,
-                        threadStartName,
-                        promises).then(message => {
-                                message.replySent = true;
-                                state.message = message;
-                                return state;
-                })
-        };
+        return encryptSendStoreChild(
+                name,
+                threadStartName,
+                player,
+                domain,
+                groupData,
+                promises).then(result => {
+                        message.replySent = true;
+                        return state;
+                });
 }
 
 export function encryptSendStoreChild (
-        groupData: State.GameData,
-        data: Message.MessageData,
-        player: Player.PlayerState,
+        name: string,
         threadStartName: string,
+        player: Player.PlayerState,
+        domain: string,
+        groupData: State.GameData,
         promises: DBTypes.PromiseFactories)
 {
-        const from = groupData.keyManagers[data.from];
-        const to = groupData.keyManagers[player.email];
-        const encryptData = { from, to, text: data.body };
+        const data = Main.createMessageData(
+                groupData,
+                player,
+                name,
+                threadStartName,
+                domain);
 
-        return promises.encrypt(encryptData).then(body => {
-                data.body = body;
-                return promises.send(data);
-        }).then(messageId => {
+        const messageData = groupData.threadData[name];
+        const from = groupData.keyManagers[messageData.message.from];
+
+        return KbpgpHelpers.loadKey(player.publicKey).then(to => {
+                const encryptData = { from, to, text: data.body };
+                return promises.encrypt(encryptData);
+        }).then(body => {
+                        data.body = body;
+                        return promises.send(data);
+        }).then(id => {
                 const messageState = createMessageState(
                         groupData,
                         player.email,
-                        messageId,
+                        id,
                         name,
                         threadStartName);
-                return promises.storeMessage(messageState);
+                return promises.addMessage(messageState);
         });
 }
 
@@ -97,40 +109,52 @@ export function expired (
 
         return messageData.endGame ?
                 endGame(email, promises) :
-                promises.deleteMessage(state.message);
+                promises.deleteMessage(state.message.id);
 }
 
 export function endGame (
         email: string,
         promises: DBTypes.PromiseFactories): Promise<any>
 {
-        return promises.deleteAllMessages({ email }).then(result =>
-                promises.removePlayer({ email }));
+        return promises.deleteAllMessages(email).then(result =>
+                promises.deletePlayer(email));
 }
 
 export function beginGame (
-        groupData: State.GameData,
+        name: string,
         player: Player.PlayerState,
-        data: Message.MessageData,
+        domain: string,
+        groupData: State.GameData,
         promises: DBTypes.PromiseFactories)
 {
         return promises.addPlayer(player).then(result =>
-                encryptSendStoreChild(groupData, data, player, null, promises));
+                encryptSendStoreChild(
+                        name,
+                        null,
+                        player,
+                        domain,
+                        groupData,
+                        promises));
 }
 
 export function resign (
-        data: Message.MessageData,
+        name: string,
         email: string,
+        domain: string,
+        groupData: State.GameData,
         promises: DBTypes.PromiseFactories)
 {
-        return promises.send(data).then(messageId =>
+        const data = Main.createPlayerlessMessageData(
+                groupData, email, name, null, domain);
+
+        return promises.send(data).then(id =>
                 endGame(email, promises));
 }
 
 function createMessageState (
         groupData: State.GameData,
         playerEmail: string,
-        messageId: string,
+        id: string,
         name: string,
         threadStartName: string)
 {
@@ -141,8 +165,7 @@ function createMessageState (
 
         return MessageHelpers.createMessageState(
                 playerEmail,
-                groupData.name,
-                messageId,
+                id,
                 name,
                 newThreadStartName,
                 numberOfChildren);

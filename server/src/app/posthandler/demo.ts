@@ -1,6 +1,5 @@
 import App = require('../app');
 import Careers = require('./careers');
-import DBHelpers = require('../../../../core/src/app/dbhelpers');
 import Log = require('../../../../core/src/app/log/log');
 import Main = require('../../../../core/src/app/main');
 import Player = require('../../../../core/src/app/player');
@@ -13,39 +12,31 @@ export function beginDemo (
         groupData: State.GameData,
         email: string,
         playerData: Careers.PlayerApplicationData,
-        threadMessageName: string,
-        callback: Request.Callback<any>)
+        threadMessageName: string)
 {
         const app = state.app;
-        const promises = app.db;
+        const domain = app.emailDomain;
+        const promises = app.promises;
 
         const publicKey: string = null;
         const firstName = playerData.firstName;
         const lastName = playerData.lastName;
+        const version = state.config.content.defaultNarrativeGroup;
         const player = Player.createPlayerState(
-                email, publicKey, firstName, lastName);
+                email, publicKey, version, firstName, lastName);
 
-        const messageName = state.config.content.resignationThread;
-        const threadStartName: string = null;
-        const data = Main.createPlayerlessMessageData(
-                groupData,
-                email,
+        return Promises.beginGame(
                 threadMessageName,
-                threadStartName,
-                app.emailDomain);
-
-        Promises.beginGame(groupData, player, data, promises).then(message =>
-                callback(null, message)
-        ).catch(error => callback(error, null));
+                player,
+                domain,
+                groupData,
+                promises);
 }
 
-export function endDemo (
-        state: App.State, email: string, callback: Request.Callback<any>)
+export function endDemo (state: App.State, email: string)
 {
         const app = state.app;
-        const promises = app.db;
+        const promises = app.promises;
 
-        Promises.endGame(email, promises).then(result =>
-                callback(null, result)
-        ).catch(error => callback(error, null));
+        return Promises.endGame(email, promises);
 }

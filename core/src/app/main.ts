@@ -15,11 +15,10 @@ export function update (
         app: State.State,
         timestampMs: number,
         message: Message.MessageState,
-        player: Player.PlayerState,
-        callback: (error: Request.Error) => void)
+        player: Player.PlayerState)
 {
-        const promises = app.db;
-        const groupData = app.data[message.version];
+        const promises = app.promises;
+        const groupData = app.data[player.version];
         const messageData = groupData.threadData[message.name];
         const state = { message, player };
 
@@ -29,12 +28,11 @@ export function update (
                 app, groupData, state, timestampMs, promises);
         const sequence = children.concat(response);
 
-        Prom.executeSequentially(sequence, state).then(state =>
+        return Prom.executeSequentially(sequence, state).then(state =>
                 isExpired(state.message, messageData) ?
                         Promises.expired(groupData, state, promises) :
                         Promises.update(state, promises)
-        ).then(result => callback(null)
-        ).catch(error => callback(error));
+        );
 }
 
 function pendingChildren (
@@ -45,6 +43,7 @@ function pendingChildren (
         promises: DBTypes.PromiseFactories)
 {
         const { message, player } = state;
+        const domain = app.emailDomain;
 
         const messageData = groupData.threadData[message.name];
         const children = messageData.children;
@@ -57,16 +56,16 @@ function pendingChildren (
         const expired = unsent.filter(index =>
                 isExpiredThreadDelay(children[index], timeDelayMs)
         );
-        const childrenData = expired.map(index =>
-                createMessageData(
-                        groupData,
-                        player,
-                        message.name,
-                        message.threadStartName,
-                        app.emailDomain)
-        );
-        return childrenData.map((data, index) =>
-                Promises.child(groupData, data, expired[index], promises)
+
+        return expired.map(index =>
+                (state: Promises.UpdateInfo) =>
+                        Promises.child(
+                                state,
+                                children[index].name,
+                                expired[index],
+                                domain,
+                                groupData,
+                                promises)
         );
 }
 
@@ -112,14 +111,13 @@ function pendingReply (
         const threadMessage = groupData.threadData[messageName];
         const replyDelay = getReplyDelay(message, threadMessage);
 
-        const replyData = createMessageData(
-                groupData,
-                player,
-                replyDelay.name,
-                message.threadStartName,
-                emailDomain);
-
-        return Promises.reply(groupData, replyData, promises);
+        return (state: Promises.UpdateInfo) =>
+                Promises.reply(
+                        state,
+                        replyDelay.name,
+                        emailDomain,
+                        groupData,
+                        promises);
 }
 
 function pendingFallback (
@@ -132,15 +130,15 @@ function pendingFallback (
 
         const messageName = message.name;
         const threadMessage = groupData.threadData[messageName];
+        const fallbackName = threadMessage.fallback.name;
 
-        const fallbackData = createMessageData(
-                groupData,
-                player,
-                threadMessage.fallback.name,
-                message.threadStartName,
-                emailDomain);
-
-        return Promises.reply(groupData, fallbackData, promises);
+        return (state: Promises.UpdateInfo) =>
+                Promises.reply(
+                        state,
+                        fallbackName,
+                        emailDomain,
+                        groupData,
+                        promises);
 }
 
 function hasPendingChildren (message: Message.MessageState)
@@ -226,13 +224,11 @@ export function createPlayerlessMessageData (
         emailDomain: string)
 {
         return MessageHelpers.createMessageData(
-                groupData.threadData,
                 messageName,
                 threadStartName,
                 email,
                 emailDomain,
-                groupData.profiles,
-                groupData.strings,
+                groupData,
                 null);
 }
 export function createMessageData (
@@ -243,12 +239,10 @@ export function createMessageData (
         emailDomain: string)
 {
         return MessageHelpers.createMessageData(
-                groupData.threadData,
                 messageName,
                 threadStartName,
                 player.email,
                 emailDomain,
-                groupData.profiles,
-                groupData.strings,
+                groupData,
                 player.vars);
 }

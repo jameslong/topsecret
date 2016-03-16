@@ -1,10 +1,13 @@
 import Arr = require('../../../../core/src/app/utils/array');
 import Config = require('../config');
 import DBTypes = require('../../../../core/src/app/dbtypes');
+import Helpers = require('../../../../core/src/app/utils/helpers');
 import Map = require('../../../../core/src/app/utils/map');
+import MathUtils = require('../../../../core/src/app/utils/math');
 import Message = require('../../../../core/src/app/message');
 import MessageHelpers = require('../../../../core/src/app/messagehelpers');
 import Player = require('../../../../core/src/app/player');
+import Prom = require('../../../../core/src/app/utils/promise');
 import Request = require('../../../../core/src/app/requesttypes');
 
 /*
@@ -19,7 +22,7 @@ playerId
 
 table: messages
 
-messageId
+id
         email: string;
         name: string;
         reply: ReplyState;
@@ -40,42 +43,37 @@ export function createDB (): DBState
         };
 }
 
-function promiseFactory<T, U> (
+type DBPromise<T, U> = <T, U>(db: DBState, params: T)=> Promise<U>;
+
+function delayFactory<T, U> (
         db: DBState,
-        config: Config.ConfigState,
-        requestFn: (
-                db: DBState,
-                config: Config.ConfigState,
-                params: T,
-                callback: Request.Callback<U>) => void)
+        timeoutMs: number,
+        promise: DBPromise<T, U>): Prom.Factory<T, U>
 {
-        return (params: T) =>
-                new Promise((resolve, reject) =>
-                        requestFn(db, config, params, (err, result) =>
-                                err ? reject(err) : resolve(result)));
+        return (params: T) => Prom.delay(timeoutMs).then(result =>
+                promise(db, params));
 }
 
 
-export function createLocalDBCalls (config: Config.ConfigState): DBTypes.DBCalls
+export function createLocalDBCalls (timeoutMs: number): DBTypes.DBCalls
 {
-        var db = createDB();
+        const db = createDB();
+        const factory = <T, U>(promise: DBPromise<T, U>) =>
+                delayFactory<T, U>(db, timeoutMs, promise);
 
-        const createPlayerTable = promiseFactory(
-                db, config, createPlayerTableLocal);
-        const createMessageTable = promiseFactory(
-                db, config, createMessageTableLocal);
-        const deleteTable = promiseFactory(db, config, deleteTableLocal);
-        const addPlayer = promiseFactory(db, config, addPlayerLocal);
-        const updatePlayer = promiseFactory(db, config, updatePlayerLocal);
-        const removePlayer = promiseFactory(db, config, removePlayerLocal);
-        const deleteAllMessages = promiseFactory(
-                db, config, deleteAllMessagesLocal);
-        const storeMessage = promiseFactory(db, config, storeMessageLocal);
-        const updateMessage = promiseFactory(db, config, updateMessageLocal);
-        const deleteMessage = promiseFactory(db, config, deleteMessageLocal);
-        const getMessage = promiseFactory(db, config, getMessageLocal);
-        const getMessages = promiseFactory(db, config, getMessagesLocal);
-        const getPlayerState = promiseFactory(db, config, getPlayerStateLocal);
+        const createPlayerTable = factory(createPlayerTableLocal);
+        const createMessageTable = factory( createMessageTableLocal);
+        const deleteTable = factory(deleteTableLocal);
+        const addPlayer = factory(addPlayerLocal);
+        const updatePlayer = factory(updatePlayerLocal);
+        const deletePlayer = factory(deletePlayerLocal);
+        const deleteAllMessages = factory( deleteAllMessagesLocal);
+        const addMessage = factory(addMessageLocal);
+        const updateMessage = factory(updateMessageLocal);
+        const deleteMessage = factory(deleteMessageLocal);
+        const getMessage = factory(getMessageLocal);
+        const getMessages = factory(getMessagesLocal);
+        const getPlayer = factory(getPlayerLocal);
 
         return {
                 createPlayerTable,
@@ -83,22 +81,27 @@ export function createLocalDBCalls (config: Config.ConfigState): DBTypes.DBCalls
                 deleteTable,
                 addPlayer,
                 updatePlayer,
-                removePlayer,
+                deletePlayer,
                 deleteAllMessages,
-                storeMessage,
+                addMessage,
                 updateMessage,
                 deleteMessage,
                 getMessage,
                 getMessages,
-                getPlayerState,
+                getPlayer,
         };
+}
+
+function returnPromise<T> (err: Request.Error, result: T)
+{
+        return new Promise<T>((resolve, reject) =>
+                err ? reject(err) : resolve(result)
+        );
 }
 
 export function createPlayerTableLocal (
         db: DBState,
-        config: Config.ConfigState,
-        params: Request.CreateTableParams,
-        callback: Request.CreateTableCallback)
+        params: DBTypes.CreateTableParams)
 {
         var error: Request.Error = undefined;
 
@@ -113,26 +116,21 @@ export function createPlayerTableLocal (
                 db.players = {};
         }
 
-        setTimeout(function () { callback(error, params) },
-                config.debugDBTimeoutMs);
+        return returnPromise(error, params);
 }
 
 export function deleteTableLocal (
         db: DBState,
-        config: Config.ConfigState,
-        params: Request.CreateTableParams,
-        callback: Request.CreateTableCallback)
+        tableName: DBTypes.CreateTableParams)
 {
-        params.tableName === 'messages' ?
-                deleteMessageTableLocal(db, config, params, callback) :
-                deletePlayerTableLocal(db, config, params, callback);
+        return tableName === 'messages' ?
+                deleteMessageTableLocal(db, tableName) :
+                deletePlayerTableLocal(db, tableName);
 }
 
 export function deletePlayerTableLocal (
         db: DBState,
-        config: Config.ConfigState,
-        params: Request.CreateTableParams,
-        callback: Request.CreateTableCallback)
+        params: DBTypes.CreateTableParams)
 {
         var error: Request.Error = undefined;
 
@@ -147,15 +145,12 @@ export function deletePlayerTableLocal (
                 };
         }
 
-        setTimeout(function () { callback(error, params) },
-                config.debugDBTimeoutMs);
+        return returnPromise(error, params);
 }
 
 export function createMessageTableLocal (
         db: DBState,
-        config: Config.ConfigState,
-        params: Request.CreateTableParams,
-        callback: Request.CreateTableCallback)
+        params: DBTypes.CreateTableParams)
 {
         var error: Request.Error = undefined;
 
@@ -170,15 +165,12 @@ export function createMessageTableLocal (
                 db.messages = {};
         }
 
-        setTimeout(function () { callback(error, params) },
-                config.debugDBTimeoutMs);
+        return returnPromise(error, params);
 }
 
 export function deleteMessageTableLocal (
         db: DBState,
-        config: Config.ConfigState,
-        params: Request.CreateTableParams,
-        callback: Request.CreateTableCallback)
+        params: DBTypes.CreateTableParams)
 {
         var error: Request.Error = undefined;
 
@@ -194,15 +186,12 @@ export function deleteMessageTableLocal (
                 };
         }
 
-        setTimeout(function () { callback(error, params) },
-                config.debugDBTimeoutMs);
+        return returnPromise(error, params);
 }
 
 export function addPlayerLocal (
         db: DBState,
-        config: Config.ConfigState,
-        playerState: Request.AddPlayerParams,
-        callback: Request.AddPlayerCallback)
+        playerState: DBTypes.AddPlayerParams)
 {
         var error: Request.Error = undefined;
 
@@ -218,44 +207,38 @@ export function addPlayerLocal (
                 db.players[email] = playerState;
         }
 
-        setTimeout(function () { callback(error, playerState) },
-                config.debugDBTimeoutMs);
+        return returnPromise(error, playerState);
 }
 
 export function updatePlayerLocal (
         db: DBState,
-        config: Config.ConfigState,
-        playerState: Request.UpdatePlayerParams,
-        callback: Request.UpdatePlayerCallback)
+        player: DBTypes.UpdatePlayerParams)
 {
         var error: Request.Error = undefined;
 
-        var email = playerState.email;
-        var inUse = (db.players[email] === undefined);
+        var email = player.email;
+        var inUse = (db.players[email] !== undefined);
 
-        if (!inUse) {
+        if (inUse) {
+                db.players[email] = player;
+        } else {
                 error = {
                         code: 'UPDATE PLAYER',
                         message: 'could not find player',
                 };
-        } else {
-                db.players[email] = playerState;
         }
 
-        setTimeout(function () { callback(error, playerState) },
-                config.debugDBTimeoutMs);
+        return returnPromise(error, player);
 }
 
-export function removePlayerLocal (
+export function deletePlayerLocal (
         db: DBState,
-        config: Config.ConfigState,
-        params: Request.RemovePlayerParams,
-        callback: Request.RemovePlayerCallback)
+        email: DBTypes.DeletePlayerParams)
 {
         var error: Request.Error = undefined;
 
-        var email = params.email;
         var playerExists = (db.players[email] !== undefined);
+        const player = playerExists ? db.players[email] : null;
 
         if (playerExists) {
                 delete db.players[email];
@@ -266,146 +249,110 @@ export function removePlayerLocal (
                 };
         }
 
-        setTimeout(function () { callback(error, params) },
-                config.debugDBTimeoutMs);
+        return returnPromise(error, player);
 }
 
 export function deleteAllMessagesLocal (
         db: DBState,
-        config: Config.ConfigState,
-        params: Request.DeleteAllMessagesParams,
-        callback: Request.DeleteAllMessagesCallback)
+        email: DBTypes.DeleteAllMessagesParams)
 {
         var error: Request.Error = undefined;
-
-        var email = params.email;
 
         db.messages = Map.filter(db.messages, function (messageState)
                 {
                         return messageState.email !== email;
                 });
 
-        setTimeout(function () { callback(error, params) },
-                config.debugDBTimeoutMs);
+        return returnPromise(error, email);
 }
 
-export function storeMessageLocal (
+export function addMessageLocal (
         db: DBState,
-        config: Config.ConfigState,
-        messageState: Request.StoreMessageParams,
-        callback: Request.StoreMessageCallback)
+        messageState: DBTypes.AddMessageParams)
 {
         var error: Request.Error = undefined;
 
-        var messageId = messageState.messageId;
+        var id = messageState.id;
 
-        db.messages[messageId] = messageState;
+        db.messages[id] = messageState;
 
-        setTimeout(function () { callback(error, messageState) },
-                config.debugDBTimeoutMs);
+        return returnPromise(error, messageState);
 }
 
 export function updateMessageLocal (
         db: DBState,
-        config: Config.ConfigState,
-        messageState: Request.UpdateMessageParams,
-        callback: Request.UpdateMessageCallback)
+        messageState: DBTypes.UpdateMessageParams)
 {
         var error: Request.Error = undefined;
 
-        var messageId = messageState.messageId;
+        var id = messageState.id;
 
-        db.messages[messageId] = messageState;
+        db.messages[id] = messageState;
 
-        setTimeout(function () { callback(error, messageState) },
-                config.debugDBTimeoutMs);
+        return returnPromise(error, messageState);
 }
 
 export function deleteMessageLocal (
         db: DBState,
-        config: Config.ConfigState,
-        messageState: Request.DeleteMessageParams,
-        callback: Request.DeleteMessageCallback)
+        id: DBTypes.DeleteMessageParams)
 {
-        var messageId = messageState.messageId;
-
         var error: Request.Error = undefined;
 
-        var messageState = db.messages[messageId];
-        delete db.messages[messageId];
+        var messageState = db.messages[id];
+        delete db.messages[id];
 
-        setTimeout(function () { callback(error, messageState) },
-                config.debugDBTimeoutMs);
+        return returnPromise(error, messageState);
 }
 
 export function getMessageLocal (
         db: DBState,
-        config: Config.ConfigState,
-        params: Request.GetMessageParams,
-        callback: Request.GetMessageCallback)
+        id: DBTypes.GetMessageParams)
 {
         var error: Request.Error = undefined;
 
-        var messageId = params.messageId;
-        var messageState = (db.messages[messageId] || null);
+        var messageState = (db.messages[id] || null);
 
-        setTimeout(function () { callback(error, messageState) },
-                config.debugDBTimeoutMs);
+        return returnPromise(error, messageState);
 }
 
 export function getMessagesLocal (
         db: DBState,
-        config: Config.ConfigState,
-        params: Request.GetMessagesParams,
-        callback: Request.GetMessagesCallback)
+        params: DBTypes.GetMessagesParams)
 {
-        var error: Request.Error = undefined;
+        const exclusiveStartKey = params.exclusiveStartKey;
+        const maxResults = params.maxResults;
+        const keys = Object.keys(db.messages);
 
-        var messageStates = Map.arrayFromMap(db.messages);
-        var length = messageStates.length;
+        let lastEvaluatedKey: string = null;
+        let messages: Message.MessageState[] = [];
 
-        var startKey = params.startKey;
-        var maxResults = params.maxResults;
+        const exclusiveStartIndex = keys.indexOf(exclusiveStartKey);
+        const hasInclusiveStartKey =
+                exclusiveStartKey === null ||
+                exclusiveStartIndex !== -1;
 
-        var resultList: Message.MessageState[] = [];
-        var lastEvaluatedKey: string = null;
+        if (keys.length && hasInclusiveStartKey) {
+                const startIndex = exclusiveStartKey === null ?
+                        0 : exclusiveStartIndex + 1;
+                const desiredEndIndex = startIndex + maxResults;
+                const endIndex = Math.min(startIndex + maxResults, keys.length);
 
-        if (length) {
-                var startIndex = Arr.find(messageStates, (messageState) =>
-                        (messageState.messageId === startKey));
+                const selectedKeys = keys.slice(startIndex, endIndex);
+                messages = selectedKeys.map(key => db.messages[key]);
 
-                if (startIndex === -1) {
-                        startIndex = 0;
-                }
-
-                var endIndex = Math.min(startIndex + maxResults, length);
-                resultList = messageStates.slice(startIndex, endIndex);
-                lastEvaluatedKey = (endIndex === length ?
-                        null :
-                        messageStates[endIndex].messageId);
+                const lastSelectedKey = selectedKeys.length ?
+                        selectedKeys[selectedKeys.length - 1] : null;
+                lastEvaluatedKey = desiredEndIndex > endIndex ?
+                        null : lastSelectedKey;
         }
 
-        var result = {
-                lastEvaluatedKey: lastEvaluatedKey,
-                messages: resultList,
-        };
-
-        setTimeout(function () { callback(error, result) },
-                config.debugDBTimeoutMs);
+        return returnPromise(null, { lastEvaluatedKey, messages });
 }
 
-export function getPlayerStateLocal (
+export function getPlayerLocal (
         db: DBState,
-        config: Config.ConfigState,
-        params: Request.GetPlayerStateParams,
-        callback: Request.GetPlayerStateCallback)
+        email: DBTypes.GetPlayerParams)
 {
-        var error: Request.Error = undefined;
-
-        var email = params.email;
-
-        var data = db.players[email];
-
-        setTimeout(function () { callback(error, data) },
-                config.debugDBTimeoutMs);
+        var data = db.players[email] || null;
+        return returnPromise(null, data);
 }

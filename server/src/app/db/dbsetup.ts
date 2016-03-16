@@ -15,9 +15,16 @@ export function createPromiseFactories (
 {
         const mode = config.mode;
         const calls = mode === Config.AppMode.Local ?
-                LocalDB.createLocalDBCalls(config) :
-                DynamoDB.createDynamoDBCalls(config);
+                LocalDB.createLocalDBCalls(config.debugDBTimeoutMs) :
+                DynamoDB.createDynamoDBCalls(config.dynamoDBConfig);
+        return createPromiseFactoriesFromCalls(calls, send, encrypt);
+}
 
+export function createPromiseFactoriesFromCalls (
+        calls: DBTypes.DBCalls,
+        send: Prom.Factory<Message.MessageData, string>,
+        encrypt: Prom.Factory<Kbpgp.EncryptData, string>)
+{
         return {
                 send,
                 encrypt,
@@ -26,14 +33,14 @@ export function createPromiseFactories (
                 deleteTable: calls.deleteTable,
                 addPlayer: calls.addPlayer,
                 updatePlayer: calls.updatePlayer,
-                removePlayer: calls.removePlayer,
+                deletePlayer: calls.deletePlayer,
                 deleteAllMessages: calls.deleteAllMessages,
-                storeMessage: calls.storeMessage,
+                addMessage: calls.addMessage,
                 updateMessage: calls.updateMessage,
                 deleteMessage: calls.deleteMessage,
                 getMessage: calls.getMessage,
                 getMessages: calls.getMessages,
-                getPlayerState: calls.getPlayerState,
+                getPlayer: calls.getPlayer,
 
         };
 }

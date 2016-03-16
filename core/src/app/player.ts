@@ -10,6 +10,7 @@ export interface PlayerState {
         email: string;
         publicKey: string;
         messageUID: number;
+        version: string;
         emptyMessages: Map.Map<string>; // from profile name to message id
         vars: PlayerVars;
 }
@@ -17,17 +18,19 @@ export interface PlayerState {
 export function createPlayerState (
         email: string,
         publicKey: string,
+        version: string,
         firstName: string,
         lastName: string): PlayerState
 {
         return {
-                email: email,
-                publicKey: publicKey,
+                email,
+                publicKey,
                 messageUID: 0,
+                version,
                 emptyMessages: {},
                 vars: {
-                        firstName: firstName,
-                        lastName: lastName,
+                        firstName,
+                        lastName,
                 },
         };
 }

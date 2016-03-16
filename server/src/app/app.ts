@@ -1,10 +1,10 @@
 import Profile = require('./../../../core/src/app/profile');
 import Config = require('./config');
 import Data = require('./data/data');
-import DBHelpers = require('./../../../core/src/app/dbhelpers');
 import DBSetup = require('./db/dbsetup');
 import DBTypes = require('./../../../core/src/app/dbtypes');
 import KBPGP = require('./../../../core/src/app/kbpgp');
+import Helpers = require('./../../../core/src/app/utils/helpers');
 import Log = require('./../../../core/src/app/log/log');
 import Main = require('./../../../core/src/app/main');
 import Map = require('./../../../core/src/app/utils/map');
@@ -22,15 +22,13 @@ export interface State {
         app: State.State;
 }
 
-export function createState (
-        config: Config.ConfigState,
-        callback: Request.Callback<State>)
+export function createState (config: Config.ConfigState)
 {
         const server = Server.createServerState();
         const update = createUpdateState();
-        createGameState(config, server, (error, app) =>
-                callback(error, { config, server, update, app })
-        );
+        return createGameState(config, server).then(app => {
+                return { config, server, update, app };
+        });
 }
 
 export function getGroupData (app: State.State, groupName: string)
@@ -53,19 +51,20 @@ function createUpdateState (): UpdateState
 
 export function createGameState (
         config: Config.ConfigState,
-        server: Server.ServerState,
-        callback: Request.Callback<State.State>)
+        server: Server.ServerState)
 {
-        Data.loadAllGameData(config, (err, gameData) =>
-                onGameData(config, server, err, gameData, callback));
+        return Data.loadAllGameData(config).then(gameData =>
+                onGameData(config, server, gameData)
+        ).catch(err => {
+                Log.info('createGameState error: ' + err);
+                return onGameData(config, server, null);
+        });
 }
 
 export function onGameData (
         config: Config.ConfigState,
         server: Server.ServerState,
-        err: Request.Error,
-        gameData: State.GameData[],
-        callback: Request.Callback<State.State>)
+        gameData: State.GameData[])
 {
         const encrypt = KBPGP.signEncrypt;
         const send = Sender.createSendFn(
@@ -73,38 +72,31 @@ export function onGameData (
                 config.useEmail,
                 config.emailAPIKey,
                 config.emailDomain);
-        const db = DBSetup.createPromiseFactories(config, send, encrypt);
+        const promises = DBSetup.createPromiseFactories(config, send, encrypt);
 
         const gameState: State.State = {
                 emailDomain: config.emailDomain,
                 timeFactor: config.timeFactor,
                 immediateReplies: config.immediateReplies,
                 data: null,
-                db,
+                promises,
         };
 
         if (gameData) {
-                var mappedGameData = Map.mapFromArray(gameData);
+                var mappedGameData = Helpers.mapFromNameArray(gameData);
                 gameState.data = mappedGameData;
         }
 
-        callback(err, gameState);
+        return gameState;
 }
 
-export function updateGameState (
-        state: State, callback: Request.Callback<State.State>)
+export function updateGameState (state: State)
 {
-        var onGameState = (error: Request.Error, gameState: State.State) =>
-                {
-                        if (!error) {
-                                Log.debug('State.State updated');
-                                state.app = gameState;
-                        }
-                        callback(error, gameState);
-                };
-
         var config = state.config;
-        createGameState(config, state.server, onGameState);
+        return createGameState(state.config, state.server).then(gameState => {
+                state.app = gameState;
+                return gameState;
+        });
 }
 
 export function init (state: State)
@@ -137,26 +129,24 @@ export function update (state: State)
 {
         Log.debug('Update');
 
-        var gameState = state.app;
-        var updateState = state.update;
-        var config = state.config;
-        var server = state.server;
+        const gameState = state.app;
+        const updateState = state.update;
+        const config = state.config;
+        const server = state.server;
 
-        var callback = (error: Request.Error, data: Request.GetMessagesResult) => {
-                        if (!error) {
-                                Log.debug('Get Messages: ', data);
-                                onGetMessages(state, data);
-                        } else {
-                                updateState.lastEvaluatedKey = null;
-                                onUpdateEnd(state);
-                        }
-                };
-
-        var lastEvaluatedKey = updateState.lastEvaluatedKey;
+        const lastEvaluatedKey = updateState.lastEvaluatedKey;
         Log.debug('Last evaluated key', lastEvaluatedKey);
-        var maxResults = config.update.maxMessagesRequestedPerUpdate;
-        var getMessagesFn = gameState.db.getMessages;
-        DBHelpers.getMessages(lastEvaluatedKey, maxResults, getMessagesFn, callback);
+        const maxResults = config.update.maxMessagesRequestedPerUpdate;
+
+        const getMessages = gameState.promises.getMessages;
+        const params = { exclusiveStartKey: lastEvaluatedKey, maxResults };
+
+        getMessages(params).then(data =>
+                onGetMessages(state, data)
+        ).catch(err => {
+                updateState.lastEvaluatedKey = null;
+                onUpdateEnd(state);
+        });
 }
 
 export function onUpdateEnd (state: State)
@@ -169,7 +159,7 @@ export function onUpdateEnd (state: State)
         setTimeout(updateFn, config.update.updateIntervalMs);
 }
 
-export function onGetMessages (state: State, data: Request.GetMessagesResult)
+export function onGetMessages (state: State, data: DBTypes.GetMessagesResult)
 {
         Log.debug('onGetMessages');
 
@@ -189,23 +179,19 @@ export function onGetMessages (state: State, data: Request.GetMessagesResult)
         } else {
                 message = (messages.length ? messages[messages.length - 1] : null);
         }
-
         const onUpdateEndLocal = (error: Request.Error) =>
                 onUpdateEnd(state);
 
         if (message) {
-                DBHelpers.getPlayerState(
-                        gameState.db.getPlayerState,
-                        message.email,
-                        (err, player) => err ?
-                                onUpdateEndLocal(err) :
-                                Main.update(
-                                        gameState,
-                                        timestampMs,
-                                        message,
-                                        player,
-                                        onUpdateEndLocal)
-                );
+                gameState.promises.getPlayer(message.email).then(player =>
+                        Main.update(
+                                gameState,
+                                timestampMs,
+                                message,
+                                player)
+                ).then(result =>
+                        onUpdateEndLocal(null)
+                ).catch(onUpdateEndLocal);
         } else {
                 onUpdateEndLocal(null);
         }
@@ -226,7 +212,7 @@ export function getMessagesToUpdate (
         : Message.MessageState[]
 {
         return messages.filter((message) =>
-                lastUpdated[message.messageId] === undefined);
+                lastUpdated[message.id] === undefined);
 }
 
 export function storeLastUpdated (
@@ -235,5 +221,5 @@ export function storeLastUpdated (
         timestampMs: number)
 {
         messages.forEach(
-                (message) => lastUpdated[message.messageId] = timestampMs);
+                (message) => lastUpdated[message.id] = timestampMs);
 }

@@ -11,8 +11,7 @@ import State = require('../../../../core/src/app/state');
 
 export function handleCareersEmail (
         state: App.State,
-        reply: Reply.Reply,
-        res: any)
+        reply: Reply.Reply)
 {
         var defaultNarrativeGroup =
                 state.config.content.defaultNarrativeGroup;
@@ -22,64 +21,49 @@ export function handleCareersEmail (
         var subject = reply.subject;
         var body = reply.body;
 
-        var callback = PostHandler.createRequestCallback(res);
-
         var resignationLetter = Str.contains(reply.subject, 'resign');
 
         if (resignationLetter) {
-                handleResignation(
+                return handleResignation(
                         state,
                         groupData,
-                        email,
-                        callback);
+                        email);
         } else {
                 var playerData = extractPlayerData(body);
 
-                if (playerData) {
+                return playerData  ?
                         handleValidApplication(
                                 state,
                                 groupData,
                                 email,
-                                playerData,
-                                callback);
-                } else {
+                                playerData) :
                         handleInvalidApplication(
                                 state,
                                 groupData,
-                                email,
-                                callback);
-                }
+                                email);
         }
 }
 
 export function handleResignation (
         state: App.State,
         groupData: State.GameData,
-        email: string,
-        callback: Request.Callback<any>)
+        email: string)
 {
         const app = state.app;
-        const promises = app.db;
+        const promises = app.promises;
 
         const messageName = state.config.content.resignationThread;
-        const threadStartName: string = null;
-        const data = Main.createPlayerlessMessageData(
-                groupData,
-                email,
-                messageName,
-                threadStartName,
-                app.emailDomain);
-        return Promises.resign(data, email, promises).then(result =>
-                callback(null, result)
-        ).catch(error => callback(error, null));
+        const domain = app.emailDomain;
+
+        return Promises.resign(
+                messageName, email, domain, groupData, promises);
 }
 
 export function handleValidApplication (
         state: App.State,
         groupData: State.GameData,
         email: string,
-        playerData: PlayerApplicationData,
-        callback: Request.Callback<any>)
+        playerData: PlayerApplicationData)
 {
         var config = state.config;
 
@@ -87,20 +71,18 @@ export function handleValidApplication (
                 config.content.validApplicationThreadPGP :
                 config.content.validApplicationThread;
 
-        Demo.beginDemo(
+        return Demo.beginDemo(
                 state,
                 groupData,
                 email,
                 playerData,
-                initialThreadMessage,
-                callback);
+                initialThreadMessage);
 }
 
 export function handleInvalidApplication (
         state: App.State,
         groupData: State.GameData,
-        email: string,
-        callback: Request.Callback<any>)
+        email: string)
 {
         const app = state.app;
         const messageName = state.config.content.invalidApplicationThread;
@@ -111,9 +93,7 @@ export function handleInvalidApplication (
                 messageName,
                 threadStartName,
                 app.emailDomain);
-        return app.db.send(data).then(
-                messageId => callback(null, messageId)
-        ).catch(error => callback(error, null));
+        return app.promises.send(data);
 }
 
 export function isCareersEmail (to: string): boolean

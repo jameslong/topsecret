@@ -1,89 +1,25 @@
+import Helpers = require('./helpers');
+
 export interface Map<T> {
-        [s: string]: T;
+        [i: string]: T;
 }
 
-export function mergeMaps<T> (maps: Map<T>[]): Map<T>
-{
-        var result: Map<T> = {};
-        maps.forEach(function (map)
-                {
-                        for (var key in map) {
-                                if (map.hasOwnProperty(key)) {
-                                        result[key] = map[key];
-                                }
-                        }
-                });
-
-        return result;
+export interface Iteratee<T, U> {
+        (value: T, key: string, map: Map<T>): U;
 }
 
-export function mapFromArray<T extends {name: string}> (list: T[]): Map<T>
-{
-        var returnObj: Map<T> = {};
-
-        list.forEach(function (elem)
-        {
-                returnObj[elem.name] = elem;
-        });
-
-        return returnObj;
+interface Reducer<T, U> {
+        (result: U, value: T, key: string, map: Map<T>): U;
 }
 
-export function arrayFromMap<T> (object: Map<T>): T[]
-{
-        var returnList: T[] = [];
-
-        for (var key in object) {
-                if (object.hasOwnProperty(key)) {
-                        returnList.push(object[key]);
-                }
-        }
-
-        return returnList;
+interface Predicate<T> {
+        (value: T, key: string, map: Map<T>): boolean;
 }
 
-export function map<T, U> (
-        object: Map<T>,
-        iteratee: (value: T, key: string, object: Map<T>)=>U): Map<U>
+export function create<T>(pairs: [string, T][]): Map<T>
 {
-        var result: Map<U> = {};
-
-        for (var key in object) {
-                if (object.hasOwnProperty(key)) {
-                        result[key] = iteratee(object[key], key, object);
-                }
-        }
-
-        return result;
-}
-
-export function mapToArray<T, U> (
-        object: Map<T>, iteratee: (value: T, key: string)=>U): U[]
-{
-        var result: U[] = [];
-
-        for (var key in object) {
-                if (object.hasOwnProperty(key)) {
-                        result.push(iteratee(object[key], key));
-                }
-        }
-
-        return result;
-}
-
-export function filter<T> (
-        object: Map<T>,
-        predicate: (value: T, key: string, object: Map<T>)=>boolean): Map<T>
-{
-        var result: Map<T> = {};
-
-        for (var key in object) {
-                if (object.hasOwnProperty(key) &&
-                    predicate(object[key], key, object)) {
-                        result[key] = object[key];
-                }
-        }
-
+        let result: Map<T> = {};
+        pairs.forEach(pair => result[pair[0]] = pair[1]);
         return result;
 }
 
@@ -92,28 +28,6 @@ export function every<T> (
 {
         return (Object.keys(filter(object, predicate)).length ===
                 Object.keys(object).length);
-}
-
-export function forEach<T> (
-        object: Map<T>, iteratee: (value: T, key: string)=>any)
-{
-        for (var key in object) {
-                if (object.hasOwnProperty(key)) {
-                        iteratee(object[key], key);
-                }
-        }
-}
-
-export function valueOf<T> (
-        object: Map<T>, predicate: (value: T, key: string)=>boolean): T
-{
-        for (var key in object) {
-                if (object.hasOwnProperty(key) && predicate(object[key], key)) {
-                        return object[key];
-                }
-        }
-
-        return null;
 }
 
 export function exists<T> (object: Map<T>, key: string): boolean
@@ -144,4 +58,98 @@ export function extractN<T> (
                 lastEvaluatedKey: lastEvaluatedKey,
                 items: items,
         };
+}
+
+export function filter<T>(map: Map<T>, predicate: Predicate<T>)
+{
+        let result: Map<T> = {};
+        for (let key in map) {
+                if (map.hasOwnProperty(key)) {
+                        if(predicate(map[key], key, map)) {
+                                result[key] = map[key];
+                        }
+                }
+        }
+        return result;
+}
+
+export function find<T>(map: Map<T>, predicate: Predicate<T>)
+{
+        for (let key in map) {
+                if (map.hasOwnProperty(key)) {
+                        if(predicate(map[key], key, map)) {
+                                return map[key];
+                        }
+                }
+        }
+        return undefined;
+}
+
+export function forEach<T> (
+        object: Map<T>, iteratee: (value: T, key: string)=>any)
+{
+        for (var key in object) {
+                if (object.hasOwnProperty(key)) {
+                        iteratee(object[key], key);
+                }
+        }
+}
+
+export function keys<T>(map: Map<T>)
+{
+        return Object.keys(map);
+}
+
+export function map<T, U>(map: Map<T>, iteratee: Iteratee<T, U>)
+{
+        let result: Map<U> = {};
+        for (let key in map) {
+                if (map.hasOwnProperty(key)) {
+                        result[key] = iteratee(map[key], key, map);
+                }
+        }
+        return result;
+}
+
+export function merge<T, U>(mapA: Map<T>, mapB: Map<T>)
+{
+        return Helpers.assign(mapA, mapB);
+}
+
+export function mergeMaps<T> (maps: Map<T>[]): Map<T>
+{
+        var result: Map<T> = {};
+        maps.forEach(function (map)
+                {
+                        for (var key in map) {
+                                if (map.hasOwnProperty(key)) {
+                                        result[key] = map[key];
+                                }
+                        }
+                });
+
+        return result;
+}
+
+export function reduce<T, U>(
+        map: Map<T>, reducer: Reducer<T, U>, result: U)
+{
+        for (let key in map) {
+                if (map.hasOwnProperty(key)) {
+                        result = reducer(result, map[key], key, map);
+                }
+        }
+        return result;
+}
+
+export function valueOf<T> (
+        object: Map<T>, predicate: (value: T, key: string)=>boolean): T
+{
+        for (var key in object) {
+                if (object.hasOwnProperty(key) && predicate(object[key], key)) {
+                        return object[key];
+                }
+        }
+
+        return null;
 }

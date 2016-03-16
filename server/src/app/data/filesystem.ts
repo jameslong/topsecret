@@ -1,7 +1,7 @@
 /// <reference path="../../../../typings/node/node.d.ts"/>
 
-import Arr = require('../../../../core/src/app/utils/array');
 import Data = require('./data');
+import Helpers = require('../../../../core/src/app/utils/helpers');
 import Map = require('../../../../core/src/app/utils/map');
 import Str = require('../../../../core/src/app/utils/string');
 
@@ -53,8 +53,10 @@ export function loadJSONDirAsMap<T>(path: string): Map.Map<T>
         const stringNames = filenames.map(Str.removeFileExtension);
         const filepaths = filenames.map(name => Data.join(path, name));
 
-        return Arr.arrayToMap(
-                stringNames, filepaths, path => loadJSONSync<T>(path));
+        return Helpers.mapFromArray(
+                filenames,
+                Str.removeFileExtension,
+                name => loadJSONSync<T>(Data.join(path, name)));
 }
 
 export function saveJSONSync(path: string, data: Object)

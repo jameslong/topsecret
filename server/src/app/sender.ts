@@ -8,14 +8,11 @@ export function createSendFn (
         io: any,
         useEmail: boolean,
         emailAPIKey: string,
-        emailDomain: string): Prom.Factory<Message.MessageData, string>
+        emailDomain: string)
 {
         var mailgun = Mailgun.createMailgun(emailAPIKey, emailDomain);
-        return useEmail ?
-                (data: Message.MessageData) => new Promise((resolve, reject) =>
-                        Mailgun.sendMail(mailgun, data, (err, messageId) =>
-                                err ? reject(err) : resolve(messageId))) :
-                (data: Message.MessageData) => new Promise((resolve, reject) =>
-                        Server.sendMail(io, data, (err, messageId) =>
-                                err ? reject(err) : resolve(messageId)));
+        return (data: Message.MessageData) =>
+                useEmail ?
+                        Mailgun.sendMail(mailgun, data) :
+                        Server.sendMail(io, data);
 }

@@ -1,0 +1,32 @@
+{
+        "name": "children_unexpired",
+        "threadSubject": "children_unexpired_subject",
+        "position": {
+                "x": 220,
+                "y": 55
+        },
+        "endGame": false,
+        "message": {
+                "from": "james",
+                "to": [
+                        "zoe"
+                ],
+                "body": [
+                        "children_unexpired_body"
+                ]
+        },
+        "encrypted": true,
+        "receiver": null,
+        "replyOptions": [],
+        "children": [
+                {
+                        "name": "child_0",
+                        "delayMins": 100000000
+                },
+                {
+                        "name": "child_1",
+                        "delayMins": 100000000
+                }
+        ],
+        "fallback": null
+}

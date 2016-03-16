@@ -2,11 +2,13 @@ import Arr = require('../../../../core/src/app/utils/array');
 import Config = require('../config');
 import DataValidation = require('./datavalidation');
 import FileSystem = require('./filesystem');
+import Helpers = require('../../../../core/src/app/utils/helpers');
 import Kbpgp = require('../../../../core/src/app/kbpgp');
 import Log = require('../../../../core/src/app/log/log');
 import Map = require('../../../../core/src/app/utils/map');
 import Message = require('../../../../core/src/app/message');
 import Profile = require('../../../../core/src/app/profile');
+import Prom = require('../../../../core/src/app/utils/promise');
 import Request = require('../../../../core/src/app/requesttypes');
 import State = require('../../../../core/src/app/state');
 
@@ -36,19 +38,25 @@ export function loadPrivateConfig(config: Config.ConfigState)
 }
 
 export function loadAllGameData (
-        config: Config.ConfigState,
-        callback: Request.Callback<State.GameData[]>)
+        config: Config.ConfigState)
 {
-        var content = config.content;
-        var narrativeFolderPath = content.narrativeFolder;
-        var groupNames = FileSystem.loadDirectoryNamesSync(narrativeFolderPath);
+        const content = config.content;
+        const profileSchema = FileSystem.loadJSONSync<JSON>(
+                content.profileSchemaPath);
+        const messageSchema = FileSystem.loadJSONSync<JSON>(
+                content.messageSchemaPath);
 
-        var tasks = groupNames.map((groupName) => {
-                        return (callback: Request.Callback<State.GameData>) =>
-                                loadGameData(narrativeFolderPath, groupName, callback);
-                });
+        const narrativeFolderPath = content.narrativeFolder;
+        const groupNames = FileSystem.loadDirectoryNamesSync(narrativeFolderPath);
 
-        Request.sequence(tasks, callback);
+        const tasks = groupNames.map(name =>
+                loadGameData(
+                        narrativeFolderPath,
+                        name,
+                        profileSchema,
+                        messageSchema));
+
+        return Promise.all(tasks);
 }
 
 export function join (...paths: string[]): string
@@ -57,41 +65,36 @@ export function join (...paths: string[]): string
 }
 
 export function loadGameData (
-        path: string,
-        name: string,
-        callback: Request.Callback<State.GameData>)
+        path: string, name: string, profileSchema: JSON, messageSchema: JSON)
 {
-        var groupData = loadGroupData(path, name);
+        var groupData = loadGroupData(path, name, profileSchema, messageSchema);
 
         if (groupData) {
-                var keyManagerCallback = createKeyManagerCallback(
-                        groupData, callback);
-                Kbpgp.loadKeyData(groupData.profiles, keyManagerCallback);
+                const profiles = groupData.profiles;
+                const keyData = Helpers.arrayFromMap<Profile.Profile, Kbpgp.KeyData>(profiles,
+                        profile => {
+                                return {
+                                        id: profile.name,
+                                        passphrase: profile.passphrase,
+                                        privateKey: profile.privateKey,
+                                };
+                        });
+                return Kbpgp.loadFromKeyData(keyData).then(instances => {
+                        groupData.keyManagers = instances;
+                        return groupData;
+                });
         } else {
-                var error: Request.Error = {
-                        code: null,
-                        message: 'INVALID GAME DATA',
-                };
-
-                callback(error, groupData);
+                return Promise.resolve(groupData);
         }
 }
 
-export function createKeyManagerCallback (
-        groupData: State.GameData,
-        callback: Request.Callback<State.GameData>)
-{
-        return (error: Request.Error, keyManagers: Kbpgp.KeyManagers) =>
-                {
-                        groupData.keyManagers = keyManagers;
-                        callback(error, groupData);
-                };
-}
-
-export function loadGroupData (path: string, name: string): State.GameData
+export function loadGroupData (
+        path: string, name: string, profileSchema: JSON, messageSchema: JSON)
+        : State.GameData
 {
         var data = loadNarrative(path, name);
-        var dataErrors = DataValidation.getDataErrors(data);
+        var dataErrors = DataValidation.getDataErrors(
+                data, profileSchema, messageSchema);
 
         if (dataErrors.length) {
                 var errorText = JSON.stringify(dataErrors, null, 4);
@@ -115,7 +118,7 @@ export function loadNarratives (path: string): Map.Map<NarrativeData>
         const narratives = narrativeNames.map(
                 name => loadNarrative(path, name));
 
-        return Map.mapFromArray(narratives);
+        return Helpers.mapFromNameArray(narratives);
 }
 
 export function loadNarrative (stem: string, name: string): NarrativeData
@@ -131,8 +134,8 @@ export function loadNarrative (stem: string, name: string): NarrativeData
 
         return {
                 name: name,
-                profiles: Map.mapFromArray(profiles),
-                messages: Map.mapFromArray(messages),
+                profiles: Helpers.mapFromNameArray(profiles),
+                messages: Helpers.mapFromNameArray(messages),
                 strings: strings,
         };
 }
