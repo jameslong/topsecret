@@ -67,3 +67,28 @@ export interface DBCalls {
         getMessages: GetMessagesFact;
         getPlayer: GetPlayerFact;
 }
+
+export function createPromiseFactories (
+        calls: DBCalls,
+        send: Prom.Factory<Message.MessageData, string>,
+        encrypt: Prom.Factory<Kbpgp.EncryptData, string>): PromiseFactories
+{
+        return {
+                send,
+                encrypt,
+                createPlayerTable: calls.createPlayerTable,
+                createMessageTable: calls.createMessageTable,
+                deleteTable: calls.deleteTable,
+                addPlayer: calls.addPlayer,
+                updatePlayer: calls.updatePlayer,
+                deletePlayer: calls.deletePlayer,
+                deleteAllMessages: calls.deleteAllMessages,
+                addMessage: calls.addMessage,
+                updateMessage: calls.updateMessage,
+                deleteMessage: calls.deleteMessage,
+                getMessage: calls.getMessage,
+                getMessages: calls.getMessages,
+                getPlayer: calls.getPlayer,
+
+        };
+}

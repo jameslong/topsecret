@@ -1,8 +1,8 @@
 import Data = require('../server/src/app/data/data');
-import DBSetup = require('../server/src/app/db/dbsetup');
+import DBTypes = require('../core/src/app/dbtypes');
 import FileSystem = require('../server/src/app/data/filesystem');
 import KBPGP = require('../core/src/app/kbpgp');
-import LocalDB = require('../server/src/app/db/localdb');
+import LocalDB = require('../core/src/app/localdb');
 import Main = require('../core/src/app/main');
 import Message = require('../core/src/app/message');
 import MessageHelpers = require('../core/src/app/messagehelpers');
@@ -89,5 +89,5 @@ export function createPromises ()
         const db = createDB();
         const encrypt = KBPGP.signEncrypt;
         const send = createSendFn();
-        return DBSetup.createPromiseFactoriesFromCalls(db, send, encrypt);
+        return DBTypes.createPromiseFactories(db, send, encrypt);
 }

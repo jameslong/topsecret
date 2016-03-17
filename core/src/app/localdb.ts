@@ -1,14 +1,13 @@
-import Arr = require('../../../../core/src/app/utils/array');
-import Config = require('../config');
-import DBTypes = require('../../../../core/src/app/dbtypes');
-import Helpers = require('../../../../core/src/app/utils/helpers');
-import Map = require('../../../../core/src/app/utils/map');
-import MathUtils = require('../../../../core/src/app/utils/math');
-import Message = require('../../../../core/src/app/message');
-import MessageHelpers = require('../../../../core/src/app/messagehelpers');
-import Player = require('../../../../core/src/app/player');
-import Prom = require('../../../../core/src/app/utils/promise');
-import Request = require('../../../../core/src/app/requesttypes');
+import Arr = require('./utils/array');
+import DBTypes = require('./dbtypes');
+import Helpers = require('./utils/helpers');
+import Map = require('./utils/map');
+import MathUtils = require('./utils/math');
+import Message = require('./message');
+import MessageHelpers = require('./messagehelpers');
+import Player = require('./player');
+import Prom = require('./utils/promise');
+import Request = require('./requesttypes');
 
 /*
 
