@@ -57,14 +57,9 @@ export function createMessage (
 
 export function testGameData ()
 {
-        const profileSchema = FileSystem.loadJSONSync<JSON>(
-                'server/src/app/data/profileschema.json');
-        const messageSchema = FileSystem.loadJSONSync<JSON>(
-                'server/src/app/data/messageschema.json');
         const contentPath = 'content';
         const groupName = 'test_data';
-        return Data.loadGameData(
-                contentPath, groupName, profileSchema, messageSchema);
+        return Data.loadGameData(contentPath, groupName);
 }
 
 const delayMs = 100;

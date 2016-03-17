@@ -1,5 +1,4 @@
 import Arr = require('../../../../core/src/app/utils/array');
-import Config = require('../config');
 import DataValidation = require('./datavalidation');
 import FileSystem = require('./filesystem');
 import Helpers = require('../../../../core/src/app/utils/helpers');
@@ -27,34 +26,11 @@ export interface NarrativeData {
         strings: Map.Map<string>;
 }
 
-export function loadPrivateConfig(config: Config.ConfigState)
+export function loadAllGameData (path: string)
 {
-        const configPath = join('credentials', config.privateConfigPath);
-        var privateConfig =
-                <Config.PrivateConfigState>FileSystem.loadJSONSync(configPath);
-
-        config.emailAPIKey = privateConfig.emailAPIKey;
-        config.client.elbURL = privateConfig.elbURL;
-}
-
-export function loadAllGameData (
-        config: Config.ConfigState)
-{
-        const content = config.content;
-        const profileSchema = FileSystem.loadJSONSync<JSON>(
-                content.profileSchemaPath);
-        const messageSchema = FileSystem.loadJSONSync<JSON>(
-                content.messageSchemaPath);
-
-        const narrativeFolderPath = content.narrativeFolder;
-        const groupNames = FileSystem.loadDirectoryNamesSync(narrativeFolderPath);
-
+        const groupNames = FileSystem.loadDirectoryNamesSync(path);
         const tasks = groupNames.map(name =>
-                loadGameData(
-                        narrativeFolderPath,
-                        name,
-                        profileSchema,
-                        messageSchema));
+                loadGameData(path, name));
 
         return Promise.all(tasks);
 }
@@ -64,45 +40,27 @@ export function join (...paths: string[]): string
         return paths.join('/');
 }
 
-export function loadGameData (
-        path: string, name: string, profileSchema: JSON, messageSchema: JSON)
+export function loadGameData (path: string, name: string)
 {
-        var groupData = loadGroupData(path, name, profileSchema, messageSchema);
-
-        if (groupData) {
-                const profiles = groupData.profiles;
-                const keyData = Helpers.arrayFromMap<Profile.Profile, Kbpgp.KeyData>(profiles,
-                        profile => {
-                                return {
-                                        id: profile.name,
-                                        passphrase: profile.passphrase,
-                                        privateKey: profile.privateKey,
-                                };
-                        });
-                return Kbpgp.loadFromKeyData(keyData).then(instances => {
-                        groupData.keyManagers = instances;
-                        return groupData;
+        const groupData = loadGroupData(path, name);
+        const profiles = groupData.profiles;
+        const keyData = Helpers.arrayFromMap<Profile.Profile, Kbpgp.KeyData>(
+                profiles, profile => {
+                        return {
+                                id: profile.name,
+                                passphrase: profile.passphrase,
+                                privateKey: profile.privateKey,
+                        };
                 });
-        } else {
-                return Promise.resolve(groupData);
-        }
+        return Kbpgp.loadFromKeyData(keyData).then(instances => {
+                groupData.keyManagers = instances;
+                return groupData;
+        });
 }
 
-export function loadGroupData (
-        path: string, name: string, profileSchema: JSON, messageSchema: JSON)
-        : State.GameData
+export function loadGroupData (path: string, name: string): State.GameData
 {
-        var data = loadNarrative(path, name);
-        var dataErrors = DataValidation.getDataErrors(
-                data, profileSchema, messageSchema);
-
-        if (dataErrors.length) {
-                var errorText = JSON.stringify(dataErrors, null, 4);
-                Log.debug('Invalid game data', errorText);
-
-                return null;
-        }
-
+        const data = loadNarrative(path, name);
         return {
                 name: name,
                 keyManagers: null,

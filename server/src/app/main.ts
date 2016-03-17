@@ -1,6 +1,6 @@
 import App = require('./app');
+import Config = require('./config');
 import ConfigData = require('./configdata');
-import Data = require('./data/data');
 import Log = require('./../../../core/src/app/log/log');
 import Request = require('./../../../core/src/app/requesttypes');
 
@@ -10,7 +10,7 @@ ConfigData.releaseMode ?
         Log.debug('RELEASE MODE') :
         Log.debug('DEBUG MODE');
 
-Data.loadPrivateConfig(config);
+Config.loadPrivateConfig(config);
 
 App.createState(config).then(state =>
         App.init(state)

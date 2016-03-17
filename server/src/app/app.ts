@@ -41,7 +41,8 @@ export function createGameState (
         config: Config.ConfigState,
         server: Server.ServerState)
 {
-        return Data.loadAllGameData(config).then(gameData =>
+        const path = config.content.narrativeFolder;
+        return Data.loadAllGameData(path).then(gameData =>
                 onGameData(config, server, gameData)
         ).catch(err => {
                 Log.info('createGameState error: ' + err);

@@ -1,3 +1,6 @@
+import Data = require('./data/data');
+import FileSystem = require('./data/filesystem');
+
 export enum AppMode {
         Local,
         DynamoDB,
@@ -53,4 +56,14 @@ export interface ConfigState {
         },
         timeFactor: number;
         immediateReplies: boolean;
+}
+
+export function loadPrivateConfig(config: ConfigState)
+{
+        const configPath = Data.join('credentials', config.privateConfigPath);
+        const privateConfig =
+                <PrivateConfigState>FileSystem.loadJSONSync(configPath);
+
+        config.emailAPIKey = privateConfig.emailAPIKey;
+        config.client.elbURL = privateConfig.elbURL;
 }
