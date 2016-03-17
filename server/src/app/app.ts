@@ -10,6 +10,7 @@ import Main = require('./../../../core/src/app/main');
 import Map = require('./../../../core/src/app/utils/map');
 import Message = require('./../../../core/src/app/message');
 import PostHandler = require('./posthandler/posthandler');
+import Prom = require('./../../../core/src/app/utils/promise');
 import Request = require('./../../../core/src/app/requesttypes');
 import Sender = require('./sender');
 import Server = require('./server');
@@ -18,35 +19,22 @@ import State = require('./../../../core/src/app/state');
 export interface State {
         config: Config.ConfigState;
         server: Server.ServerState;
-        update: UpdateState;
+        lastEvaluatedKey: string;
         app: State.State;
 }
 
 export function createState (config: Config.ConfigState)
 {
         const server = Server.createServerState();
-        const update = createUpdateState();
+        const lastEvaluatedKey: string = null;
         return createGameState(config, server).then(app => {
-                return { config, server, update, app };
+                return { config, server, lastEvaluatedKey, app };
         });
 }
 
 export function getGroupData (app: State.State, groupName: string)
 {
         return app.data[groupName];
-}
-
-export interface UpdateState {
-        lastEvaluatedKey: string;
-        lastUpdated: Map.Map<number>;
-}
-
-function createUpdateState (): UpdateState
-{
-        return {
-                lastEvaluatedKey: null,
-                lastUpdated: {},
-        };
 }
 
 export function createGameState (
@@ -82,7 +70,7 @@ export function onGameData (
         };
 
         if (gameData) {
-                var mappedGameData = Helpers.mapFromNameArray(gameData);
+                const mappedGameData = Helpers.mapFromNameArray(gameData);
                 gameState.data = mappedGameData;
         }
 
@@ -91,20 +79,16 @@ export function onGameData (
 
 export function updateGameState (state: State)
 {
-        var config = state.config;
+        const config = state.config;
         return createGameState(state.config, state.server).then(gameState => {
                 state.app = gameState;
-                return gameState;
+                return state;
         });
 }
 
 export function init (state: State)
 {
-        var gameState = state.app;
-        var config = state.config;
-
         PostHandler.addRequestEndpoints(state);
-
         updateWrapper(state);
 }
 
@@ -112,113 +96,38 @@ export function updateWrapper (state: State)
 {
         Log.debug('Update wrapper');
 
-        try {
-                if (!state.server.paused) {
-                        update(state);
-                } else {
-                        onUpdateEnd(state);
-                }
-        } catch (error) {
-                Log.info('Exception thrown', error);
-                onUpdateEnd(state);
-        }
+        const paused = state.server.paused;
+        const updatePromise = paused ?
+                Promise.resolve(state.lastEvaluatedKey) :
+                update(state);
+
+        updatePromise.then(lastEvaluatedKey =>
+                onUpdateEnd(state, lastEvaluatedKey)
+        ).catch(err => {
+                Log.info(err);
+                onUpdateEnd(state, null);
+        });
 }
 
 export function update (state: State)
 {
-        Log.debug('Update');
-
         const gameState = state.app;
-        const updateState = state.update;
+        const exclusiveStartKey = state.lastEvaluatedKey;
+        const timestampMs = Date.now();
+
+        Log.debug(`Update - exclusiveStartKey = ${exclusiveStartKey}`);
+
+        return Main.tick(gameState, exclusiveStartKey, timestampMs);
+}
+
+export function onUpdateEnd (state: State, lastEvaluatedKey: string)
+{
+        Log.debug(`Update end - lastEvaluatedKey = ${lastEvaluatedKey}`);
+
+        state.lastEvaluatedKey = lastEvaluatedKey;
         const config = state.config;
-        const server = state.server;
-
-        const lastEvaluatedKey = updateState.lastEvaluatedKey;
-        Log.debug('Last evaluated key', lastEvaluatedKey);
-        const maxResults = config.update.maxMessagesRequestedPerUpdate;
-
-        const getMessages = gameState.promises.getMessages;
-        const params = { exclusiveStartKey: lastEvaluatedKey, maxResults };
-
-        getMessages(params).then(data =>
-                onGetMessages(state, data)
-        ).catch(err => {
-                updateState.lastEvaluatedKey = null;
-                onUpdateEnd(state);
-        });
-}
-
-export function onUpdateEnd (state: State)
-{
-        Log.debug('Update end');
-
-        var config = state.config;
-
-        var updateFn = () => updateWrapper(state);
-        setTimeout(updateFn, config.update.updateIntervalMs);
-}
-
-export function onGetMessages (state: State, data: DBTypes.GetMessagesResult)
-{
-        Log.debug('onGetMessages');
-
-        var timestampMs = Date.now();
-
-        var gameState = state.app;
-        var updateState = state.update;
-        var config = state.config;
-
-        updateState.lastEvaluatedKey = data.lastEvaluatedKey;
-
-        var messages = data.messages;
-        var message: Message.MessageState = null;
-
-        if (messages.length === 2) {
-                message = messages[Math.floor(Math.random() * messages.length)]; // HACK TO PREVENT STARVATION
-        } else {
-                message = (messages.length ? messages[messages.length - 1] : null);
-        }
-        const onUpdateEndLocal = (error: Request.Error) =>
-                onUpdateEnd(state);
-
-        if (message) {
-                gameState.promises.getPlayer(message.email).then(player =>
-                        Main.update(
-                                gameState,
-                                timestampMs,
-                                message,
-                                player)
-                ).then(result =>
-                        onUpdateEndLocal(null)
-                ).catch(onUpdateEndLocal);
-        } else {
-                onUpdateEndLocal(null);
-        }
-}
-
-export function updateLastUpdated (
-        state: UpdateState, timestampMs: number, minUpdateIntervalMs: number)
-{
-        var shouldNotUpdate = (lastUpdateMs: number) =>
-                ((timestampMs - lastUpdateMs) < minUpdateIntervalMs);
-
-        state.lastUpdated = Map.filter(state.lastUpdated, shouldNotUpdate);
-}
-
-export function getMessagesToUpdate (
-        lastUpdated: Map.Map<number>,
-        messages: Message.MessageState[])
-        : Message.MessageState[]
-{
-        return messages.filter((message) =>
-                lastUpdated[message.id] === undefined);
-}
-
-export function storeLastUpdated (
-        lastUpdated: Map.Map<number>,
-        messages: Message.MessageState[],
-        timestampMs: number)
-{
-        messages.forEach(
-                (message) => lastUpdated[message.id] = timestampMs);
+        const updateIntervalMs = config.update.updateIntervalMs;
+        return Prom.delay(updateIntervalMs).then(result =>
+                updateWrapper(state)
+        );
 }

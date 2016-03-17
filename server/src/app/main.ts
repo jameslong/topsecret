@@ -4,13 +4,11 @@ import Data = require('./data/data');
 import Log = require('./../../../core/src/app/log/log');
 import Request = require('./../../../core/src/app/requesttypes');
 
-var config = ConfigData.config;
+const config = ConfigData.config;
 
-if (ConfigData.releaseMode) {
-        Log.debug('RELEASE MODE');
-} else {
+ConfigData.releaseMode ?
+        Log.debug('RELEASE MODE') :
         Log.debug('DEBUG MODE');
-}
 
 Data.loadPrivateConfig(config);
 

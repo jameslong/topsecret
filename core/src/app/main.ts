@@ -11,6 +11,28 @@ import Promises = require('./promises');
 import Request = require('./requesttypes');
 import State = require('./state');
 
+export function tick (
+        app: State.State,
+        exclusiveStartKey: string,
+        timestampMs: number)
+{
+        const maxResults = 1;
+        const params = { exclusiveStartKey, maxResults };
+        const promises = app.promises;
+
+        return promises.getMessages(params).then(result => {
+                const { messages, lastEvaluatedKey } = result;
+                const message = messages.length ? messages[0] : null;
+
+                return (message ?
+                        promises.getPlayer(message.email).then(player =>
+                                update(app, timestampMs, message, player)
+                        ) :
+                        Promise.resolve(null)
+                ).then(result => Promise.resolve(lastEvaluatedKey));
+        });
+}
+
 export function update (
         app: State.State,
         timestampMs: number,
@@ -231,6 +253,7 @@ export function createPlayerlessMessageData (
                 groupData,
                 null);
 }
+
 export function createMessageData (
         groupData: State.GameData,
         player: Player.PlayerState,
