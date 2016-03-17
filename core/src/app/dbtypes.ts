@@ -48,7 +48,6 @@ export type GetPlayerParams = string;
 export type GetPlayerFact = Prom.Factory<GetPlayerParams, Player.PlayerState>;
 
 export interface PromiseFactories extends DBCalls {
-        encrypt: Prom.Factory<Kbpgp.EncryptData, string>;
         send: Prom.Factory<Message.MessageData, string>;
 }
 
@@ -70,12 +69,10 @@ export interface DBCalls {
 
 export function createPromiseFactories (
         calls: DBCalls,
-        send: Prom.Factory<Message.MessageData, string>,
-        encrypt: Prom.Factory<Kbpgp.EncryptData, string>): PromiseFactories
+        send: Prom.Factory<Message.MessageData, string>): PromiseFactories
 {
         return {
                 send,
-                encrypt,
                 createPlayerTable: calls.createPlayerTable,
                 createMessageTable: calls.createMessageTable,
                 deleteTable: calls.deleteTable,

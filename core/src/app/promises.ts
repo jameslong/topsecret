@@ -78,7 +78,7 @@ export function encryptSendStoreChild (
 
         return KbpgpHelpers.loadKey(player.publicKey).then(to => {
                 const encryptData = { from, to, text: data.body };
-                return promises.encrypt(encryptData);
+                return KbpgpHelpers.signEncrypt(encryptData);
         }).then(body => {
                         data.body = body;
                         return promises.send(data);

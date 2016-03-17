@@ -10,12 +10,11 @@ import LocalDB = require('../../../../core/src/app/localdb');
 
 export function createPromiseFactories (
         config: Config.ConfigState,
-        send: Prom.Factory<Message.MessageData, string>,
-        encrypt: Prom.Factory<Kbpgp.EncryptData, string>)
+        send: Prom.Factory<Message.MessageData, string>)
 {
         const mode = config.mode;
         const calls = mode === Config.AppMode.Local ?
                 LocalDB.createLocalDBCalls(config.debugDBTimeoutMs) :
                 DynamoDB.createDynamoDBCalls(config.dynamoDBConfig);
-        return DBTypes.createPromiseFactories(calls, send, encrypt);
+        return DBTypes.createPromiseFactories(calls, send);
 }

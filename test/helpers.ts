@@ -87,7 +87,6 @@ function createSendFn ()
 export function createPromises ()
 {
         const db = createDB();
-        const encrypt = KBPGP.signEncrypt;
         const send = createSendFn();
-        return DBTypes.createPromiseFactories(db, send, encrypt);
+        return DBTypes.createPromiseFactories(db, send);
 }

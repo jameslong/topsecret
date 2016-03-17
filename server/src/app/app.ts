@@ -66,13 +66,12 @@ export function onGameData (
         server: Server.ServerState,
         gameData: State.GameData[])
 {
-        const encrypt = KBPGP.signEncrypt;
         const send = Sender.createSendFn(
                 server.io,
                 config.useEmail,
                 config.emailAPIKey,
                 config.emailDomain);
-        const promises = DBSetup.createPromiseFactories(config, send, encrypt);
+        const promises = DBSetup.createPromiseFactories(config, send);
 
         const gameState: State.State = {
                 emailDomain: config.emailDomain,
