@@ -1,5 +1,6 @@
 import Command = require('./command');
 import Data = require('./data');
+import Server = require('./server');
 import Draft = require('./draft');
 import Folder = require('./folder');
 import Helpers = require('../../../core/src/app/utils/helpers');
@@ -8,9 +9,11 @@ import KbpgpHelpers = require('../../../core/src/app/kbpgp');
 import Map = require('../../../core/src/app/utils/map');
 import Message = require('./message');
 import Player = require('./player');
+import CoreState = require('../../../core/src/app/state');
 import UI = require('./ui');
 
 export interface State {
+        server: CoreState.State;
         data: Data.Data;
         ui: UI.UI;
         draftKey: KbpgpHelpers.KeyData;
@@ -23,7 +26,7 @@ export function createState (
         commands: Command.Command[],
         commandIdsByMode: Data.IdsById,
         folders: Folder.FolderData[],
-        keyManagersById: Map.Map<Kbpgp.KeyManagerInstance>): State
+        keyManagersById: Map.Map<Kbpgp.KeyManagerInstance>): Promise<State>
 {
         const data = Data.createData(
                 folders,
@@ -38,14 +41,16 @@ export function createState (
         const ui = UI.createUI(
                 UI.Modes.INDEX_INBOX, messageId, folderId, keyId);
 
-
-        return {
-                data,
-                ui,
-                draftKey: null,
-                draftMessage: null,
-                messageId: 0,
-        };
+        return Server.createServer().then(server => {
+                return {
+                        data,
+                        ui,
+                        draftKey: null,
+                        draftMessage: null,
+                        messageId: 0,
+                        server,
+                };
+        });
 }
 
 export function nextMessageId (state: State)

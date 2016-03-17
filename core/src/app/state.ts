@@ -13,10 +13,12 @@ export interface GameData {
         strings: Map.Map<string>;
 }
 
+export type Data = Map.Map<GameData>;
+
 export interface State {
         emailDomain: string;
         timeFactor: number;
         immediateReplies: boolean;
-        data: Map.Map<GameData>;
+        data: Data;
         promises: DBTypes.PromiseFactories;
 }

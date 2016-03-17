@@ -67,9 +67,10 @@ export interface DBCalls {
         getPlayer: GetPlayerFact;
 }
 
-export function createPromiseFactories (
-        calls: DBCalls,
-        send: Prom.Factory<Message.MessageData, string>): PromiseFactories
+export type SendMessageParams = Message.MessageData;
+export type SendMessage = Prom.Factory<SendMessageParams, string>;
+
+export function createPromiseFactories (calls: DBCalls, send: SendMessage)
 {
         return {
                 send,

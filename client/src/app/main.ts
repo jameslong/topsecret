@@ -13,17 +13,17 @@ import Reducers = require('./action/reducers');
 import KbpgpHelpers = require('../../../core/src/app/kbpgp');
 
 const wrapper = document.getElementById('wrapper');
-KbpgpHelpers.loadFromKeyData(KeyData.keys).then(keyManagersById => {
-        const state = State.createState(
+
+KbpgpHelpers.loadFromKeyData(KeyData.keys).then(keyManagersById =>
+        State.createState(
                 PlayerData.player,
                 CommandData.commands,
                 CommandData.commandIdsByMode,
                 MessageData.folders,
-                keyManagersById);
-
+                keyManagersById)
+).then(state => {
         Redux.init(state, Reducers.reduce, Root, wrapper);
         Redux.render(state, Root, wrapper);
-
         EventHandler.addKeyHandlers();
 }).catch(err => {
         console.log(err);
