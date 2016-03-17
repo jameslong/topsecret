@@ -32,7 +32,7 @@ grunt
 
 ### Client
 
-1. Open *editor/index.html*
+1. Open *client/index.html*
 
 ##Contact
 
