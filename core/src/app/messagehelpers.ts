@@ -54,15 +54,10 @@ export function createMessageData (
         const from = generateFriendlyEmail(fromProfile, domain);
 
         const passages = message.body.map(text => strings[text]);
-        const body = passages.join('\n\n');
-        const customBody = (vars ? insertMessageVars(body, vars) : body);
+        const joined = passages.join('\n\n');
+        const body = (vars ? insertMessageVars(joined, vars) : joined);
 
-        return {
-                from,
-                to: [to],
-                subject,
-                body: customBody,
-        };
+        return { from, to, subject, body };
 }
 
 export function addDomain (local: string, domain: string): string

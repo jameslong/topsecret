@@ -4,14 +4,13 @@ import Main = require('../../../../core/src/app/main');
 import Message = require('../../../../core/src/app/message');
 import PostHandler = require('./posthandler');
 import Promises = require('../../../../core/src/app/promises');
-import Reply = require('./reply');
 import Request = require('../../../../core/src/app/requesttypes');
 import Str = require('../../../../core/src/app/utils/string');
 import State = require('../../../../core/src/app/state');
 
 export function handleCareersEmail (
         state: App.State,
-        reply: Reply.Reply)
+        reply: Message.Reply)
 {
         var defaultNarrativeGroup =
                 state.config.content.defaultNarrativeGroup;

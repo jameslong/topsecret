@@ -58,21 +58,16 @@ export interface NamedThreadDelay {
 
 export interface Message {
         from: string;
-        to: string[];
         body: string[];
-}
-
-export interface MessagePacket {
-        id: string;
-        from: string;
-        to: string[];
-        subject: string;
-        body: string;
 }
 
 export interface MessageData {
         from: string;
-        to: string[];
+        to: string;
         subject: string;
         body: string;
+}
+
+export interface Reply extends MessageData {
+        id: string;
 }

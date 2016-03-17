@@ -60,7 +60,7 @@ export function createServerState (): ServerState
 export function sendMail (io: any, messageData: Message.MessageData)
 {
         const id = generateMessageId();
-        const message: Message.MessagePacket = {
+        const message: Message.Reply = {
                 id: id,
                 from: messageData.from,
                 to: messageData.to,
