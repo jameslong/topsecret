@@ -7,11 +7,7 @@ export const inboxMessages: Message.Message[] = [{
         read: false,
         replied: false,
         from: "Luke Skywalker <luke.skywalker@gmail.com>",
-        to: [
-                "Kylo Ren <darth.emo@aol.com>",
-                "Han Solo <han.solo@riseup.net>",
-                "Princess Leia <sculptedhair@gmail.com>",
-        ],
+        to: "Kylo Ren <darth.emo@aol.com>",
         subject: "You're my only hope",
         body: `Here are all our keys:
 
@@ -27,11 +23,7 @@ export const inboxMessages: Message.Message[] = [{
         read: false,
         replied: false,
         from: "Han Solo <han.solo@riseup.net>",
-        to: [
-                "Kylo Ren <darth.emo@aol.com>",
-                "Princess Leia <sculptedhair@gmail.com>",
-                'Luke Skywalker <luke.skywalker@gmail.com>'
-        ],
+        to: "Kylo Ren <darth.emo@aol.com>",
         subject: "Re: You're my only hope",
         body: "Go away, I'm only in it for the money, I don't want to help anyone."
 }, {
@@ -40,10 +32,7 @@ export const inboxMessages: Message.Message[] = [{
         read: false,
         replied: false,
         from: "Princess Leia <sculptedhair@gmail.com>",
-        to: [
-                "Kylo Ren <darth.emo@aol.com>",
-                "Han Solo <han.solo@riseup.net>",
-        ],
+        to: "Kylo Ren <darth.emo@aol.com>",
         subject: "Re: You're my only hope",
         body: "Han, let's have a son together. I love you and there's no way this can turn out badly",
 }, {
@@ -52,9 +41,7 @@ export const inboxMessages: Message.Message[] = [{
         read: false,
         replied: false,
         from: "Kylo Ren <darth.emo@aol.com>",
-        to: [
-                "Han Solo <han.solo@riseup.net>",
-        ],
+        to: "Han Solo <han.solo@riseup.net>",
         subject: "I am your son",
         body: "I know what I have to do but I need your help to do it. Will you help me?",
 }, {
@@ -63,11 +50,7 @@ export const inboxMessages: Message.Message[] = [{
         read: false,
         replied: false,
         from: "Luke Skywalker <luke.skywalker@gmail.com>",
-        to: [
-                "Kylo Ren <darth.emo@aol.com>",
-                "Han Solo <han.solo@riseup.net>",
-                "Princess Leia <sculptedhair@gmail.com>",
-        ],
+        to: "Kylo Ren <darth.emo@aol.com>",
         subject: "Use the force luke",
         body: "Help me, I really need you help to use the force",
 }, {
@@ -76,11 +59,7 @@ export const inboxMessages: Message.Message[] = [{
         read: true,
         replied: true,
         from: "Han Solo <han.solo@riseup.net>",
-        to: [
-                "Kylo Ren <darth.emo@aol.com>",
-                "Princess Leia <sculptedhair@gmail.com>",
-                'Luke Skywalker <luke.skywalker@gmail.com>'
-        ],
+        to: "Kylo Ren <darth.emo@aol.com>",
         subject: "I am your father",
         body: "Go away, I'm only in it for the money, I don't want to help anyone."
 }, {
@@ -89,10 +68,7 @@ export const inboxMessages: Message.Message[] = [{
         read: true,
         replied: false,
         from: "Princess Leia <sculptedhair@gmail.com>",
-        to: [
-                "Kylo Ren <darth.emo@aol.com>",
-                "Han Solo <han.solo@riseup.net>",
-        ],
+        to: "Kylo Ren <darth.emo@aol.com>",
         subject: "The senate will never accept this!",
         body: "Han, let's have a son together. I love you and there's no way this can turn out badly",
 }, {
@@ -101,9 +77,7 @@ export const inboxMessages: Message.Message[] = [{
         read: true,
         replied: true,
         from: "Kylo Ren <darth.emo@aol.com>",
-        to: [
-                "Han Solo <han.solo@riseup.net>",
-        ],
+        to: "Han Solo <han.solo@riseup.net>",
         subject: "Fear leads to the dark side",
         body: "I know what I have to do but I need your help to do it. Will you help me?",
 }, {
@@ -112,9 +86,7 @@ export const inboxMessages: Message.Message[] = [{
         read: true,
         replied: false,
         from: "Kylo Ren <darth.emo@aol.com>",
-        to: [
-                "Han Solo <han.solo@riseup.net>",
-        ],
+        to: "Han Solo <han.solo@riseup.net>",
         subject: "Re: Fear leads to the dark side",
         body: "I know what I have to do but I need your help to do it. Will you help me?",
 }, {
@@ -123,11 +95,7 @@ export const inboxMessages: Message.Message[] = [{
         read: true,
         replied: false,
         from: "Luke Skywalker <luke.skywalker@gmail.com>",
-        to: [
-                "Kylo Ren <darth.emo@aol.com>",
-                "Han Solo <han.solo@riseup.net>",
-                "Princess Leia <sculptedhair@gmail.com>",
-        ],
+        to: "Kylo Ren <darth.emo@aol.com>",
         subject: "This is the email client you are looking for",
         body: "Help me, I really need you help to use the force",
 }, {
@@ -136,11 +104,7 @@ export const inboxMessages: Message.Message[] = [{
         read: true,
         replied: true,
         from: "Han Solo <han.solo@riseup.net>",
-        to: [
-                "Kylo Ren <darth.emo@aol.com>",
-                "Princess Leia <sculptedhair@gmail.com>",
-                'Luke Skywalker <luke.skywalker@gmail.com>'
-        ],
+        to: "Kylo Ren <darth.emo@aol.com>",
         subject: "Mind your feelings",
         body: "Go away, I'm only in it for the money, I don't want to help anyone."
 }, {
@@ -149,10 +113,7 @@ export const inboxMessages: Message.Message[] = [{
         read: true,
         replied: false,
         from: "Princess Leia <sculptedhair@gmail.com>",
-        to: [
-                "Kylo Ren <darth.emo@aol.com>",
-                "Han Solo <han.solo@riseup.net>",
-        ],
+        to: "Kylo Ren <darth.emo@aol.com>",
         subject: "Blah blah blah some trade treaty",
         body: "Han, let's have a son together. I love you and there's no way this can turn out badly",
 }, {
@@ -161,9 +122,7 @@ export const inboxMessages: Message.Message[] = [{
         read: true,
         replied: true,
         from: "Kylo Ren <darth.emo@aol.com>",
-        to: [
-                "Han Solo <han.solo@riseup.net>",
-        ],
+        to: "Han Solo <han.solo@riseup.net>",
         subject: "Out of order this subject is",
         body: "I know what I have to do but I need your help to do it. Will you help me?",
 }];

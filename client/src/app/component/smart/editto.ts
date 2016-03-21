@@ -20,11 +20,9 @@ function renderEditTo(props: EditToProps)
 
 const EditTo = React.createFactory(renderEditTo);
 
-function onChange (e: KeyboardEvent, toString: string)
+function onChange (e: KeyboardEvent, to: string)
 {
         e.stopPropagation();
-
-        const to = toString.split(',');
         const action = ActionCreators.setDraftTo(to);
         Redux.handleAction(action);
 }

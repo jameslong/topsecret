@@ -6,14 +6,14 @@ export interface Message {
         read: boolean;
         replied: boolean;
         from: string;
-        to: string[];
+        to: string;
         subject: string;
         body: string;
 };
 
 export interface MessageContent {
         from: string;
-        to: string[];
+        to: string;
         subject: string;
         body: string;
 };
@@ -28,7 +28,7 @@ export function createMessageContent (sender: string): MessageContent
 {
         return {
                 from: sender,
-                to: [],
+                to: '',
                 subject: '',
                 body: '',
         };
@@ -38,11 +38,6 @@ export function getDisplayName (from: string)
 {
         const nameEnd = from.indexOf('<') - 1;
         return from.substring(0, nameEnd);
-}
-
-export function getDisplayTo (to: string[])
-{
-        return to.join();
 }
 
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -90,4 +85,13 @@ export function markRead(message: Message, read: boolean)
 export function markReplied(message: Message, replied: boolean)
 {
         return Helpers.assign(message, { replied });
+}
+
+export function createMessage (content: MessageContent, id: string)
+{
+        const date = new Date().toISOString();
+        const { from, to, subject, body } = content;
+        const read = true;
+        const replied = false;
+        return { id, date, read, replied, from, to, subject, body };
 }

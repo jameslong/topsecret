@@ -1,6 +1,7 @@
 /// <reference path="../../../../typings/kbpgp/kbpgp.d.ts"/>
 
 import Map = require('../../../../core/src/app/utils/map');
+import MessageCore = require('../../../../core/src/app/message');
 import Message = require('../message');
 import Redux = require('../redux/redux');
 
@@ -22,6 +23,7 @@ export const Types = {
         SET_MODE: 'SET_MODE',
         COMPOSE_MESSAGE: 'COMPOSE_MESSAGE',
         COMPOSE_REPLY: 'COMPOSE_REPLY',
+        RECEIVE_REPLY: 'RECEIVE_REPLY',
         SEND_MESSAGE: 'SEND_MESSAGE',
         SENDING_MESSAGE: 'SENDING_MESSAGE',
         DECRYPT_MESSAGE: 'DECRYPT_MESSAGE',
@@ -42,7 +44,7 @@ export interface KeyDown extends Redux.Action<KeyboardEvent> {}
 export interface SetActiveMessage extends Redux.Action<string> {}
 export interface SetDraftBody extends Redux.Action<string> {}
 export interface SetDraftSubject extends Redux.Action<string> {}
-export interface SetDraftTo extends Redux.Action<string[]> {}
+export interface SetDraftTo extends Redux.Action<string> {}
 export interface DisplayMessage extends Redux.Action<string> {}
 
 export interface StartGenerateKey extends Redux.Action<void> {}
@@ -71,6 +73,8 @@ export interface ComposeReplyParams {
         sender: string;
 }
 export interface ComposeReply extends Redux.Action<ComposeReplyParams> {}
+
+export interface ReceiveReply extends Redux.Action<MessageCore.Reply> {}
 
 export interface SendMessageParams {
         message: Message.Message;

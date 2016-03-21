@@ -128,7 +128,7 @@ function createStatusBarContent (state: State.State): React.ReactElement<any>
         if (state.ui.editingDraftSubject) {
                 return EditSubject({ value: message.subject });
         } else if (state.ui.editingDraftTo) {
-                return EditTo({ value: message.to.join(',') });
+                return EditTo({ value: message.to });
         } else if (state.ui.editingDraftKeyName) {
                 return EditDraftKeyName({ value: '' });
         } else if (state.ui.editingDraftKeyPassphrase) {

@@ -12,6 +12,10 @@ export function data (data: Data.Data, action: Redux.Action<any>)
                         const displayAction = <Actions.DisplayMessage><any>action;
                         return handleDisplayMessage(data, displayAction);
 
+                case Actions.Types.RECEIVE_REPLY:
+                        const receiveAction = <Actions.ReceiveReply><any>action;
+                        return handleReceiveReply(data, receiveAction);
+
                 case Actions.Types.SEND_MESSAGE:
                         const sendAction = <Actions.SendMessage><any>action;
                         return handleSendMessage(data, sendAction);
@@ -43,6 +47,13 @@ function handleDisplayMessage (data: Data.Data, action: Actions.DisplayMessage)
         const message = data.messagesById[messageId];
         const newMessage = Message.markRead(message, true);
         return Data.updateMessage(data, newMessage);
+}
+
+function handleReceiveReply (data: Data.Data, action: Actions.ReceiveReply)
+{
+        const reply = action.parameters;
+        const message = Message.createMessage(reply, reply.id);
+        return Data.storeMessage(data, message, 'inbox');
 }
 
 function handleSendMessage (data: Data.Data, action: Actions.SendMessage)

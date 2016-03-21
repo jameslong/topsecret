@@ -19,7 +19,7 @@ export function createDraft (
 export function createDraftFromMessage (
         sender: string, message: Message.Message): Draft
 {
-        const draftTo = createReplyTo(sender, message);
+        const draftTo = message.from;
         const draftSubject = createReplySubject(message.subject);
         const draftBody = createReplyBody(message.body);
         const content = {
@@ -29,13 +29,6 @@ export function createDraftFromMessage (
                 body: draftBody,
         };
         return createDraft(content, message.id);
-}
-
-function createReplyTo (sender: string, message: Message.MessageContent)
-{
-        const from = message.from;
-        const to = message.to.concat([from]);
-        return to.filter(email => email !== sender);
 }
 
 function createReplySubject (subject: string)
@@ -66,7 +59,7 @@ export function setSubject (draft: Draft, subject: string)
         return setContent(draft, newContent);
 }
 
-export function setTo (draft: Draft, to: string[])
+export function setTo (draft: Draft, to: string)
 {
         const newContent = Helpers.assign(draft.content, { to });
         return setContent(draft, newContent);
@@ -80,10 +73,5 @@ export function setContent (draft: Draft, content: Message.MessageContent)
 export function createMessageFromDraft (draft: Draft, id: string)
         : Message.Message
 {
-        const date = new Date().toISOString();
-        const content = draft.content;
-        const { from, to, subject, body } = content;
-        const read = true;
-        const replied = false;
-        return { id, date, read, replied, from, to, subject, body };
+        return Message.createMessage(draft.content, id);
 }

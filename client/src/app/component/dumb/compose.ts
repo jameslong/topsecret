@@ -34,7 +34,7 @@ const Compose = React.createFactory(renderCompose);
 function createMeta (message: Message.MessageContent)
 {
         const from = Helpers.wrapInLabel('From', message.from);
-        const to = Helpers.wrapInLabel('To', Message.getDisplayTo(message.to));
+        const to = Helpers.wrapInLabel('To', message.to);
         const subject = Helpers.wrapInLabel('Subject', message.subject);
 
         return Div({ className: 'meta' },
