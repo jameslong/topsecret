@@ -1,6 +1,6 @@
 import App = require('../app');
 import Careers = require('./careers');
-import Log = require('../../../../core/src/app/log/log');
+import Log = require('../../../../core/src/app/log');
 import PromisesReply = require('../../../../core/src/app/promisesreply');
 
 export function handleReplyRequest (

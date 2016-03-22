@@ -3,13 +3,12 @@
 
 import Arr = require('./utils/array');
 import Helpers = require('./utils/helpers');
+import Kbpgp = require('kbpgp');
+import Log = require('./log');
 import Map = require('./utils/map');
-import Log = require('./log/log');
 import Profile = require('./profile');
 import Request = require('./requesttypes');
 import Str = require('./utils/string');
-
-import Kbpgp = require('kbpgp');
 
 export type KeyManagers = Map.Map<Kbpgp.KeyManagerInstance>;
 

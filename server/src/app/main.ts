@@ -1,7 +1,7 @@
 import App = require('./app');
 import Config = require('./config');
 import ConfigData = require('./configdata');
-import Log = require('./../../../core/src/app/log/log');
+import Log = require('./../../../core/src/app/log');
 import Request = require('./../../../core/src/app/requesttypes');
 
 const config = ConfigData.config;

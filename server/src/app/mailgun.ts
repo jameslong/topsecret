@@ -1,6 +1,6 @@
 /// <reference path='../../../typings/mailgun-js/mailgun-js.d.ts'/>
 
-import Log = require('./../../../core/src/app/log/log');
+import Log = require('./../../../core/src/app/log');
 import Message = require('./../../../core/src/app/message');
 import Request = require('./../../../core/src/app/requesttypes');
 

@@ -1,6 +1,6 @@
 import DBTypes = require('./dbtypes');
 import KBPGP = require('./kbpgp');
-import Log = require('./log/log');
+import Log = require('./log');
 import Map = require('./utils/map');
 import Message = require('./message');
 import MessageHelpers = require('./messagehelpers');

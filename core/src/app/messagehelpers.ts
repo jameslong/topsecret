@@ -1,5 +1,5 @@
 import Arr = require('./utils/array');
-import Log = require('./log/log');
+import Log = require('./log');
 import Map = require('./utils/map');
 import Message = require('./message');
 import Player = require('./player');
