@@ -5,6 +5,7 @@ import CommandData = require('./data/commands');
 import KeyData = require('./data/keys');
 import PlayerData = require('./data/player');
 
+import Client = require('./client');
 import EventHandler = require('./eventhandler');
 import KbpgpHelpers = require('../../../core/src/app/kbpgp');
 import Prom = require('../../../core/src/app/utils/promise');
@@ -12,7 +13,6 @@ import Reducers = require('./action/reducers');
 import Redux = require('./redux/redux');
 import Root = require('./component/smart/root');
 import Server = require('./server');
-import State = require('./state');
 
 const wrapper = document.getElementById('wrapper');
 
@@ -39,7 +39,7 @@ Promise.all([
 function createClient ()
 {
         return KbpgpHelpers.loadFromKeyData(KeyData.keys).then(keyManagersById =>
-                State.createState(
+                Client.createClient(
                         PlayerData.player,
                         CommandData.commands,
                         CommandData.commandIdsByMode,
@@ -48,15 +48,15 @@ function createClient ()
         );
 }
 
-function tick (client: State.State, server: Server.Server)
+function tick (client: Client.Client, server: Server.Server)
 {
         const timestampMs = Date.now();
 
-        State.tickClient(client, timestampMs);
+        Client.tickClient(client, timestampMs);
         return Server.tickServer(server, timestampMs);
 }
 
-export function startTick (client: State.State, server: Server.Server)
+export function startTick (client: Client.Client, server: Server.Server)
 {
         const update = () => tick(client, server);
         const intervalMs = 1000;

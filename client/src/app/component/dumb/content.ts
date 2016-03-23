@@ -1,3 +1,4 @@
+import Client = require('../../client');
 import Compose = require('./compose');
 import Encryption = require('./encryption');
 import Folder = require('./folder');
@@ -5,14 +6,13 @@ import Help = require('./help');
 import Index = require('./index');
 import Pager = require('./pager');
 import React = require('react');
-import State = require('../../state');
 import UI = require('../../ui');
 
 import Core = require('../core');
 import Div = Core.Div;
 
 interface ContentProps extends React.Props<any> {
-        state: State.State;
+        state: Client.Client;
 }
 
 function renderContent(props: ContentProps)
@@ -49,41 +49,41 @@ function renderContent(props: ContentProps)
 
 const Content = React.createFactory(renderContent);
 
-function createIndex (state: State.State)
+function createIndex (state: Client.Client)
 {
-        const messages = State.getActiveMessages(state);
+        const messages = Client.getActiveMessages(state);
         const activeMessageId = state.ui.activeMessageId;
         return Index({ messages, activeMessageId });
 }
 
-function createHelp (state: State.State)
+function createHelp (state: Client.Client)
 {
-        const commands = State.getCommands(
+        const commands = Client.getCommands(
                 state.data, state.ui.previousMode);
         return Help({ commands });
 }
 
-function createPager (state: State.State)
+function createPager (state: Client.Client)
 {
-        const message = State.getActiveMessage(state);
+        const message = Client.getActiveMessage(state);
         return Pager({ message });
 }
 
-function createCompose (state: State.State)
+function createCompose (state: Client.Client)
 {
         const draft = state.draftMessage;
         const ui = state.ui;
         return Compose({ draft, ui });
 }
 
-function createFolder (state: State.State)
+function createFolder (state: Client.Client)
 {
         const foldersById = state.data.foldersById;
         const activeFolderId = state.ui.activeFolderId;
         return Folder({ foldersById, activeFolderId });
 }
 
-function createEncryption (state: State.State)
+function createEncryption (state: Client.Client)
 {
         const keyManagersById = state.data.keyManagersById;
         const activeId = state.data.player.activeKeyId;

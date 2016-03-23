@@ -3,7 +3,7 @@ import Command = require('../../command');
 import Data = require('../../data');
 import React = require('react');
 import Redux = require('../../redux/redux');
-import State = require('../../state');
+import Client = require('../../client');
 import UI = require('../../ui');
 
 import Core = require('../core');
@@ -25,13 +25,13 @@ import InfoBar = require('../dumb/infobar');
 import StatusBar = require('../dumb/statusbar');
 
 interface RootProps extends React.Props<any> {
-        state: State.State;
+        state: Client.Client;
 }
 
 function renderRoot(props: RootProps)
 {
         const state = props.state;
-        const commands = State.getActiveCommands(state);
+        const commands = Client.getActiveCommands(state);
 
         const header = createHeader(state.ui.mode, commands);
         const footer = createFooter(state);
@@ -54,7 +54,7 @@ function createHeader (mode: string, commands: Command.Command[])
         return Header({ values: data });
 }
 
-function createFooter (state: State.State)
+function createFooter (state: Client.Client)
 {
         const infoBar = InfoBar({}, createFooterInfoBarContent(state));
         const statusBar = StatusBar({}, createStatusBarContent(state));
@@ -62,7 +62,7 @@ function createFooter (state: State.State)
         return Div({ className: 'footer' }, infoBar, statusBar);
 }
 
-function createFooterInfoBarContent (state: State.State): React.ReactElement<any>
+function createFooterInfoBarContent (state: Client.Client): React.ReactElement<any>
 {
         const mode = state.ui.mode === UI.Modes.HELP ?
                 state.ui.previousMode : state.ui.mode;
@@ -84,44 +84,44 @@ function createFooterInfoBarContent (state: State.State): React.ReactElement<any
         }
 }
 
-function createFooterCompose (state: State.State)
+function createFooterCompose (state: Client.Client)
 {
         const draftMessage = state.draftMessage;
         const draftBody = draftMessage.content.body;
         return FooterCompose({ draftBody });
 }
 
-function createFooterEncryption (state: State.State)
+function createFooterEncryption (state: Client.Client)
 {
         const activeKeyId = state.ui.activeKeyId;
         const activeKey = state.data.keyManagersById[activeKeyId];
         return FooterEncryption({ activeKey });
 }
 
-function createFooterFolder (state: State.State)
+function createFooterFolder (state: Client.Client)
 {
-        const activeFolder = State.getActiveFolder(state);
+        const activeFolder = Client.getActiveFolder(state);
         const folders = state.data.folders;
         return FooterFolder({ activeFolder, folders });
 }
 
-function createFooterIndex (state: State.State)
+function createFooterIndex (state: Client.Client)
 {
-        const folder = State.getActiveFolder(state);
+        const folder = Client.getActiveFolder(state);
         const folderName = folder.displayName;
-        const messages = State.getActiveMessages(state);
+        const messages = Client.getActiveMessages(state);
         return FooterIndex({ folderName, messages });
 }
 
-function createFooterPager (state: State.State)
+function createFooterPager (state: Client.Client)
 {
-        const activeMessage = State.getActiveMessage(state);
+        const activeMessage = Client.getActiveMessage(state);
         const folderId = state.ui.activeFolderId;
         const messages = state.data.messageIdsByFolderId[folderId];
         return FooterPager({ activeMessage, messages });
 }
 
-function createStatusBarContent (state: State.State): React.ReactElement<any>
+function createStatusBarContent (state: Client.Client): React.ReactElement<any>
 {
         const message = state.draftMessage ? state.draftMessage.content : null;
 

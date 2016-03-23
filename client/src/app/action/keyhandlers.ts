@@ -8,77 +8,77 @@ import Kbpgp = require('kbpgp');
 import KbpgpHelpers = require('../../../../core/src/app/kbpgp');
 import Map = require('../../../../core/src/app/utils/map');
 import Redux = require('../redux/redux');
-import State = require('../state');
+import Client = require('../client');
 import UI = require('../ui');
 
 // Key event action creators
-export function exit (state: State.State)
+export function exit (client: Client.Client)
 {
         return ActionCreators.setMode(UI.Modes.INDEX_INBOX);
 }
 
-export function help (state: State.State)
+export function help (client: Client.Client)
 {
         return ActionCreators.setMode(UI.Modes.HELP);
 }
 
-export function encryption (state: State.State)
+export function encryption (client: Client.Client)
 {
         return ActionCreators.setMode(UI.Modes.ENCRYPTION);
 }
 
-export function displayMessage (state: State.State)
+export function displayMessage (client: Client.Client)
 {
-        return ActionCreators.displayMessage(state.ui.activeMessageId);
+        return ActionCreators.displayMessage(client.ui.activeMessageId);
 }
 
-export function mail (state: State.State)
+export function mail (client: Client.Client)
 {
-        const sender = state.data.player.email;
+        const sender = client.data.player.email;
         return ActionCreators.composeMessage({ sender });
 }
 
-export function reply (state: State.State)
+export function reply (client: Client.Client)
 {
-        const sender = state.data.player.email;
-        const message = State.getActiveMessage(state);
+        const sender = client.data.player.email;
+        const message = Client.getActiveMessage(client);
         return ActionCreators.composeReply({ sender, message });
 }
 
-export function nextMessage (state: State.State)
+export function nextMessage (client: Client.Client)
 {
-        const activeFolderId = state.ui.activeFolderId;
-        const messageIds = state.data.messageIdsByFolderId[activeFolderId];
-        const id = state.ui.activeMessageId;
+        const activeFolderId = client.ui.activeFolderId;
+        const messageIds = client.data.messageIdsByFolderId[activeFolderId];
+        const id = client.ui.activeMessageId;
         const nextId = Arr.nextValue(messageIds, id);
         return ActionCreators.setActiveMessage(nextId);
 }
 
-export function previousMessage (state: State.State)
+export function previousMessage (client: Client.Client)
 {
-        const activeFolderId = state.ui.activeFolderId;
-        const messageIds = state.data.messageIdsByFolderId[activeFolderId];
-        const id = state.ui.activeMessageId;
+        const activeFolderId = client.ui.activeFolderId;
+        const messageIds = client.data.messageIdsByFolderId[activeFolderId];
+        const id = client.ui.activeMessageId;
         const previousId = Arr.previousValue(messageIds, id);
         return ActionCreators.setActiveMessage(previousId);
 }
 
-export function exitHelp (state: State.State)
+export function exitHelp (client: Client.Client)
 {
-        const mode = state.ui.previousMode;
+        const mode = client.ui.previousMode;
         return ActionCreators.setMode(mode);
 }
 
-export function encryptSend (state: State.State): Redux.Action<any>
+export function encryptSend (client: Client.Client): Redux.Action<any>
 {
-        const messageId = State.nextMessageId(state).toString();
-        const parent = state.data.messagesById[state.draftMessage.parentId];
+        const messageId = Client.nextMessageId(client).toString();
+        const parent = client.data.messagesById[client.draftMessage.parentId];
         const parentId = parent ? parent.id : null;
         const draftMessage = Draft.createMessageFromDraft(
-                state.draftMessage, messageId);
+                client.draftMessage, messageId);
 
-        const keyManagersById = state.data.keyManagersById;
-        const playerId = state.data.player.activeKeyId;
+        const keyManagersById = client.data.keyManagersById;
+        const playerId = client.data.player.activeKeyId;
         const from = KbpgpHelpers.getKeyManagerById(keyManagersById, playerId);
         const to = KbpgpHelpers.getKeyManagerById(keyManagersById, draftMessage.to[0]);
         const text = draftMessage.body;
@@ -93,12 +93,12 @@ export function encryptSend (state: State.State): Redux.Action<any>
         return ActionCreators.sendingMessage(true);
 }
 
-export function decrypt (state: State.State): Redux.Action<any>
+export function decrypt (client: Client.Client): Redux.Action<any>
 {
-        const messageId = state.ui.activeMessageId;
-        const message = state.data.messagesById[messageId];
+        const messageId = client.ui.activeMessageId;
+        const message = client.data.messagesById[messageId];
         const body = message.body;
-        const keyRing = KbpgpHelpers.createKeyRing(state.data.keyManagersById);
+        const keyRing = KbpgpHelpers.createKeyRing(client.data.keyManagersById);
 
         KbpgpHelpers.decryptVerify(keyRing, body).then(decryptedBody => {
                 const action = ActionCreators.decryptMessage({
@@ -117,19 +117,19 @@ export function decrypt (state: State.State): Redux.Action<any>
         return ActionCreators.decryptingMessage(true);
 }
 
-export function folder (state: State.State)
+export function folder (client: Client.Client)
 {
         return ActionCreators.setMode(UI.Modes.FOLDER);
 }
 
-export function displayFolder (state: State.State)
+export function displayFolder (client: Client.Client)
 {
-        const activeFolderId = state.ui.activeFolderId;
-        const messageIds = state.data.messageIdsByFolderId[activeFolderId];
+        const activeFolderId = client.ui.activeFolderId;
+        const messageIds = client.data.messageIdsByFolderId[activeFolderId];
         const activeMessageId = messageIds.length ?
                 messageIds[0] :
                 null;
-        const folder = state.data.foldersById[activeFolderId];
+        const folder = client.data.foldersById[activeFolderId];
         const params = {
                 folderId: activeFolderId,
                 messageId: activeMessageId,
@@ -138,91 +138,91 @@ export function displayFolder (state: State.State)
         return ActionCreators.displayFolder(params);
 }
 
-export function nextFolder (state: State.State)
+export function nextFolder (client: Client.Client)
 {
-        const activeFolderId = state.ui.activeFolderId;
-        const folders = state.data.folders;
+        const activeFolderId = client.ui.activeFolderId;
+        const folders = client.data.folders;
         const nextId = Arr.nextValue(folders, activeFolderId);
         return ActionCreators.setActiveFolder(nextId);
 }
 
-export function previousFolder (state: State.State)
+export function previousFolder (client: Client.Client)
 {
-        const activeFolderId = state.ui.activeFolderId;
-        const folders = state.data.folders;
+        const activeFolderId = client.ui.activeFolderId;
+        const folders = client.data.folders;
         const previousId = Arr.previousValue(folders, activeFolderId);
         return ActionCreators.setActiveFolder(previousId);
 }
 
-export function displayNextMessage (state: State.State)
+export function displayNextMessage (client: Client.Client)
 {
-        const activeFolderId = state.ui.activeFolderId;
-        const messageIds = state.data.messageIdsByFolderId[activeFolderId];
-        const id = state.ui.activeMessageId;
+        const activeFolderId = client.ui.activeFolderId;
+        const messageIds = client.data.messageIdsByFolderId[activeFolderId];
+        const id = client.ui.activeMessageId;
         const nextId = Arr.nextValue(messageIds, id);
         return ActionCreators.displayMessage(nextId);
 }
 
-export function displayPreviousMessage (state: State.State)
+export function displayPreviousMessage (client: Client.Client)
 {
-        const activeFolderId = state.ui.activeFolderId;
-        const messageIds = state.data.messageIdsByFolderId[activeFolderId];
-        const id = state.ui.activeMessageId;
+        const activeFolderId = client.ui.activeFolderId;
+        const messageIds = client.data.messageIdsByFolderId[activeFolderId];
+        const id = client.ui.activeMessageId;
         const previousId = Arr.previousValue(messageIds, id);
         return ActionCreators.displayMessage(previousId);
 }
 
-export function editBody (state: State.State)
+export function editBody (client: Client.Client)
 {
         return ActionCreators.editBody(true);
 }
 
-export function editSubject (state: State.State)
+export function editSubject (client: Client.Client)
 {
         return ActionCreators.editSubject(true);
 }
 
-export function editTo (state: State.State)
+export function editTo (client: Client.Client)
 {
         return ActionCreators.editTo(true);
 }
 
-export function setPlayerKey (state: State.State)
+export function setPlayerKey (client: Client.Client)
 {
-        const id = state.ui.activeKeyId;
+        const id = client.ui.activeKeyId;
         return ActionCreators.setPlayerKey(id);
 }
 
-export function nextKey (state: State.State)
+export function nextKey (client: Client.Client)
 {
-        const id = state.ui.activeKeyId;
-        const keyIds = state.data.keyManagers;
+        const id = client.ui.activeKeyId;
+        const keyIds = client.data.keyManagers;
         const nextId = Arr.nextValue(keyIds, id);
         return ActionCreators.setActiveKey(nextId);
 }
 
-export function previousKey (state: State.State)
+export function previousKey (client: Client.Client)
 {
-        const id = state.ui.activeKeyId;
-        const keyIds = state.data.keyManagers;
+        const id = client.ui.activeKeyId;
+        const keyIds = client.data.keyManagers;
         const previousId = Arr.previousValue(keyIds, id);
         return ActionCreators.setActiveKey(previousId);
 }
 
-export function startGenerateKey (state: State.State)
+export function startGenerateKey (client: Client.Client)
 {
         return ActionCreators.startGenerateKey();
 }
 
-export function deleteKey (state: State.State)
+export function deleteKey (client: Client.Client)
 {
-        const id = state.ui.activeKeyId;
+        const id = client.ui.activeKeyId;
         return ActionCreators.deleteKey(id);
 }
 
-export function importKeys (state: State.State): Redux.Action<any>
+export function importKeys (client: Client.Client): Redux.Action<any>
 {
-        const body = State.getActiveMessage(state).body;
+        const body = Client.getActiveMessage(client).body;
         const armouredKeys = KbpgpHelpers.extractPublicKeys(body);
 
         KbpgpHelpers.loadPublicKeys(armouredKeys).then(instances => {

@@ -1,23 +1,23 @@
 import Redux = require('../redux/redux');
 import Actions = require('./actions');
-import State = require('../state');
-import StateReducers = require('./statereducers');
+import Client = require('../client');
+import ClientReducers = require('./clientreducers');
 import UI = require('../ui');
 
 export function reduce (
-        state: State.State, action: Redux.Action<any>)
+        client: Client.Client, action: Redux.Action<any>)
 {
         const mappedAction = action.type === Actions.Types.KEY_DOWN ?
-                mapKeyToAction(state, action) : action;
+                mapKeyToAction(client, action) : action;
 
         return mappedAction ?
-                StateReducers.state(state, mappedAction) :
-                state;
+                ClientReducers.client(client, mappedAction) :
+                client;
 }
 
-export function mapKeyToAction (state: State.State, action: Actions.KeyDown)
+export function mapKeyToAction (client: Client.Client, action: Actions.KeyDown)
 {
-        if (UI.isEditing(state.ui)) {
+        if (UI.isEditing(client.ui)) {
                 return null;
         }
 
@@ -25,11 +25,11 @@ export function mapKeyToAction (state: State.State, action: Actions.KeyDown)
         event.preventDefault(); // We only do this if not editing
 
         const key = event.keyCode;
-        const commands = State.getCommands(state.data, state.ui.mode);
+        const commands = Client.getCommands(client.data, client.ui.mode);
 
         return commands.reduce((result, command) => {
                 return command.keyCodes.indexOf(key) !== -1 ?
-                        command.actionCreator(state) :
+                        command.actionCreator(client) :
                         result;
                 }, null);
 }

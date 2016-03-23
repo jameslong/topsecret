@@ -5,12 +5,12 @@ import DraftReducers = require('./draftreducers');
 import DraftKeyReducers = require('./draftkeyreducers');
 import Helpers = require('../../../../core/src/app/utils/helpers');
 import Redux = require('../redux/redux');
-import State = require('../state');
+import Client = require('../client');
 import UIReducers = require('./uireducers');
 
-export function state (state: State.State, action: Redux.Action<any>)
+export function client (client: Client.Client, action: Redux.Action<any>)
 {
-        let temp = state;
+        let temp = client;
 
         switch (action.type) {
                 case Actions.Types.DELETE_KEY:
@@ -22,17 +22,17 @@ export function state (state: State.State, action: Redux.Action<any>)
                         break;
         }
 
-        return stateReducer(temp, action);
+        return clientReducer(temp, action);
 }
 
-export function stateReducer (state: State.State, action: Redux.Action<any>)
+export function clientReducer (client: Client.Client, action: Redux.Action<any>)
 {
         return {
-                data: DataReducers.data(state.data, action),
-                ui: UIReducers.ui(state.ui, action),
-                draftKey: DraftKeyReducers.draftKey(state.draftKey, action),
-                draftMessage: DraftReducers.draft(state.draftMessage, action),
-                messageId: messageId(state.messageId, action),
+                data: DataReducers.data(client.data, action),
+                ui: UIReducers.ui(client.ui, action),
+                draftKey: DraftKeyReducers.draftKey(client.draftKey, action),
+                draftMessage: DraftReducers.draft(client.draftMessage, action),
+                messageId: messageId(client.messageId, action),
         };
 }
 
@@ -46,14 +46,14 @@ export function messageId (messageId: number, action: Redux.Action<any>)
         }
 }
 
-function handleDeleteKey (state: State.State, action: Actions.DeleteKey)
+function handleDeleteKey (client: Client.Client, action: Actions.DeleteKey)
 {
         const id = action.parameters;
-        const data = Data.deleteKey(state.data, id);
+        const data = Data.deleteKey(client.data, id);
 
-        const activeKeyId = id === state.ui.activeKeyId ?
-                data.keyManagers[0] : state.ui.activeKeyId;
-        const ui = Helpers.assign(state.ui, { activeKeyId });
+        const activeKeyId = id === client.ui.activeKeyId ?
+                data.keyManagers[0] : client.ui.activeKeyId;
+        const ui = Helpers.assign(client.ui, { activeKeyId });
 
-        return Helpers.assign(state, { data, ui });
+        return Helpers.assign(client, { data, ui });
 }

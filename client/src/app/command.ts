@@ -1,12 +1,12 @@
 import Redux = require('./redux/redux');
-import State = require('./state');
+import Client = require('./client');
 
-type KeyHandler = (state: State.State) => State.State;
+type KeyHandler = (client: Client.Client) => Client.Client;
 export interface Command {
         id: string;
         key: string;
         keyCodes: number[];
-        actionCreator: (state: State.State) => Redux.Action<any>;
+        actionCreator: (client: Client.Client) => Redux.Action<any>;
         shortDesc: string;
         desc: string;
 };

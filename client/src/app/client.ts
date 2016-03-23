@@ -13,7 +13,7 @@ import Player = require('./player');
 import Redux = require('./redux/redux');
 import UI = require('./ui');
 
-export interface State {
+export interface Client {
         data: Data.Data;
         ui: UI.UI;
         draftKey: KbpgpHelpers.KeyData;
@@ -21,12 +21,12 @@ export interface State {
         messageId: number;
 };
 
-export function createState (
+export function createClient (
         player: Player.Player,
         commands: Command.Command[],
         commandIdsByMode: Data.IdsById,
         folders: Folder.FolderData[],
-        keyManagersById: Map.Map<Kbpgp.KeyManagerInstance>): State
+        keyManagersById: Map.Map<Kbpgp.KeyManagerInstance>): Client
 {
         const data = Data.createData(
                 folders,
@@ -50,31 +50,31 @@ export function createState (
         };
 }
 
-export function tickClient (client: State, timestampMs: number)
+export function tickClient (client: Client, timestampMs: number)
 {
         const action = ActionCreators.tick(timestampMs);
         Redux.handleAction(action);
 }
 
-export function nextMessageId (state: State)
+export function nextMessageId (client: Client)
 {
-        return (state.messageId + 1);
+        return (client.messageId + 1);
 }
 
-export function getActiveMessage (state: State)
+export function getActiveMessage (client: Client)
 {
-        const activeMessageId = state.ui.activeMessageId;
-        return state.data.messagesById[activeMessageId];
+        const activeMessageId = client.ui.activeMessageId;
+        return client.data.messagesById[activeMessageId];
 }
-export function getActiveFolder (state: State)
+export function getActiveFolder (client: Client)
 {
-        const activeFolderId = state.ui.activeFolderId;
-        return state.data.foldersById[activeFolderId];
+        const activeFolderId = client.ui.activeFolderId;
+        return client.data.foldersById[activeFolderId];
 }
 
-export function getActiveCommands (state: State)
+export function getActiveCommands (client: Client)
 {
-        return getCommands(state.data, state.ui.mode);
+        return getCommands(client.data, client.ui.mode);
 }
 
 export function getCommands (data: Data.Data, mode: string)
@@ -84,9 +84,9 @@ export function getCommands (data: Data.Data, mode: string)
         return commandIds.map(id => commandsById[id]);
 }
 
-export function getActiveMessages (state: State)
+export function getActiveMessages (client: Client)
 {
-        return getMessages(state.data, state.ui.activeFolderId);
+        return getMessages(client.data, client.ui.activeFolderId);
 }
 
 export function getMessages (data: Data.Data, folderId: string)

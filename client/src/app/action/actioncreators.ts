@@ -3,7 +3,6 @@ import Arr = require('../../../../core/src/app/utils/array');
 import Folder = require('../folder');
 import Message = require('../../../../core/src/app/message');
 import Redux = require('../redux/redux');
-import State = require('../state');
 import UI = require('../ui');
 
 function createAction<T> (type: string, parameters: T): Redux.Action<T>
