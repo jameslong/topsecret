@@ -87,7 +87,7 @@ export function markReplied(message: Message, replied: boolean)
         return Helpers.assign(message, { replied });
 }
 
-export function createMessage (content: MessageContent, id: string)
+export function createMessage (content: MessageContent, id: string): Message
 {
         const date = new Date().toISOString();
         const { from, to, subject, body } = content;

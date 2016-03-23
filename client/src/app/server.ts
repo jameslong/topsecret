@@ -1,7 +1,6 @@
 import ActionCreators = require('./action/actioncreators');
 import AsyncRequest = require('./asyncrequest');
 import DBTypes = require('../../../core/src/app/dbtypes');
-import CoreState = require('../../../core/src/app/state');
 import Helpers = require('../../../core/src/app/utils/helpers');
 import LocalDB = require('../../../core/src/app/localdb');
 import Main = require('../../../core/src/app/main');
@@ -9,14 +8,14 @@ import Message = require('../../../core/src/app/message');
 import Player = require('../../../core/src/app/player');
 import Promises = require('../../../core/src/app/promises');
 import Redux = require('./redux/redux');
-import State = require('./state');
+import State = require('../../../core/src/app/state');
 
 interface Id {
         uid: number;
 }
 
 export interface Server {
-        app: CoreState.State;
+        app: State.State;
         lastEvaluatedKey: string;
         db: LocalDB.DBState;
         id: Id;
@@ -54,7 +53,7 @@ function createPromises (id: Id)
         return DBTypes.createPromiseFactories(calls, sendFn);
 }
 
-function send (id: Id, data: Message.MessageData) {
+export function send (id: Id, data: Message.MessageData) {
         const uid = (id.uid + 1).toString();
         id.uid += 1;
 
@@ -70,7 +69,7 @@ function send (id: Id, data: Message.MessageData) {
         return Promise.resolve(uid);
 }
 
-export function init (getState: () => State.State)
+export function init ()
 {
         createServer().then(server => {
                 const email = 'james.smith@gmail.com';
@@ -81,7 +80,7 @@ export function init (getState: () => State.State)
                 const player = Player.createPlayerState(
                         email, publicKey, version, firstName, lastName);
 
-                const messageName = 'fallback_expired';
+                const messageName = 'children_unexpired';
                 const domain = 'nsa.gov';
                 const groupData = server.app.data[version];
                 const promises = server.app.promises;
@@ -91,13 +90,12 @@ export function init (getState: () => State.State)
                         player,
                         domain,
                         groupData,
-                        promises).then(result => start(getState, server));
+                        promises).then(result => start(server));
         });
 }
 
-export function start (getState: () => State.State, server: Server)
+export function start (server: Server)
 {
-        const state = getState();
         const timestampMs = Date.now();
         const { app, lastEvaluatedKey } = server;
         const intervalMs = 1000;
@@ -105,6 +103,6 @@ export function start (getState: () => State.State, server: Server)
         Main.tick(app, lastEvaluatedKey, timestampMs).then(lastEvaluatedKey => {
                 console.log(`tick, lastEvaluatedKey = ${lastEvaluatedKey}`);
                 server.lastEvaluatedKey = lastEvaluatedKey;
-                setTimeout(() => start(getState, server), intervalMs);
+                setTimeout(() => start(server), intervalMs);
         }).catch(err => console.log('Server error: ', err));
 }
