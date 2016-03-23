@@ -101,15 +101,19 @@ function pendingResponse (
         const message = state.message;
         const messageData = groupData.messages[message.name];
         const delayMs = getTimeDelayMs(timestampMs, app.timeFactor, message);
+        const fallback = hasFallback(messageData);
+        const replyOptions = hasReplyOptions(messageData);
 
-        if (hasReply(message) && !hasSentReply(message)) {
-                if (hasPendingReply(message, messageData, delayMs)) {
+        if (!hasSentReply(message)) {
+                if (replyOptions && hasPendingReply(message, messageData, delayMs)) {
                         return [pendingReply(
                                 groupData,
                                 state,
                                 promises,
                                 app.emailDomain)];
-                } else if (hasPendingFallback(message, messageData, delayMs)) {
+                }
+
+                if (fallback && hasPendingFallback(message, messageData, delayMs)) {
                         return [pendingFallback(
                                 groupData,
                                 state,
@@ -202,6 +206,11 @@ function hasReply (message: Message.MessageState)
 function hasFallback (messageData: Message.ThreadMessage)
 {
         return messageData.fallback !== null;
+}
+
+function hasReplyOptions (messageData: Message.ThreadMessage)
+{
+        return messageData.replyOptions.length !== 0;
 }
 
 function isExpired (
