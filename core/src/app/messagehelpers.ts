@@ -37,13 +37,13 @@ export function createMessageData (
         groupData: State.GameData,
         vars: Player.PlayerVars): Message.MessageData
 {
-        const { threadData, strings, profiles } = groupData;
+        const { messages, strings, profiles } = groupData;
 
-        const threadMessage = threadData[name];
+        const threadMessage = messages[name];
         const message = threadMessage.message;
         const messageThreadSubject = threadMessage.threadSubject;
         const parentThreadSubject = threadStartName ?
-                threadData[threadStartName].threadSubject :
+                messages[threadStartName].threadSubject :
                 null;
         const subject = messageThreadSubject ?
                 strings[messageThreadSubject] :

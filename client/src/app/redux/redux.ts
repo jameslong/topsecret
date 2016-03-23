@@ -26,6 +26,8 @@ export function init<T, U>(
                 appState.state = reducer(appState.state, action);
                 render(appState.state, rootComponent, wrapper);
         };
+
+        return () => appState.state;
 }
 
 export function render <T>(

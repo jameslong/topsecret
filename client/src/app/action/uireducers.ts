@@ -99,6 +99,10 @@ export function ui (ui: UI.UI, action: Redux.Action<any>)
                         const setActiveKey = <Actions.SetActiveKey><any>action;
                         return handleSetActiveKey(ui, setActiveKey);
 
+                case Actions.Types.RECEIVE_REPLY:
+                        const receiveAction = <Actions.ReceiveReply><any>action;
+                        return handleReceiveReply(ui, receiveAction);
+
                 default:
                         return ui;
         }
@@ -258,4 +262,13 @@ function handleSetActiveKey (ui: UI.UI, action: Actions.SetActiveKey)
 {
         const activeKeyId = action.parameters;
         return Helpers.assign(ui, { activeKeyId });
+}
+
+function handleReceiveReply (ui: UI.UI, action: Actions.ReceiveReply)
+{
+        const replyId = action.parameters.id;
+        const activeMessageId = ui.activeMessageId;
+        return activeMessageId === null ?
+                Helpers.assign(ui, { activeMessageId: replyId }) :
+                ui;
 }

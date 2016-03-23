@@ -131,7 +131,7 @@ export const folders: Folder.FolderData[] = [{
         id: 'inbox',
         type: Folder.Types.INBOX,
         displayName: 'Inbox',
-        messages: inboxMessages,
+        messages: [],
 }, {
         id: 'sent',
         type: Folder.Types.SENT,

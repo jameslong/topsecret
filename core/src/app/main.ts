@@ -41,7 +41,7 @@ export function update (
 {
         const promises = app.promises;
         const groupData = app.data[player.version];
-        const messageData = groupData.threadData[message.name];
+        const messageData = groupData.messages[message.name];
         const state = { message, player };
 
         const children = pendingChildren(
@@ -67,7 +67,7 @@ function pendingChildren (
         const { message, player } = state;
         const domain = app.emailDomain;
 
-        const messageData = groupData.threadData[message.name];
+        const messageData = groupData.messages[message.name];
         const children = messageData.children;
 
         const timeDelayMs = getTimeDelayMs(
@@ -99,7 +99,7 @@ function pendingResponse (
         promises: DBTypes.PromiseFactories)
 {
         const message = state.message;
-        const messageData = groupData.threadData[message.name];
+        const messageData = groupData.messages[message.name];
         const delayMs = getTimeDelayMs(timestampMs, app.timeFactor, message);
 
         if (hasReply(message) && !hasSentReply(message)) {
@@ -130,7 +130,7 @@ function pendingReply (
         const { message, player } = state;
 
         const messageName = message.name;
-        const threadMessage = groupData.threadData[messageName];
+        const threadMessage = groupData.messages[messageName];
         const replyDelay = getReplyDelay(message, threadMessage);
 
         return (state: Promises.UpdateInfo) =>
@@ -151,7 +151,7 @@ function pendingFallback (
         const { message, player } = state;
 
         const messageName = message.name;
-        const threadMessage = groupData.threadData[messageName];
+        const threadMessage = groupData.messages[messageName];
         const fallbackName = threadMessage.fallback.name;
 
         return (state: Promises.UpdateInfo) =>

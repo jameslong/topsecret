@@ -42,32 +42,8 @@ export function join (...paths: string[]): string
 
 export function loadGameData (path: string, name: string)
 {
-        const groupData = loadGroupData(path, name);
-        const profiles = groupData.profiles;
-        const keyData = Helpers.arrayFromMap<Profile.Profile, Kbpgp.KeyData>(
-                profiles, profile => {
-                        return {
-                                id: profile.name,
-                                passphrase: profile.passphrase,
-                                privateKey: profile.privateKey,
-                        };
-                });
-        return Kbpgp.loadFromKeyData(keyData).then(instances => {
-                groupData.keyManagers = instances;
-                return groupData;
-        });
-}
-
-export function loadGroupData (path: string, name: string): State.GameData
-{
-        const data = loadNarrative(path, name);
-        return {
-                name: name,
-                keyManagers: null,
-                profiles: data.profiles,
-                threadData: data.messages,
-                strings: data.strings,
-        };
+        const narrative = loadNarrative(path, name);
+        return State.addKeyManagers(narrative);
 }
 
 export function loadNarratives (path: string): Map.Map<NarrativeData>

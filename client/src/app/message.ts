@@ -91,7 +91,7 @@ export function createMessage (content: MessageContent, id: string)
 {
         const date = new Date().toISOString();
         const { from, to, subject, body } = content;
-        const read = true;
+        const read = false;
         const replied = false;
         return { id, date, read, replied, from, to, subject, body };
 }

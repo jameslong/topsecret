@@ -49,7 +49,7 @@ export function createMessage (
 {
         const id = `<${name}.${email}>`;
         const threadStartName: string = null;
-        const messageData = groupData.threadData[name];
+        const messageData = groupData.messages[name];
         const numberOfChildren = messageData.children.length;
         return MessageHelpers.createMessageState(
                 email, id, name, threadStartName, numberOfChildren);
@@ -63,7 +63,8 @@ export function testGameData ()
 }
 
 const delayMs = 100;
-export const createDB = () => LocalDB.createLocalDBCalls(delayMs);
+export const createDB = () => LocalDB.createLocalDBCalls(
+        LocalDB.createDB(), delayMs);
 
 let idCounter = 0;
 function generateMessageId (): string

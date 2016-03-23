@@ -54,9 +54,9 @@ function delayFactory<T, U> (
 }
 
 
-export function createLocalDBCalls (timeoutMs: number): DBTypes.DBCalls
+export function createLocalDBCalls (db: DBState, timeoutMs: number)
+        : DBTypes.DBCalls
 {
-        const db = createDB();
         const factory = <T, U>(promise: DBPromise<T, U>) =>
                 delayFactory<T, U>(db, timeoutMs, promise);
 

@@ -73,7 +73,7 @@ export function encryptSendStoreChild (
                 threadStartName,
                 domain);
 
-        const messageData = groupData.threadData[name];
+        const messageData = groupData.messages[name];
         const from = groupData.keyManagers[messageData.message.from];
 
         return KbpgpHelpers.loadKey(player.publicKey).then(to => {
@@ -105,7 +105,7 @@ export function expired (
 {
         const { message, player } = state;
         const email = player.email;
-        const messageData = groupData.threadData[message.name];
+        const messageData = groupData.messages[message.name];
 
         return messageData.endGame ?
                 endGame(email, promises) :
@@ -158,7 +158,7 @@ function createMessageState (
         name: string,
         threadStartName: string)
 {
-        const newThreadMessage = groupData.threadData[name];
+        const newThreadMessage = groupData.messages[name];
         const numberOfChildren = newThreadMessage.children.length;
         const newThreadStartName = newThreadMessage.threadSubject ?
                 newThreadMessage.name : threadStartName;

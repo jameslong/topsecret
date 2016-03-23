@@ -16,6 +16,7 @@ export function state (state: State.State, action: Redux.Action<any>)
                 case Actions.Types.DELETE_KEY:
                         const deleteKey = <Actions.DeleteKey><any>action;
                         temp = handleDeleteKey(temp, deleteKey);
+                        break;
 
                 default:
                         break;

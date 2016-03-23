@@ -74,7 +74,7 @@ export function handleDecryptedReplyMessage (
         groupData: State.GameData,
         promises: DBTypes.PromiseFactories)
 {
-        const threadMessage = groupData.threadData[messageState.name];
+        const threadMessage = groupData.messages[messageState.name];
         const replyOptions = threadMessage.replyOptions;
         const replyIndex = ReplyOption.getReplyIndex(body, replyOptions);
 
