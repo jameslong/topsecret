@@ -74,7 +74,7 @@ function pendingChildren (
                 timestampMs, app.timeFactor, message);
 
         const indices = children.map((child, index) => index);
-        const unsent = indices.filter(index => message.childrenSent[index]);
+        const unsent = indices.filter(index => !message.childrenSent[index]);
         const expired = unsent.filter(index =>
                 isExpiredThreadDelay(children[index], timeDelayMs)
         );
