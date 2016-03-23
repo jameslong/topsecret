@@ -14,6 +14,8 @@ export const Types = {
         SET_DRAFT_TO: 'SET_DRAFT_TO',
         DIPLAY_MESSAGE: 'DIPLAY_MESSAGE',
 
+        TICK: 'TICK',
+
         START_GENERATE_KEY: 'START_GENERATE_KEY',
         GENERATED_KEY: 'GENERATED_KEY',
         SET_DRAFT_KEY_NAME: 'SET_DRAFT_KEY_NAME',
@@ -46,6 +48,8 @@ export interface SetDraftBody extends Redux.Action<string> {}
 export interface SetDraftSubject extends Redux.Action<string> {}
 export interface SetDraftTo extends Redux.Action<string> {}
 export interface DisplayMessage extends Redux.Action<string> {}
+
+export interface Tick extends Redux.Action<number> {}
 
 export interface StartGenerateKey extends Redux.Action<void> {}
 export interface GeneratedKeyParams {

@@ -18,3 +18,10 @@ export function delay (delayMs: number)
         return new Promise((resolve, reject) =>
                 setTimeout(resolve, delayMs));
 }
+
+export function loop<T> (delayMs: number, factory: Factory<void, T>): Promise<void>
+{
+        return factory(null).then(result =>
+                delay(delayMs)
+        ).then(result => loop(delayMs, factory));
+}

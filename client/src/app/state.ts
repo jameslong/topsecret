@@ -1,3 +1,4 @@
+import ActionCreators = require('./action/actioncreators');
 import Command = require('./command');
 import Data = require('./data');
 import Server = require('./server');
@@ -9,7 +10,7 @@ import KbpgpHelpers = require('../../../core/src/app/kbpgp');
 import Map = require('../../../core/src/app/utils/map');
 import Message = require('./message');
 import Player = require('./player');
-import CoreState = require('../../../core/src/app/state');
+import Redux = require('./redux/redux');
 import UI = require('./ui');
 
 export interface State {
@@ -47,6 +48,12 @@ export function createState (
                 draftMessage: null,
                 messageId: 0,
         };
+}
+
+export function tickClient (client: State, timestampMs: number)
+{
+        const action = ActionCreators.tick(timestampMs);
+        Redux.handleAction(action);
 }
 
 export function nextMessageId (state: State)
