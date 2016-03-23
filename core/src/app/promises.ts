@@ -83,11 +83,13 @@ export function encryptSendStoreChild (
                         data.body = body;
                         return promises.send(data);
         }).then(id => {
+                const sentTimestampMs = Date.now();
                 const messageState = createMessageState(
                         groupData,
                         player.email,
                         id,
                         name,
+                        sentTimestampMs,
                         threadStartName);
                 return promises.addMessage(messageState);
         });
@@ -156,6 +158,7 @@ function createMessageState (
         playerEmail: string,
         id: string,
         name: string,
+        sentTimestampMs: number,
         threadStartName: string)
 {
         const newThreadMessage = groupData.messages[name];
@@ -167,6 +170,7 @@ function createMessageState (
                 playerEmail,
                 id,
                 name,
+                sentTimestampMs,
                 newThreadStartName,
                 numberOfChildren);
 }

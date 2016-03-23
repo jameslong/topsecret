@@ -11,20 +11,21 @@ export function createMessageState (
         email: string,
         id: string,
         name: string,
+        sentTimestampMs: number,
         threadStartName: string,
         numberOfChildren: number)
         : Message.MessageState
 {
-        var childrenSent = Arr.createArray(numberOfChildren, false);
+        const childrenSent = Arr.createArray(numberOfChildren, false);
 
         return {
-                email: email,
-                id: id,
-                name: name,
-                threadStartName: threadStartName,
+                email,
+                id,
+                name,
+                threadStartName,
                 reply: null,
-                sentTimestampMs: null,
-                childrenSent: childrenSent,
+                sentTimestampMs,
+                childrenSent,
                 replySent: false,
         };
 }
