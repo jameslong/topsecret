@@ -1,33 +1,15 @@
 import App = require('../app');
 import Careers = require('./careers');
 import Log = require('../../../../core/src/app/log');
+import Message = require('../../../../core/src/app/message');
 import PromisesReply = require('../../../../core/src/app/promisesreply');
 
-export function handleReplyRequest (
-        state: App.State,
-        email: string,
-        id: string,
-        subject: string,
-        body: string,
-        to: string)
+export function handleReplyRequest (state: App.State, reply: Message.Reply)
 {
-        const careersEmail = Careers.isCareersEmail(to);
-
-        const reply = {
-                from: email,
-                to: to,
-                subject: subject,
-                body: body,
-                id: id,
-        };
+        const careersEmail = Careers.isCareersEmail(reply.to);
         const timestampMs = Date.now();
 
-        Log.info('replyReceived', {
-                        from: email,
-                        to: to,
-                        subject: subject,
-                        body: body,
-                });
+        Log.info('replyReceived', reply);
 
         if (careersEmail) {
                 return Careers.handleCareersEmail(state, reply);

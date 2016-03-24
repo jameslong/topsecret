@@ -3,9 +3,11 @@ import Command = require('./command');
 import Folder = require('./folder');
 import Func = require('../../../core/src/app/utils/function');
 import Helpers = require('../../../core/src/app/utils/helpers');
-import Kbpgp = require('kbpgp');
-import Map = require('../../../core/src/app/utils/map');
 import Message = require('./message');
+import MessageCore = require('../../../core/src/app/message');
+import Kbpgp = require('kbpgp');
+import KbpgpHelpers = require('../../../core/src/app/kbpgp');
+import Map = require('../../../core/src/app/utils/map');
 import Player = require('./player');
 
 export type IdsById = Map.Map<string[]>;
@@ -144,4 +146,16 @@ export function deleteKey (data: Data, id: string)
         } else {
                 return Helpers.assign(data, { keyManagers, keyManagersById });
         }
+}
+
+export function createReplyEncryptData (
+        reply: MessageCore.Reply, data: Data): KbpgpHelpers.EncryptData
+{
+        const keyManagersById = data.keyManagersById;
+        const playerId = data.player.activeKeyId;
+        const from = KbpgpHelpers.getKeyManagerById(keyManagersById, playerId);
+        const to = KbpgpHelpers.getKeyManagerById(keyManagersById, reply.to);
+        const text = reply.body;
+
+        return { from, to, text };
 }

@@ -28,8 +28,14 @@ export function createMessage0 ()
         const name = 'test';
         const threadStartName: string = null;
         const numberOfChildren = 3;
+        const sentTimestampMs = Date.now();
         return MessageHelpers.createMessageState(
-                email, id, name, threadStartName, numberOfChildren);
+                email,
+                id,
+                name,
+                sentTimestampMs,
+                threadStartName,
+                numberOfChildren);
 }
 
 export function createMessage1 ()
@@ -40,8 +46,14 @@ export function createMessage1 ()
         const name = 'test';
         const threadStartName: string = null;
         const numberOfChildren = 2;
+        const sentTimestampMs = Date.now();
         return MessageHelpers.createMessageState(
-                email, id, name, threadStartName, numberOfChildren);
+                email,
+                id,
+                name,
+                sentTimestampMs,
+                threadStartName,
+                numberOfChildren);
 }
 
 export function createMessage (
@@ -51,8 +63,14 @@ export function createMessage (
         const threadStartName: string = null;
         const messageData = groupData.messages[name];
         const numberOfChildren = messageData.children.length;
+        const sentTimestampMs = Date.now();
         return MessageHelpers.createMessageState(
-                email, id, name, threadStartName, numberOfChildren);
+                email,
+                id,
+                name,
+                sentTimestampMs,
+                threadStartName,
+                numberOfChildren);
 }
 
 export function testGameData ()

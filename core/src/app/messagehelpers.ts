@@ -33,6 +33,7 @@ export function createMessageState (
 export function createMessageData (
         name: string,
         threadStartName: string,
+        inReplyToId: string,
         to: string,
         domain: string,
         groupData: State.GameData,
@@ -58,7 +59,7 @@ export function createMessageData (
         const joined = passages.join('\n\n');
         const body = (vars ? insertMessageVars(joined, vars) : joined);
 
-        return { from, to, subject, body };
+        return { from, to, subject, body, inReplyToId };
 }
 
 export function addDomain (local: string, domain: string): string

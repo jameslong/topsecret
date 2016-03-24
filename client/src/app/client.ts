@@ -1,19 +1,25 @@
 import ActionCreators = require('./action/actioncreators');
 import Command = require('./command');
+import ConfigData = require('./data/config');
 import Data = require('./data');
-import Server = require('./server');
 import Draft = require('./draft');
 import Folder = require('./folder');
+import Func = require('../../../core/src/app/utils/function');
 import Helpers = require('../../../core/src/app/utils/helpers');
 import Kbpgp = require('kbpgp');
 import KbpgpHelpers = require('../../../core/src/app/kbpgp');
 import Map = require('../../../core/src/app/utils/map');
 import Message = require('./message');
+import MessageHelpers = require('../../../core/src/app/messagehelpers');
 import Player = require('./player');
+import PlayerData = require('./data/player');
 import Redux = require('./redux/redux');
+import Server = require('./server');
+import State = require('../../../core/src/app/state');
 import UI = require('./ui');
 
 export interface Client {
+        server: Server.Server
         data: Data.Data;
         ui: UI.UI;
         draftKey: KbpgpHelpers.KeyData;
@@ -22,6 +28,52 @@ export interface Client {
 };
 
 export function createClient (
+        config: ConfigData.ConfigData,
+        playerData: PlayerData.PlayerData,
+        data: State.Data,
+        server: Server.Server,
+        commands: Command.Command[],
+        commandIdsByMode: Data.IdsById,
+        folders: Folder.FolderData[])
+{
+        const player = {
+                email: playerData.email,
+                activeKeyId: playerData.email,
+        };
+        return loadGameKeys(data, config, playerData).then(keyManagersById => {
+                return createClientFromData(
+                        server,
+                        player,
+                        commands,
+                        commandIdsByMode,
+                        folders,
+                        keyManagersById);
+        });
+}
+
+function loadGameKeys (
+        data: State.Data,
+        config: ConfigData.ConfigData,
+        player: PlayerData.PlayerData)
+{
+        const profiles = data[config.version].profiles;
+        const profileKeyData = Helpers.arrayFromMap(profiles, profile => {
+                return {
+                        id: profile.name,
+                        key: profile.publicKey,
+                };
+        });
+        const playerKeyData = {
+                id: player.email,
+                key: player.privateKey,
+                passphrase: player.passphrase,
+        };
+        const keyData = profileKeyData.concat([playerKeyData]);
+        return KbpgpHelpers.loadFromKeyData(keyData);
+}
+
+export function createClientFromData (
+        server: Server.Server,
         player: Player.Player,
         commands: Command.Command[],
         commandIdsByMode: Data.IdsById,
@@ -42,6 +94,7 @@ export function createClient (
                 UI.Modes.INDEX_INBOX, messageId, folderId, keyId);
 
         return {
+                server,
                 data,
                 ui,
                 draftKey: null,
@@ -56,9 +109,10 @@ export function tickClient (client: Client, timestampMs: number)
         Redux.handleAction(action);
 }
 
-export function nextMessageId (client: Client)
+export function nextMessageId (client: Client, from: string)
 {
-        return (client.messageId + 1);
+        const id = (client.messageId + 1);
+        return MessageHelpers.createMessageId(from, id);
 }
 
 export function getActiveMessage (client: Client)

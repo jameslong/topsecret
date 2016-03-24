@@ -23,10 +23,12 @@ export function child (
 {
         const { message, player } = state;
         const threadStartName = message.threadStartName;
+        const inReplyToId = message.id;
 
         return encryptSendStoreChild(
                 name,
                 threadStartName,
+                inReplyToId,
                 player,
                 domain,
                 groupData,
@@ -45,10 +47,12 @@ export function reply (
 {
         const { message, player } = state;
         const threadStartName = message.threadStartName;
+        const inReplyToId = message.id;
 
         return encryptSendStoreChild(
                 name,
                 threadStartName,
+                inReplyToId,
                 player,
                 domain,
                 groupData,
@@ -61,6 +65,7 @@ export function reply (
 export function encryptSendStoreChild (
         name: string,
         threadStartName: string,
+        inReplyToId: string,
         player: Player.PlayerState,
         domain: string,
         groupData: State.GameData,
@@ -71,6 +76,7 @@ export function encryptSendStoreChild (
                 player,
                 name,
                 threadStartName,
+                inReplyToId,
                 domain);
 
         const messageData = groupData.messages[name];
@@ -129,10 +135,14 @@ export function beginGame (
         groupData: State.GameData,
         promises: DBTypes.PromiseFactories)
 {
+        const threadStartName: string = null;
+        const inReplyToId: string = null;
+
         return promises.addPlayer(player).then(result =>
                 encryptSendStoreChild(
                         name,
-                        null,
+                        threadStartName,
+                        inReplyToId,
                         player,
                         domain,
                         groupData,
@@ -146,8 +156,10 @@ export function resign (
         groupData: State.GameData,
         promises: DBTypes.PromiseFactories)
 {
+        const threadStartName: string = null;
+        const inReplyToId: string = null;
         const data = Main.createPlayerlessMessageData(
-                groupData, email, name, null, domain);
+                groupData, email, name, threadStartName, inReplyToId, domain);
 
         return promises.send(data).then(id =>
                 endGame(email, promises));

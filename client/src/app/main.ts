@@ -1,10 +1,11 @@
 /// <reference path="../../../core/src/app/global.d.ts"/>
 
+import ConfigData = require('./data/config');
 import MessageData = require('./data/messages');
 import CommandData = require('./data/commands');
-import KeyData = require('./data/keys');
 import PlayerData = require('./data/player');
 
+import AsyncRequest = require('./asyncrequest');
 import Client = require('./client');
 import EventHandler = require('./eventhandler');
 import KbpgpHelpers = require('../../../core/src/app/kbpgp');
@@ -16,37 +17,34 @@ import Server = require('./server');
 
 const wrapper = document.getElementById('wrapper');
 
-Promise.all([
-        createClient(),
-        Server.createServer(),
-]).then(result => {
-        const client = result[0];
-        const server = result[1];
+const player = PlayerData.player;
+const config = ConfigData.config;
+
+AsyncRequest.narratives(config.serverURL).then(data => {
+        const server = Server.createServer(config, data);
+        return Client.createClient(
+                config,
+                player,
+                data,
+                server,
+                CommandData.commands,
+                CommandData.commandIdsByMode,
+                MessageData.folders);
+}).then(client => {
+        const server = client.server;
 
         Redux.init(client, Reducers.reduce, Root, wrapper);
         Redux.render(client, Root, wrapper);
 
         EventHandler.addKeyHandlers();
 
-        return Server.beginGame(server).then(result =>
+        return Server.beginGame(player, config, server).then(result =>
                 startTick(client, server)
         );
 }).catch(err => {
         console.log(err);
         throw err;
 });
-
-function createClient ()
-{
-        return KbpgpHelpers.loadFromKeyData(KeyData.keys).then(keyManagersById =>
-                Client.createClient(
-                        PlayerData.player,
-                        CommandData.commands,
-                        CommandData.commandIdsByMode,
-                        MessageData.folders,
-                        keyManagersById)
-        );
-}
 
 function tick (client: Client.Client, server: Server.Server)
 {

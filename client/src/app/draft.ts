@@ -1,5 +1,6 @@
 import Helpers = require('../../../core/src/app/utils/helpers');
 import Message = require('./message');
+import MessageCore = require('../../../core/src/app/message');
 import Str = require('../../../core/src/app/utils/string');
 
 export interface Draft {
@@ -70,8 +71,14 @@ export function setContent (draft: Draft, content: Message.MessageContent)
         return Helpers.assign(draft, { content });
 }
 
-export function createMessageFromDraft (draft: Draft, id: string)
-        : Message.Message
+export function createReplyFromDraft (
+        draft: Draft, id: string, inReplyToId: string): MessageCore.Reply
 {
-        return Message.createMessage(draft.content, id);
+        const { from, to, subject, body } = draft.content;
+        return { from, to, subject, body, id, inReplyToId };
+}
+
+export function createMessageFromReply (reply: MessageCore.Reply)
+{
+        return Message.createMessage(reply, reply.id);
 }

@@ -35,7 +35,7 @@ export function addKeyManagers (data: NarrativeData): Promise<GameData>
                         return {
                                 id: profile.name,
                                 passphrase: profile.passphrase,
-                                privateKey: profile.privateKey,
+                                key: profile.privateKey,
                         };
                 });
         return Kbpgp.loadFromKeyData(keyData).then(instances => {

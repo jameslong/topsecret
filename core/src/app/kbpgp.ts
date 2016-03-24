@@ -14,33 +14,33 @@ export type KeyManagers = Map.Map<Kbpgp.KeyManagerInstance>;
 
 export interface KeyData {
         id: string;
-        passphrase: string;
-        privateKey: string;
+        key: string;
+        passphrase?: string;
 }
 
 export function createKeyData (): KeyData
 {
         return {
                 id: null,
+                key: null,
                 passphrase: null,
-                privateKey: null,
         };
 }
 
-function getId<T extends { id: string }>(value: T) { return value.id; }
+export function getId<T extends { id: string }>(value: T) { return value.id; }
 
 export function loadFromKeyData (keys: KeyData[])
 {
-        return loadPrivateKeys(keys).then(instances => {
+        return loadKeys(keys).then(instances => {
                 const ids = keys.map(getId);
                 return Map.create(Arr.zip(ids, instances));
         });
 }
 
-export function loadPrivateKeys (keys: KeyData[])
+export function loadKeys (keys: KeyData[])
 {
         const promises = keys.map(data =>
-                loadKey(data.privateKey, data.passphrase));
+                loadKey(data.key, data.passphrase));
 
         return Promise.all<Kbpgp.KeyManagerInstance>(promises);
 }
@@ -95,11 +95,10 @@ export function signEncrypt (data: EncryptData)
         });
 }
 
-export function createKeyRing (instances: Map.Map<Kbpgp.KeyManagerInstance>)
+export function createKeyRing (instances: Kbpgp.KeyManagerInstance[])
 {
         const ring = new Kbpgp.keyring.KeyRing;
-        const kms = <Kbpgp.KeyManagerInstance[]>Helpers.arrayFromMap(instances);
-        kms.forEach(instance => ring.add_key_manager(instance));
+        instances.forEach(instance => ring.add_key_manager(instance));
         return ring;
 }
 

@@ -243,28 +243,27 @@ export function createReplyCallback (state: App.State)
 {
         return (req: any, res: any) =>
                 {
-                        var data: {
+                        const data: {
                                         'sender': string;
+                                        'Message-ID': string;
                                         'In-Reply-To': string;
                                         'stripped-text': string;
                                         To: string;
                                         subject: string;
                                 } = req.body;
 
-                        var playerEmail = data.sender;
-                        var id = data['In-Reply-To'];
-                        var body = data['stripped-text'] || '';
-                        var to = data['To'];
-                        var subject = data.subject;
+                        const reply = {
+                                from: data.sender,
+                                to: data['To'],
+                                subject: data.subject,
+                                body: data['stripped-text'] || '',
+                                inReplyToId: data['In-Reply-To'],
+                                id: data['Message-ID'],
+                        };
 
-                        if (id !== null) {
+                        if (reply.inReplyToId !== null) {
                                 const promise = Reply.handleReplyRequest(
-                                        state,
-                                        playerEmail,
-                                        id,
-                                        subject,
-                                        body,
-                                        to);
+                                        state, reply);
                                 return createRequestCallback(res, promise);
                         } else {
                                 res.sentStatus(200);
@@ -276,27 +275,26 @@ export function createLocalReplyCallback (state: App.State)
 {
         return (req: any, res: any) =>
                 {
-                        var data: {
+                        const data: {
                                         from: string;
+                                        inReplyToId: string;
                                         id: string;
                                         subject: string;
                                         body: string;
                                         to: string;
                                 } = req.body;
 
-                        var playerEmail = data.from;
-                        var id = data.id;
-                        var body = data.body || '';
-                        var to = data.to;
-                        var subject = data.subject;
+                        const reply = {
+                                from: data.from,
+                                to: data.to,
+                                subject: data.subject,
+                                body: data.body || '',
+                                inReplyToId: data.inReplyToId,
+                                id: data.id,
+                        };
 
                         const promise = Reply.handleReplyRequest(
-                                state,
-                                playerEmail,
-                                id,
-                                subject,
-                                body,
-                                to);
+                                state, reply);
                         return createRequestCallback(res, promise);
                 };
 }

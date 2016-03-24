@@ -85,12 +85,14 @@ export function handleInvalidApplication (
 {
         const app = state.app;
         const messageName = state.config.content.invalidApplicationThread;
-        const threadStartName: string = null    ;
+        const threadStartName: string = null;
+        const inReplyToId: string = null;
         const data = Main.createPlayerlessMessageData(
                 groupData,
                 email,
                 messageName,
                 threadStartName,
+                inReplyToId,
                 app.emailDomain);
         return app.promises.send(data);
 }

@@ -105,7 +105,7 @@ function pendingResponse (
         const replyOptions = hasReplyOptions(messageData);
 
         if (!hasSentReply(message)) {
-                if (replyOptions && hasPendingReply(message, messageData, delayMs)) {
+                if (replyOptions && hasExpiredReply(message, messageData, delayMs)) {
                         return [pendingReply(
                                 groupData,
                                 state,
@@ -113,7 +113,7 @@ function pendingResponse (
                                 app.emailDomain)];
                 }
 
-                if (fallback && hasPendingFallback(message, messageData, delayMs)) {
+                if (fallback && hasExpiredFallback(message, messageData, delayMs)) {
                         return [pendingFallback(
                                 groupData,
                                 state,
@@ -174,23 +174,42 @@ function hasPendingChildren (message: Message.MessageState)
 
 function hasPendingReply (
         message: Message.MessageState,
-        messageData: Message.ThreadMessage,
-        delayMs: number)
+        messageData: Message.ThreadMessage)
 {
-        const reply = message.reply;
-        const replyIndex = reply.replyIndex;
-        const replyDelay = MessageHelpers.getReplyDelay(
-                replyIndex, messageData);
-
-        return isExpiredThreadDelay(replyDelay, delayMs);
+        const hasReplyOptions = messageData.replyOptions.length > 0;
+        return !message.replySent && hasReplyOptions;
 }
 
-function hasPendingFallback (
+function hasExpiredReply (
         message: Message.MessageState,
         messageData: Message.ThreadMessage,
         delayMs: number)
 {
-        return isExpiredThreadDelay(messageData.fallback, delayMs);
+        const reply = message.reply;
+        if (reply) {
+                const replyIndex = reply.replyIndex;
+                const replyDelay = MessageHelpers.getReplyDelay(
+                        replyIndex, messageData);
+                return isExpiredThreadDelay(replyDelay, delayMs);
+        } else {
+                return false;
+        }
+}
+
+function hasPendingFallback (
+        message: Message.MessageState,
+        messageData: Message.ThreadMessage)
+{
+        return !message.replySent && messageData.fallback;
+}
+
+function hasExpiredFallback (
+        message: Message.MessageState,
+        messageData: Message.ThreadMessage,
+        delayMs: number)
+{
+        return hasPendingFallback(message, messageData) &&
+                isExpiredThreadDelay(messageData.fallback, delayMs);
 }
 
 function hasSentReply (message: Message.MessageState)
@@ -218,7 +237,8 @@ function isExpired (
         messageData: Message.ThreadMessage)
 {
         return !hasPendingChildren(message) &&
-                (hasSentReply(message) || !hasFallback(messageData));
+                !hasPendingReply(message, messageData) &&
+                !hasPendingFallback(message, messageData);
 }
 
 function getTimeDelayMs (
@@ -252,11 +272,13 @@ export function createPlayerlessMessageData (
         email: string,
         messageName: string,
         threadStartName: string,
+        inReplyToId: string,
         emailDomain: string)
 {
         return MessageHelpers.createMessageData(
                 messageName,
                 threadStartName,
+                inReplyToId,
                 email,
                 emailDomain,
                 groupData,
@@ -268,11 +290,13 @@ export function createMessageData (
         player: Player.PlayerState,
         messageName: string,
         threadStartName: string,
+        inReplyToId: string,
         emailDomain: string)
 {
         return MessageHelpers.createMessageData(
                 messageName,
                 threadStartName,
+                inReplyToId,
                 player.email,
                 emailDomain,
                 groupData,

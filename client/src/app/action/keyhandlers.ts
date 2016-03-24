@@ -1,5 +1,6 @@
 import ActionCreators = require('./actioncreators');
 import Arr = require('../../../../core/src/app/utils/array');
+import Data = require('../data');
 import Draft = require('../draft');
 import Folder = require('../folder');
 import Func = require('../../../../core/src/app/utils/function');
@@ -7,6 +8,8 @@ import Helpers = require('../../../../core/src/app/utils/helpers');
 import Kbpgp = require('kbpgp');
 import KbpgpHelpers = require('../../../../core/src/app/kbpgp');
 import Map = require('../../../../core/src/app/utils/map');
+import MessageCore = require('../../../../core/src/app/message');
+import PromisesReply = require('../../../../core/src/app/promisesreply');
 import Redux = require('../redux/redux');
 import Client = require('../client');
 import UI = require('../ui');
@@ -71,22 +74,28 @@ export function exitHelp (client: Client.Client)
 
 export function encryptSend (client: Client.Client): Redux.Action<any>
 {
-        const messageId = Client.nextMessageId(client).toString();
+        const draft = client.draftMessage;
+        const id = Client.nextMessageId(client, draft.content.from);
         const parent = client.data.messagesById[client.draftMessage.parentId];
-        const parentId = parent ? parent.id : null;
-        const draftMessage = Draft.createMessageFromDraft(
-                client.draftMessage, messageId);
+        const inReplyToId = parent ? parent.id : null;
 
-        const keyManagersById = client.data.keyManagersById;
-        const playerId = client.data.player.activeKeyId;
-        const from = KbpgpHelpers.getKeyManagerById(keyManagersById, playerId);
-        const to = KbpgpHelpers.getKeyManagerById(keyManagersById, draftMessage.to[0]);
-        const text = draftMessage.body;
+        const reply = Draft.createReplyFromDraft(draft, id, inReplyToId);
+        const data = client.data;
+        const encryptData = Data.createReplyEncryptData(reply, data);
 
-        const encryptData = { from, to, text };
         KbpgpHelpers.signEncrypt(encryptData).then(body => {
-                const message = Helpers.assign(draftMessage, { body });
-                const action = ActionCreators.sendMessage({ message, parentId });
+                const encryptedReply = Helpers.assign(reply, { body });
+                const timestampMs = Date.now();
+                const app = client.server.app;
+                return PromisesReply.handleReplyMessage(
+                        encryptedReply,
+                        timestampMs,
+                        app.data,
+                        app.promises);
+        }).then(reply => {
+                const message = Draft.createMessageFromReply(reply);
+                const action = ActionCreators.sendMessage({
+                        message, parentId: inReplyToId });
                 Redux.handleAction(action);
         }).catch(err => console.log(err));
 
@@ -98,7 +107,10 @@ export function decrypt (client: Client.Client): Redux.Action<any>
         const messageId = client.ui.activeMessageId;
         const message = client.data.messagesById[messageId];
         const body = message.body;
-        const keyRing = KbpgpHelpers.createKeyRing(client.data.keyManagersById);
+        const keyManagersById = client.data.keyManagersById;
+        const keyManagers = <Kbpgp.KeyManagerInstance[]>Helpers.arrayFromMap(
+                keyManagersById);
+        const keyRing = KbpgpHelpers.createKeyRing(keyManagers);
 
         KbpgpHelpers.decryptVerify(keyRing, body).then(decryptedBody => {
                 const action = ActionCreators.decryptMessage({

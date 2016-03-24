@@ -9,6 +9,7 @@ import Client = require('../client');
 import UIReducers = require('./uireducers');
 
 export function client (client: Client.Client, action: Redux.Action<any>)
+        : Client.Client
 {
         let temp = client;
 
@@ -28,6 +29,7 @@ export function client (client: Client.Client, action: Redux.Action<any>)
 export function clientReducer (client: Client.Client, action: Redux.Action<any>)
 {
         return {
+                server: client.server,
                 data: DataReducers.data(client.data, action),
                 ui: UIReducers.ui(client.ui, action),
                 draftKey: DraftKeyReducers.draftKey(client.draftKey, action),

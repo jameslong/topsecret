@@ -16,9 +16,9 @@ export function handleReplyMessage (
         promises: DBTypes.PromiseFactories)
 {
         const email = reply.from;
-        const id = reply.id;
+        const inReplyToId = reply.inReplyToId;
 
-        return promises.getMessage(id).then(message =>
+        return promises.getMessage(inReplyToId).then(message =>
                 message && !message.reply ?
                         promises.getPlayer(email).then(player =>
                                 handleTimelyReply(
@@ -29,7 +29,7 @@ export function handleReplyMessage (
                                         data,
                                         promises)) :
                         null
-        );
+        ).then(result => reply);
 }
 
 export function handleTimelyReply (
@@ -48,15 +48,19 @@ export function handleTimelyReply (
         const keyManager = groupData.keyManagers[profile.name];
 
         return player.publicKey ?
-                KBPGP.decryptVerify(keyManager, ciphertext).then(plaintext =>
-                        handleDecryptedReplyMessage(
-                                plaintext,
-                                timestampMs,
-                                player,
-                                message,
-                                groupData,
-                                promises)
-                ) :
+                KBPGP.loadKey(player.publicKey).then(from => {
+                        const keyManagers = [keyManager, from];
+                        const keyRing = KBPGP.createKeyRing(keyManagers);
+                        return KBPGP.decryptVerify(keyRing, ciphertext).then(plaintext =>
+                                handleDecryptedReplyMessage(
+                                        plaintext,
+                                        timestampMs,
+                                        player,
+                                        message,
+                                        groupData,
+                                        promises)
+                        );
+                }) :
                 handleDecryptedReplyMessage(
                         ciphertext,
                         timestampMs,
@@ -126,9 +130,7 @@ export function handleReplyOptionDefault (
         message: Message.MessageState,
         promises: DBTypes.PromiseFactories)
 {
-        message.reply.replyIndex = replyIndex;
-        message.reply.timestampMs = timestampMs;
-
+        message.reply = { replyIndex, timestampMs };
         return promises.addMessage(message);
 }
 
@@ -144,9 +146,7 @@ export function handleReplyOptionValidPGPKey(
         player.publicKey = publicKey;
 
         return promises.updatePlayer(player).then(player => {
-                message.reply.replyIndex = replyIndex;
-                message.reply.timestampMs = timestampMs;
-
+                message.reply = { replyIndex, timestampMs };
                 return promises.updateMessage(message)
         });
 }

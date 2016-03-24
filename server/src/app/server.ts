@@ -61,7 +61,8 @@ export function sendMail (io: any, messageData: Message.MessageData)
 {
         const id = generateMessageId();
         const message: Message.Reply = {
-                id: id,
+                id,
+                inReplyToId: messageData.inReplyToId,
                 from: messageData.from,
                 to: messageData.to,
                 subject: messageData.subject,

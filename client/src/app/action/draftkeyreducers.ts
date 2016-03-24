@@ -41,5 +41,6 @@ function handleSetDraftKeyPassphrase (
         draftKey: Kbpgp.KeyData, action: Actions.SetDraftKeyPassphrase)
 {
         const passphrase = action.parameters;
-        return Helpers.assign(draftKey, { passphrase });
+        const passphraseData: { passphrase?: string } = { passphrase };
+        return Helpers.assign(draftKey, passphraseData);
 }
