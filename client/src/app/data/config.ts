@@ -1,5 +1,3 @@
-import Helpers = require('../../../core/src/app/utils/helpers');
-
 export interface QueryStringParams {
         version: string;
         messageName: string;
