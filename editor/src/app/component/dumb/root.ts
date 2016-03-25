@@ -12,18 +12,26 @@ module Component {
                 const store = Im.getActiveStore(state);
                 const narrativeNames = Im.keys(store.narratives);
 
-                const activeMessage = store.activeMessage ?
+                const activeNarrative = store.activeNarrative;
+                const activeMessage = store.activeMessage;
+
+                const message = activeMessage ?
                         EditPanelContainer(store) : null;
 
+                const narrative = Im.getActiveNarrative(store);
+                const messages = narrative.messages;
+                const singleSelected = Im.getSingleSelectedMessage(messages);
+
                 const menuBarData = MenuBarContainerData({
-                        narrativeNames: narrativeNames,
-                        activeNarrative: store.activeNarrative,
+                        narrativeNames,
+                        activeNarrative,
+                        activeMessage: singleSelected,
                 });
 
                 return Div({ className: 'root' },
                         EditAreaContainer(store),
                         MenuBarContainer(menuBarData),
-                        activeMessage
+                        message
                 );
         }
 

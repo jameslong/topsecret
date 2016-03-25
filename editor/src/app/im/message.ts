@@ -161,6 +161,14 @@ module Im {
                         message => message.selected);
         }
 
+        export function getSingleSelectedMessage (messages: Im.Messages)
+        {
+                const selected = getSelectedMessages(messages);
+                const selectedList = <Immutable.List<Im.Message>>(selected.toList());
+                return selectedList.count() === 1 ?
+                        selectedList.get(0).name : null;
+        }
+
         export function markMessagesValid (
                 messages: Messages,
                 strings: Strings,
