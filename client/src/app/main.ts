@@ -18,7 +18,7 @@ import Server = require('./server');
 const wrapper = document.getElementById('wrapper');
 
 const player = PlayerData.player;
-const config = ConfigData.config;
+const config = ConfigData.createConfig();
 
 AsyncRequest.narratives(config.serverURL).then(data => {
         const server = Server.createServer(config, data);
