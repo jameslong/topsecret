@@ -114,12 +114,6 @@ export function decryptVerify (
         });
 }
 
-export function getKeyManagerById (
-        instances: Map.Map<Kbpgp.KeyManagerInstance>, id: string)
-{
-        return Map.find(instances, (instance, instanceId) => instanceId === id);
-}
-
 export function getDisplayType (instance: Kbpgp.KeyManagerInstance)
 {
         return instance.has_pgp_private() ? 'public/private' : 'public';

@@ -153,8 +153,8 @@ export function createReplyEncryptData (
 {
         const keyManagersById = data.keyManagersById;
         const playerId = data.player.activeKeyId;
-        const from = KbpgpHelpers.getKeyManagerById(keyManagersById, playerId);
-        const to = KbpgpHelpers.getKeyManagerById(keyManagersById, reply.to);
+        const from = keyManagersById[playerId];
+        const to = keyManagersById[reply.to];
         const text = reply.body;
 
         return { from, to, text };
