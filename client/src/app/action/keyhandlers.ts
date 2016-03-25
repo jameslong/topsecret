@@ -9,6 +9,7 @@ import Kbpgp = require('kbpgp');
 import KbpgpHelpers = require('../../../../core/src/app/kbpgp');
 import Map = require('../../../../core/src/app/utils/map');
 import MessageCore = require('../../../../core/src/app/message');
+import MessageHelpers = require('../../../../core/src/app/messagehelpers');
 import PromisesReply = require('../../../../core/src/app/promisesreply');
 import Redux = require('../redux/redux');
 import Client = require('../client');
@@ -80,18 +81,20 @@ export function encryptSend (client: Client.Client): Redux.Action<any>
         const inReplyToId = parent ? parent.id : null;
 
         const reply = Draft.createReplyFromDraft(draft, id, inReplyToId);
+        const strippedBody = MessageHelpers.stripBody(reply.body);
+        const strippedReply = Helpers.assign(reply, { body: strippedBody });
         const data = client.data;
-        const encryptData = Data.createReplyEncryptData(reply, data);
+        const encryptData = Data.createReplyEncryptData(strippedReply, data);
 
         KbpgpHelpers.signEncrypt(encryptData).then(body => {
-                const encryptedReply = Helpers.assign(reply, { body });
                 const timestampMs = Date.now();
+                const encryptedReply = Helpers.assign(reply, { body });
                 const app = client.server.app;
                 return PromisesReply.handleReplyMessage(
                         encryptedReply,
                         timestampMs,
                         app.data,
-                        app.promises);
+                        app.promises).then(result => reply)
         }).then(reply => {
                 const message = Draft.createMessageFromReply(reply);
                 const action = ActionCreators.sendMessage({

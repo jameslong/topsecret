@@ -29,7 +29,7 @@ export function handleReplyMessage (
                                         data,
                                         promises)) :
                         null
-        ).then(result => reply);
+        );
 }
 
 export function handleTimelyReply (

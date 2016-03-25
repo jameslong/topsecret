@@ -139,3 +139,8 @@ export function hasReplyOptions (
         var threadMessage = threadData[name];
         return (threadMessage.replyOptions !== null);
 }
+
+export function stripBody (body: string)
+{
+        return Str.filterByLines(body, line => !Str.beginsWith(line, '> '));
+}

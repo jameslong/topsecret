@@ -39,9 +39,7 @@ export function prepend (prefix: string, text: string)
 
 export function prependToLines (prefix: string, text: string)
 {
-        const lines = text.split('\n');
-        const newLines = lines.map(text => prepend(prefix, text));
-        return newLines.join('\n');
+        return byLines(text, text => prepend(prefix, text));
 }
 
 export function removeFileExtension (text: string)
@@ -56,8 +54,38 @@ export function split<T> (
         return parts.map(replacer);
 }
 
+export function splitByLines (text: string)
+{
+        return text.split('\n');
+}
+
+export function joinLines (lines: string[])
+{
+        return lines.join('\n');
+}
+
+export function byLines (text: string, iteratee: (line: string) => string)
+{
+        const lines = splitByLines(text);
+        const newLines = lines.map(iteratee);
+        return joinLines(newLines);
+}
+
 export function splitIntoEqualGroups (text: string, groupLength: number)
 {
         const split = text.match(new RegExp('.{1,'+groupLength+'}', 'g'));
         return split.join(' ');
+}
+
+export function filterByLines (
+        text: string, predicate: (line: string) => boolean)
+{
+        const lines = splitByLines(text);
+        const newLines = lines.filter(predicate);
+        return joinLines(newLines);
+}
+
+export function beginsWith (text: string, match: string)
+{
+        return text.indexOf(match) === 0;
 }
