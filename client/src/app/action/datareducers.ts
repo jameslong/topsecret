@@ -41,6 +41,14 @@ export function data (data: Data.Data, action: Redux.Action<any>)
                         const tick = <Actions.Tick><any>action;
                         return handleTick(data, tick);
 
+                case Actions.Types.FASTFORWARD:
+                        const fastforward = <Actions.Fastforward><any>action;
+                        return handleFastforward(data, fastforward);
+
+                case Actions.Types.REWIND:
+                        const rewind = <Actions.Rewind><any>action;
+                        return handleRewind(data, rewind);
+
                 default:
                         return data;
         }
@@ -121,5 +129,17 @@ function handleImportKeys (data: Data.Data, action: Actions.ImportKeys)
 function handleTick (data: Data.Data, action: Actions.Tick)
 {
         const clock = Clock.tick(data.clock);
+        return Helpers.assign(data, { clock });
+}
+
+function handleFastforward (data: Data.Data, action: Actions.Fastforward)
+{
+        const clock = Clock.fastforward(data.clock);
+        return Helpers.assign(data, { clock });
+}
+
+function handleRewind (data: Data.Data, action: Actions.Rewind)
+{
+        const clock = Clock.rewind(data.clock);
         return Helpers.assign(data, { clock });
 }

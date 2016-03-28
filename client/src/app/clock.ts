@@ -1,3 +1,6 @@
+import Helpers = require('../../../core/src/app/utils/helpers');
+import MathUtil = require('../../../core/src/app/utils/math');
+
 export interface Clock {
         lastTickMs: number;
         lastTickGameMs: number;
@@ -32,4 +35,18 @@ export function displayGameTime (clock: Clock)
         const timeMs = gameTimeMs(clock);
         const date = new Date(timeMs);
         return date.toUTCString();
+}
+
+export function fastforward (clock: Clock)
+{
+        const temp = Math.round(clock.timeFactor * 60);
+        const timeFactor = MathUtil.inRange(1, 3600, temp);
+        return Helpers.assign(clock, { timeFactor });
+}
+
+export function rewind (clock: Clock)
+{
+        const temp = Math.round(clock.timeFactor / 60);
+        const timeFactor = MathUtil.inRange(1, 3600, temp);
+        return Helpers.assign(clock, { timeFactor });
 }

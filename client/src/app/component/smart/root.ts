@@ -20,8 +20,10 @@ function renderRoot(props: RootProps)
 {
         const state = props.state;
         const commands = Client.getActiveCommands(state);
+        const displayedCommands = commands.filter(
+                command => command.shortDesc.length > 0);
 
-        const header = createHeader(state.ui.mode, commands);
+        const header = createHeader(state.ui.mode, displayedCommands);
         const footer = Footer({ state });
         const content = Content({ state });
 

@@ -249,3 +249,13 @@ export function importKeys (client: Client.Client): Redux.Action<any>
 
         return null;
 }
+
+export function fastforward (client: Client.Client)
+{
+        return ActionCreators.fastforward();
+}
+
+export function rewind (client: Client.Client)
+{
+        return ActionCreators.rewind();
+}

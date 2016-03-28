@@ -15,6 +15,8 @@ export const Types = {
         DIPLAY_MESSAGE: 'DIPLAY_MESSAGE',
 
         TICK: 'TICK',
+        FASTFORWARD: 'FASTFORWARD',
+        REWIND: 'REWIND',
 
         START_GENERATE_KEY: 'START_GENERATE_KEY',
         GENERATED_KEY: 'GENERATED_KEY',
@@ -50,6 +52,8 @@ export interface SetDraftTo extends Redux.Action<string> {}
 export interface DisplayMessage extends Redux.Action<string> {}
 
 export interface Tick extends Redux.Action<void> {}
+export interface Fastforward extends Redux.Action<void> {}
+export interface Rewind extends Redux.Action<void> {}
 
 export interface StartGenerateKey extends Redux.Action<void> {}
 export interface GeneratedKeyParams {

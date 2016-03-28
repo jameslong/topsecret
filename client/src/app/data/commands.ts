@@ -23,6 +23,8 @@ const KeyCodes = {
         UP: 38,
         DOWN: 40,
         QUESTIONMARK: 191,
+        MINUS: 189,
+        PLUS: 187,
 }
 
 const commonCommands: Command.Command[] = [{
@@ -81,6 +83,20 @@ const commonCommands: Command.Command[] = [{
         actionCreator: KeyHandlers.help,
         shortDesc: 'Help',
         desc: 'display available commands',
+}, {
+        id: 'fastforward',
+        key: '+',
+        keyCodes: [KeyCodes.PLUS],
+        actionCreator: KeyHandlers.fastforward,
+        shortDesc: '',
+        desc: 'fastforward time',
+}, {
+        id: 'rewind',
+        key: '-',
+        keyCodes: [KeyCodes.MINUS],
+        actionCreator: KeyHandlers.rewind,
+        shortDesc: '',
+        desc: 'rewind time',
 }];
 
 const composeCommands = [, {
@@ -270,7 +286,9 @@ export const commandIdsByMode: Data.IdsById = {
                 'reply',
                 'change',
                 'encryption',
-                'open-help'
+                'open-help',
+                'fastforward',
+                'rewind'
         ],
         [UI.Modes.INDEX_SENT]: [
                 'next-message',
