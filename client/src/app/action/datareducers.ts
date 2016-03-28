@@ -1,4 +1,5 @@
 import Actions = require('./actions');
+import Clock = require('../clock');
 import Data = require('../data');
 import Helpers = require('../../../../core/src/app/utils/helpers');
 import Map = require('../../../../core/src/app/utils/map');
@@ -35,6 +36,10 @@ export function data (data: Data.Data, action: Redux.Action<any>)
                 case Actions.Types.IMPORT_KEYS:
                         const importKeys = <Actions.ImportKeys><any>action;
                         return handleImportKeys(data, importKeys);
+
+                case Actions.Types.TICK:
+                        const tick = <Actions.Tick><any>action;
+                        return handleTick(data, tick);
 
                 default:
                         return data;
@@ -111,4 +116,10 @@ function handleImportKeys (data: Data.Data, action: Actions.ImportKeys)
                 data.keyManagersById, newKeyManagersById);
         const keyManagers = Map.keys(keyManagersById);
         return Helpers.assign(data, { keyManagersById, keyManagers });
+}
+
+function handleTick (data: Data.Data, action: Actions.Tick)
+{
+        const clock = Clock.tick(data.clock);
+        return Helpers.assign(data, { clock });
 }

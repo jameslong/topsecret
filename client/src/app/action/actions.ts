@@ -49,7 +49,7 @@ export interface SetDraftSubject extends Redux.Action<string> {}
 export interface SetDraftTo extends Redux.Action<string> {}
 export interface DisplayMessage extends Redux.Action<string> {}
 
-export interface Tick extends Redux.Action<number> {}
+export interface Tick extends Redux.Action<void> {}
 
 export interface StartGenerateKey extends Redux.Action<void> {}
 export interface GeneratedKeyParams {

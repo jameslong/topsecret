@@ -7,6 +7,7 @@ import PlayerData = require('./data/player');
 
 import AsyncRequest = require('./asyncrequest');
 import Client = require('./client');
+import Clock = require('./clock');
 import EventHandler = require('./eventhandler');
 import KbpgpHelpers = require('../../../core/src/app/kbpgp');
 import Prom = require('../../../core/src/app/utils/promise');
@@ -48,9 +49,8 @@ AsyncRequest.narratives(config.serverURL).then(data => {
 
 function tick (client: Client.Client, server: Server.Server)
 {
-        const timestampMs = Date.now();
-
-        Client.tickClient(client, timestampMs);
+        Client.tickClient(client);
+        const timestampMs = Clock.gameTimeMs(client.data.clock);
         return Server.tickServer(server, timestampMs);
 }
 

@@ -1,4 +1,5 @@
 import Arr = require('../../../core/src/app/utils/array');
+import Clock = require('./clock');
 import Command = require('./command');
 import Folder = require('./folder');
 import Func = require('../../../core/src/app/utils/function');
@@ -22,6 +23,7 @@ export interface Data {
         messageIdsByFolderId: IdsById;
         keyManagers: string[];
         keyManagersById: Map.Map<Kbpgp.KeyManagerInstance>;
+        clock: Clock.Clock;
 };
 
 type Id = { id: string; }
@@ -83,6 +85,8 @@ export function createData(
         const keyManagers = Helpers.arrayFromMap(keyManagersById,
                 (instance, id) => id);
 
+        const clock = Clock.createClock(1.0);
+
         return {
                 player,
                 folders,
@@ -93,6 +97,7 @@ export function createData(
                 messageIdsByFolderId,
                 keyManagers,
                 keyManagersById,
+                clock,
         };
 }
 

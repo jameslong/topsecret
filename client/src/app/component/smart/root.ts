@@ -4,25 +4,13 @@ import Data = require('../../data');
 import React = require('react');
 import Redux = require('../../redux/redux');
 import Client = require('../../client');
-import UI = require('../../ui');
 
 import Core = require('../core');
 import Div = Core.Div;
-import Span = Core.Span;
 
 import Content = require('../dumb/content');
-import EditDraftKeyName = require('./editdraftkeyname');
-import EditDraftKeyPassphrase = require('./editdraftkeypassphrase');
-import EditSubject = require('./editsubject');
-import EditTo = require('./editto');
-import FooterCompose = require('../dumb/footercompose');
-import FooterEncryption = require('../dumb/footerencryption');
-import FooterIndex = require('../dumb/footerindex');
-import FooterFolder = require('../dumb/footerfolder');
-import FooterPager = require('../dumb/footerpager');
+import Footer = require('../dumb/footer');
 import Header = require('../dumb/header');
-import InfoBar = require('../dumb/infobar');
-import StatusBar = require('../dumb/statusbar');
 
 interface RootProps extends React.Props<any> {
         state: Client.Client;
@@ -34,7 +22,7 @@ function renderRoot(props: RootProps)
         const commands = Client.getActiveCommands(state);
 
         const header = createHeader(state.ui.mode, commands);
-        const footer = createFooter(state);
+        const footer = Footer({ state });
         const content = Content({ state });
 
         return Div({ className: 'root', onClick }, header, content, footer);
@@ -52,99 +40,6 @@ function createHeader (mode: string, commands: Command.Command[])
 {
         const data = commands.map(Command.getCommandSummary);
         return Header({ values: data });
-}
-
-function createFooter (state: Client.Client)
-{
-        const infoBar = InfoBar({}, createFooterInfoBarContent(state));
-        const statusBar = StatusBar({}, createStatusBarContent(state));
-
-        return Div({ className: 'footer' }, infoBar, statusBar);
-}
-
-function createFooterInfoBarContent (state: Client.Client): React.ReactElement<any>
-{
-        const mode = state.ui.mode === UI.Modes.HELP ?
-                state.ui.previousMode : state.ui.mode;
-
-        switch (mode) {
-        case UI.Modes.INDEX_INBOX:
-        case UI.Modes.INDEX_SENT:
-                return createFooterIndex(state);
-        case UI.Modes.PAGER:
-                return createFooterPager(state);
-        case UI.Modes.COMPOSE:
-                return createFooterCompose(state);
-        case UI.Modes.ENCRYPTION:
-                return createFooterEncryption(state);
-        case UI.Modes.FOLDER:
-                return createFooterFolder(state);
-        default:
-                return null;
-        }
-}
-
-function createFooterCompose (state: Client.Client)
-{
-        const draftMessage = state.draftMessage;
-        const draftBody = draftMessage.content.body;
-        return FooterCompose({ draftBody });
-}
-
-function createFooterEncryption (state: Client.Client)
-{
-        const activeKeyId = state.ui.activeKeyId;
-        const activeKey = state.data.keyManagersById[activeKeyId];
-        return FooterEncryption({ activeKey });
-}
-
-function createFooterFolder (state: Client.Client)
-{
-        const activeFolder = Client.getActiveFolder(state);
-        const folders = state.data.folders;
-        return FooterFolder({ activeFolder, folders });
-}
-
-function createFooterIndex (state: Client.Client)
-{
-        const folder = Client.getActiveFolder(state);
-        const folderName = folder.displayName;
-        const messages = Client.getActiveMessages(state);
-        return FooterIndex({ folderName, messages });
-}
-
-function createFooterPager (state: Client.Client)
-{
-        const activeMessage = Client.getActiveMessage(state);
-        const folderId = state.ui.activeFolderId;
-        const messages = state.data.messageIdsByFolderId[folderId];
-        return FooterPager({ activeMessage, messages });
-}
-
-function createStatusBarContent (state: Client.Client): React.ReactElement<any>
-{
-        const message = state.draftMessage ? state.draftMessage.content : null;
-
-        if (state.ui.editingDraftSubject) {
-                return EditSubject({ value: message.subject });
-        } else if (state.ui.editingDraftTo) {
-                return EditTo({ value: message.to });
-        } else if (state.ui.editingDraftKeyName) {
-                return EditDraftKeyName({ value: '' });
-        } else if (state.ui.editingDraftKeyPassphrase) {
-                const userId = state.data.player.email;
-                const keyId = state.draftKey.id;
-                return EditDraftKeyPassphrase({ value: '', userId, keyId });
-        } else if (state.ui.generatingKey) {
-                return Span({ className: 'statusbar-ongoing' }, 'Generating key');
-        } else if (state.ui.sending) {
-                return Span({ className: 'statusbar-ongoing' }, 'Sending');
-        } else if (state.ui.decrypting) {
-                return Span({ className: 'statusbar-ongoing' }, 'Decrypting');
-        } else {
-                // Ensures 'empty' status bar has the same height as filled one
-                return Span({ className: 'statusbar-empty'}, '.');
-        }
 }
 
 export = Root;

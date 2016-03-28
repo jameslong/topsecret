@@ -2,7 +2,6 @@ import Message = require('../../message');
 import React = require('react');
 
 import Core = require('../core');
-import Div = Core.Div;
 import Span = Core.Span;
 
 interface FooterIndexProps extends React.Props<any> {
@@ -19,7 +18,7 @@ function renderFooterIndex(props: FooterIndexProps)
         const numOldMessages = messages.filter(Message.isRead).length;
         const numNewMessages = numMessages - numOldMessages;
 
-        return Div({},
+        return Span({},
                 `-*-NSA Mail: =${folderName}`,
                 Span({ className: 'infobar-major' }),
                 `[Msgs: ${numMessages}`,

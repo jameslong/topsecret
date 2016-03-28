@@ -106,9 +106,9 @@ export function createClientFromData (
         };
 }
 
-export function tickClient (client: Client, timestampMs: number)
+export function tickClient (client: Client)
 {
-        const action = ActionCreators.tick(timestampMs);
+        const action = ActionCreators.tick();
         Redux.handleAction(action);
 }
 

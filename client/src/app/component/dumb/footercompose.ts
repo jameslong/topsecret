@@ -2,7 +2,6 @@ import Message = require('../../message');
 import React = require('react');
 
 import Core = require('../core');
-import Div = Core.Div;
 import Span = Core.Span;
 
 interface FooterComposeProps extends React.Props<any> {
@@ -13,7 +12,7 @@ function renderFooterCompose(props: FooterComposeProps)
 {
         const body = props.draftBody;
         const bodySize = Message.getDisplaySize(body);
-        return Div({},
+        return Span({},
                 `-- NSA Mail: Compose`,
                 Span({ className: 'infobar-major' }),
                 `[Approx. msg size ${bodySize}`,

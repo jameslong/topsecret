@@ -31,7 +31,7 @@ export const setDraftSubject = createActionCreator<string>(Actions.Types.SET_DRA
 export const setDraftTo = createActionCreator<string>(Actions.Types.SET_DRAFT_TO);
 export const displayMessage = createActionCreator<string>(Actions.Types.DIPLAY_MESSAGE);
 
-export const tick = createActionCreator<number>(Actions.Types.TICK);
+export const tick = createEmptyActionCreator(Actions.Types.TICK);
 
 export const startGenerateKey = createEmptyActionCreator(Actions.Types.START_GENERATE_KEY);
 export const generatedKey = createActionCreator<Actions.GeneratedKeyParams>(Actions.Types.GENERATED_KEY);

@@ -2,3 +2,16 @@
         background-color: var(--main-bg-colour);
         flex-shrink: 0;
 }
+
+.footer-infobar-content {
+        display: table;
+        width: 100%;
+}
+
+.footer-infobar-content span {
+        display: table-cell;
+}
+
+.footer-infobar-time {
+        text-align: right;
+}
