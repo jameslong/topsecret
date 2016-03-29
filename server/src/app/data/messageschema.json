@@ -64,6 +64,15 @@
                         ]
                 },
                 "endGame": { "type": "boolean" },
+                "script": {
+                        "anyOf": [
+                                {
+                                        "type": "string"
+                                }, {
+                                        "type": "null"
+                                }
+                        ]
+                },
                 "encrypted": { "type": "boolean" },
                 "receiver": {
                         "anyOf": [
@@ -124,6 +133,7 @@
                 "endGame",
                 "message",
                 "encrypted",
+                "script",
                 "receiver",
                 "replyOptions",
                 "children",

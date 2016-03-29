@@ -39,6 +39,7 @@ export interface ThreadMessage {
         endGame: boolean;
         message: Message;
         encrypted: boolean;
+        script: string;
         receiver?: string; // For unsolicited player-to-character emails (where message is null)
         replyOptions: ReplyOption.ReplyOption[];
         children: ThreadDelay[];
