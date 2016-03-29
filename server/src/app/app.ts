@@ -1,6 +1,8 @@
 import Profile = require('./../../../core/src/app/profile');
 import Config = require('./config');
 import Data = require('./data/data');
+import DataValidation = require('./data/datavalidation');
+import FileSystem = require('./data/filesystem');
 import DBSetup = require('./db/dbsetup');
 import DBTypes = require('./../../../core/src/app/dbtypes');
 import KBPGP = require('./../../../core/src/app/kbpgp');
@@ -42,10 +44,32 @@ export function createGameState (
         server: Server.ServerState)
 {
         const path = config.content.narrativeFolder;
-        return Data.loadAllGameData(path).then(gameData =>
+        const narrativeData = Data.loadNarrativeData(path);
+        const content = config.content;
+        const profileSchema = FileSystem.loadJSONSync<JSON>(
+                content.profileSchemaPath);
+        const messageSchema = FileSystem.loadJSONSync<JSON>(
+                content.messageSchemaPath);
+        const dataErrors = narrativeData.reduce((result, narrative) => {
+                const errors = DataValidation.getDataErrors(
+                        narrative, profileSchema, messageSchema);
+                if (errors.length) {
+                        result.push(errors);
+                }
+                return result;
+        }, []);
+        const promise = new Promise<Data.NarrativeData[]>((resolve, reject) =>
+                dataErrors.length ?
+                        reject(dataErrors) :
+                        resolve(narrativeData)
+        );
+
+        return promise.then(narrativeData =>
+                Data.initKeyManagers(narrativeData)
+        ).then(gameData =>
                 onGameData(config, server, gameData)
         ).catch(err => {
-                Log.info('createGameState error: ' + err);
+                Log.info('createGameState error', JSON.stringify(err, null, 4));
                 return onGameData(config, server, null);
         });
 }

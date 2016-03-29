@@ -17,7 +17,7 @@ interface ValidateFn<T> {
 export function getDataErrors (
         data: Data.NarrativeData,
         profileSchema: JSON,
-        messageSchema: JSON): string
+        messageSchema: JSON): Object[]
 {
         const profiles = <Profile.Profile[]>Helpers.arrayFromMap(data.profiles);
         const profileErrors = getJSONDirErrors(profileSchema, profiles);
@@ -25,26 +25,27 @@ export function getDataErrors (
         const messages = <Message.MessageState[]>Helpers.arrayFromMap(data.messages);
         const messageErrors = getJSONDirErrors(messageSchema, messages);
 
-        return (profileErrors + messageErrors);
+        return profileErrors.concat(messageErrors);
 }
 
 export function getJSONDirErrors<T extends { name: string }> (
-        schema: Object, data: T[]): string
+        schema: Object, data: T[]): Object[]
 {
         const validate = validator(schema);
 
         const invalidElements = data.filter(
                 element => !validate(element));
-        const errors = invalidElements.map(
-                element => getError(validate, element));
-
-        return errors.join();
+        return invalidElements.reduce((result, element) => {
+                const error = getError(validate, element);
+                if (error) {
+                        result.push(error);
+                }
+                return result;
+        }, []);
 }
 
 export function getError<T extends { name: string }> (
-        validateFn: ValidateFn<T>, object: T): string
+        validateFn: ValidateFn<T>, object: T): Object
 {
-        return (validateFn(object) ?
-                ''
-                : object.name + ': ' + JSON.stringify(validateFn.errors));
+        return validateFn(object) ? '' : { [object.name]: validateFn.errors };
 }

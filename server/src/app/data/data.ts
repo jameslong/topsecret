@@ -26,13 +26,10 @@ export interface NarrativeData {
         strings: Map.Map<string>;
 }
 
-export function loadAllGameData (path: string)
+export function loadNarrativeData (path: string)
 {
         const groupNames = FileSystem.loadDirectoryNamesSync(path);
-        const tasks = groupNames.map(name =>
-                loadGameData(path, name));
-
-        return Promise.all(tasks);
+        return groupNames.map(name => loadNarrative(path, name));
 }
 
 export function join (...paths: string[]): string
@@ -46,13 +43,10 @@ export function loadGameData (path: string, name: string)
         return State.addKeyManagers(narrative);
 }
 
-export function loadNarratives (path: string): Map.Map<NarrativeData>
+export function initKeyManagers (data: NarrativeData[])
 {
-        const narrativeNames = FileSystem.loadDirectoryNamesSync(path);
-        const narratives = narrativeNames.map(
-                name => loadNarrative(path, name));
-
-        return Helpers.mapFromNameArray(narratives);
+        const promises = data.map(narrative => State.addKeyManagers(narrative));
+        return Promise.all(promises);
 }
 
 export function loadNarrative (stem: string, name: string): NarrativeData
