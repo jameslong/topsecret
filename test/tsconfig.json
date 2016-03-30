@@ -11,6 +11,7 @@
         "files": [
                 "server.db.ts",
                 "core.kbpgp.ts",
-                "core.promises.ts"
+                "core.promises.ts",
+                "core.script.ts"
         ]
 }

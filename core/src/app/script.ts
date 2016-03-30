@@ -1,51 +1,94 @@
-import Map = require('./utils/map');
-
 /*
         NB. Typescript does not support recursive type definitions of the form
         type X = string | X[]. Hence 'Expression' is defined using a back
         referencing interface type as its resolution is deferred.
 */
 
-type Atom = string | number | boolean;
-type Expression = Atom | ExpressionArray;
+export type Atom = string | number | boolean;
+export type Expression = Atom | ExpressionArray;
 interface ExpressionArray extends Array<Expression> {}
 
-interface Env {
-        define: (name: string, value: Atom) => void;
-        set: (name: string, value: Atom) => void;
+export interface Env {
+        [s: string]: Function | Atom;
 
-        ['+']: (a: number, b: number) => number;
-        ['-']: (a: number, b: number) => number;
-        ['*']: (a: number, b: number) => number;
-        ['/']: (a: number, b: number) => number;
+        ['+']: (...args: number[]) => number;
+        ['-']: (...args: number[]) => number;
+        ['*']: (...args: number[]) => number;
+        ['/']: (...args: number[]) => number;
         not: (value: boolean) => boolean;
-        and: (a: boolean, b: boolean) => boolean;
-        or: (a: boolean, b: boolean) => boolean;
-        ['<']: (a: number, b: number) => boolean;
-        ['>']: (a: number, b: number) => boolean;
-        ['=']: (a: number, b: number) => boolean;
+        and: (...args: boolean[]) => boolean;
+        or: (...args: boolean[]) => boolean;
+        ['<']: (...args: number[]) => boolean;
+        ['>']: (...args: number[]) => boolean;
+        ['=']: (...args: number[]) => boolean;
+
+        define: (name: string, value: Atom, env: Env) => void;
+        set: (name: string, value: Atom, env: Env) => void;
 }
 
-function tokenise (script: string)
+function operatorCheck (
+        list: number[], op: (a: number, b: number) => boolean) : boolean
+{
+        if (list.length < 2) {
+                return true;
+        } else {
+                const [first, ...tail] = list;
+                return op(first, tail[0]) && operatorCheck(tail, op);
+        }
+};
+
+export function standardEnv (): Env
+{
+        return {
+                ['+']: (...args: number[]) => args.reduce((a, b) => a + b),
+                ['-']: (...args: number[]) => args.reduce((a, b) => a - b),
+                ['*']: (...args: number[]) => args.reduce((a, b) => a * b),
+                ['/']: (...args: number[]) => args.reduce((a, b) => a / b),
+                not: (value: boolean) => !value,
+                and: (...args: boolean[]) => args.reduce((a, b) => a && b),
+                or: (...args: boolean[]) => args.reduce((a, b) => a || b),
+                ['<']: (...args: number[]) => operatorCheck(args, (a, b) => a < b),
+                ['>']: (...args: number[]) => operatorCheck(args, (a, b) => a > b),
+                ['=']: (...args: number[]) => operatorCheck(args, (a, b) => a === b),
+                define: (name: string, value: Atom, env: Env) => {
+                        if (env[name] !== undefined) {
+                                throw(`${name} is already defined`);
+                        }
+                        env[name] = value;
+                },
+                set: (name: string, value: Atom, env: Env) => {
+                        if (env[name] === undefined) {
+                                throw(`${name} is not defined`);
+                        }
+                        env[name] = value;
+                },
+        };
+}
+
+export function tokenise (script: string)
 {
         return (script.replace(/\(/g, ' ( ')
                 .replace(/\)/g, ' ) ')
                 .match(/\S+/g));
 }
 
-function ast (tokens: string[]): Expression
+export function ast (tokens: string[]): Expression
 {
         if (tokens.length === 0) {
                 throw('Unexpected EOF');
         }
 
-        const token = tokens[0];
+        const token = tokens.shift();
         if (token === '(') {
                 if (tokens[tokens.length - 1] !== ')') {
                         throw('Unterminated paranthesis');
                 }
-                const expression = tokens.slice(1, -1);
-                return [ast(expression)];
+                let result: Expression[] = [];
+                while (tokens[0] !== ')') {
+                        result.push(ast(tokens));
+                }
+                tokens.shift();
+                return result;
         } else if (token === ')') {
                 throw('Unexpected )');
         } else {
@@ -53,30 +96,69 @@ function ast (tokens: string[]): Expression
         }
 }
 
-function atom (token: string)
+export function atom (token: string): Atom
 {
-        return isNan(token) ?
-                token : Number(token);
+        if (isNaN(<number><any>token)) {
+                if (token === 'true') {
+                        return true;
+                } else if (token === 'false') {
+                        return false;
+                } else {
+                        return token;
+                }
+        } else {
+                return Number(token);
+        }
 }
 
-function eval (expression: Expression, env: Env, vars: Map.Map<Atom>)
+export function evaluate (expression: Expression, env: Env)
+{
+        if (Array.isArray(expression) && expression.length && Array.isArray(expression[0])) {
+                expression.forEach(exp => evaluateExpression(exp, env));
+                return undefined;
+        } else {
+                return evaluateExpression(expression, env);
+        }
+}
+
+export function evaluateExpression (expression: Expression, env: Env)
+        :Atom
 {
         if (typeof expression === 'number' || typeof expression ==='boolean') {
                 return expression;
         } else if (typeof expression === 'string') {
-                if (vars[expression] !== undefined) {
-                        return vars[expression];
+                if (env[expression] !== undefined) {
+                        return <Atom>(env[expression]);
+                } else if (expression[0] === '"') {
+                        return expression.replace(/"/g, '');
                 } else {
-                        const [proc, ...exp] = expression;
-                        if (proc === 'define') {
-                                const [name, val] = exp;
-                                vars[name] = eval(val, env, vars);
-                        } else if (expression[0] === 'set') {
-                                const [name, val] = exp;
-                                vars[name] = eval(val, env, vars);
-                        } else {
-                                const args = exp.map(e => eval(e, env, vars));
-                                return env[proc](...args);
-                        }
+                        throw(`Unrecognised literal ${expression}`);
                 }
+        } else if (Array.isArray(expression)) {
+                const [proc, ...exp] = expression;
+                if (proc === 'define') {
+                        const [name, val] = exp;
+                        env.define(name, evaluate(val, env), env);
+                        return undefined;
+                } else if (proc === 'set') {
+                        const [name, val] = exp;
+                        env.set(name, evaluate(val, env), env);
+                        return undefined;
+                } else {
+                        const args = exp.map(e => evaluate(e, env));
+                        return (<Function>env[proc])(...args);
+                }
+        }
+}
+
+export function parse (script: string)
+{
+        const tokens = tokenise(script);
+        return ast(tokens);
+}
+
+export function parseEval (script: string, env = standardEnv())
+{
+        const ast = parse(script);
+        return evaluate(ast, env);
 }
