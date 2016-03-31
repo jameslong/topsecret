@@ -16,6 +16,7 @@
                 ]
         },
         "encrypted": true,
+        "script": "",
         "receiver": null,
         "replyOptions": [],
         "children": [],

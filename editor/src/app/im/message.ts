@@ -21,16 +21,19 @@ module Im {
 
         export interface MessageDelayMutable {
                 name: string;
+                condition: string;
                 delayMins: number;
         }
 
         interface MessageDelayInt {
                 name: string;
+                condition: string;
                 delayMins: number;
         };
         export type MessageDelay = Immutable.Record.IRecord<MessageDelayInt>;
         export const MessageDelay = Immutable.Record<MessageDelayInt>({
                 name: '',
+                condition: '',
                 delayMins: 0,
         }, 'MessageDelay');
 
@@ -43,6 +46,7 @@ module Im {
                 endGame: boolean;
                 message: MessageContentMutable;
                 encrypted: boolean;
+                script: string;
                 receiver: string;
                 replyOptions: ReplyOptionMutable[];
                 children: MessageDelayMutable[];
@@ -56,6 +60,7 @@ module Im {
                 endGame: boolean;
                 message: MessageContent;
                 encrypted: boolean;
+                script: string;
                 receiver: string;
                 replyOptions: ReplyOptions;
                 children: MessageDelays;
@@ -71,6 +76,7 @@ module Im {
                 endGame: false,
                 message: MessageContent(),
                 encrypted: true,
+                script: '',
                 receiver: null,
                 replyOptions: Immutable.List<ReplyOption>(),
                 children: Immutable.List<MessageDelay>(),
@@ -94,6 +100,7 @@ module Im {
         {
                 return MessageDelay({
                         name: messageDelayMutable.name,
+                        condition: messageDelayMutable.condition,
                         delayMins: messageDelayMutable.delayMins,
                 });
         }
@@ -135,6 +142,7 @@ module Im {
                         threadSubject: messageMutable.threadSubject,
                         endGame: messageMutable.endGame,
                         encrypted: messageMutable.encrypted,
+                        script: messageMutable.script,
                         receiver: messageMutable.receiver,
                         replyOptions: replyOptions,
                         position: position,

@@ -59,7 +59,6 @@ describe('Promises', function () {
                         const promises = TestHelpers.createPromises();
                         const childIndex = 0;
                         const domain = 'testmail.playtopsecret.com';
-                        const name = 'child_0';
 
                         return TestHelpers.testGameData().then(groupData => {
                                 const message = TestHelpers.createMessage(
@@ -69,7 +68,6 @@ describe('Promises', function () {
                                 const state = { player, message };
                                 return Promises.child(
                                         state,
-                                        name,
                                         childIndex,
                                         domain,
                                         groupData,
@@ -83,7 +81,7 @@ describe('Promises', function () {
                         const player = TestHelpers.createPlayer0();
                         const promises = TestHelpers.createPromises();
                         const domain = 'testmail.playtopsecret.com';
-                        const name = 'reply_0';
+                        const replyIndex = 0;
 
                         return TestHelpers.testGameData().then(groupData => {
                                 const message = TestHelpers.createMessage(
@@ -94,7 +92,7 @@ describe('Promises', function () {
 
                                 return Promises.reply(
                                         state,
-                                        name,
+                                        replyIndex,
                                         domain,
                                         groupData,
                                         promises)

@@ -591,6 +591,20 @@ module Action {
                         store);
         }
 
+        export function handleSetMessageScript (
+                store: Im.Store,
+                config: Im.Config,
+                action: SetMessageScript)
+        {
+                const parameters = action.parameters;
+                const name = parameters.name;
+                return setMessageProperty(
+                        name,
+                        'script',
+                        parameters.value,
+                        store);
+        }
+
         export function handleSetMessagePosition (
                 store: Im.Store,
                 config: Im.Config,

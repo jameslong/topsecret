@@ -16,11 +16,13 @@
                 ]
         },
         "encrypted": true,
+        "script": "",
         "receiver": null,
         "replyOptions": [],
         "children": [],
         "fallback": {
                 "name": "fallback_0",
+                "condition": "",
                 "delayMins": 0
         }
 }

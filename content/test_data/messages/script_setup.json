@@ -1,22 +1,26 @@
 {
-        "name": "sample_message_0",
-        "threadSubject": "sample_message_subject",
+        "name": "script_setup",
+        "threadSubject": "script_setup_subject",
         "position": {
                 "x": 110,
-                "y": 110
+                "y": 715
         },
         "endGame": false,
         "message": {
                 "from": "james",
                 "to": [],
                 "body": [
-                        "sample_messag_0_body"
+                        "script_setup_body"
                 ]
         },
         "encrypted": true,
-        "script": "",
+        "script": "(define x false)",
         "receiver": null,
         "replyOptions": [],
         "children": [],
-        "fallback": null
+        "fallback": {
+                "name": "script_0",
+                "condition": "",
+                "delayMins": 0
+        }
 }

@@ -1,18 +1,16 @@
 {
-        "name": "begingame",
-        "threadSubject": "begingame_subject",
+        "name": "script_child",
+        "threadSubject": "",
         "position": {
-                "x": 110,
-                "y": 385
+                "x": 440,
+                "y": 715
         },
         "endGame": false,
         "message": {
                 "from": "james",
-                "to": [
-                        "zoe"
-                ],
+                "to": [],
                 "body": [
-                        "begingame_body"
+                        "script_child_body"
                 ]
         },
         "encrypted": true,

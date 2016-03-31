@@ -30,6 +30,8 @@ module Component {
                         onSetEndGame(name, endGame);
                 const onSetEncryptedLocal = (encrypted: boolean) =>
                         onSetEncrypted(name, encrypted);
+                const onSetScriptLocal = (script: string) =>
+                        onSetScript(name, script);
                 const onSetChildrenLocal = (delays: Im.MessageDelays) =>
                         onSetChildren(name, delays);
                 const onSetFallbackLocal = (delay: Im.MessageDelay) =>
@@ -45,6 +47,7 @@ module Component {
                         onSetString: onSetStringLocal,
                         onSetEndGame: onSetEndGameLocal,
                         onSetEncrypted: onSetEncryptedLocal,
+                        onSetScript: onSetScriptLocal,
                         onSetChildren: onSetChildrenLocal,
                         onSetFallback: onSetFallbackLocal,
                 });
@@ -115,6 +118,15 @@ module Component {
                 Flux.handleAction(action);
         }
 
+        function onSetScript (messageName: string, newScript: string)
+        {
+                const action = Action.setMessageScript({
+                        name: messageName,
+                        value: newScript,
+                });
+                Flux.handleAction(action);
+        }
+
         function onSetChild (
                 message: Im.Message,
                 delay: Im.MessageDelay,
@@ -171,4 +183,3 @@ module Component {
                 onSetFallback(messageName, null);
         }
 }
-

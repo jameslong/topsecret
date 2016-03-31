@@ -20,6 +20,7 @@ module Component {
                 onSetString: (name: string, value: string) => void;
                 onSetEndGame: (endGame: boolean) => void;
                 onSetEncrypted: (encrypted: boolean) => void;
+                onSetScript: (script: string) => void;
                 onSetChildren: (delays: Im.MessageDelays) => void;
                 onSetFallback: (delay: Im.MessageDelay) => void;
         };
@@ -34,6 +35,7 @@ module Component {
                 onSetString: () => {},
                 onSetEndGame: () => {},
                 onSetEncrypted: () => {},
+                onSetScript: () => {},
                 onSetChildren: () => {},
                 onSetFallback: () => {},
         }, 'EditMessage');
@@ -82,6 +84,7 @@ module Component {
 
                 const endGame = createEndGame(message, data.onSetEndGame);
                 const encrypted = createEncrypted(message, data.onSetEncrypted);
+                const script = createScript(message, data.onSetScript);
 
                 const deleteButton = createDeleteButton(
                         messageName, data.onDelete);
@@ -101,7 +104,8 @@ module Component {
                         wrapInTitleGroup('Fallback',
                                 wrapInSubgroup(fallback)),
                         wrapInTitleGroup('Reply options', replyOptions),
-                        wrapInTitleGroup('Children', children)
+                        wrapInTitleGroup('Children', children),
+                        wrapInTitleGroup('Script', script)
                 );
         }
 
@@ -214,6 +218,21 @@ module Component {
                 });
                 return wrapInLabel(
                         'Encrypted', Checkbox(newEncryptedProps));
+        }
+
+        function createScript (
+                message: Im.Message,
+                onSetScript: (script: string) => void)
+        {
+                const script = message.script;
+                const messageName = message.name;
+
+                const nameProps = TextData({
+                        placeholder: '',
+                        value: script,
+                        onChange: onSetScript,
+                });
+                return Text({ data: nameProps });
         }
 
         function createDeleteButton (

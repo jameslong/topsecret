@@ -20,12 +20,14 @@ export function init<T, U>(
         rootComponent: React.Factory<{ state: T }>,
         wrapper: HTMLElement)
 {
-        let appState = { state: state };
+        let appState = { state };
 
         handleAction = (action: Action<U>) => {
                 appState.state = reducer(appState.state, action);
                 render(appState.state, rootComponent, wrapper);
         };
+
+        return () => appState.state;
 }
 
 export function render <T>(

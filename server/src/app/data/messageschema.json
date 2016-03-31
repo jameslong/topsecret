@@ -7,9 +7,10 @@
                         "type": "object",
                         "properties": {
                                 "name": { "type": "string" },
+                                "condition": { "type": "string" },
                                 "delayMins": { "type": "number" }
                         },
-                        "required": ["name", "delayMins"]
+                        "required": ["name", "condition", "delayMins"]
                 },
                 "coord": {
                         "type": "object",
@@ -64,6 +65,7 @@
                         ]
                 },
                 "endGame": { "type": "boolean" },
+                "script": { "type": "string" },
                 "encrypted": { "type": "boolean" },
                 "receiver": {
                         "anyOf": [
@@ -124,6 +126,7 @@
                 "endGame",
                 "message",
                 "encrypted",
+                "script",
                 "receiver",
                 "replyOptions",
                 "children",

@@ -31,6 +31,7 @@ module Action {
                 [Types.SET_MESSAGE_SUBJECT]: wrapStoreUpdateFunc(handleSetMessageSubject),
                 [Types.SET_MESSAGE_END_GAME]: wrapStoreUpdateFunc(handleSetMessageEndGame),
                 [Types.SET_MESSAGE_ENCRYPTED]: wrapStoreUpdateFunc(handleSetMessageEncrypted),
+                [Types.SET_MESSAGE_SCRIPT]: wrapStoreUpdateFunc(handleSetMessageScript),
                 [Types.SET_MESSAGE_POSITION]: wrapStoreUpdateFunc(handleSetMessagePosition),
                 [Types.SET_MESSAGE_CONTENT]: wrapStoreUpdateFunc(handleSetMessageContent),
                 [Types.SET_MESSAGE_FALLBACK]: wrapStoreUpdateFunc(handleSetMessageFallback),

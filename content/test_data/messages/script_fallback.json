@@ -1,18 +1,16 @@
 {
-        "name": "begingame",
-        "threadSubject": "begingame_subject",
+        "name": "script_fallback",
+        "threadSubject": "",
         "position": {
-                "x": 110,
-                "y": 385
+                "x": 440,
+                "y": 825
         },
         "endGame": false,
         "message": {
                 "from": "james",
-                "to": [
-                        "zoe"
-                ],
+                "to": [],
                 "body": [
-                        "begingame_body"
+                        "script_fallback_body"
                 ]
         },
         "encrypted": true,

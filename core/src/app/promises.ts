@@ -6,6 +6,7 @@ import MessageHelpers = require('./messagehelpers');
 import Player = require('./player');
 import Prom = require('./utils/promise');
 import Request = require('./requesttypes');
+import Script = require('./script');
 import State = require('./state');
 
 export interface UpdateInfo {
@@ -15,7 +16,6 @@ export interface UpdateInfo {
 
 export function child (
         state: UpdateInfo,
-        name: string,
         childIndex: number,
         domain: string,
         groupData: State.GameData,
@@ -25,22 +25,31 @@ export function child (
         const threadStartName = message.threadStartName;
         const inReplyToId = message.id;
 
-        return encryptSendStoreChild(
-                name,
-                threadStartName,
-                inReplyToId,
-                player,
-                domain,
-                groupData,
-                promises).then(result => {
-                        message.childrenSent[childIndex] = true;
-                        return state;
-                });
+        const messageData = groupData.messages[message.name];
+        const child = messageData.children[childIndex];
+        const name = child.name;
+        const condition = child.condition;
+
+        const send = !condition || Script.executeScript(condition, player) ?
+                encryptSendStoreChild(
+                        name,
+                        threadStartName,
+                        inReplyToId,
+                        player,
+                        domain,
+                        groupData,
+                        promises) :
+                Promise.resolve(message);
+
+        return send.then(result => {
+                message.childrenSent[childIndex] = true;
+                return state;
+        });
 }
 
 export function reply (
         state: UpdateInfo,
-        name: string,
+        replyIndex: number,
         domain: string,
         groupData: State.GameData,
         promises: DBTypes.PromiseFactories)
@@ -49,17 +58,58 @@ export function reply (
         const threadStartName = message.threadStartName;
         const inReplyToId = message.id;
 
-        return encryptSendStoreChild(
-                name,
-                threadStartName,
-                inReplyToId,
-                player,
-                domain,
-                groupData,
-                promises).then(result => {
-                        message.replySent = true;
-                        return state;
-                });
+        const messageData = groupData.messages[message.name];
+        const replyDelay = messageData.replyOptions[replyIndex].messageDelay;
+        const name = replyDelay.name;
+        const condition = replyDelay.condition;
+
+        const send = !condition || Script.executeScript(condition, player) ?
+                encryptSendStoreChild(
+                        name,
+                        threadStartName,
+                        inReplyToId,
+                        player,
+                        domain,
+                        groupData,
+                        promises) :
+                Promise.resolve(message);
+
+        return send.then(result => {
+                message.replySent = true;
+                return state;
+        });
+}
+
+export function fallback (
+        state: UpdateInfo,
+        domain: string,
+        groupData: State.GameData,
+        promises: DBTypes.PromiseFactories)
+{
+        const { message, player } = state;
+        const threadStartName = message.threadStartName;
+        const inReplyToId = message.id;
+
+        const messageData = groupData.messages[message.name];
+        const fallback = messageData.fallback;
+        const name = fallback.name;
+        const condition = fallback.condition;
+
+        const send = !condition || Script.executeScript(condition, player) ?
+                encryptSendStoreChild(
+                        name,
+                        threadStartName,
+                        inReplyToId,
+                        player,
+                        domain,
+                        groupData,
+                        promises) :
+                Promise.resolve(message);
+
+        return send.then(result => {
+                message.replySent = true;
+                return state;
+        });
 }
 
 export function encryptSendStoreChild (
@@ -98,12 +148,24 @@ export function encryptSendStoreChild (
                         sentTimestampMs,
                         threadStartName);
                 return promises.addMessage(messageState);
+        }).then(result => {
+                const script = messageData.script;
+                Script.executeScript(script, player);
+                return result;
         });
 }
 
 export function update (state: UpdateInfo, promises: DBTypes.PromiseFactories)
 {
-        return promises.updateMessage(state.message);
+        return promises.updateMessage(state.message).then(
+                message => state);
+}
+
+export function updatePlayer (
+        state: UpdateInfo, promises: DBTypes.PromiseFactories)
+{
+        return promises.updatePlayer(state.player).then(
+                player => state);
 }
 
 export function expired (

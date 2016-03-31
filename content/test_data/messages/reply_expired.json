@@ -16,6 +16,7 @@
                 ]
         },
         "encrypted": true,
+        "script": "",
         "receiver": null,
         "replyOptions": [
                 {
@@ -27,6 +28,7 @@
                         },
                         "messageDelay": {
                                 "name": "reply_0",
+                                "condition": "",
                                 "delayMins": 0
                         }
                 },
@@ -35,6 +37,7 @@
                         "parameters": {},
                         "messageDelay": {
                                 "name": "reply_default",
+                                "condition": "",
                                 "delayMins": 0
                         }
                 }

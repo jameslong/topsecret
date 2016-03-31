@@ -4,6 +4,7 @@ import Data = require('../data/data');
 import DataValidation = require('../data/datavalidation');
 import Demo = require('./demo');
 import FileSystem = require('../data/filesystem');
+import Helpers = require('../../../../core/src/app/utils/helpers');
 import Log = require('../../../../core/src/app/log');
 import Message = require('../../../../core/src/app/message');
 import Player = require('../../../../core/src/app/player');
@@ -468,12 +469,14 @@ export function createNarrativesCallback (state: App.State)
 {
         return (req: any, res: any) =>
                 {
-                        var app = state.app;
-                        var config = state.config;
-                        var data: {} = req.query;
+                        const app = state.app;
+                        const config = state.config;
+                        const data: {} = req.query;
 
-                        var path = config.content.narrativeFolder;
-                        var narratives = Data.loadNarratives(path);
+                        const path = config.content.narrativeFolder;
+                        const narrativeData = Data.loadNarrativeData(path);
+                        const narratives = Helpers.mapFromNameArray(
+                                narrativeData);
 
                         res.send(narratives);
                 };

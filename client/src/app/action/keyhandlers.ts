@@ -1,5 +1,6 @@
 import ActionCreators = require('./actioncreators');
 import Arr = require('../../../../core/src/app/utils/array');
+import Clock = require('../clock');
 import Data = require('../data');
 import Draft = require('../draft');
 import Folder = require('../folder');
@@ -87,7 +88,7 @@ export function encryptSend (client: Client.Client): Redux.Action<any>
         const encryptData = Data.createReplyEncryptData(strippedReply, data);
 
         KbpgpHelpers.signEncrypt(encryptData).then(body => {
-                const timestampMs = Date.now();
+                const timestampMs = Clock.gameTimeMs(client.data.clock);
                 const encryptedReply = Helpers.assign(reply, { body });
                 const app = client.server.app;
                 return PromisesReply.handleReplyMessage(
