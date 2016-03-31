@@ -65,14 +65,21 @@ export function standardEnv (): Env
         };
 }
 
-export function tokenise (script: string)
+export function tokenise (script: string): string[]
 {
-        return (script.replace(/\(/g, ' ( ')
+        return script ?
+                (script.replace(/\(/g, ' ( ')
                 .replace(/\)/g, ' ) ')
-                .match(/\S+/g));
+                .match(/\S+/g)) : [];
 }
 
 export function ast (tokens: string[]): Expression
+{
+        return tokens.length ?
+                astExpression(tokens) : [];
+}
+
+export function astExpression (tokens: string[]): Expression
 {
         if (tokens.length === 0) {
                 throw('Unexpected EOF');
@@ -113,12 +120,15 @@ export function atom (token: string): Atom
 
 export function evaluate (expression: Expression, env: Env)
 {
-        if (Array.isArray(expression) && expression.length && Array.isArray(expression[0])) {
-                expression.forEach(exp => evaluateExpression(exp, env));
-                return undefined;
-        } else {
-                return evaluateExpression(expression, env);
+        if (Array.isArray(expression)) {
+                if (expression.length === 0) {
+                        return undefined;
+                } else if (Array.isArray(expression[0])) {
+                        expression.forEach(exp => evaluateExpression(exp, env));
+                        return undefined;
+                }
         }
+        return evaluateExpression(expression, env);
 }
 
 export function evaluateExpression (expression: Expression, env: Env)
@@ -161,4 +171,14 @@ export function parseEval (script: string, env = standardEnv())
 {
         const ast = parse(script);
         return evaluate(ast, env);
+}
+
+export function getScriptErrors (script: string): string
+{
+        try {
+                parseEval(script);
+                return '';
+        } catch (e) {
+                return e;
+        }
 }

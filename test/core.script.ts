@@ -29,6 +29,13 @@ function evalAssert (
 
 describe('Script', function () {
         describe('tokenise', function () {
+                it('should return empty string', function () {
+                        const input = '';
+                        tokeniseAssert(input, []);
+                })
+        });
+
+        describe('tokenise', function () {
                 it('should split string into tokens', function () {
                         const input = '() (testing x y z)';
                         const output =
@@ -38,6 +45,11 @@ describe('Script', function () {
         });
 
         describe('ast', function () {
+                it('should return empty AST', function () {
+                        const input = '';
+                        parseAssert(input, []);
+                })
+
                 it('should generate AST from boolean atom', function () {
                         const input = 'true';
                         const output = true;
@@ -64,6 +76,14 @@ describe('Script', function () {
         });
 
         describe('evaluate', function () {
+                describe('empty script', function () {
+                        it('should do nothing', function () {
+                                const input = '';
+                                const env = Script.standardEnv();
+                                Script.parseEval(input);
+                        })
+                });
+
                 describe('atoms', function () {
                         it('should evaluate to true', function () {
                                 const input = 'true';
