@@ -47,6 +47,7 @@ module Action {
         export const setMessageSubject = createNameValueActionCreator<string>(Types.SET_MESSAGE_SUBJECT);
         export const setMessageEndGame = createNameValueActionCreator<boolean>(Types.SET_MESSAGE_END_GAME);
         export const setMessageEncrypted = createNameValueActionCreator<boolean>(Types.SET_MESSAGE_ENCRYPTED);
+        export const setMessageScript = createNameValueActionCreator<string>(Types.SET_MESSAGE_SCRIPT);
         export const setMessagePosition = createNameValueActionCreator<Im.Coord>(Types.SET_MESSAGE_POSITION);
         export const setMessageContent = createNameValueActionCreator<Im.MessageContent>(Types.SET_MESSAGE_CONTENT);
         export const setMessageFallback = createNameValueActionCreator<Im.MessageDelay>(Types.SET_MESSAGE_FALLBACK);

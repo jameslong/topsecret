@@ -24,6 +24,7 @@ module Action {
                 SET_MESSAGE_FALLBACK: 'SET_MESSAGE_FALLBACK',
                 SET_MESSAGE_CHILDREN: 'SET_MESSAGE_CHILDREN',
                 SET_MESSAGE_REPLY_OPTIONS: 'SET_MESSAGE_REPLY_OPTIONS',
+                SET_MESSAGE_SCRIPT: 'SET_MESSAGE_SCRIPT',
                 SET_STRING: 'SET_STRING',
         };
 
@@ -58,6 +59,7 @@ module Action {
         export interface SetMessageSubject extends NameValueAction<string> {}
         export interface SetMessageEndGame extends NameValueAction<boolean> {}
         export interface SetMessageEncrypted extends NameValueAction<boolean> {}
+        export interface SetMessageScript extends NameValueAction<string> {}
         export interface SetMessagePosition extends NameValueAction<Im.Coord> {}
         export interface SetMessageContent extends NameValueAction<Im.MessageContent> {}
         export interface SetMessageFallback extends NameValueAction<Im.MessageDelay> {}

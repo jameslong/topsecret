@@ -43,6 +43,7 @@ module Im {
                 endGame: boolean;
                 message: MessageContentMutable;
                 encrypted: boolean;
+                script: string;
                 receiver: string;
                 replyOptions: ReplyOptionMutable[];
                 children: MessageDelayMutable[];
@@ -56,6 +57,7 @@ module Im {
                 endGame: boolean;
                 message: MessageContent;
                 encrypted: boolean;
+                script: string;
                 receiver: string;
                 replyOptions: ReplyOptions;
                 children: MessageDelays;
@@ -71,6 +73,7 @@ module Im {
                 endGame: false,
                 message: MessageContent(),
                 encrypted: true,
+                script: '',
                 receiver: null,
                 replyOptions: Immutable.List<ReplyOption>(),
                 children: Immutable.List<MessageDelay>(),
@@ -135,6 +138,7 @@ module Im {
                         threadSubject: messageMutable.threadSubject,
                         endGame: messageMutable.endGame,
                         encrypted: messageMutable.encrypted,
+                        script: messageMutable.script,
                         receiver: messageMutable.receiver,
                         replyOptions: replyOptions,
                         position: position,
