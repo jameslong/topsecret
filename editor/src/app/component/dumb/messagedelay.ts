@@ -39,6 +39,18 @@ module Component {
                 const name = Div({ className: 'message-delay-name' },
                         nameText);
 
+                const delayCondition = delay.condition;
+                const onSetConditionLocal = (condition: string) =>
+                        onSetCondition(data, condition);
+                const conditionTextData = TextData({
+                        placeholder: 'condition',
+                        value: delayCondition,
+                        onChange: onSetConditionLocal,
+                });
+                const conditionText = Text(conditionTextData);
+                const condition = Div({ className: 'message-delay-condition' },
+                        conditionText);
+
                 const onSetDelayLocal = (delayMins: number) =>
                         onSetDelay(data, delayMins);
                 const delayMinsProps = NumberData({
@@ -46,12 +58,11 @@ module Component {
                         value: delay.delayMins,
                         onChange: onSetDelayLocal,
                 });
-                const delayMins =
-                        Div({ className: 'message-delay-mins' },
-                                Number(delayMinsProps));
+                const delayMins = Div({ className: 'message-delay-mins' },
+                        Number(delayMinsProps));
 
                 const messageDelay = wrapInLabel('Name/delay',
-                        name, delayMins);
+                        name, condition, delayMins);
 
                 return Div({ className: 'message-delay' },
                         messageDelay);
@@ -65,6 +76,12 @@ module Component {
                 data.onChange(newDelay);
         }
 
+        function onSetCondition (data: MessageDelayData, condition: string)
+        {
+                const newDelay = data.delay.set('condition', condition);
+                data.onChange(newDelay);
+        }
+
         function onSetDelay (
                 data: MessageDelayData, delayMins: number)
         {
@@ -72,4 +89,3 @@ module Component {
                 data.onChange(newDelay);
         }
 }
-
