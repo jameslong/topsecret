@@ -63,14 +63,8 @@
 .edit-message .message-delay-condition,
 .edit-message .message-delay-mins {
         display: table-cell;
-        /*width: 100%;*/
 }
 
-/*.edit-message .message-delay-mins {
-        display: table-cell;
-        min-width: 30px;
-}
-*/
 .edit-message .button-remove {
         float: right;
 }
