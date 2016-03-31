@@ -51,6 +51,8 @@ export function update (
         const sequence = children.concat(response);
 
         return Prom.executeSequentially(sequence, state).then(state =>
+                Promises.updatePlayer(state, promises)
+        ).then(state =>
                 isExpired(state.message, messageData) ?
                         Promises.expired(groupData, state, promises) :
                         Promises.update(state, promises)
@@ -83,8 +85,7 @@ function pendingChildren (
                 (state: Promises.UpdateInfo) =>
                         Promises.child(
                                 state,
-                                children[index].name,
-                                expired[index],
+                                index,
                                 domain,
                                 groupData,
                                 promises)
@@ -135,12 +136,12 @@ function pendingReply (
 
         const messageName = message.name;
         const threadMessage = groupData.messages[messageName];
-        const replyDelay = getReplyDelay(message, threadMessage);
+        const replyIndex = message.reply.replyIndex;
 
         return (state: Promises.UpdateInfo) =>
                 Promises.reply(
                         state,
-                        replyDelay.name,
+                        replyIndex,
                         emailDomain,
                         groupData,
                         promises);
@@ -152,16 +153,9 @@ function pendingFallback (
         promises: DBTypes.PromiseFactories,
         emailDomain: string)
 {
-        const { message, player } = state;
-
-        const messageName = message.name;
-        const threadMessage = groupData.messages[messageName];
-        const fallbackName = threadMessage.fallback.name;
-
         return (state: Promises.UpdateInfo) =>
-                Promises.reply(
+                Promises.fallback(
                         state,
-                        fallbackName,
                         emailDomain,
                         groupData,
                         promises);

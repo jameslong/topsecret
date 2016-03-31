@@ -1,3 +1,5 @@
+import Player = require('./player');
+
 /*
         NB. Typescript does not support recursive type definitions of the form
         type X = string | X[]. Hence 'Expression' is defined using a back
@@ -8,8 +10,8 @@ export type Atom = string | number | boolean;
 export type Expression = Atom | ExpressionArray;
 interface ExpressionArray extends Array<Expression> {}
 
-export interface Env {
-        [s: string]: Function | Atom;
+export interface CoreEnv {
+        [s: string]: Function;
 
         ['+']: (...args: number[]) => number;
         ['-']: (...args: number[]) => number;
@@ -22,8 +24,17 @@ export interface Env {
         ['>']: (...args: number[]) => boolean;
         ['=']: (...args: number[]) => boolean;
 
-        define: (name: string, value: Atom, env: Env) => void;
-        set: (name: string, value: Atom, env: Env) => void;
+        define: (name: string, value: Atom, env: CustomEnv) => void;
+        set: (name: string, value: Atom, env: CustomEnv) => void;
+}
+
+export interface CustomEnv {
+        [s: string]: Atom;
+}
+
+export interface Env {
+        core: CoreEnv;
+        custom: CustomEnv;
 }
 
 function operatorCheck (
@@ -37,7 +48,13 @@ function operatorCheck (
         }
 };
 
-export function standardEnv (): Env
+export function standardEnv (
+        custom: CustomEnv = customEnv(), core: CoreEnv = coreEnv()): Env
+{
+        return { core, custom };
+}
+
+export function coreEnv (): CoreEnv
 {
         return {
                 ['+']: (...args: number[]) => args.reduce((a, b) => a + b),
@@ -50,19 +67,24 @@ export function standardEnv (): Env
                 ['<']: (...args: number[]) => operatorCheck(args, (a, b) => a < b),
                 ['>']: (...args: number[]) => operatorCheck(args, (a, b) => a > b),
                 ['=']: (...args: number[]) => operatorCheck(args, (a, b) => a === b),
-                define: (name: string, value: Atom, env: Env) => {
+                define: (name: string, value: Atom, env: CustomEnv) => {
                         if (env[name] !== undefined) {
                                 throw(`${name} is already defined`);
                         }
                         env[name] = value;
                 },
-                set: (name: string, value: Atom, env: Env) => {
+                set: (name: string, value: Atom, env: CustomEnv) => {
                         if (env[name] === undefined) {
                                 throw(`${name} is not defined`);
                         }
                         env[name] = value;
                 },
         };
+}
+
+export function customEnv (): CustomEnv
+{
+        return {};
 }
 
 export function tokenise (script: string): string[]
@@ -137,8 +159,8 @@ export function evaluateExpression (expression: Expression, env: Env)
         if (typeof expression === 'number' || typeof expression ==='boolean') {
                 return expression;
         } else if (typeof expression === 'string') {
-                if (env[expression] !== undefined) {
-                        return <Atom>(env[expression]);
+                if (env.custom[expression] !== undefined) {
+                        return <Atom>(env.custom[expression]);
                 } else if (expression[0] === '"') {
                         return expression.replace(/"/g, '');
                 } else {
@@ -148,15 +170,15 @@ export function evaluateExpression (expression: Expression, env: Env)
                 const [proc, ...exp] = expression;
                 if (proc === 'define') {
                         const [name, val] = exp;
-                        env.define(name, evaluate(val, env), env);
+                        env.core.define(name, evaluate(val, env), env.custom);
                         return undefined;
                 } else if (proc === 'set') {
                         const [name, val] = exp;
-                        env.set(name, evaluate(val, env), env);
+                        env.core.set(name, evaluate(val, env), env.custom);
                         return undefined;
                 } else {
                         const args = exp.map(e => evaluate(e, env));
-                        return (<Function>env[proc])(...args);
+                        return env.core[proc](...args);
                 }
         }
 }
@@ -181,4 +203,12 @@ export function getScriptErrors (script: string): string
         } catch (e) {
                 return e;
         }
+}
+
+export function executeScript (script: string, player: Player.PlayerState)
+{
+        const env = standardEnv(player.vars);
+        const result = parseEval(script, env);
+        Object.assign(player.vars, env.custom);
+        return result;
 }

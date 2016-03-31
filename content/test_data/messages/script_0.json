@@ -1,0 +1,32 @@
+{
+        "name": "script_0",
+        "threadSubject": "",
+        "position": {
+                "x": 275,
+                "y": 715
+        },
+        "endGame": false,
+        "message": {
+                "from": "james",
+                "to": [],
+                "body": [
+                        "script_0_body"
+                ]
+        },
+        "encrypted": true,
+        "script": "",
+        "receiver": null,
+        "replyOptions": [],
+        "children": [
+                {
+                        "name": "script_child",
+                        "condition": "x",
+                        "delayMins": 0
+                }
+        ],
+        "fallback": {
+                "name": "script_fallback",
+                "condition": "x",
+                "delayMins": 0
+        }
+}

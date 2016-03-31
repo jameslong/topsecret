@@ -34,29 +34,29 @@ AsyncRequest.narratives(config.serverURL).then(data => {
 }).then(client => {
         const server = client.server;
 
-        Redux.init(client, Reducers.reduce, Root, wrapper);
+        const getClient = Redux.init(client, Reducers.reduce, Root, wrapper);
         Redux.render(client, Root, wrapper);
 
         EventHandler.addKeyHandlers();
 
         return Server.beginGame(player, config, server).then(result =>
-                startTick(client, server)
+                startTick(getClient, server)
         );
 }).catch(err => {
         console.log(err);
         throw err;
 });
 
-function tick (client: Client.Client, server: Server.Server)
+function tick (getClient: () => Client.Client, server: Server.Server)
 {
-        Client.tickClient(client);
-        const timestampMs = Clock.gameTimeMs(client.data.clock);
+        Client.tickClient();
+        const timestampMs = Clock.gameTimeMs(getClient().data.clock);
         return Server.tickServer(server, timestampMs);
 }
 
-export function startTick (client: Client.Client, server: Server.Server)
+export function startTick (getClient: () => Client.Client, server: Server.Server)
 {
-        const update = () => tick(client, server);
+        const update = () => tick(getClient, server);
         const intervalMs = 1000;
         Prom.loop(intervalMs, update);
 }

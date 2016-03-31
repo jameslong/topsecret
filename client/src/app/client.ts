@@ -106,7 +106,7 @@ export function createClientFromData (
         };
 }
 
-export function tickClient (client: Client)
+export function tickClient ()
 {
         const action = ActionCreators.tick();
         Redux.handleAction(action);

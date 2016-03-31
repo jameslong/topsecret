@@ -183,7 +183,7 @@ describe('Script', function () {
                                 const input = '(define x 5)';
                                 const env = Script.standardEnv();
                                 Script.parseEval(input, env);
-                                assert.deepEqual(env['x'], 5);
+                                assert.deepEqual(env.custom['x'], 5);
                         })
                 });
 
@@ -192,7 +192,7 @@ describe('Script', function () {
                                 const input = '((define x 0)(set x 5))';
                                 const env = Script.standardEnv();
                                 Script.parseEval(input, env);
-                                assert.deepEqual(env['x'], 5);
+                                assert.deepEqual(env.custom['x'], 5);
                         })
                 });
 

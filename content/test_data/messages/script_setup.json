@@ -1,0 +1,26 @@
+{
+        "name": "script_setup",
+        "threadSubject": "script_setup_subject",
+        "position": {
+                "x": 110,
+                "y": 715
+        },
+        "endGame": false,
+        "message": {
+                "from": "james",
+                "to": [],
+                "body": [
+                        "script_setup_body"
+                ]
+        },
+        "encrypted": true,
+        "script": "(define x false)",
+        "receiver": null,
+        "replyOptions": [],
+        "children": [],
+        "fallback": {
+                "name": "script_0",
+                "condition": "",
+                "delayMins": 0
+        }
+}

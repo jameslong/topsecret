@@ -1,0 +1,22 @@
+{
+        "name": "script_child",
+        "threadSubject": "",
+        "position": {
+                "x": 440,
+                "y": 715
+        },
+        "endGame": false,
+        "message": {
+                "from": "james",
+                "to": [],
+                "body": [
+                        "script_child_body"
+                ]
+        },
+        "encrypted": true,
+        "script": "",
+        "receiver": null,
+        "replyOptions": [],
+        "children": [],
+        "fallback": null
+}
