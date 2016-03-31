@@ -49,6 +49,7 @@ export interface ThreadMessage {
 export interface ThreadDelay {
         name: string;
         delayMins: number;
+        condition: string;
 }
 
 export interface NamedThreadDelay {

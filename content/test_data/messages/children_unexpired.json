@@ -22,10 +22,12 @@
         "children": [
                 {
                         "name": "child_0",
+                        "condition": "",
                         "delayMins": 100000000
                 },
                 {
                         "name": "child_1",
+                        "condition": "",
                         "delayMins": 100000000
                 }
         ],

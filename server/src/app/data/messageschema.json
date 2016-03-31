@@ -7,9 +7,10 @@
                         "type": "object",
                         "properties": {
                                 "name": { "type": "string" },
+                                "condition": { "type": "string" },
                                 "delayMins": { "type": "number" }
                         },
-                        "required": ["name", "delayMins"]
+                        "required": ["name", "condition", "delayMins"]
                 },
                 "coord": {
                         "type": "object",
