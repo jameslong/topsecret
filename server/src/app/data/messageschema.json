@@ -64,15 +64,7 @@
                         ]
                 },
                 "endGame": { "type": "boolean" },
-                "script": {
-                        "anyOf": [
-                                {
-                                        "type": "string"
-                                }, {
-                                        "type": "null"
-                                }
-                        ]
-                },
+                "script": { "type": "string" },
                 "encrypted": { "type": "boolean" },
                 "receiver": {
                         "anyOf": [

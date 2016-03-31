@@ -6,13 +6,9 @@ import Func = require('../../../../core/src/app/utils/function');
 import Helpers = require('../../../../core/src/app/utils/helpers');
 import Message = require('../../../../core/src/app/message');
 import Profile = require('../../../../core/src/app/profile');
+import Script = require('../../../../core/src/app/script');
 
 import validator = require('is-my-json-valid');
-
-interface ValidateFn<T> {
-        (object: T): boolean;
-        errors: Object[];
-}
 
 export function getDataErrors (
         data: Data.NarrativeData,
@@ -22,10 +18,19 @@ export function getDataErrors (
         const profiles = <Profile.Profile[]>Helpers.arrayFromMap(data.profiles);
         const profileErrors = getJSONDirErrors(profileSchema, profiles);
 
-        const messages = <Message.MessageState[]>Helpers.arrayFromMap(data.messages);
+        const messages = <Message.ThreadMessage[]>Helpers.arrayFromMap(
+                data.messages);
         const messageErrors = getJSONDirErrors(messageSchema, messages);
 
-        return profileErrors.concat(messageErrors);
+        const scriptErrors = getListErrors(messages,
+                message => Script.getScriptErrors(message.script));
+
+        return profileErrors.concat(messageErrors, scriptErrors);
+}
+
+interface SchemaValidateFn<T> {
+        (object: T): boolean;
+        errors: Object[];
 }
 
 export function getJSONDirErrors<T extends { name: string }> (
@@ -45,7 +50,20 @@ export function getJSONDirErrors<T extends { name: string }> (
 }
 
 export function getError<T extends { name: string }> (
-        validateFn: ValidateFn<T>, object: T): Object
+        validateFn: SchemaValidateFn<T>, object: T): Object
 {
         return validateFn(object) ? '' : { [object.name]: validateFn.errors };
+}
+
+function getListErrors<T extends { name: string }> (
+        list: T[], validate: (element: T) => string)
+{
+        return list.reduce((result, element) => {
+                const error = validate(element);
+                if (error) {
+                        console.log('error:', element.name, error);
+                        result.push({ [element.name]: error });
+                }
+                return result;
+        }, []);
 }

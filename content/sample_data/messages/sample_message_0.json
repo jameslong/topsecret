@@ -14,7 +14,7 @@
                 ]
         },
         "encrypted": true,
-        "script": null,
+        "script": "",
         "receiver": null,
         "replyOptions": [],
         "children": [],
