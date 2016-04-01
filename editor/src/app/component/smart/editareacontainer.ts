@@ -19,7 +19,7 @@ module Component {
         {
                 event.stopPropagation();
 
-                const action = Action.deselectAllMessages();
+                const action = ActionCreators.deselectAllMessages();
                 Flux.handleAction(action);
         }
 }

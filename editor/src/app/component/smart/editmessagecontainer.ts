@@ -58,14 +58,14 @@ module Component {
 
         function onDelete (name: string)
         {
-                const action = Action.deleteMessage(name);
+                const action = ActionCreators.deleteMessage(name);
                 Flux.handleAction(action);
         }
 
         function onSetNameScratchpad (
                 messageName: string, newName: string)
         {
-                const action = Action.setEditedMessageName({
+                const action = ActionCreators.setEditedMessageName({
                         name: messageName,
                         value: newName,
                 });
@@ -74,7 +74,7 @@ module Component {
 
         function onSetName (messageName: string)
         {
-                const action = Action.setMessageName({
+                const action = ActionCreators.setMessageName({
                         name: messageName,
                         value: null,
                 });
@@ -83,7 +83,7 @@ module Component {
 
         function onSetSubjectName (messageName: string, newSubject: string)
         {
-                const action = Action.setMessageSubject({
+                const action = ActionCreators.setMessageSubject({
                         name: messageName,
                         value: newSubject,
                 });
@@ -93,7 +93,7 @@ module Component {
         export function onSetString (
                 stringName: string, value: string)
         {
-                const action = Action.setString({
+                const action = ActionCreators.setString({
                         name: stringName,
                         value: value,
                 });
@@ -102,7 +102,7 @@ module Component {
 
         function onSetEndGame (messageName: string, newEndGame: boolean)
         {
-                const action = Action.setMessageEndGame({
+                const action = ActionCreators.setMessageEndGame({
                         name: messageName,
                         value: newEndGame,
                 });
@@ -111,7 +111,7 @@ module Component {
 
         function onSetEncrypted (messageName: string, newEncrypted: boolean)
         {
-                const action = Action.setMessageEncrypted({
+                const action = ActionCreators.setMessageEncrypted({
                         name: messageName,
                         value: newEncrypted,
                 });
@@ -120,7 +120,7 @@ module Component {
 
         function onSetScript (messageName: string, newScript: string)
         {
-                const action = Action.setMessageScript({
+                const action = ActionCreators.setMessageScript({
                         name: messageName,
                         value: newScript,
                 });
@@ -141,7 +141,7 @@ module Component {
                 messageName: string,
                 delays: Immutable.List<Im.MessageDelay>)
         {
-                const action = Action.setMessageChildren({
+                const action = ActionCreators.setMessageChildren({
                         name: messageName,
                         value: delays,
                 });
@@ -165,7 +165,7 @@ module Component {
 
         function onSetFallback (messageName: string, newDelay: Im.MessageDelay)
         {
-                const action = Action.setMessageFallback({
+                const action = ActionCreators.setMessageFallback({
                         name: messageName,
                         value: newDelay,
                 });

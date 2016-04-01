@@ -21,7 +21,7 @@ module AsyncRequest {
                 const narratives = Im.mapFromObject(
                         narrativesMutable, Im.convertToImmutableNarrative);
 
-                const action = Action.setGameData(narratives);
+                const action = ActionCreators.setGameData(narratives);
                 Flux.handleAction(action);
         }
 

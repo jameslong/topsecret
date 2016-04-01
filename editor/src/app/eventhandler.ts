@@ -22,13 +22,13 @@ module EventHandler {
 
         function onUndo ()
         {
-                const action = Action.undo();
+                const action = ActionCreators.undo();
                 Flux.handleAction(action);
         }
 
         function onRedo ()
         {
-                const action = Action.redo();
+                const action = ActionCreators.redo();
                 Flux.handleAction(action);
         }
 }

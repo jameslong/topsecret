@@ -35,7 +35,7 @@ module Component {
 
         function setReplyOptions (name: string, replyOptions: Im.ReplyOptions)
         {
-                const action = Action.setMessageReplyOptions({
+                const action = ActionCreators.setMessageReplyOptions({
                         name: name,
                         value: replyOptions,
                 });

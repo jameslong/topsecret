@@ -39,7 +39,7 @@ module Component {
         function onSetMessageContent (
                 messageName: string, newContent: Im.MessageContent)
         {
-                const action = Action.setMessageContent({
+                const action = ActionCreators.setMessageContent({
                         name: messageName,
                         value: newContent,
                 });

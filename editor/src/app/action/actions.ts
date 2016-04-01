@@ -1,4 +1,4 @@
-module Action {
+module Actions {
         export const Types = {
                 UNDO: 'UNDO',
                 REDO: 'REDO',

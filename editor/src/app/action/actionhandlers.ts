@@ -1,6 +1,6 @@
 ///<reference path='../edge.ts'/>
 
-module Action {
+module ActionHandlers {
         function setActiveNarrative (
                 name: string, store: Im.Store, config: Im.Config)
         {
@@ -21,7 +21,7 @@ module Action {
         }
 
         export function handleSetGameData (
-                state: Im.State, action: SetGameData)
+                state: Im.State, action: Actions.SetGameData)
         {
                 const narratives = action.parameters;
                 const newNarratives = narratives.map(Im.markNarrativeValid);
@@ -105,8 +105,8 @@ module Action {
         export function onDirtyState (delayms: number)
         {
                 const callback = () => {
-                        const action: Save = {
-                                type: Types.SAVE,
+                        const action: Actions.Save = {
+                                type: Actions.Types.SAVE,
                                 parameters: null,
                         };
 
@@ -125,14 +125,14 @@ module Action {
                 }
         }
 
-        export function handleUndo (state: Im.State, action: Undo)
+        export function handleUndo (state: Im.State, action: Actions.Undo)
         {
                 const newIndex = Math.max(0, state.activeStoreIndex - 1);
                 const newState = state.set('activeStoreIndex', newIndex);
                 return setDirtyState(newState);
         }
 
-        export function handleRedo (state: Im.State, action: Redo)
+        export function handleRedo (state: Im.State, action: Actions.Redo)
         {
                 const lastIndex = Math.max(0, state.stores.size - 1);
                 const currentIndex = state.activeStoreIndex;
@@ -154,7 +154,8 @@ module Action {
                                 [[message.name, message]]);
         }
 
-        export function handleEndDrag (store: Im.Store, config: Im.Config, action: EndDrag)
+        export function handleEndDrag (
+                store: Im.Store, config: Im.Config, action: Actions.EndDrag)
         {
                 const parameters = action.parameters;
                 const name = parameters.id;
@@ -215,7 +216,7 @@ module Action {
         export function handleSetActiveNarrative (
                 store: Im.Store,
                 config: Im.Config,
-                action: SetActiveNarrative)
+                action: Actions.SetActiveNarrative)
         {
                 const name = action.parameters;
                 return setActiveNarrative(name, store, config);
@@ -224,7 +225,7 @@ module Action {
         export function handleOpenMessage (
                 store: Im.Store,
                 config: Im.Config,
-                action: OpenMessage)
+                action: Actions.OpenMessage)
         {
                 const name = action.parameters;
                 window.document.body.classList.add('open-modal');
@@ -235,14 +236,14 @@ module Action {
         export function handleCloseMessage (
                 store: Im.Store,
                 config: Im.Config,
-                action: CloseMessage)
+                action: Actions.CloseMessage)
         {
                 window.document.body.classList.remove('open-modal');
                 const newStore = store.set('activeMessage', null);
                 return onNarrativeUpdate(newStore, config);
         }
 
-        export function handleSave (state: Im.State, action: Save)
+        export function handleSave (state: Im.State, action: Actions.Save)
         {
                 const activeStore = Im.getActiveStore(state);
 
@@ -364,7 +365,7 @@ module Action {
         export function handleCreateMessage (
                 store: Im.Store,
                 config: Im.Config,
-                action: CreateMessage)
+                action: Actions.CreateMessage)
         {
                 const narrative = Im.getActiveNarrative(store);
                 const messages = narrative.messages;
@@ -384,7 +385,7 @@ module Action {
         export function handleDeleteMessage (
                 store: Im.Store,
                 config: Im.Config,
-                action: DeleteMessage)
+                action: Actions.DeleteMessage)
         {
                 const name = action.parameters;
                 const narrative = Im.getActiveNarrative(store);
@@ -404,7 +405,7 @@ module Action {
         export function handleDeselectMessage (
                 store: Im.Store,
                 config: Im.Config,
-                action: DeselectMessage)
+                action: Actions.DeselectMessage)
         {
                 const name = action.parameters;
                 const narrative = Im.getActiveNarrative(store);
@@ -417,7 +418,7 @@ module Action {
         export function handleDeselectAllMessages (
                 store: Im.Store,
                 config: Im.Config,
-                action: DeselectAllMessages)
+                action: Actions.DeselectAllMessages)
         {
                 const narrative = Im.getActiveNarrative(store);
                 const messages = narrative.messages;
@@ -448,7 +449,7 @@ module Action {
         export function handleSelectMessage (
                 store: Im.Store,
                 config: Im.Config,
-                action: SelectMessage)
+                action: Actions.SelectMessage)
         {
                 const name = action.parameters;
                 return selectMessage(name, store);
@@ -457,7 +458,7 @@ module Action {
         export function handleUniqueSelectMessage (
                 store: Im.Store,
                 config: Im.Config,
-                action: UniqueSelectMessage)
+                action: Actions.UniqueSelectMessage)
         {
                 const name = action.parameters;
 
@@ -486,7 +487,7 @@ module Action {
         export function handleSetEditedMessageName (
                 store: Im.Store,
                 config: Im.Config,
-                action: SetEditedMessageName)
+                action: Actions.SetEditedMessageName)
         {
                 const parameters = action.parameters;
                 const name = parameters.name;
@@ -499,7 +500,9 @@ module Action {
         }
 
         export function handleSetMessageName (
-                store: Im.Store, config: Im.Config, action: SetMessageName)
+                store: Im.Store,
+                config: Im.Config,
+                action: Actions.SetMessageName)
         {
                 const parameters = action.parameters;
                 const name = parameters.name;
@@ -552,7 +555,7 @@ module Action {
         export function handleSetMessageSubject (
                 store: Im.Store,
                 config: Im.Config,
-                action: SetMessageSubject)
+                action: Actions.SetMessageSubject)
         {
                 const parameters = action.parameters;
                 const name = parameters.name;
@@ -566,7 +569,7 @@ module Action {
         export function handleSetMessageEndGame (
                 store: Im.Store,
                 config: Im.Config,
-                action: SetMessageEndGame)
+                action: Actions.SetMessageEndGame)
         {
                 const parameters = action.parameters;
                 const name = parameters.name;
@@ -580,7 +583,7 @@ module Action {
         export function handleSetMessageEncrypted (
                 store: Im.Store,
                 config: Im.Config,
-                action: SetMessageEncrypted)
+                action: Actions.SetMessageEncrypted)
         {
                 const parameters = action.parameters;
                 const name = parameters.name;
@@ -594,7 +597,7 @@ module Action {
         export function handleSetMessageScript (
                 store: Im.Store,
                 config: Im.Config,
-                action: SetMessageScript)
+                action: Actions.SetMessageScript)
         {
                 const parameters = action.parameters;
                 const name = parameters.name;
@@ -608,7 +611,7 @@ module Action {
         export function handleSetMessagePosition (
                 store: Im.Store,
                 config: Im.Config,
-                action: SetMessagePosition)
+                action: Actions.SetMessagePosition)
         {
                 const parameters = action.parameters;
                 const name = parameters.name;
@@ -622,7 +625,7 @@ module Action {
         export function handleSetMessageContent (
                 store: Im.Store,
                 config: Im.Config,
-                action: SetMessageContent)
+                action: Actions.SetMessageContent)
         {
                 const parameters = action.parameters;
                 const name = parameters.name;
@@ -636,7 +639,7 @@ module Action {
         export function handleSetMessageFallback (
                 store: Im.Store,
                 config: Im.Config,
-                action: SetMessageFallback)
+                action: Actions.SetMessageFallback)
         {
                 const parameters = action.parameters;
                 const name = parameters.name;
@@ -650,7 +653,7 @@ module Action {
         export function handleSetMessageChildren (
                 store: Im.Store,
                 config: Im.Config,
-                action: SetMessageChildren)
+                action: Actions.SetMessageChildren)
         {
                 const parameters = action.parameters;
                 const name = parameters.name;
@@ -664,7 +667,7 @@ module Action {
         export function handleSetMessageReplyOptions (
                 store: Im.Store,
                 config: Im.Config,
-                action: SetMessageReplyOptions)
+                action: Actions.SetMessageReplyOptions)
         {
                 const parameters = action.parameters;
                 const name = parameters.name;
@@ -678,7 +681,7 @@ module Action {
         export function handleSetString (
                 store: Im.Store,
                 config: Im.Config,
-                action: SetString)
+                action: Actions.SetString)
         {
                 const parameters = action.parameters;
                 const name = parameters.name;

@@ -45,25 +45,25 @@ module Component {
 
         function onSelect (name: string)
         {
-                const action = Action.selectMessage(name);
+                const action = ActionCreators.selectMessage(name);
                 Flux.handleAction(action);
         }
 
         function onDeselect (name: string)
         {
-                const action = Action.deselectMessage(name);
+                const action = ActionCreators.deselectMessage(name);
                 Flux.handleAction(action);
         }
 
         function onUniqueSelect (name: string)
         {
-                const action = Action.uniqueSelectMessage(name);
+                const action = ActionCreators.uniqueSelectMessage(name);
                 Flux.handleAction(action);
         }
 
         function onDoubleClick (name: string)
         {
-                const action = Action.openMessage(name);
+                const action = ActionCreators.openMessage(name);
                 Flux.handleAction(action);
         }
 }

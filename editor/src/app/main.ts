@@ -40,7 +40,7 @@ window.onload = () => {
                 dirty: false,
         });
 
-        Flux.init(state, Action.handleNewAction, Component.Root, wrapper);
+        Flux.init(state, ActionHandlerMap.handleNewAction, Component.Root, wrapper);
 
         AsyncRequest.requestNarratives(config.serverURL);
         EventHandler.addKeyHandlers();

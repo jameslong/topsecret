@@ -31,7 +31,7 @@ module Component {
                         y: deltaY,
                 });
 
-                const action = Action.endDrag({
+                const action = ActionCreators.endDrag({
                         id: dragData.id,
                         delta: delta,
                 });

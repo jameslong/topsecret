@@ -19,7 +19,7 @@ module Component {
         {
                 e.stopPropagation();
 
-                const action = Action.closeMessage();
+                const action = ActionCreators.closeMessage();
                 Flux.handleAction(action);
         }
 }

@@ -37,13 +37,13 @@ module Component {
 
         function onAddMessage ()
         {
-                const action = Action.createMessage();
+                const action = ActionCreators.createMessage();
                 Flux.handleAction(action);
         }
 
         function onSelectNarrative (name: string)
         {
-                const action = Action.setActiveNarrative(name);
+                const action = ActionCreators.setActiveNarrative(name);
                 Flux.handleAction(action);
         }
 
