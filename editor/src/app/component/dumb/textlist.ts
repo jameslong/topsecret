@@ -31,7 +31,7 @@ module Component {
                 };
                 const value = data.values.join();
 
-                return Input({
+                return Core.Input({
                         placeholder: data.placeholder,
                         value: value,
                         onChange: onChange,

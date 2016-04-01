@@ -36,7 +36,7 @@ module Component {
                 const addMessage = createAddMessage(data.onAddMessage);
                 const test = createTest(activeMessage, data.onTest);
 
-                return Div({ className: 'menu-bar' },
+                return Core.Div({ className: 'menu-bar' },
                         narrativeSelect, addMessage, test);
         }
 

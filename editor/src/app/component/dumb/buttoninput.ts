@@ -20,7 +20,7 @@ module Component {
                 const data = props.data;
                 const onClick = (event: Event) => data.onClick(event);
 
-                return Button({
+                return Core.Button({
                         disabled: data.disabled,
                         onClick: onClick,
                         className: data.className,

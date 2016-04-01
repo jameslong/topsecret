@@ -8,7 +8,7 @@ module Component {
                 const data = props.data;
                 const children = props.children;
 
-                return Div({ className: 'surface' },
+                return Core.Div({ className: 'surface' },
                         Dragzone('surface-dragzone', children));
         }
 

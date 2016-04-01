@@ -47,7 +47,7 @@ module Component {
                 });
                 const delay = MessageDelay(delayProps);
 
-                return Div({ className: 'reply-option' },
+                return Core.Div({ className: 'reply-option' },
                         type, parameters, delay);
         }
 

@@ -88,11 +88,11 @@ module Component {
 
                 const deleteButton = createDeleteButton(
                         messageName, data.onDelete);
-                const header = Div({ className: 'edit-mesage-header' },
+                const header = Core.Div({ className: 'edit-mesage-header' },
                         deleteButton);
 
                 const dataLists = createDataLists(narrative);
-                return Div({ className: 'edit-message'},
+                return Core.Div({ className: 'edit-message'},
                         dataLists,
                         wrapInGroup(
                                 wrapInSubgroup(header),
@@ -121,8 +121,8 @@ module Component {
         export function wrapInGroup(
                 ...components: React.ReactElement<any>[])
         {
-                return Div({ className: 'edit-message-group' },
-                        Div({ className: 'edit-message-group-content' },
+                return Core.Div({ className: 'edit-message-group' },
+                        Core.Div({ className: 'edit-message-group-content' },
                                 ...components)
                 );
         }
@@ -130,15 +130,15 @@ module Component {
         export function wrapInSubgroup(
                 ...components: React.ReactElement<any>[])
         {
-                return Div({ className: 'edit-message-subgroup' }, ...components);
+                return Core.Div({ className: 'edit-message-subgroup' }, ...components);
         }
 
         export function wrapInTitleGroup(
                 title: string, ...components: React.ReactElement<any>[])
         {
-                return Div({ className: 'edit-message-group' },
-                        Div({ className: 'edit-message-group-title' }, title),
-                        Div({ className: 'edit-message-group-content' },
+                return Core.Div({ className: 'edit-message-group' },
+                        Core.Div({ className: 'edit-message-group-title' }, title),
+                        Core.Div({ className: 'edit-message-group-content' },
                                 ...components)
                 );
         }
@@ -169,7 +169,7 @@ module Component {
                 });
                 const setButton = ButtonInput(buttonProps);
 
-                return Div({}, name, setButton);
+                return Core.Div({}, name, setButton);
         }
 
         function createMessageContent (
@@ -275,7 +275,7 @@ module Component {
                 });
                 const subject = Text({ data: subjectProps });
 
-                return Div({}, name, subject);
+                return Core.Div({}, name, subject);
         }
 
         function onSetChild (
@@ -388,7 +388,7 @@ module Component {
                 const replyOptionDataList = createDataList(
                         'replyOptionTypes', replyOptionTypes);
 
-                return Div({},
+                return Core.Div({},
                         messageDataList,
                         profileDataList,
                         stringDataList,
@@ -397,10 +397,10 @@ module Component {
 
         function createDataList (id: string, names: Immutable.List<string>)
         {
-                const options = names.map(name => Option({
+                const options = names.map(name => Core.Option({
                         value: name,
                         key: name,
                  }));
-                return DataList({ id: id }, options);
+                return Core.DataList({ id: id }, options);
         }
 }

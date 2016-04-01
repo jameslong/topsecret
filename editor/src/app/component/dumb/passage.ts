@@ -25,7 +25,7 @@ module Component {
                 const body = createBody(
                         data.name, data.onSetBody, data.strings);
 
-                return Div({ className: 'message-passage' },
+                return Core.Div({ className: 'message-passage' },
                         name, body);
         }
 

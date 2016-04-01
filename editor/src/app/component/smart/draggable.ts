@@ -15,7 +15,7 @@ module Component {
 
                 const onStart = (e: DragEvent) => onDragStart(props, e);
 
-                return Div({
+                return Core.Div({
                         draggable: true,
                         onDragStart: onStart,
                  }, children);

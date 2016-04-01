@@ -35,8 +35,8 @@ module Component {
                         onClick: onClick,
                 };
 
-                return Div(panelProps,
-                        Div(contentProps, editMessage)
+                return Core.Div(panelProps,
+                        Core.Div(contentProps, editMessage)
                 );
         }
 

@@ -33,7 +33,7 @@ module Component {
                         });
                         const remove = ButtonInput(removeProps);
 
-                        return Div({}, child, remove);
+                        return Core.Div({}, child, remove);
                 } else {
                         const addFn = data.onAdd;
                         const onAddLocal = (event: Event) =>
@@ -47,7 +47,7 @@ module Component {
                         });
                         const add = ButtonInput(addProps);
 
-                        return Div({}, add);
+                        return Core.Div({}, add);
                 }
         }
 

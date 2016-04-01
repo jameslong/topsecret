@@ -44,7 +44,7 @@ module Component {
                         onClick: data.onClick,
                 };
 
-                return Div(editProps,
+                return Core.Div(editProps,
                         SurfaceSVG(null, connections),
                         Surface(null, messageComponents)
                 );

@@ -7,12 +7,12 @@ module Component {
         {
                 const label = props.data.value;
 
-                const labelName = Div({ className: 'label-name' },
+                const labelName = Core.Div({ className: 'label-name' },
                         label);
-                const labelValue = Div({ className: 'label-value' },
+                const labelValue = Core.Div({ className: 'label-value' },
                         props.children);
 
-                return Label({ className: 'label' },
+                return Core.Label({ className: 'label' },
                         labelName, labelValue);
         }
 

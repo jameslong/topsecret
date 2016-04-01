@@ -23,7 +23,7 @@ module Component {
                 const onChange = (event: CheckEvent) =>
                         data.onChange(event.target.checked);
 
-                return Input({
+                return Core.Input({
                         type: 'checkbox',
                         checked: data.checked,
                         onChange: onChange,

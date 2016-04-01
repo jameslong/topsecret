@@ -27,7 +27,7 @@ module Component {
                         return data.onChange(value);
                 };
 
-                return Input({
+                return Core.Input({
                         placeholder: data.placeholder,
                         value: data.value,
                         onChange: onChange,

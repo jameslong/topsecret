@@ -36,7 +36,7 @@ module Component {
                 const nameText = createValidatedText({
                         data: textData,
                 }, validName);
-                const name = Div({ className: 'message-delay-name' },
+                const name = Core.Div({ className: 'message-delay-name' },
                         nameText);
 
                 const delayCondition = delay.condition;
@@ -48,7 +48,7 @@ module Component {
                         onChange: onSetConditionLocal,
                 });
                 const conditionText = Text(conditionTextData);
-                const condition = Div({ className: 'message-delay-condition' },
+                const condition = Core.Div({ className: 'message-delay-condition' },
                         conditionText);
 
                 const onSetDelayLocal = (delayMins: number) =>
@@ -58,13 +58,13 @@ module Component {
                         value: delay.delayMins,
                         onChange: onSetDelayLocal,
                 });
-                const delayMins = Div({ className: 'message-delay-mins' },
+                const delayMins = Core.Div({ className: 'message-delay-mins' },
                         Number(delayMinsProps));
 
                 const messageDelay = wrapInLabel('Name/delay',
                         name, condition, delayMins);
 
-                return Div({ className: 'message-delay' },
+                return Core.Div({ className: 'message-delay' },
                         messageDelay);
         }
 

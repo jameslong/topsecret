@@ -29,7 +29,7 @@ module Component {
                 const replyOptions = renderReplyOptions(
                         onSet, options, messages);
 
-                return Div({}, replyOptions);
+                return Core.Div({}, replyOptions);
         }
 
         export const ReplyOptions = Redux.createFactory(render, 'ReplyOptions');

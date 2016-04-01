@@ -28,7 +28,7 @@ module Component {
                         activeMessage: singleSelected,
                 });
 
-                return Div({ className: 'root' },
+                return Core.Div({ className: 'root' },
                         EditAreaContainer(store),
                         MenuBarContainer(menuBarData),
                         message

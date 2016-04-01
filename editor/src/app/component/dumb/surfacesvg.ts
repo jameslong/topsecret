@@ -10,7 +10,7 @@ module Component {
                         className: 'surface-svg',
                 };
 
-                return SVG(svgProps, children);
+                return Core.SVG(svgProps, children);
         }
 
         export const SurfaceSVG = Redux.createFactory(render, 'SurfaceSvg');

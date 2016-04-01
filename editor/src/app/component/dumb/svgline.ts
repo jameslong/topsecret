@@ -7,7 +7,7 @@ module Component {
                 const start = data.start;
                 const end = data.end;
 
-                return Line({
+                return Core.Line({
                         x1: start.x,
                         y1: start.y,
                         x2: end.x,

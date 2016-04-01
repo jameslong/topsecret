@@ -1,4 +1,4 @@
-module Component {
+module Core {
         export const Div = React.createFactory('div');
         export const Input = React.createFactory('input');
         export const Select = React.createFactory('select');

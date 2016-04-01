@@ -37,8 +37,8 @@ module Component {
 
                 return Absolute(position,
                         Draggable(nameProps,
-                                Div(nodeProps,
-                                        Div({ className: 'node-title' },
+                                Core.Div(nodeProps,
+                                        Core.Div({ className: 'node-title' },
                                                 name)
                                 )
                         )

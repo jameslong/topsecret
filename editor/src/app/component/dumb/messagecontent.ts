@@ -35,7 +35,7 @@ module Component {
                 const to = createTo(onSet, message, profiles)
                 const body = createBody(onSet, message, strings);
 
-                return Div({},
+                return Core.Div({},
                         wrapInSubgroup(from),
                         wrapInSubgroup(to),
                         wrapInSubgroup(body)

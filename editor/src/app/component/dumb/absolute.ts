@@ -10,7 +10,7 @@ module Component {
                         left: data.x,
                         top: data.y,
                 };
-                return Div({ style: style }, children);
+                return Core.Div({ style: style }, children);
         }
 
         export const Absolute = Redux.createFactory(render, 'Absolute');

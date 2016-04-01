@@ -27,7 +27,7 @@ module Component {
 
                 const options = createOptions(data.options);
 
-                return Select({
+                return Core.Select({
                         value: data.value,
                         onChange: onChange,
                 }, options);
@@ -37,7 +37,7 @@ module Component {
 
         function createOptions (options: Immutable.List<string>)
         {
-                return options.map(option => Option({
+                return options.map(option => Core.Option({
                         value: option,
                         key: option,
                  }, option));

@@ -10,7 +10,7 @@ module Component {
 
                 const arrowhead = createArrowhead(start, end);
 
-                const line = Line({
+                const line = Core.Line({
                         x1: start.x,
                         y1: start.y,
                         x2: end.x,
@@ -20,7 +20,7 @@ module Component {
 
                 const className = getClassName(data.type);
 
-                return G({ className: className }, line, arrowhead);
+                return Core.G({ className: className }, line, arrowhead);
         }
 
         export const Arrow = Redux.createFactory(render, 'Arrow');
@@ -55,7 +55,7 @@ module Component {
                         `translate(${position.x},${position.y})`;
                 const rotation = `rotate(${angleDegrees - 90})`;
 
-                return Polygon({
+                return Core.Polygon({
                         points: pointString,
                         transform: `${translation}, ${rotation}`,
                         });

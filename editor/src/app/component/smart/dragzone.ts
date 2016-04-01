@@ -6,7 +6,7 @@ module Component {
                 const className = props.data;
                 const children = props.children;
 
-                return Div({
+                return Core.Div({
                         className: className,
                         onDragEnter: (e: Event) => e.preventDefault(),
                         onDragOver: (e: Event) => e.preventDefault(),

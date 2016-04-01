@@ -50,7 +50,7 @@ module Component {
                 });
                 const add = ButtonInput(addProps);
 
-                return Div({}, wrappedChildren, add);
+                return Core.Div({}, wrappedChildren, add);
         }
 
         export const Multiple = Redux.createFactory(render, 'Multiple');
@@ -68,7 +68,7 @@ module Component {
                 });
                 const remove = ButtonInput(removeProps);
 
-                return Div({ className: 'multiple-child', key: index },
+                return Core.Div({ className: 'multiple-child', key: index },
                         child, remove);
         }
 }

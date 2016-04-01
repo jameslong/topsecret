@@ -29,7 +29,7 @@ module Component {
                 const onChange = (event: InputEvent) =>
                         data.onChange(event.target.value);
 
-                return Input({
+                return Core.Input({
                         placeholder: data.placeholder,
                         value: data.value,
                         onChange: onChange,
