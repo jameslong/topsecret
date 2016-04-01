@@ -142,7 +142,7 @@ module Component {
                         onChange: onChange,
                         list: 'profileNames',
                 });
-                const from = createValidatedText({ data: data }, valid);
+                const from = TextInputValidated.createValidatedText({ data: data }, valid);
                 return wrapInLabel('From', from);
         }
 
@@ -161,7 +161,7 @@ module Component {
                         values: values,
                         onChange: onChange,
                 });
-                const to = createValidatedTextList({ data: data }, valid);
+                const to = TextInputValidated.createValidatedTextList({ data: data }, valid);
                 return wrapInLabel('To', to);
         }
 }

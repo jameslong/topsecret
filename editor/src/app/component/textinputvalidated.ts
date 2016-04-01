@@ -2,22 +2,22 @@
 /// <reference path="dumb/textlist.ts" />
 /// <reference path="dumb/textareainput.ts" />
 
-module Component {
-        export function createValidatedText (props: TextProps, valid: boolean)
+module TextInputValidated {
+        export function createValidatedText (props: Component.TextProps, valid: boolean)
         {
-                return createValidatedComponent(props, Text, valid);
+                return createValidatedComponent(props, Component.Text, valid);
         }
 
         export function createValidatedTextList (
-                props: TextListProps, valid: boolean)
+                props: Component.TextListProps, valid: boolean)
         {
-                return createValidatedComponent(props, TextList, valid);
+                return createValidatedComponent(props, Component.TextList, valid);
         }
 
         export function createValidatedTextArea (
-                props: TextAreaProps, valid: boolean)
+                props: Component.TextAreaProps, valid: boolean)
         {
-                return createValidatedComponent(props, TextAreaInput, valid);
+                return createValidatedComponent(props, Component.TextAreaInput, valid);
         }
 
         type Props = Immutable.Record.IRecord<{ className?: string }>;

@@ -33,7 +33,7 @@ module Component {
                         onChange: onSetNameLocal,
                         list: 'messageNames',
                 });
-                const nameText = createValidatedText({
+                const nameText = TextInputValidated.createValidatedText({
                         data: textData,
                 }, validName);
                 const name = Core.Div({ className: 'message-delay-name' },

@@ -40,7 +40,7 @@ module Component {
                         onChange: onChange,
                         list: 'stringNames',
                 });
-                return createValidatedText({ data: data }, valid);
+                return TextInputValidated.createValidatedText({ data: data }, valid);
         }
 
         function createBody (
@@ -55,6 +55,6 @@ module Component {
                         value: bodyText,
                         onChange: onChange,
                 });
-                return createValidatedTextArea({ data: data }, valid);
+                return TextInputValidated.createValidatedTextArea({ data: data }, valid);
         }
 }

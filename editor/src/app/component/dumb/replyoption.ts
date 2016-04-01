@@ -31,7 +31,7 @@ module Component {
                         onChange: onSetType,
                         list: 'replyOptionTypes',
                 });
-                const typeText  = createValidatedText({
+                const typeText  = TextInputValidated.createValidatedText({
                         data: typeData,
                 }, validType);
                 const type = wrapInLabel('Type', typeText);
@@ -98,7 +98,7 @@ module Component {
                         values: values,
                         onChange: onChange,
                 });
-                const matches = createValidatedTextList(
+                const matches = TextInputValidated.createValidatedTextList(
                         { data: data}, valid);
                 return wrapInLabel('Matches', matches);
         }
