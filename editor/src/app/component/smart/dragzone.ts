@@ -1,4 +1,4 @@
-module Component {
+module Dragzone {
         type DragzoneProps = Redux.Props<string>;
 
         function render (props: DragzoneProps)
@@ -21,7 +21,7 @@ module Component {
                 e.preventDefault();
 
                 const data =  e.dataTransfer.getData('text/plain');
-                const dragData: DragData = JSON.parse(data);
+                const dragData: Draggable.DragData = JSON.parse(data);
 
                 const deltaX = e.screenX - dragData.x;
                 const deltaY = e.screenY - dragData.y;

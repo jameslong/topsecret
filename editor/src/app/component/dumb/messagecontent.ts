@@ -2,7 +2,7 @@
 /// <reference path="passage.ts" />
 /// <reference path="textlist.ts" />
 
-module Component {
+module MessageContent {
         type OnSet = (content: Message.MessageContent) => void;
 
         interface MessageContentInt {
@@ -36,9 +36,9 @@ module Component {
                 const body = createBody(onSet, message, strings);
 
                 return Core.Div({},
-                        wrapInSubgroup(from),
-                        wrapInSubgroup(to),
-                        wrapInSubgroup(body)
+                        EditMessage.wrapInSubgroup(from),
+                        EditMessage.wrapInSubgroup(to),
+                        EditMessage.wrapInSubgroup(body)
                 );
         }
 
@@ -105,26 +105,26 @@ module Component {
                                 onSetPassage(onSet, content, newName, index);
 
                         const onSetBody = (value: string) =>
-                                onSetString(name, value);
+                                EditMessageContainer.onSetString(name, value);
 
-                        const props = PassageData({
+                        const props = Passage.PassageData({
                                 onSetName: onSetName,
                                 onSetBody: onSetBody,
                                 name: name,
                                 strings: strings
                         });
-                        return Passage(props);
+                        return Passage.Passage(props);
                 });
 
                 const onAdd = () => onAddPassage(onSet, content);
                 const onRemove = (index: number) =>
                         onRemovePassage(onSet, content, index);
-                const props = MultipleData({
+                const props = Multiple.MultipleData({
                         onAdd: onAdd,
                         onRemove: onRemove,
                         children: passages,
                 });
-                return Multiple(props);
+                return Multiple.Multiple(props);
         }
 
         function createFrom (
@@ -136,14 +136,14 @@ module Component {
                 const onChange = (text: string) =>
                         onSetFrom(onSet, content, text);
                 const valid = profiles.get(value) !== undefined;
-                const data = TextData({
+                const data = TextComponent.TextData({
                         placeholder: 'sarah',
                         value: value,
                         onChange: onChange,
                         list: 'profileNames',
                 });
                 const from = TextInputValidated.createValidatedText({ data: data }, valid);
-                return wrapInLabel('From', from);
+                return EditMessage.wrapInLabel('From', from);
         }
 
         function createTo (
@@ -156,12 +156,12 @@ module Component {
                         onSetTo(onSet, content, newTo);
                 const valid = values.every(
                         to => profiles.get(to) !== undefined);
-                const data = TextListData({
+                const data = TextList.TextListData({
                         placeholder: 'joe, sarah, mark',
                         values: values,
                         onChange: onChange,
                 });
                 const to = TextInputValidated.createValidatedTextList({ data: data }, valid);
-                return wrapInLabel('To', to);
+                return EditMessage.wrapInLabel('To', to);
         }
 }

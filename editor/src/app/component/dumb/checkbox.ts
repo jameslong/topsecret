@@ -1,4 +1,4 @@
-module Component {
+module Checkbox {
         interface CheckboxInt {
                 checked: boolean;
                 onChange: (value: boolean) => void;

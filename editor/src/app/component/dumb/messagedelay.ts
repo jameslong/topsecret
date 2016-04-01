@@ -1,7 +1,7 @@
 /// <reference path="number.ts" />
 /// <reference path="../textinputvalidated.ts" />
 
-module Component {
+module MessageDelay {
         interface MessageDelayInt {
                 delay: Message.MessageDelay;
                 onChange: (delay: Message.MessageDelay) => void;
@@ -27,7 +27,7 @@ module Component {
                         onSetName(data, name);
                 const validName =
                         messages.get(delayName) !== undefined;
-                const textData = TextData({
+                const textData = TextComponent.TextData({
                         placeholder: 'message_name',
                         value: delayName,
                         onChange: onSetNameLocal,
@@ -42,26 +42,26 @@ module Component {
                 const delayCondition = delay.condition;
                 const onSetConditionLocal = (condition: string) =>
                         onSetCondition(data, condition);
-                const conditionTextData = TextData({
+                const conditionTextData = TextComponent.TextData({
                         placeholder: 'condition',
                         value: delayCondition,
                         onChange: onSetConditionLocal,
                 });
-                const conditionText = Text(conditionTextData);
+                const conditionText = TextComponent.Text(conditionTextData);
                 const condition = Core.Div({ className: 'message-delay-condition' },
                         conditionText);
 
                 const onSetDelayLocal = (delayMins: number) =>
                         onSetDelay(data, delayMins);
-                const delayMinsProps = NumberData({
+                const delayMinsProps = NumberComponent.NumberData({
                         placeholder: 0,
                         value: delay.delayMins,
                         onChange: onSetDelayLocal,
                 });
                 const delayMins = Core.Div({ className: 'message-delay-mins' },
-                        Number(delayMinsProps));
+                        NumberComponent.Number(delayMinsProps));
 
-                const messageDelay = wrapInLabel('Name/delay',
+                const messageDelay = EditMessage.wrapInLabel('Name/delay',
                         name, condition, delayMins);
 
                 return Core.Div({ className: 'message-delay' },

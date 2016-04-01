@@ -1,6 +1,6 @@
 /// <reference path="../dumb/node.ts" />
 
-module Component {
+module NodeContainer {
         type NodeContainerProps = Redux.Props<Message.Message>;
 
         function render (props: NodeContainerProps)
@@ -11,12 +11,12 @@ module Component {
 
                 const onClickLocal = (event: MouseEvent) =>
                         onClick(name, selected, event);
-                const data = NodeData({
+                const data = NodeComponent.NodeData({
                         message: message,
                         onClick: onClickLocal,
                 });
 
-                return Node(data);
+                return NodeComponent.Node(data);
         }
 
         export const NodeContainer = Redux.createFactory(render, 'NodeContainer');

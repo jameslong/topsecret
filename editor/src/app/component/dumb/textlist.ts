@@ -1,4 +1,4 @@
-module Component {
+module TextList {
         interface TextListInt {
                 placeholder: string;
                 values: Immutable.List<string>;

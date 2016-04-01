@@ -1,4 +1,4 @@
-module Component {
+module TextComponent {
         interface TextInt {
                 placeholder: string;
                 value: string;

@@ -1,6 +1,6 @@
 /// <reference path="svgline.ts" />
 
-module Component {
+module Arrow {
         type ArrowClassProps = Redux.Props<Edge.Edge>;
 
         function render (props: ArrowClassProps) {

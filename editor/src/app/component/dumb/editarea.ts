@@ -3,7 +3,7 @@
 /// <reference path="surface.ts" />
 /// <reference path="surfacesvg.ts" />
 
-module Component {
+module EditArea {
         interface EditAreaInt {
                 store: State.Store;
                 onClick: (e: MouseEvent) => void,
@@ -25,7 +25,7 @@ module Component {
                 const messageList = messages.toList();
 
                 const messageComponents = messageList.map(
-                        message => NodeContainer({
+                        message => NodeContainer.NodeContainer({
                                 key: message.name,
                                 data: message
                         })
@@ -33,7 +33,7 @@ module Component {
 
                 const edges = store.edges;
                 const connections = edges.map(
-                        edge => Arrow({
+                        edge => Arrow.Arrow({
                                 key: edge.name,
                                 data: edge,
                         })
@@ -45,8 +45,8 @@ module Component {
                 };
 
                 return Core.Div(editProps,
-                        SurfaceSVG(null, connections),
-                        Surface(null, messageComponents)
+                        SurfaceSVG.SurfaceSVG(null, connections),
+                        Surface.Surface(null, messageComponents)
                 );
         }
 

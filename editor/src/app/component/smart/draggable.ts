@@ -1,6 +1,6 @@
 ///<reference path='../../misc.ts'/>
 
-module Component {
+module Draggable {
         export interface DragData {
                 id: string,
                 x: number,

@@ -1,6 +1,6 @@
 /// <reference path="../dumb/replyoption.ts" />
 
-module Component {
+module ReplyOptions {
         type OnSet = (options: ReplyOption.ReplyOptions) => void;
 
         interface ReplyOptionsInt {
@@ -66,21 +66,21 @@ module Component {
                 const children = options.map((option, index) => {
                         const onSetReplyOptionLocal = (option: ReplyOption.ReplyOption) =>
                                 onSetReplyOption(onSet, options, index, option);
-                        const props = ReplyOptionData({
+                        const props = ReplyOptionComponent.ReplyOptionData({
                                 onSet: onSetReplyOptionLocal,
                                 replyOption: option,
                                 messages: messages,
                         });
-                        return ReplyOptionComponent(props);
+                        return ReplyOptionComponent.ReplyOptionComponent(props);
                 });
                 const onAdd = () => onAddReplyOption(onSet, options);
                 const onRemove = (index: number) =>
                         onRemoveReplyOption(onSet, options, index);
-                const multipleProps = MultipleData({
+                const multipleProps = Multiple.MultipleData({
                         children: children,
                         onAdd: onAdd,
                         onRemove: onRemove,
                 });
-                return Multiple(multipleProps);
+                return Multiple.Multiple(multipleProps);
         }
 }

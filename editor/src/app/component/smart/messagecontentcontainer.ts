@@ -1,6 +1,6 @@
 /// <reference path="../dumb/messagecontent.ts" />
 
-module Component {
+module MessageContentContainer {
         interface MessageContentContainerInt {
                 message: Message.MessageContent;
                 profiles: Narrative.Profiles;
@@ -23,14 +23,14 @@ module Component {
                 const name = data.name;
                 const onSet = (content: Message.MessageContent) =>
                         onSetMessageContent(name, content);
-                const contentData = MessageContentData({
+                const contentData = MessageContent.MessageContentData({
                         message: data.message,
                         profiles: data.profiles,
                         strings: data.strings,
                         name: data.name,
                         onSet: onSet,
                 });
-                return MessageContent(contentData);
+                return MessageContent.MessageContent(contentData);
         }
 
         export const MessageContentContainer = Redux.createFactory(

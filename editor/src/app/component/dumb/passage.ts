@@ -1,6 +1,6 @@
 /// <reference path="textareainput.ts" />
 
-module Component {
+module Passage {
         interface PassageInt {
                 strings: Narrative.Strings;
                 name: string;
@@ -34,7 +34,7 @@ module Component {
         function createName (name: string, onChange: (value: string) => void)
         {
                 const valid = !!name;
-                const data = TextData({
+                const data = TextComponent.TextData({
                         placeholder: 'passage_string_name',
                         value: name,
                         onChange: onChange,
@@ -50,7 +50,7 @@ module Component {
         {
                 const bodyText = strings.get(name) || '';
                 const valid = !!bodyText;
-                const data = TextAreaData({
+                const data = TextAreaInput.TextAreaData({
                         placeholder: 'Passage content',
                         value: bodyText,
                         onChange: onChange,

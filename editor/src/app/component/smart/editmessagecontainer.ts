@@ -1,6 +1,6 @@
 /// <reference path="../dumb/editmessage.ts" />
 
-module Component {
+module EditMessageContainer {
         interface EditMessageContainerInt {
                 name: string,
                 store: State.Store;
@@ -37,7 +37,7 @@ module Component {
                 const onSetFallbackLocal = (delay: Message.MessageDelay) =>
                         onSetFallback(name, delay);
 
-                const editMessageData = EditMessageData({
+                const editMessageData = EditMessage.EditMessageData({
                         name: data.name,
                         store: data.store,
                         onDelete: onDeleteLocal,
@@ -51,7 +51,7 @@ module Component {
                         onSetChildren: onSetChildrenLocal,
                         onSetFallback: onSetFallbackLocal,
                 });
-                return EditMessage(editMessageData);
+                return EditMessage.EditMessage(editMessageData);
         }
 
         export const EditMessageContainer = Redux.createFactory(render, 'EditMessageContainer');

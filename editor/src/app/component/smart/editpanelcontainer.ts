@@ -1,16 +1,16 @@
 /// <reference path="../dumb/editpanel.ts" />
 
-module Component {
+module EditPanelContainer {
         type EditPanelContainerProps = Redux.Props<State.Store>;
 
         function render (props: EditPanelContainerProps)
         {
                 const data = props.data;
-                const editPanelData = EditPanelData({
+                const editPanelData = EditPanel.EditPanelData({
                         store: data,
                         onClick: onClick,
                 });
-                return EditPanel(editPanelData);
+                return EditPanel.EditPanel(editPanelData);
         }
 
         export const EditPanelContainer = Redux.createFactory(render, 'EditPanelContainer');

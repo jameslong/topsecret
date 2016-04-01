@@ -1,7 +1,7 @@
 /// <reference path="absolute.ts" />
 /// <reference path="../smart/draggable.ts" />
 
-module Component {
+module NodeComponent {
         interface NodeInt {
                 message: Message.Message;
                 onClick: (e: MouseEvent) => void;
@@ -35,8 +35,8 @@ module Component {
                         onClick: data.onClick,
                 };
 
-                return Absolute(position,
-                        Draggable(nameProps,
+                return Absolute.Absolute(position,
+                        Draggable.Draggable(nameProps,
                                 Core.Div(nodeProps,
                                         Core.Div({ className: 'node-title' },
                                                 name)

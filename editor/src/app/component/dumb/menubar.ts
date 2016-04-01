@@ -1,7 +1,7 @@
 /// <reference path="../dumb/buttoninput.ts" />
 /// <reference path="../dumb/selectinput.ts" />
 
-module Component {
+module MenuBar {
         interface MenuBarInt {
                 narrativeNames: Immutable.List<string>;
                 activeNarrative: string;
@@ -44,13 +44,13 @@ module Component {
 
         function createAddMessage (onAddMessage: () => void)
         {
-                const deleteProps = ButtonData({
+                const deleteProps = ButtonInput.ButtonData({
                         text: 'Message +',
                         disabled: false,
                         onClick: onAddMessage,
                         className: null,
                 });
-                return ButtonInput(deleteProps);
+                return ButtonInput.ButtonInput(deleteProps);
         }
 
         function createNarrativeSelect (
@@ -58,23 +58,23 @@ module Component {
                 names: Immutable.List<string>,
                 active: string)
         {
-                const groupProps = SelectInputData({
+                const groupProps = SelectInput.SelectInputData({
                         onChange: onSelectNarrative,
                         options: names,
                         value: active,
                 });
-                return SelectInput(groupProps);
+                return SelectInput.SelectInput(groupProps);
         }
 
         function createTest (messageName: string, onClick: () => void)
         {
                 const disabled = !messageName;
-                const props = ButtonData({
+                const props = ButtonInput.ButtonData({
                         text: 'Test',
                         disabled,
                         onClick,
                         className: null,
                 });
-                return ButtonInput(props);
+                return ButtonInput.ButtonInput(props);
         }
 }

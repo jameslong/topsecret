@@ -9,7 +9,7 @@
 /// <reference path="../smart/messagecontentcontainer.ts" />
 /// <reference path="../smart/replyoptionscontainer.ts" />
 
-module Component {
+module EditMessage {
         interface EditMessageInt {
                 name: string,
                 store: State.Store;
@@ -115,7 +115,7 @@ module Component {
                 label: string, ...components: React.ReactElement<any>[])
         {
                 const props = Misc.KeyValue({ name: '', value: label });
-                return InputLabel(props, ...components);
+                return InputLabel.InputLabel(props, ...components);
         }
 
         export function wrapInGroup(
@@ -152,22 +152,22 @@ module Component {
         {
                 const onSet = (name: string) => onSetNameScratchpad(name);
                 const displayName = scratchpadName || messageName;
-                const data = TextData({
+                const data = TextComponent.TextData({
                         placeholder: 'message_name',
                         value: displayName,
                         onChange: onSet,
                         list: 'messageNames',
                 });
-                const name = Text(data);
+                const name = TextComponent.Text(data);
 
                 const disabled = messages.has(displayName);
-                const buttonProps = ButtonData({
+                const buttonProps = ButtonInput.ButtonData({
                         text: 'Rename',
                         disabled: disabled,
                         onClick: onSetName,
                         className: null,
                 });
-                const setButton = ButtonInput(buttonProps);
+                const setButton = ButtonInput.ButtonInput(buttonProps);
 
                 return Core.Div({}, name, setButton);
         }
@@ -177,47 +177,47 @@ module Component {
                 strings: Narrative.Strings,
                 profiles: Narrative.Profiles)
         {
-                const messageProps = MessageContentContainerData({
+                const messageProps = MessageContentContainer.MessageContentContainerData({
                         profiles: profiles,
                         strings: strings,
                         message: message.message,
                         name: message.name,
                 });
-                return MessageContentContainer(messageProps);
+                return MessageContentContainer.MessageContentContainer(messageProps);
         }
 
         function createReplyOptions (
                 message: Message.Message, messages: Narrative.Messages)
         {
-                const replyOptionsProps = ReplyOptionsContainerData({
+                const replyOptionsProps = ReplyOptionsContainer.ReplyOptionsContainerData({
                         name: message.name,
                         replyOptions: message.replyOptions,
                         messages: messages,
                 });
-                return ReplyOptionsContainer(replyOptionsProps);
+                return ReplyOptionsContainer.ReplyOptionsContainer(replyOptionsProps);
         }
 
         function createEndGame (
                 message: Message.Message,
                 onSetEndGame: (endGame: boolean) => void)
         {
-                const newEndGameProps = CheckboxData({
+                const newEndGameProps = Checkbox.CheckboxData({
                         checked: message.endGame,
                         onChange: onSetEndGame,
                 });
-                return wrapInLabel('End game', Checkbox(newEndGameProps));
+                return wrapInLabel('End game', Checkbox.Checkbox(newEndGameProps));
         }
 
         function createEncrypted (
                 message: Message.Message,
                 onSetEncrypted: (encrypted: boolean) => void)
         {
-                const newEncryptedProps = CheckboxData({
+                const newEncryptedProps = Checkbox.CheckboxData({
                         checked: message.encrypted,
                         onChange: onSetEncrypted,
                 });
                 return wrapInLabel(
-                        'Encrypted', Checkbox(newEncryptedProps));
+                        'Encrypted', Checkbox.Checkbox(newEncryptedProps));
         }
 
         function createScript (
@@ -227,25 +227,25 @@ module Component {
                 const script = message.script;
                 const messageName = message.name;
 
-                const nameProps = TextData({
+                const nameProps = TextComponent.TextData({
                         placeholder: '',
                         value: script,
                         onChange: onSetScript,
                 });
-                return Text({ data: nameProps });
+                return TextComponent.Text({ data: nameProps });
         }
 
         function createDeleteButton (
                 name: string, onDelete: () => void)
         {
                 const disabled = !name;
-                const deleteProps = ButtonData({
+                const deleteProps = ButtonInput.ButtonData({
                         text: 'Delete',
                         disabled: disabled,
                         onClick: onDelete,
                         className: null,
                 });
-                return ButtonInput(deleteProps);
+                return ButtonInput.ButtonInput(deleteProps);
         }
 
         function createSubject (
@@ -258,22 +258,22 @@ module Component {
                 const subjectValue = strings.get(subjectName);
                 const messageName = message.name;
 
-                const nameProps = TextData({
+                const nameProps = TextComponent.TextData({
                         placeholder: 'subject_string_name',
                         value: subjectName,
                         onChange: onSetSubjectName,
                         list: 'stringNames',
                 });
-                const name = Text({ data: nameProps });
+                const name = TextComponent.Text({ data: nameProps });
 
                 const onChangeString = (value: string) =>
                         onSetString(subjectName, value);
-                const subjectProps = TextData({
+                const subjectProps = TextComponent.TextData({
                         placeholder: 'subject',
                         value: subjectValue,
                         onChange: onChangeString,
                 });
-                const subject = Text({ data: subjectProps });
+                const subject = TextComponent.Text({ data: subjectProps });
 
                 return Core.Div({}, name, subject);
         }
@@ -320,19 +320,19 @@ module Component {
                 const children = delays.map((delay, index) => {
                         const onSet = (delay: Message.MessageDelay) =>
                                 onSetChild(onSetChildren, message, delay, index);
-                        const props = MessageDelayData({
+                        const props = MessageDelay.MessageDelayData({
                                 delay: delay,
                                 onChange: onSet,
                                 messages: messages,
                         });
-                        return MessageDelay(props);
+                        return MessageDelay.MessageDelay(props);
                 });
-                const multipleProps = MultipleData({
+                const multipleProps = Multiple.MultipleData({
                         children: children,
                         onAdd: onAdd,
                         onRemove: onRemove,
                 });
-                return Multiple(multipleProps);
+                return Multiple.Multiple(multipleProps);
         }
 
         function onAddFallback (onSetFallback: (delay: Message.MessageDelay) => void)
@@ -351,19 +351,19 @@ module Component {
 
                 const onAdd = () => onAddFallback(onSetFallback);
                 const onRemove = () => onSetFallback(null);
-                const fallbackProps = MessageDelayData({
+                const fallbackProps = MessageDelay.MessageDelayData({
                         delay: delay,
                         onChange: onSetFallback,
                         messages: messages,
                 });
                 const fallback = delay ?
-                        MessageDelay(fallbackProps) : null;
-                const optionalProps = OptionalData({
+                        MessageDelay.MessageDelay(fallbackProps) : null;
+                const optionalProps = Optional.OptionalData({
                         child: fallback,
                         onAdd: onAdd,
                         onRemove: onRemove,
                 });
-                return Optional(optionalProps);
+                return Optional.Optional(optionalProps);
         }
 
         function createDataLists (narrative: Narrative.Narrative)

@@ -1,6 +1,6 @@
 /// <reference path="../dumb/replyoptions.ts" />
 
-module Component {
+module ReplyOptionsContainer {
         interface ReplyOptionsContainerInt {
                 name: string;
                 replyOptions: ReplyOption.ReplyOptions;
@@ -20,14 +20,14 @@ module Component {
                 const data = props.data;
                 const name = data.name;
 
-                const replyOptionsData = ReplyOptionsData({
+                const replyOptionsData = ReplyOptions.ReplyOptionsData({
                         name: name,
                         replyOptions: data.replyOptions,
                         messages: data.messages,
                         onSet: (options: ReplyOption.ReplyOptions) =>
                                 setReplyOptions(name, options),
                 });
-                return ReplyOptions(replyOptionsData);
+                return ReplyOptions.ReplyOptions(replyOptionsData);
         }
 
         export const ReplyOptionsContainer =

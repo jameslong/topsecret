@@ -1,6 +1,6 @@
 /// <reference path="buttoninput.ts" />
 
-module Component {
+module Multiple {
         interface MultipleInt {
                 children: Immutable.Iterable<number, any>;
                 onAdd: () => void;
@@ -42,13 +42,13 @@ module Component {
 
                 const addFn = (e: Event) => onAdd(data.onAdd, e);
                 const enabled = true;
-                const addProps = ButtonData({
+                const addProps = ButtonInput.ButtonData({
                         text: '+',
                         disabled: !enabled,
                         onClick: addFn,
                         className: 'button-add',
                 });
-                const add = ButtonInput(addProps);
+                const add = ButtonInput.ButtonInput(addProps);
 
                 return Core.Div({}, wrappedChildren, add);
         }
@@ -60,13 +60,13 @@ module Component {
                 child: React.ReactElement<any>,
                 index: number)
         {
-                const removeProps = ButtonData({
+                const removeProps = ButtonInput.ButtonData({
                         text: 'x',
                         disabled: false,
                         onClick: (e: Event) => onRemove(removeFn, e, index),
                         className: 'button-remove',
                 });
-                const remove = ButtonInput(removeProps);
+                const remove = ButtonInput.ButtonInput(removeProps);
 
                 return Core.Div({ className: 'multiple-child', key: index },
                         child, remove);

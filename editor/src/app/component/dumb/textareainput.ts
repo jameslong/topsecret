@@ -1,4 +1,4 @@
-module Component {
+module TextAreaInput {
         interface TextAreaInt {
                 placeholder: string;
                 value: string;

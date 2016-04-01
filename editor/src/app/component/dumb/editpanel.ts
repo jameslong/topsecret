@@ -1,6 +1,6 @@
 /// <reference path="../smart/editmessagecontainer.ts" />
 
-module Component {
+module EditPanel {
         interface EditPanelInt {
                 store: State.Store;
                 onClick: (e: MouseEvent) => void;
@@ -19,11 +19,11 @@ module Component {
                 const store = data.store;
                 const narrative = Narrative.getActiveNarrative(store);
 
-                const editMessageData = EditMessageContainerData({
+                const editMessageData = EditMessageContainer.EditMessageContainerData({
                         name: store.activeMessage,
                         store: store,
                 });
-                const editMessage = EditMessageContainer(editMessageData);
+                const editMessage = EditMessageContainer.EditMessageContainer(editMessageData);
 
                 const panelProps = {
                         className: 'edit-panel',

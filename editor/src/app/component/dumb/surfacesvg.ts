@@ -1,4 +1,4 @@
-module Component {
+module SurfaceSVG {
         type SurfaceSVGProps = Redux.Props<void>;
 
         function render (props: SurfaceSVGProps)

@@ -1,4 +1,4 @@
-module Component {
+module NumberComponent {
         interface NumberInt {
                 placeholder: number;
                 value: number;

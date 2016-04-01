@@ -1,6 +1,6 @@
 /// <reference path="../dumb/textlist.ts" />
 
-module Component {
+module ReplyOptionComponent {
         interface ReplyOptionInt {
                 onSet: (option: ReplyOption.ReplyOption) => void;
                 replyOption: ReplyOption.ReplyOption;
@@ -25,7 +25,7 @@ module Component {
                 const onSetType = (value: string) =>
                         setType(onSet, option, value);
                 const validType = ReplyOption.isReplyOptionType(optionType);
-                const typeData = TextData({
+                const typeData = TextComponent.TextData({
                         placeholder: 'type',
                         value: optionType,
                         onChange: onSetType,
@@ -34,18 +34,18 @@ module Component {
                 const typeText  = TextInputValidated.createValidatedText({
                         data: typeData,
                 }, validType);
-                const type = wrapInLabel('Type', typeText);
+                const type = EditMessage.wrapInLabel('Type', typeText);
 
                 const parameters = renderParameters(onSet, option);
 
                 const onSetDelay = (delay: Message.MessageDelay) =>
                         setMessageDelay(onSet, option, delay);
-                const delayProps = MessageDelayData({
+                const delayProps = MessageDelay.MessageDelayData({
                         delay: option.messageDelay,
                         onChange: onSetDelay,
                         messages: data.messages,
                 });
-                const delay = MessageDelay(delayProps);
+                const delay = MessageDelay.MessageDelay(delayProps);
 
                 return Core.Div({ className: 'reply-option' },
                         type, parameters, delay);
@@ -93,14 +93,14 @@ module Component {
                         setMatches(onSet, option, newMatches);
                 const valid = (values.every(match => !!match) &&
                         values.size > 0);
-                const data = TextListData({
+                const data = TextList.TextListData({
                         placeholder: 'match0, match1, match2',
                         values: values,
                         onChange: onChange,
                 });
                 const matches = TextInputValidated.createValidatedTextList(
                         { data: data}, valid);
-                return wrapInLabel('Matches', matches);
+                return EditMessage.wrapInLabel('Matches', matches);
         }
 
         function setMatches (
@@ -113,5 +113,4 @@ module Component {
                 const newOption = option.set('parameters', newParameters);
                 onSet(newOption);
         }
-
 }

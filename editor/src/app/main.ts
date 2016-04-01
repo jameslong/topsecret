@@ -40,7 +40,7 @@ window.onload = () => {
                 dirty: false,
         });
 
-        Redux.init(state, ActionHandlerMap.handleNewAction, Component.Root, wrapper);
+        Redux.init(state, ActionHandlerMap.handleNewAction, Root.Root, wrapper);
 
         AsyncRequest.requestNarratives(config.serverURL);
         EventHandler.addKeyHandlers();

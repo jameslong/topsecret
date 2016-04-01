@@ -3,7 +3,7 @@
 /// <reference path="../smart/editpanelcontainer.ts" />
 /// <reference path="../smart/menubarcontainer.ts" />
 
-module Component {
+module Root {
         type RootProps = Redux.Props<State.State>;
 
         function render (props: RootProps)
@@ -16,21 +16,21 @@ module Component {
                 const activeMessage = store.activeMessage;
 
                 const message = activeMessage ?
-                        EditPanelContainer(store) : null;
+                        EditPanelContainer.EditPanelContainer(store) : null;
 
                 const narrative = Narrative.getActiveNarrative(store);
                 const messages = narrative.messages;
                 const singleSelected = Message.getSingleSelectedMessage(messages);
 
-                const menuBarData = MenuBarContainerData({
+                const menuBarData = MenuBarContainer.MenuBarContainerData({
                         narrativeNames,
                         activeNarrative,
                         activeMessage: singleSelected,
                 });
 
                 return Core.Div({ className: 'root' },
-                        EditAreaContainer(store),
-                        MenuBarContainer(menuBarData),
+                        EditAreaContainer.EditAreaContainer(store),
+                        MenuBarContainer.MenuBarContainer(menuBarData),
                         message
                 );
         }

@@ -1,6 +1,6 @@
 /// <reference path="buttoninput.ts" />
 
-module Component {
+module Optional {
         interface OptionalInt {
                 child: React.ReactElement<any>;
                 onAdd: () => void;
@@ -25,13 +25,13 @@ module Component {
                         const onRemoveLocal = (event: Event) =>
                                 onRemove(removeFn, event);
                         const enabled = true;
-                        const removeProps = ButtonData({
+                        const removeProps = ButtonInput.ButtonData({
                                 text: 'x',
                                 disabled: !enabled,
                                 onClick: onRemoveLocal,
                                 className: 'button-remove',
                         });
-                        const remove = ButtonInput(removeProps);
+                        const remove = ButtonInput.ButtonInput(removeProps);
 
                         return Core.Div({}, child, remove);
                 } else {
@@ -39,13 +39,13 @@ module Component {
                         const onAddLocal = (event: Event) =>
                                 onAdd(addFn, event);
                         const enabled = true;
-                        const addProps = ButtonData({
+                        const addProps = ButtonInput.ButtonData({
                                 text: '+',
                                 disabled: !enabled,
                                 onClick: onAddLocal,
                                 className: 'button-add',
                         });
-                        const add = ButtonInput(addProps);
+                        const add = ButtonInput.ButtonInput(addProps);
 
                         return Core.Div({}, add);
                 }

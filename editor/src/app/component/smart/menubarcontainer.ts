@@ -1,6 +1,6 @@
 /// <reference path="../dumb/menubar.ts" />
 
-module Component {
+module MenuBarContainer {
         interface MenuBarContainerInt {
                 narrativeNames: Immutable.List<string>;
                 activeNarrative: string;
@@ -22,7 +22,7 @@ module Component {
                 const activeMessage = data.activeMessage;
                 const onTestLocal = () => onTest(version, activeMessage);
 
-                const menuBarData = MenuBarData({
+                const menuBarData = MenuBar.MenuBarData({
                         narrativeNames: data.narrativeNames,
                         activeNarrative: data.activeNarrative,
                         activeMessage,
@@ -30,7 +30,7 @@ module Component {
                         onTest: onTestLocal,
                         onSelectNarrative,
                 });
-                return MenuBar(menuBarData);
+                return MenuBar.MenuBar(menuBarData);
         }
 
         export const MenuBarContainer = Redux.createFactory(render, 'MenuBarContainer');

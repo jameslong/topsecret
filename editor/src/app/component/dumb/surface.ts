@@ -1,6 +1,6 @@
 /// <reference path="../smart/dragzone.ts" />
 
-module Component {
+module Surface {
         type SurfaceProps = Redux.Props<void>;
 
         function render (props: SurfaceProps)
@@ -9,7 +9,7 @@ module Component {
                 const children = props.children;
 
                 return Core.Div({ className: 'surface' },
-                        Dragzone('surface-dragzone', children));
+                        Dragzone.Dragzone('surface-dragzone', children));
         }
 
         export const Surface = Redux.createFactory(render, 'Surface');

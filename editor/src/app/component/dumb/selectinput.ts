@@ -1,4 +1,4 @@
-module Component {
+module SelectInput {
         interface SelectInputInt {
                 value: string;
                 options: Immutable.List<string>;

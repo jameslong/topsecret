@@ -1,16 +1,16 @@
 /// <reference path="../dumb/editarea.ts" />
 
-module Component {
+module EditAreaContainer {
         type EditAreaContainerProps = Redux.Props<State.Store>;
 
         function render (props: EditAreaContainerProps)
         {
                 const data = props.data;
-                const editAreaData = EditAreaData({
+                const editAreaData = EditArea.EditAreaData({
                         store: data,
                         onClick: onClick,
                 });
-                return EditArea(editAreaData);
+                return EditArea.EditArea(editAreaData);
         }
 
         export const EditAreaContainer = Redux.createFactory(render, 'EditAreaContainer');

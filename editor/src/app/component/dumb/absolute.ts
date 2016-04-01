@@ -1,4 +1,4 @@
-module Component {
+module Absolute {
         type AbsoluteProps = Redux.Props<MathUtils.Coord>;
 
         function render (props: AbsoluteProps)

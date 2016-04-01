@@ -1,4 +1,4 @@
-module Component {
+module ButtonInput {
         interface ButtonInt {
                 text: string;
                 disabled: boolean;
