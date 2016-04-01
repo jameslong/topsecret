@@ -21,7 +21,7 @@ module Component {
                 onSet: () => {},
         }, 'MessageContent');
 
-        type MessageContentProps = Flux.Props<MessageContentData>;
+        type MessageContentProps = Redux.Props<MessageContentData>;
 
         function render (props: MessageContentProps)
         {
@@ -42,7 +42,7 @@ module Component {
                 );
         }
 
-        export const MessageContent = Flux.createFactory(
+        export const MessageContent = Redux.createFactory(
                 render, 'MessageContent');
 
         function onSetFrom (

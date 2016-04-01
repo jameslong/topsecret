@@ -1,7 +1,7 @@
 /// <reference path="../dumb/node.ts" />
 
 module Component {
-        type NodeContainerProps = Flux.Props<Im.Message>;
+        type NodeContainerProps = Redux.Props<Im.Message>;
 
         function render (props: NodeContainerProps)
         {
@@ -19,7 +19,7 @@ module Component {
                 return Node(data);
         }
 
-        export const NodeContainer = Flux.createFactory(render, 'NodeContainer');
+        export const NodeContainer = Redux.createFactory(render, 'NodeContainer');
 
         function onClick (
                 name: string, selected: boolean, event: MouseEvent)
@@ -46,24 +46,24 @@ module Component {
         function onSelect (name: string)
         {
                 const action = ActionCreators.selectMessage(name);
-                Flux.handleAction(action);
+                Redux.handleAction(action);
         }
 
         function onDeselect (name: string)
         {
                 const action = ActionCreators.deselectMessage(name);
-                Flux.handleAction(action);
+                Redux.handleAction(action);
         }
 
         function onUniqueSelect (name: string)
         {
                 const action = ActionCreators.uniqueSelectMessage(name);
-                Flux.handleAction(action);
+                Redux.handleAction(action);
         }
 
         function onDoubleClick (name: string)
         {
                 const action = ActionCreators.openMessage(name);
-                Flux.handleAction(action);
+                Redux.handleAction(action);
         }
 }

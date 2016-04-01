@@ -23,12 +23,12 @@ module EventHandler {
         function onUndo ()
         {
                 const action = ActionCreators.undo();
-                Flux.handleAction(action);
+                Redux.handleAction(action);
         }
 
         function onRedo ()
         {
                 const action = ActionCreators.redo();
-                Flux.handleAction(action);
+                Redux.handleAction(action);
         }
 }

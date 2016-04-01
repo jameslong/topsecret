@@ -13,7 +13,7 @@ module Component {
                 messages: Immutable.Map<string, Im.Message>(),
         }, 'ReplyOption');
 
-        type ReplyOptionProps = Flux.Props<ReplyOptionData>;
+        type ReplyOptionProps = Redux.Props<ReplyOptionData>;
 
         function render (props: ReplyOptionProps)
         {
@@ -51,7 +51,7 @@ module Component {
                         type, parameters, delay);
         }
 
-        export const ReplyOption = Flux.createFactory(render, 'ReplyOption');
+        export const ReplyOption = Redux.createFactory(render, 'ReplyOption');
 
         function setType (
                 onSet: (option: Im.ReplyOption) => void,

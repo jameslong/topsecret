@@ -20,7 +20,7 @@ module Component {
                 onSelectNarrative: () => {},
         }, 'MenuBar');
 
-        export type MenuBarProps = Flux.Props<MenuBarData>;
+        export type MenuBarProps = Redux.Props<MenuBarData>;
 
         function render (props: MenuBarProps)
         {
@@ -40,7 +40,7 @@ module Component {
                         narrativeSelect, addMessage, test);
         }
 
-        export const MenuBar = Flux.createFactory(render, 'MenuBar');
+        export const MenuBar = Redux.createFactory(render, 'MenuBar');
 
         function createAddMessage (onAddMessage: () => void)
         {

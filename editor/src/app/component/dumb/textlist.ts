@@ -19,7 +19,7 @@ module Component {
                 }
         }
 
-        export type TextListProps = Flux.Props<TextListData>;
+        export type TextListProps = Redux.Props<TextListData>;
 
         function render (props: TextListProps)
         {
@@ -39,7 +39,7 @@ module Component {
                 });
         }
 
-        export const TextList = Flux.createFactory(render, 'TextList');
+        export const TextList = Redux.createFactory(render, 'TextList');
 
         function splitToString (newValue: string)
         {

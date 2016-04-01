@@ -13,7 +13,7 @@ module Component {
                 className: null,
         }, 'Button');
 
-        type ButtonInputProps = Flux.Props<ButtonData>;
+        type ButtonInputProps = Redux.Props<ButtonData>;
 
         function render (props: ButtonInputProps)
         {
@@ -27,5 +27,5 @@ module Component {
                 }, data.text);
         }
 
-        export const ButtonInput = Flux.createFactory(render, 'ButtonInput');
+        export const ButtonInput = Redux.createFactory(render, 'ButtonInput');
 }

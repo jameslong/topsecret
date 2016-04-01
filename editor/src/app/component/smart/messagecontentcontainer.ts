@@ -15,7 +15,7 @@ module Component {
                 name: '',
         }, 'MessageContentContainer');
 
-        type MessageContentContainerProps = Flux.Props<MessageContentContainerData>;
+        type MessageContentContainerProps = Redux.Props<MessageContentContainerData>;
 
         function render (props: MessageContentContainerProps)
         {
@@ -33,7 +33,7 @@ module Component {
                 return MessageContent(contentData);
         }
 
-        export const MessageContentContainer = Flux.createFactory(
+        export const MessageContentContainer = Redux.createFactory(
                 render, 'MessageContentContainer');
 
         function onSetMessageContent (
@@ -43,6 +43,6 @@ module Component {
                         name: messageName,
                         value: newContent,
                 });
-                Flux.handleAction(action);
+                Redux.handleAction(action);
         }
 }

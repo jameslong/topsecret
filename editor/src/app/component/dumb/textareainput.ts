@@ -13,7 +13,7 @@ module Component {
                 className: undefined,
         }, 'TextArea');
 
-        export type TextAreaProps = Flux.Props<TextAreaData>;
+        export type TextAreaProps = Redux.Props<TextAreaData>;
 
         interface InputEvent {
                 target: {
@@ -35,5 +35,5 @@ module Component {
                 });
         }
 
-        export const TextAreaInput = Flux.createFactory(render, 'TextArea');
+        export const TextAreaInput = Redux.createFactory(render, 'TextArea');
 }

@@ -11,7 +11,7 @@ module Component {
                 onChange: (value: number) => {},
         }, 'Number');
 
-        type NumberProps = Flux.Props<NumberData>;
+        type NumberProps = Redux.Props<NumberData>;
 
         interface NumberEvent {
                 target: {
@@ -35,5 +35,5 @@ module Component {
                 });
         }
 
-        export const Number = Flux.createFactory(render, 'Number');
+        export const Number = Redux.createFactory(render, 'Number');
 }

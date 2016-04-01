@@ -14,7 +14,7 @@ module Component {
                 messages: Immutable.Map<string, Im.Message>(),
         }, 'MessageDelay');
 
-        type MessageDelayProps = Flux.Props<MessageDelayData>;
+        type MessageDelayProps = Redux.Props<MessageDelayData>;
 
         function render (props: MessageDelayProps)
         {
@@ -68,7 +68,7 @@ module Component {
                         messageDelay);
         }
 
-        export const MessageDelay = Flux.createFactory(render, 'MessageDelay');
+        export const MessageDelay = Redux.createFactory(render, 'MessageDelay');
 
         function onSetName (data: MessageDelayData, name: string)
         {

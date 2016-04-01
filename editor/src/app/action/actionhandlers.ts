@@ -110,7 +110,7 @@ module ActionHandlers {
                                 parameters: null,
                         };
 
-                        Flux.handleAction(action);
+                        Redux.handleAction(action);
                 };
                 setTimeout(callback, delayms);
         }

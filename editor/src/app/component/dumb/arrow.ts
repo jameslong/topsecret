@@ -1,7 +1,7 @@
 /// <reference path="svgline.ts" />
 
 module Component {
-        type ArrowClassProps = Flux.Props<Im.Edge>;
+        type ArrowClassProps = Redux.Props<Im.Edge>;
 
         function render (props: ArrowClassProps) {
                 const data = props.data;
@@ -23,7 +23,7 @@ module Component {
                 return G({ className: className }, line, arrowhead);
         }
 
-        export const Arrow = Flux.createFactory(render, 'Arrow');
+        export const Arrow = Redux.createFactory(render, 'Arrow');
 
         function createArrowhead (start: Im.Coord, end: Im.Coord)
         {

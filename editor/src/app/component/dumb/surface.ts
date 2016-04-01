@@ -1,7 +1,7 @@
 /// <reference path="../smart/dragzone.ts" />
 
 module Component {
-        type SurfaceProps = Flux.Props<void>;
+        type SurfaceProps = Redux.Props<void>;
 
         function render (props: SurfaceProps)
         {
@@ -12,5 +12,5 @@ module Component {
                         Dragzone('surface-dragzone', children));
         }
 
-        export const Surface = Flux.createFactory(render, 'Surface');
+        export const Surface = Redux.createFactory(render, 'Surface');
 }

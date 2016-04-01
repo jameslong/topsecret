@@ -40,7 +40,7 @@ module Component {
                 onSetFallback: () => {},
         }, 'EditMessage');
 
-        type EditMessageProps = Flux.Props<EditMessageData>;
+        type EditMessageProps = Redux.Props<EditMessageData>;
 
         function render (props: EditMessageProps)
         {
@@ -109,7 +109,7 @@ module Component {
                 );
         }
 
-        export const EditMessage = Flux.createFactory(render, 'EditMessage');
+        export const EditMessage = Redux.createFactory(render, 'EditMessage');
 
         export function wrapInLabel<P>(
                 label: string, ...components: React.ReactElement<any>[])

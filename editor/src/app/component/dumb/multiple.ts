@@ -13,7 +13,7 @@ module Component {
                 onRemove: () => {},
         }, 'Multiple');
 
-        type MultipleProps = Flux.Props<MultipleData>;
+        type MultipleProps = Redux.Props<MultipleData>;
 
         function onAdd (addFn: () => void, e: Event)
         {
@@ -53,7 +53,7 @@ module Component {
                 return Div({}, wrappedChildren, add);
         }
 
-        export const Multiple = Flux.createFactory(render, 'Multiple');
+        export const Multiple = Redux.createFactory(render, 'Multiple');
 
         function wrapChild (
                 removeFn: (index: number) => void,

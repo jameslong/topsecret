@@ -13,7 +13,7 @@ module Component {
                 messages: Immutable.Map<string, Im.Message>(),
         }, 'ReplyOptionsContainer');
 
-        type ReplyOptionsContainerProps = Flux.Props<ReplyOptionsContainerData>;
+        type ReplyOptionsContainerProps = Redux.Props<ReplyOptionsContainerData>;
 
         function render (props: ReplyOptionsContainerProps)
         {
@@ -31,7 +31,7 @@ module Component {
         }
 
         export const ReplyOptionsContainer =
-                Flux.createFactory(render, 'ReplyOptionsContainer');
+                Redux.createFactory(render, 'ReplyOptionsContainer');
 
         function setReplyOptions (name: string, replyOptions: Im.ReplyOptions)
         {
@@ -39,6 +39,6 @@ module Component {
                         name: name,
                         value: replyOptions,
                 });
-                Flux.handleAction(action);
+                Redux.handleAction(action);
         }
 }

@@ -2,7 +2,7 @@
 ///<reference path='actions.ts'/>
 
 module ActionCreators {
-        function createAction<T> (type: string, parameters: T): Flux.Action<T>
+        function createAction<T> (type: string, parameters: T): Redux.Action<T>
         {
                 return {
                         type: type,

@@ -11,7 +11,7 @@ module Component {
                 store: Im.Store(),
         }, 'EditMessageContainer');
 
-        type EditMessageContainerProps = Flux.Props<EditMessageContainerData>;
+        type EditMessageContainerProps = Redux.Props<EditMessageContainerData>;
 
         function render (props: EditMessageContainerProps)
         {
@@ -54,12 +54,12 @@ module Component {
                 return EditMessage(editMessageData);
         }
 
-        export const EditMessageContainer = Flux.createFactory(render, 'EditMessageContainer');
+        export const EditMessageContainer = Redux.createFactory(render, 'EditMessageContainer');
 
         function onDelete (name: string)
         {
                 const action = ActionCreators.deleteMessage(name);
-                Flux.handleAction(action);
+                Redux.handleAction(action);
         }
 
         function onSetNameScratchpad (
@@ -69,7 +69,7 @@ module Component {
                         name: messageName,
                         value: newName,
                 });
-                Flux.handleAction(action);
+                Redux.handleAction(action);
         }
 
         function onSetName (messageName: string)
@@ -78,7 +78,7 @@ module Component {
                         name: messageName,
                         value: null,
                 });
-                Flux.handleAction(action);
+                Redux.handleAction(action);
         }
 
         function onSetSubjectName (messageName: string, newSubject: string)
@@ -87,7 +87,7 @@ module Component {
                         name: messageName,
                         value: newSubject,
                 });
-                Flux.handleAction(action);
+                Redux.handleAction(action);
         }
 
         export function onSetString (
@@ -97,7 +97,7 @@ module Component {
                         name: stringName,
                         value: value,
                 });
-                Flux.handleAction(action);
+                Redux.handleAction(action);
         }
 
         function onSetEndGame (messageName: string, newEndGame: boolean)
@@ -106,7 +106,7 @@ module Component {
                         name: messageName,
                         value: newEndGame,
                 });
-                Flux.handleAction(action);
+                Redux.handleAction(action);
         }
 
         function onSetEncrypted (messageName: string, newEncrypted: boolean)
@@ -115,7 +115,7 @@ module Component {
                         name: messageName,
                         value: newEncrypted,
                 });
-                Flux.handleAction(action);
+                Redux.handleAction(action);
         }
 
         function onSetScript (messageName: string, newScript: string)
@@ -124,7 +124,7 @@ module Component {
                         name: messageName,
                         value: newScript,
                 });
-                Flux.handleAction(action);
+                Redux.handleAction(action);
         }
 
         function onSetChild (
@@ -145,7 +145,7 @@ module Component {
                         name: messageName,
                         value: delays,
                 });
-                Flux.handleAction(action);
+                Redux.handleAction(action);
         }
 
         function onAddChild (message: Im.Message)
@@ -169,7 +169,7 @@ module Component {
                         name: messageName,
                         value: newDelay,
                 });
-                Flux.handleAction(action);
+                Redux.handleAction(action);
         }
 
         function onAddFallback (messageName: string)

@@ -2,9 +2,9 @@
 /// <reference path="../../../typings/react/react-global.d.ts" />
 ///<reference path='../../../node_modules/immutable/dist/immutable.d.ts'/>
 ///<reference path='../../../typings/immutable/immutable-overrides.d.ts'/>
+///<reference path='redux/redux.ts'/>
+///<reference path='redux/react.ts'/>
 ///<reference path='action/actionhandlermap.ts'/>
-///<reference path='flux/flux.ts'/>
-///<reference path='flux/react.ts'/>
 ///<reference path='./config.ts'/>
 ///<reference path='./misc.ts'/>
 ///<reference path='./state.ts'/>
@@ -40,7 +40,7 @@ window.onload = () => {
                 dirty: false,
         });
 
-        Flux.init(state, ActionHandlerMap.handleNewAction, Component.Root, wrapper);
+        Redux.init(state, ActionHandlerMap.handleNewAction, Component.Root, wrapper);
 
         AsyncRequest.requestNarratives(config.serverURL);
         EventHandler.addKeyHandlers();

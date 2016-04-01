@@ -1,5 +1,5 @@
 module Component {
-        type AbsoluteProps = Flux.Props<Im.Coord>;
+        type AbsoluteProps = Redux.Props<Im.Coord>;
 
         function render (props: AbsoluteProps)
         {
@@ -13,5 +13,5 @@ module Component {
                 return Div({ style: style }, children);
         }
 
-        export const Absolute = Flux.createFactory(render, 'Absolute');
+        export const Absolute = Redux.createFactory(render, 'Absolute');
 }

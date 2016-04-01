@@ -1,5 +1,5 @@
 module Component {
-        type DragzoneProps = Flux.Props<string>;
+        type DragzoneProps = Redux.Props<string>;
 
         function render (props: DragzoneProps)
         {
@@ -14,7 +14,7 @@ module Component {
                 }, children);
         }
 
-        export const Dragzone = Flux.createFactory(render, 'Dragzone');
+        export const Dragzone = Redux.createFactory(render, 'Dragzone');
 
         function onDrop (e: DragEvent)
         {
@@ -36,6 +36,6 @@ module Component {
                         delta: delta,
                 });
 
-                Flux.handleAction(action);
+                Redux.handleAction(action);
         }
 }

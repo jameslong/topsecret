@@ -1,6 +1,6 @@
 /// <reference path="../../../../typings/react/react.d.ts" />
 
-module Flux {
+module Redux {
         /* React can't handle immutable props so we need to wrap them in a
         mutable object. Immutable props allows quick shouldComponentUpdate */
 

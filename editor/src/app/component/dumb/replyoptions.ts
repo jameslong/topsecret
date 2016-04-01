@@ -17,7 +17,7 @@ module Component {
                 onSet: () => {},
         }, 'ReplyOptions');
 
-        type ReplyOptionsProps = Flux.Props<ReplyOptionsData>;
+        type ReplyOptionsProps = Redux.Props<ReplyOptionsData>;
 
         function render (props: ReplyOptionsProps)
         {
@@ -32,7 +32,7 @@ module Component {
                 return Div({}, replyOptions);
         }
 
-        export const ReplyOptions = Flux.createFactory(render, 'ReplyOptions');
+        export const ReplyOptions = Redux.createFactory(render, 'ReplyOptions');
 
         function onSetReplyOption (
                 onSet: OnSet,

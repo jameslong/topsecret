@@ -21,7 +21,7 @@ module Component {
         }
 
         type Props = Immutable.Record.IRecord<{ className?: string }>;
-        export function createValidatedComponent<U extends Flux.Props<Props>> (
+        export function createValidatedComponent<U extends Redux.Props<Props>> (
                 props: U,
                 createComponent: React.Factory<U>,
                 valid: boolean)

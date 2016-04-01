@@ -1,7 +1,7 @@
 ///<reference path='../../misc.ts'/>
 
 module Component {
-        type InputLabelProps = Flux.Props<Im.KeyValue>;
+        type InputLabelProps = Redux.Props<Im.KeyValue>;
 
         function render (props: InputLabelProps)
         {
@@ -16,5 +16,5 @@ module Component {
                         labelName, labelValue);
         }
 
-        export const InputLabel = Flux.createFactory(render, 'InputLabel');
+        export const InputLabel = Redux.createFactory(render, 'InputLabel');
 }

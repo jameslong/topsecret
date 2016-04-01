@@ -11,7 +11,7 @@ module Component {
                 onChange: (value: string) => {},
         }, 'SelectInput');
 
-        export type SelectInputProps = Flux.Props<SelectInputData>;
+        export type SelectInputProps = Redux.Props<SelectInputData>;
 
         interface InputEvent {
                 target: {
@@ -33,7 +33,7 @@ module Component {
                 }, options);
         }
 
-        export const SelectInput = Flux.createFactory(render, 'SelectInput');
+        export const SelectInput = Redux.createFactory(render, 'SelectInput');
 
         function createOptions (options: Immutable.List<string>)
         {

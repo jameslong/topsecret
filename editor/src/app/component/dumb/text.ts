@@ -15,7 +15,7 @@ module Component {
                 className: undefined,
         }, 'Text');
 
-        export type TextProps = Flux.Props<TextData>;
+        export type TextProps = Redux.Props<TextData>;
 
         interface InputEvent {
                 target: {
@@ -38,5 +38,5 @@ module Component {
                 });
         }
 
-        export const Text = Flux.createFactory(render, 'Text');
+        export const Text = Redux.createFactory(render, 'Text');
 }

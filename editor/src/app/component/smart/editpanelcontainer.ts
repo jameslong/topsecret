@@ -1,7 +1,7 @@
 /// <reference path="../dumb/editpanel.ts" />
 
 module Component {
-        type EditPanelContainerProps = Flux.Props<Im.Store>;
+        type EditPanelContainerProps = Redux.Props<Im.Store>;
 
         function render (props: EditPanelContainerProps)
         {
@@ -13,13 +13,13 @@ module Component {
                 return EditPanel(editPanelData);
         }
 
-        export const EditPanelContainer = Flux.createFactory(render, 'EditPanelContainer');
+        export const EditPanelContainer = Redux.createFactory(render, 'EditPanelContainer');
 
         function onClick (e: MouseEvent)
         {
                 e.stopPropagation();
 
                 const action = ActionCreators.closeMessage();
-                Flux.handleAction(action);
+                Redux.handleAction(action);
         }
 }

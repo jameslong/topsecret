@@ -4,7 +4,7 @@
 /// <reference path="../smart/menubarcontainer.ts" />
 
 module Component {
-        type RootProps = Flux.Props<Im.State>;
+        type RootProps = Redux.Props<Im.State>;
 
         function render (props: RootProps)
         {
@@ -35,6 +35,6 @@ module Component {
                 );
         }
 
-        export const Root = Flux.createFactory(render, 'Root');
+        export const Root = Redux.createFactory(render, 'Root');
 
 }

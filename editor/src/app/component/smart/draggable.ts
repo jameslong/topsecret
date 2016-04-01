@@ -7,7 +7,7 @@ module Component {
                 y: number,
         }
 
-        type DraggableProps = Flux.Props<Im.Value>;
+        type DraggableProps = Redux.Props<Im.Value>;
 
         function render (props: DraggableProps)
         {
@@ -21,7 +21,7 @@ module Component {
                  }, children);
         }
 
-        export const Draggable = Flux.createFactory(render, 'Draggable');
+        export const Draggable = Redux.createFactory(render, 'Draggable');
 
         function onDragStart (props: DraggableProps, e: DragEvent)
         {

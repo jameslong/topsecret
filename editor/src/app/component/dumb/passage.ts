@@ -15,7 +15,7 @@ module Component {
                 onSetBody: () => {},
         }, 'Passage');
 
-        type PassageProps = Flux.Props<PassageData>;
+        type PassageProps = Redux.Props<PassageData>;
 
         function render (props: PassageProps)
         {
@@ -29,7 +29,7 @@ module Component {
                         name, body);
         }
 
-        export const Passage = Flux.createFactory(render, 'Passage');
+        export const Passage = Redux.createFactory(render, 'Passage');
 
         function createName (name: string, onChange: (value: string) => void)
         {

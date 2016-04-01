@@ -12,7 +12,7 @@ module Component {
                 onClick: () => {},
         }, 'Node');
 
-        type NodeProps = Flux.Props<NodeData>;
+        type NodeProps = Redux.Props<NodeData>;
 
         function render (props: NodeProps)
         {
@@ -25,7 +25,7 @@ module Component {
                 });
                 const selected = message.selected;
                 const invalid = !message.valid;
-                const className = Flux.classNames(
+                const className = Redux.classNames(
                         'node',
                         { ['node-selected']: selected },
                         { ['node-invalid']: invalid });
@@ -45,5 +45,5 @@ module Component {
                 );
         }
 
-        export const Node = Flux.createFactory(render, 'Node');
+        export const Node = Redux.createFactory(render, 'Node');
 }

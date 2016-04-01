@@ -11,7 +11,7 @@ module Component {
                 onClick: () => {},
         }, 'EditPanel');
 
-        type EditPanelProps = Flux.Props<EditPanelData>;
+        type EditPanelProps = Redux.Props<EditPanelData>;
 
         function render (props: EditPanelProps)
         {
@@ -40,7 +40,7 @@ module Component {
                 );
         }
 
-        export const EditPanel = Flux.createFactory(render, 'EditPanel');
+        export const EditPanel = Redux.createFactory(render, 'EditPanel');
 
         function onClick (e: MouseEvent)
         {

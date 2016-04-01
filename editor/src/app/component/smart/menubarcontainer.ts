@@ -13,7 +13,7 @@ module Component {
                 activeMessage: null,
         }, 'MenuBarContainer');
 
-        export type MenuBarContainerProps = Flux.Props<MenuBarContainerData>;
+        export type MenuBarContainerProps = Redux.Props<MenuBarContainerData>;
 
         function render (props: MenuBarContainerProps)
         {
@@ -33,18 +33,18 @@ module Component {
                 return MenuBar(menuBarData);
         }
 
-        export const MenuBarContainer = Flux.createFactory(render, 'MenuBarContainer');
+        export const MenuBarContainer = Redux.createFactory(render, 'MenuBarContainer');
 
         function onAddMessage ()
         {
                 const action = ActionCreators.createMessage();
-                Flux.handleAction(action);
+                Redux.handleAction(action);
         }
 
         function onSelectNarrative (name: string)
         {
                 const action = ActionCreators.setActiveNarrative(name);
-                Flux.handleAction(action);
+                Redux.handleAction(action);
         }
 
         function onTest (version: string, messageName: string)

@@ -14,7 +14,7 @@ module Component {
                 onClick: () => {},
         }, 'EditArea');
 
-        type EditAreaProps = Flux.Props<EditAreaData>;
+        type EditAreaProps = Redux.Props<EditAreaData>;
 
         function render (props: EditAreaProps)
         {
@@ -50,5 +50,5 @@ module Component {
                 );
         }
 
-        export const EditArea = Flux.createFactory(render, 'EditArea');
+        export const EditArea = Redux.createFactory(render, 'EditArea');
 }

@@ -13,7 +13,7 @@ module Component {
                 onRemove: () => {},
         }, 'Optional');
 
-        type OptionalProps = Flux.Props<OptionalData>;
+        type OptionalProps = Redux.Props<OptionalData>;
 
         function render (props: OptionalProps)
         {
@@ -51,7 +51,7 @@ module Component {
                 }
         }
 
-        export const Optional = Flux.createFactory(render, 'Optional');
+        export const Optional = Redux.createFactory(render, 'Optional');
 
         function onAdd (addFn: () => void, event: Event)
         {

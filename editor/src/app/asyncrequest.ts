@@ -22,7 +22,7 @@ module AsyncRequest {
                         narrativesMutable, Im.convertToImmutableNarrative);
 
                 const action = ActionCreators.setGameData(narratives);
-                Flux.handleAction(action);
+                Redux.handleAction(action);
         }
 
         export function saveMessage (

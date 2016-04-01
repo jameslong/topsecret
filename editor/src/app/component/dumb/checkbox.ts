@@ -9,7 +9,7 @@ module Component {
                 onChange: (value: boolean) => {},
         }, 'Checkbox');
 
-        type CheckboxProps = Flux.Props<CheckboxData>;
+        type CheckboxProps = Redux.Props<CheckboxData>;
 
         interface CheckEvent {
                 target: {
@@ -30,5 +30,5 @@ module Component {
                 });
         }
 
-        export const Checkbox = Flux.createFactory(render, 'Checkbox');
+        export const Checkbox = Redux.createFactory(render, 'Checkbox');
 }
