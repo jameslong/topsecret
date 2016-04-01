@@ -2,12 +2,12 @@
 
 module Component {
         interface EditPanelInt {
-                store: Im.Store;
+                store: State.Store;
                 onClick: (e: MouseEvent) => void;
         };
         export type EditPanelData = Immutable.Record.IRecord<EditPanelInt>;
         export const EditPanelData = Immutable.Record<EditPanelInt>({
-                store: Im.Store(),
+                store: State.Store(),
                 onClick: () => {},
         }, 'EditPanel');
 
@@ -17,7 +17,7 @@ module Component {
         {
                 const data = props.data;
                 const store = data.store;
-                const narrative = Im.getActiveNarrative(store);
+                const narrative = Narrative.getActiveNarrative(store);
 
                 const editMessageData = EditMessageContainerData({
                         name: store.activeMessage,

@@ -37,11 +37,11 @@ module Actions {
         export interface Undo extends Redux.Action<void> {}
         export interface Redo extends Redux.Action<void> {}
         export interface Save extends Redux.Action<void> {}
-        export interface SetGameData extends Redux.Action<Im.Narratives> {}
+        export interface SetGameData extends Redux.Action<Narrative.Narratives> {}
 
         export interface EndDragParameters {
                 id: string;
-                delta: Im.Coord;
+                delta: MathUtils.Coord;
         }
         export interface EndDrag extends Redux.Action<EndDragParameters> {}
         export interface SetActiveNarrative extends Redux.Action<string> {}
@@ -60,11 +60,11 @@ module Actions {
         export interface SetMessageEndGame extends NameValueAction<boolean> {}
         export interface SetMessageEncrypted extends NameValueAction<boolean> {}
         export interface SetMessageScript extends NameValueAction<string> {}
-        export interface SetMessagePosition extends NameValueAction<Im.Coord> {}
-        export interface SetMessageContent extends NameValueAction<Im.MessageContent> {}
-        export interface SetMessageFallback extends NameValueAction<Im.MessageDelay> {}
-        export interface SetMessageChildren extends NameValueAction<Immutable.List<Im.MessageDelay>> {}
-        export interface SetMessageReplyOptions extends NameValueAction<Immutable.List<Im.ReplyOption>> {}
+        export interface SetMessagePosition extends NameValueAction<MathUtils.Coord> {}
+        export interface SetMessageContent extends NameValueAction<Message.MessageContent> {}
+        export interface SetMessageFallback extends NameValueAction<Message.MessageDelay> {}
+        export interface SetMessageChildren extends NameValueAction<Immutable.List<Message.MessageDelay>> {}
+        export interface SetMessageReplyOptions extends NameValueAction<Immutable.List<ReplyOption.ReplyOption>> {}
 
         export interface SetString extends NameValueAction<string> {}
 }

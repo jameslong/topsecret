@@ -1,7 +1,7 @@
 ///<reference path='message.ts'/>
 ///<reference path='misc.ts'/>
 
-module Im {
+module ReplyOption {
         export type ReplyOptionMutable =
                 ReplyOptionKeywordMutable |
                 ReplyOptionValidPGPKeyMutable |
@@ -31,7 +31,7 @@ module Im {
         interface ReplyOptionBaseMutable<T> {
                 type: string;
                 parameters: T;
-                messageDelay: MessageDelayMutable;
+                messageDelay: Message.MessageDelayMutable;
         }
 
         interface KeywordParametersMutable {
@@ -59,44 +59,44 @@ module Im {
         interface ReplyOptionKeywordInt {
                 type: string;
                 parameters: KeywordParameters;
-                messageDelay: MessageDelay;
+                messageDelay: Message.MessageDelay;
         };
         export type ReplyOptionKeyword = Immutable.Record.IRecord<ReplyOptionKeywordInt>;
         export const ReplyOptionKeyword = Immutable.Record<ReplyOptionKeywordInt>({
                 type: 'keyword',
                 parameters: KeywordParameters(),
-                messageDelay: MessageDelay(),
+                messageDelay: Message.MessageDelay(),
         }, 'ReplyOptionKeyword');
 
         interface ReplyOptionValidPGPKeyInt {
                 type: string;
-                parameters: ImObject;
-                messageDelay: MessageDelay;
+                parameters: Misc.ImObject;
+                messageDelay: Message.MessageDelay;
         };
         export type ReplyOptionValidPGPKey = Immutable.Record.IRecord<ReplyOptionValidPGPKeyInt>;
         export const ReplyOptionValidPGPKey = Immutable.Record<ReplyOptionValidPGPKeyInt>({
                 type: 'validPGPKey',
-                parameters: ImObject(),
-                messageDelay: MessageDelay(),
+                parameters: Misc.ImObject(),
+                messageDelay: Message.MessageDelay(),
         }, 'ReplyOptionValidPGPKey');
 
         interface ReplyOptionDefaultInt {
                 type: string;
-                parameters: ImObject;
-                messageDelay: MessageDelay;
+                parameters: Misc.ImObject;
+                messageDelay: Message.MessageDelay;
         };
         export type ReplyOptionDefault = Immutable.Record.IRecord<ReplyOptionDefaultInt>;
         export const ReplyOptionDefault = Immutable.Record<ReplyOptionDefaultInt>({
                 type: 'default',
-                parameters: ImObject(),
-                messageDelay: MessageDelay(),
+                parameters: Misc.ImObject(),
+                messageDelay: Message.MessageDelay(),
         }, 'ReplyOptionDefault');
 
         export function convertToImmutableReplyOptions (
                 replyOptions: ReplyOptionMutable[])
                 : Immutable.List<ReplyOption>
         {
-                return listFromArray(
+                return Helpers.listFromArray(
                         replyOptions, convertToImmutableReplyOption);
         }
 
@@ -128,8 +128,8 @@ module Im {
         {
                 return ReplyOptionDefault({
                         type: 'default',
-                        parameters: ImObject(),
-                        messageDelay: convertToImmutableMessageDelay(
+                        parameters: Misc.ImObject(),
+                        messageDelay: Message.convertToImmutableMessageDelay(
                                 replyOption.messageDelay),
                 });
         }
@@ -145,7 +145,7 @@ module Im {
                         parameters: KeywordParameters({
                                 matches: matches,
                         }),
-                        messageDelay: convertToImmutableMessageDelay(
+                        messageDelay: Message.convertToImmutableMessageDelay(
                                 replyOption.messageDelay),
                 });
         }
@@ -155,8 +155,8 @@ module Im {
         {
                 return ReplyOptionDefault({
                         type: 'validPGPKey',
-                        parameters: ImObject(),
-                        messageDelay: convertToImmutableMessageDelay(
+                        parameters: Misc.ImObject(),
+                        messageDelay: Message.convertToImmutableMessageDelay(
                                 replyOption.messageDelay),
                 });
         }

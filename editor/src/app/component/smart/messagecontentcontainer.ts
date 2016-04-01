@@ -2,15 +2,15 @@
 
 module Component {
         interface MessageContentContainerInt {
-                message: Im.MessageContent;
-                profiles: Im.Profiles;
-                strings: Im.Strings;
+                message: Message.MessageContent;
+                profiles: Narrative.Profiles;
+                strings: Narrative.Strings;
                 name: string;
         };
         export type MessageContentContainerData = Immutable.Record.IRecord<MessageContentContainerInt>;
         export const MessageContentContainerData = Immutable.Record<MessageContentContainerInt>({
-                message: Im.MessageContent(),
-                profiles: Immutable.Map<string, Im.Profile>(),
+                message: Message.MessageContent(),
+                profiles: Immutable.Map<string, Profile.Profile>(),
                 strings: Immutable.Map<string, string>(),
                 name: '',
         }, 'MessageContentContainer');
@@ -21,7 +21,7 @@ module Component {
         {
                 const data = props.data;
                 const name = data.name;
-                const onSet = (content: Im.MessageContent) =>
+                const onSet = (content: Message.MessageContent) =>
                         onSetMessageContent(name, content);
                 const contentData = MessageContentData({
                         message: data.message,
@@ -37,7 +37,7 @@ module Component {
                 render, 'MessageContentContainer');
 
         function onSetMessageContent (
-                messageName: string, newContent: Im.MessageContent)
+                messageName: string, newContent: Message.MessageContent)
         {
                 const action = ActionCreators.setMessageContent({
                         name: messageName,

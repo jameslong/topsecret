@@ -26,7 +26,7 @@ module Component {
                 const deltaX = e.screenX - dragData.x;
                 const deltaY = e.screenY - dragData.y;
 
-                const delta = Im.Coord({
+                const delta = MathUtils.Coord({
                         x: deltaX,
                         y: deltaY,
                 });

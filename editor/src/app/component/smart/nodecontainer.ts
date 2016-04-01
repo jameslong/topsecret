@@ -1,7 +1,7 @@
 /// <reference path="../dumb/node.ts" />
 
 module Component {
-        type NodeContainerProps = Redux.Props<Im.Message>;
+        type NodeContainerProps = Redux.Props<Message.Message>;
 
         function render (props: NodeContainerProps)
         {

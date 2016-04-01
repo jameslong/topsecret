@@ -3,12 +3,12 @@
 
 module Component {
         interface NodeInt {
-                message: Im.Message;
+                message: Message.Message;
                 onClick: (e: MouseEvent) => void;
         };
         export type NodeData = Immutable.Record.IRecord<NodeInt>;
         export const NodeData = Immutable.Record<NodeInt>({
-                message: Im.Message(),
+                message: Message.Message(),
                 onClick: () => {},
         }, 'Node');
 
@@ -20,7 +20,7 @@ module Component {
                 const message = props.data.message;
                 const name = message.name;
                 const position = message.position;
-                const nameProps = Im.Value({
+                const nameProps = Misc.Value({
                         value: name,
                 });
                 const selected = message.selected;

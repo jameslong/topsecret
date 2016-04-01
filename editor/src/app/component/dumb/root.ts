@@ -4,13 +4,13 @@
 /// <reference path="../smart/menubarcontainer.ts" />
 
 module Component {
-        type RootProps = Redux.Props<Im.State>;
+        type RootProps = Redux.Props<State.State>;
 
         function render (props: RootProps)
         {
                 const state = props.data;
-                const store = Im.getActiveStore(state);
-                const narrativeNames = Im.keys(store.narratives);
+                const store = State.getActiveStore(state);
+                const narrativeNames = Helpers.keys(store.narratives);
 
                 const activeNarrative = store.activeNarrative;
                 const activeMessage = store.activeMessage;
@@ -18,9 +18,9 @@ module Component {
                 const message = activeMessage ?
                         EditPanelContainer(store) : null;
 
-                const narrative = Im.getActiveNarrative(store);
+                const narrative = Narrative.getActiveNarrative(store);
                 const messages = narrative.messages;
-                const singleSelected = Im.getSingleSelectedMessage(messages);
+                const singleSelected = Message.getSingleSelectedMessage(messages);
 
                 const menuBarData = MenuBarContainerData({
                         narrativeNames,

@@ -3,12 +3,12 @@
 module Component {
         interface EditMessageContainerInt {
                 name: string,
-                store: Im.Store;
+                store: State.Store;
         };
         export type EditMessageContainerData = Immutable.Record.IRecord<EditMessageContainerInt>;
         export const EditMessageContainerData = Immutable.Record<EditMessageContainerInt>({
                 name: '',
-                store: Im.Store(),
+                store: State.Store(),
         }, 'EditMessageContainer');
 
         type EditMessageContainerProps = Redux.Props<EditMessageContainerData>;
@@ -32,9 +32,9 @@ module Component {
                         onSetEncrypted(name, encrypted);
                 const onSetScriptLocal = (script: string) =>
                         onSetScript(name, script);
-                const onSetChildrenLocal = (delays: Im.MessageDelays) =>
+                const onSetChildrenLocal = (delays: Message.MessageDelays) =>
                         onSetChildren(name, delays);
-                const onSetFallbackLocal = (delay: Im.MessageDelay) =>
+                const onSetFallbackLocal = (delay: Message.MessageDelay) =>
                         onSetFallback(name, delay);
 
                 const editMessageData = EditMessageData({
@@ -128,8 +128,8 @@ module Component {
         }
 
         function onSetChild (
-                message: Im.Message,
-                delay: Im.MessageDelay,
+                message: Message.Message,
+                delay: Message.MessageDelay,
                 index: number)
         {
                 const children = message.children;
@@ -139,7 +139,7 @@ module Component {
 
         function onSetChildren (
                 messageName: string,
-                delays: Immutable.List<Im.MessageDelay>)
+                delays: Immutable.List<Message.MessageDelay>)
         {
                 const action = ActionCreators.setMessageChildren({
                         name: messageName,
@@ -148,22 +148,22 @@ module Component {
                 Redux.handleAction(action);
         }
 
-        function onAddChild (message: Im.Message)
+        function onAddChild (message: Message.Message)
         {
-                const newChild = Im.MessageDelay();
+                const newChild = Message.MessageDelay();
                 const children = message.children;
                 const newChildren = children.push(newChild);
                 onSetChildren(message.name, newChildren);
         }
 
-        function onRemoveChild (message: Im.Message, index: number)
+        function onRemoveChild (message: Message.Message, index: number)
         {
                 const children = message.children;
                 const newChildren = children.delete(index);
                 onSetChildren(message.name, newChildren);
         }
 
-        function onSetFallback (messageName: string, newDelay: Im.MessageDelay)
+        function onSetFallback (messageName: string, newDelay: Message.MessageDelay)
         {
                 const action = ActionCreators.setMessageFallback({
                         name: messageName,
@@ -174,7 +174,7 @@ module Component {
 
         function onAddFallback (messageName: string)
         {
-                const newDelay = Im.MessageDelay();
+                const newDelay = Message.MessageDelay();
                 onSetFallback(messageName, newDelay);
         }
 

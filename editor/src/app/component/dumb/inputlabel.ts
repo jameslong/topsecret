@@ -1,7 +1,7 @@
 ///<reference path='../../misc.ts'/>
 
 module Component {
-        type InputLabelProps = Redux.Props<Im.KeyValue>;
+        type InputLabelProps = Redux.Props<Misc.KeyValue>;
 
         function render (props: InputLabelProps)
         {

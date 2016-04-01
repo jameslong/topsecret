@@ -5,12 +5,12 @@
 
 module Component {
         interface EditAreaInt {
-                store: Im.Store;
+                store: State.Store;
                 onClick: (e: MouseEvent) => void,
         };
         export type EditAreaData = Immutable.Record.IRecord<EditAreaInt>;
         export const EditAreaData = Immutable.Record<EditAreaInt>({
-                store: Im.Store(),
+                store: State.Store(),
                 onClick: () => {},
         }, 'EditArea');
 
@@ -20,7 +20,7 @@ module Component {
         {
                 const data = props.data;
                 const store = data.store;
-                const narrative = Im.getActiveNarrative(store);
+                const narrative = Narrative.getActiveNarrative(store);
                 const messages = narrative.messages;
                 const messageList = messages.toList();
 

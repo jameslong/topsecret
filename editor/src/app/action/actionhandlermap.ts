@@ -8,7 +8,7 @@ module ActionHandlerMap {
         }
 
         interface HandlerMap {
-                [s: string]: ActionHandler<any, Im.State>;
+                [s: string]: ActionHandler<any, State.State>;
         }
 
         export const handlerMap: HandlerMap = {
@@ -41,7 +41,7 @@ module ActionHandlerMap {
         };
 
         export function handleNewAction (
-                state: Im.State, action: Redux.Action<any>)
+                state: State.State, action: Redux.Action<any>)
         {
                 return handlerMap[action.type](state, action);
         }

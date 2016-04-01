@@ -1,7 +1,7 @@
 /// <reference path="../dumb/editarea.ts" />
 
 module Component {
-        type EditAreaContainerProps = Redux.Props<Im.Store>;
+        type EditAreaContainerProps = Redux.Props<State.Store>;
 
         function render (props: EditAreaContainerProps)
         {

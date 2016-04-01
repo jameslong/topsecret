@@ -1,5 +1,5 @@
 module Component {
-        type SvgLineClassProps = Redux.Props<Im.Line>;
+        type SvgLineClassProps = Redux.Props<MathUtils.Line>;
 
         function render (props: SvgLineClassProps)
         {

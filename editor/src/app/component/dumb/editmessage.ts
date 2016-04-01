@@ -12,7 +12,7 @@
 module Component {
         interface EditMessageInt {
                 name: string,
-                store: Im.Store;
+                store: State.Store;
                 onDelete: () => void;
                 onSetNameScratchpad: (newName: string) => void;
                 onSetName: () => void;
@@ -21,13 +21,13 @@ module Component {
                 onSetEndGame: (endGame: boolean) => void;
                 onSetEncrypted: (encrypted: boolean) => void;
                 onSetScript: (script: string) => void;
-                onSetChildren: (delays: Im.MessageDelays) => void;
-                onSetFallback: (delay: Im.MessageDelay) => void;
+                onSetChildren: (delays: Message.MessageDelays) => void;
+                onSetFallback: (delay: Message.MessageDelay) => void;
         };
         export type EditMessageData = Immutable.Record.IRecord<EditMessageInt>;
         export const EditMessageData = Immutable.Record<EditMessageInt>({
                 name: '',
-                store: Im.Store(),
+                store: State.Store(),
                 onDelete: () => {},
                 onSetNameScratchpad: () => {},
                 onSetName: () => {},
@@ -46,7 +46,7 @@ module Component {
         {
                 const data = props.data;
                 const store = data.store;
-                const narrative = Im.getActiveNarrative(store);
+                const narrative = Narrative.getActiveNarrative(store);
 
                 const messageName = data.name;
                 const scratchpadName =
@@ -114,7 +114,7 @@ module Component {
         export function wrapInLabel<P>(
                 label: string, ...components: React.ReactElement<any>[])
         {
-                const props = Im.KeyValue({ name: '', value: label });
+                const props = Misc.KeyValue({ name: '', value: label });
                 return InputLabel(props, ...components);
         }
 
@@ -146,7 +146,7 @@ module Component {
         function createName (
                 messageName: string,
                 scratchpadName: string,
-                messages: Im.Messages,
+                messages: Narrative.Messages,
                 onSetNameScratchpad: (newName: string) => void,
                 onSetName: () => void)
         {
@@ -173,9 +173,9 @@ module Component {
         }
 
         function createMessageContent (
-                message: Im.Message,
-                strings: Im.Strings,
-                profiles: Im.Profiles)
+                message: Message.Message,
+                strings: Narrative.Strings,
+                profiles: Narrative.Profiles)
         {
                 const messageProps = MessageContentContainerData({
                         profiles: profiles,
@@ -187,7 +187,7 @@ module Component {
         }
 
         function createReplyOptions (
-                message: Im.Message, messages: Im.Messages)
+                message: Message.Message, messages: Narrative.Messages)
         {
                 const replyOptionsProps = ReplyOptionsContainerData({
                         name: message.name,
@@ -198,7 +198,7 @@ module Component {
         }
 
         function createEndGame (
-                message: Im.Message,
+                message: Message.Message,
                 onSetEndGame: (endGame: boolean) => void)
         {
                 const newEndGameProps = CheckboxData({
@@ -209,7 +209,7 @@ module Component {
         }
 
         function createEncrypted (
-                message: Im.Message,
+                message: Message.Message,
                 onSetEncrypted: (encrypted: boolean) => void)
         {
                 const newEncryptedProps = CheckboxData({
@@ -221,7 +221,7 @@ module Component {
         }
 
         function createScript (
-                message: Im.Message,
+                message: Message.Message,
                 onSetScript: (script: string) => void)
         {
                 const script = message.script;
@@ -249,8 +249,8 @@ module Component {
         }
 
         function createSubject (
-                message: Im.Message,
-                strings: Im.Strings,
+                message: Message.Message,
+                strings: Narrative.Strings,
                 onSetSubjectName: (subjectName: string) => void,
                 onSetString: (name: string, value: string) => void)
         {
@@ -279,9 +279,9 @@ module Component {
         }
 
         function onSetChild (
-                onSetChildren: (delays: Im.MessageDelays) => void,
-                message: Im.Message,
-                delay: Im.MessageDelay,
+                onSetChildren: (delays: Message.MessageDelays) => void,
+                message: Message.Message,
+                delay: Message.MessageDelay,
                 index: number)
         {
                 const children = message.children;
@@ -290,18 +290,18 @@ module Component {
         }
 
         function onAddChild (
-                onSetChildren: (delays: Im.MessageDelays) => void,
-                message: Im.Message)
+                onSetChildren: (delays: Message.MessageDelays) => void,
+                message: Message.Message)
         {
-                const newChild = Im.MessageDelay();
+                const newChild = Message.MessageDelay();
                 const children = message.children;
                 const newChildren = children.push(newChild);
                 onSetChildren(newChildren);
         }
 
         function onRemoveChild (
-                onSetChildren: (delays: Im.MessageDelays) => void,
-                message: Im.Message, index: number)
+                onSetChildren: (delays: Message.MessageDelays) => void,
+                message: Message.Message, index: number)
         {
                 const children = message.children;
                 const newChildren = children.delete(index);
@@ -309,16 +309,16 @@ module Component {
         }
 
         function createChildren (
-                onSetChildren: (delays: Im.MessageDelays) => void,
-                message: Im.Message,
-                messages: Im.Messages)
+                onSetChildren: (delays: Message.MessageDelays) => void,
+                message: Message.Message,
+                messages: Narrative.Messages)
         {
                 const onAdd = () => onAddChild(onSetChildren, message);
                 const onRemove = (index: number) =>
                         onRemoveChild(onSetChildren, message, index);
                 const delays = message.children;
                 const children = delays.map((delay, index) => {
-                        const onSet = (delay: Im.MessageDelay) =>
+                        const onSet = (delay: Message.MessageDelay) =>
                                 onSetChild(onSetChildren, message, delay, index);
                         const props = MessageDelayData({
                                 delay: delay,
@@ -335,16 +335,16 @@ module Component {
                 return Multiple(multipleProps);
         }
 
-        function onAddFallback (onSetFallback: (delay: Im.MessageDelay) => void)
+        function onAddFallback (onSetFallback: (delay: Message.MessageDelay) => void)
         {
-                const newDelay = Im.MessageDelay();
+                const newDelay = Message.MessageDelay();
                 onSetFallback(newDelay);
         }
 
         function createFallback (
-                onSetFallback: (delay: Im.MessageDelay) => void,
-                message: Im.Message,
-                messages: Im.Messages)
+                onSetFallback: (delay: Message.MessageDelay) => void,
+                message: Message.Message,
+                messages: Narrative.Messages)
         {
                 const delay = message.fallback;
                 const messageName = message.name;
@@ -366,25 +366,25 @@ module Component {
                 return Optional(optionalProps);
         }
 
-        function createDataLists (narrative: Im.Narrative)
+        function createDataLists (narrative: Narrative.Narrative)
         {
                 const messages = narrative.messages;
                 const profiles = narrative.profiles;
                 const strings = narrative.strings;
 
-                const messageNames = Im.keys(messages)
+                const messageNames = Helpers.keys(messages)
                 const messageDataList = createDataList(
                         'messageNames', messageNames);
 
-                const profileNames = Im.keys(profiles)
+                const profileNames = Helpers.keys(profiles)
                 const profileDataList = createDataList(
                         'profileNames', profileNames);
 
-                const stringNames = Im.keys(strings);
+                const stringNames = Helpers.keys(strings);
                 const stringDataList = createDataList(
                         'stringNames', stringNames);
 
-                const replyOptionTypes = Im.getReplyOptionTypes();
+                const replyOptionTypes = ReplyOption.getReplyOptionTypes();
                 const replyOptionDataList = createDataList(
                         'replyOptionTypes', replyOptionTypes);
 

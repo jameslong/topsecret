@@ -7,7 +7,7 @@ module Component {
                 y: number,
         }
 
-        type DraggableProps = Redux.Props<Im.Value>;
+        type DraggableProps = Redux.Props<Misc.Value>;
 
         function render (props: DraggableProps)
         {

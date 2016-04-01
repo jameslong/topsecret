@@ -2,16 +2,16 @@
 
 module ActionHandlers {
         function setActiveNarrative (
-                name: string, store: Im.Store, config: Im.Config)
+                name: string, store: State.Store, config: Config.Config)
         {
                 const narrative = store.narratives.get(name);
                 const messages = narrative.messages;
 
-                const newEdges = Im.createEdges(
+                const newEdges = Edge.createEdges(
                         messages, config.vertexSize);
                 const newScratchpad = Immutable.Map<string, string>();
 
-                return Im.Store({
+                return State.Store({
                         activeNarrative: name,
                         activeMessage: store.activeMessage,
                         narratives: store.narratives,
@@ -21,20 +21,20 @@ module ActionHandlers {
         }
 
         export function handleSetGameData (
-                state: Im.State, action: Actions.SetGameData)
+                state: State.State, action: Actions.SetGameData)
         {
                 const narratives = action.parameters;
-                const newNarratives = narratives.map(Im.markNarrativeValid);
-                const store = Im.getActiveStore(state);
+                const newNarratives = narratives.map(Narrative.markNarrativeValid);
+                const store = State.getActiveStore(state);
                 const tempStore = store.set('narratives', newNarratives);
 
-                const names = Im.keys(narratives);
+                const names = Helpers.keys(narratives);
                 const activeNarrative = names.get(0);
                 const newStore = setActiveNarrative(
                         activeNarrative, tempStore, state.config);
 
-                const newStores = Immutable.List.of<Im.Store>(newStore);
-                return Im.State({
+                const newStores = Immutable.List.of<State.Store>(newStore);
+                return State.State({
                         config: state.config,
                         stores: newStores,
                         activeStoreIndex: 0,
@@ -44,23 +44,23 @@ module ActionHandlers {
         }
 
         interface ActionHandler<T> {
-                (store: Im.Store,
-                config: Im.Config,
-                action: T): Im.Store,
+                (store: State.Store,
+                config: Config.Config,
+                action: T): State.Store,
         }
 
         export function wrapStoreUpdateFunc<T> (handler: ActionHandler<T>)
         {
-                return (state: Im.State, action: T) =>
+                return (state: State.State, action: T) =>
                         wrapStoreUpdate(state, handler, action);
         }
 
         export function wrapStoreUpdate<T> (
-                state: Im.State,
+                state: State.State,
                 handler: ActionHandler<T>,
                 action: T)
         {
-                const store = Im.getActiveStore(state);
+                const store = State.getActiveStore(state);
                 const config = state.config;
                 const newStore = handler(store, config, action);
                 const lastStore = state.stores.last();
@@ -69,7 +69,7 @@ module ActionHandlers {
                         state : addNewStore(state, newStore);
         }
 
-        export function addNewStore (state: Im.State, store: Im.Store)
+        export function addNewStore (state: State.State, store: State.Store)
         {
                 console.log('new store');
                 const newActiveIndex = state.activeStoreIndex + 1;
@@ -84,7 +84,7 @@ module ActionHandlers {
                 return setDirtyState(newState);
         }
 
-        export function trimStores (state: Im.State)
+        export function trimStores (state: State.State)
         {
                 const maxUndos = state.config.maxUndos;
                 const stores = state.stores;
@@ -115,7 +115,7 @@ module ActionHandlers {
                 setTimeout(callback, delayms);
         }
 
-        export function setDirtyState (state: Im.State)
+        export function setDirtyState (state: State.State)
         {
                 if (!state.dirty) {
                         onDirtyState(state.config.autosaveDelayms);
@@ -125,14 +125,14 @@ module ActionHandlers {
                 }
         }
 
-        export function handleUndo (state: Im.State, action: Actions.Undo)
+        export function handleUndo (state: State.State, action: Actions.Undo)
         {
                 const newIndex = Math.max(0, state.activeStoreIndex - 1);
                 const newState = state.set('activeStoreIndex', newIndex);
                 return setDirtyState(newState);
         }
 
-        export function handleRedo (state: Im.State, action: Actions.Redo)
+        export function handleRedo (state: State.State, action: Actions.Redo)
         {
                 const lastIndex = Math.max(0, state.stores.size - 1);
                 const currentIndex = state.activeStoreIndex;
@@ -141,21 +141,21 @@ module ActionHandlers {
                 return setDirtyState(newState);
         }
 
-        export function getMessageGroup (name: string, store: Im.Store)
+        export function getMessageGroup (name: string, store: State.Store)
         {
-                const narrative = Im.getActiveNarrative(store);
+                const narrative = Narrative.getActiveNarrative(store);
                 const messages = narrative.messages;
                 const message = messages.get(name);
                 const selected = message.selected;
 
                 return selected ?
-                        Im.getSelectedMessages(messages) :
-                        Immutable.Map<string, Im.Message>(
+                        Message.getSelectedMessages(messages) :
+                        Immutable.Map<string, Message.Message>(
                                 [[message.name, message]]);
         }
 
         export function handleEndDrag (
-                store: Im.Store, config: Im.Config, action: Actions.EndDrag)
+                store: State.Store, config: Config.Config, action: Actions.EndDrag)
         {
                 const parameters = action.parameters;
                 const name = parameters.id;
@@ -163,10 +163,10 @@ module ActionHandlers {
                 const gridSize = config.gridSize;
                 const selectedMessages = getMessageGroup(name, store);
 
-                const narrative = Im.getActiveNarrative(store);
+                const narrative = Narrative.getActiveNarrative(store);
                 const messages = narrative.messages;
 
-                const updatedMessages = <Im.Messages>selectedMessages.map(
+                const updatedMessages = <Narrative.Messages>selectedMessages.map(
                         message => updatePosition(delta, gridSize, message));
                 const newMessages = messages.merge(updatedMessages);
 
@@ -174,10 +174,10 @@ module ActionHandlers {
                 const newNarratives = store.narratives.set(
                         narrative.name, newNarrative);
 
-                const newEdges = Im.createEdges(
+                const newEdges = Edge.createEdges(
                         newMessages, config.vertexSize);
 
-                return Im.Store({
+                return State.Store({
                         activeNarrative: store.activeNarrative,
                         activeMessage: store.activeMessage,
                         narratives: newNarratives,
@@ -195,9 +195,9 @@ module ActionHandlers {
         }
 
         function updatePosition (
-                delta: Im.Coord,
+                delta: MathUtils.Coord,
                 gridSize: number,
-                message: Im.Message)
+                message: Message.Message)
         {
                 const position = message.position;
                 const newX = position.x + delta.x;
@@ -205,7 +205,7 @@ module ActionHandlers {
                 const roundedX = roundToNearestMultiple(gridSize, newX);
                 const roundedY = roundToNearestMultiple(gridSize, newY);
 
-                const newPosition = Im.Coord({
+                const newPosition = MathUtils.Coord({
                         x: roundedX,
                         y: roundedY,
                 });
@@ -214,8 +214,8 @@ module ActionHandlers {
         }
 
         export function handleSetActiveNarrative (
-                store: Im.Store,
-                config: Im.Config,
+                store: State.Store,
+                config: Config.Config,
                 action: Actions.SetActiveNarrative)
         {
                 const name = action.parameters;
@@ -223,8 +223,8 @@ module ActionHandlers {
         }
 
         export function handleOpenMessage (
-                store: Im.Store,
-                config: Im.Config,
+                store: State.Store,
+                config: Config.Config,
                 action: Actions.OpenMessage)
         {
                 const name = action.parameters;
@@ -234,8 +234,8 @@ module ActionHandlers {
         }
 
         export function handleCloseMessage (
-                store: Im.Store,
-                config: Im.Config,
+                store: State.Store,
+                config: Config.Config,
                 action: Actions.CloseMessage)
         {
                 window.document.body.classList.remove('open-modal');
@@ -243,9 +243,9 @@ module ActionHandlers {
                 return onNarrativeUpdate(newStore, config);
         }
 
-        export function handleSave (state: Im.State, action: Actions.Save)
+        export function handleSave (state: State.State, action: Actions.Save)
         {
-                const activeStore = Im.getActiveStore(state);
+                const activeStore = State.getActiveStore(state);
 
                 const url = state.config.serverURL;
                 const lastSavedStore = state.lastSavedStore;
@@ -257,8 +257,8 @@ module ActionHandlers {
 
         function saveStoreDifference (
                 url: string,
-                previousStore: Im.Store,
-                currentStore: Im.Store)
+                previousStore: State.Store,
+                currentStore: State.Store)
         {
                 saveNarrativesDifference(
                         url,
@@ -268,10 +268,10 @@ module ActionHandlers {
 
         function saveNarrativesDifference (
                 url: string,
-                previousState: Im.Narratives,
-                currentState: Im.Narratives)
+                previousState: Narrative.Narratives,
+                currentState: Narrative.Narratives)
         {
-                const different = Im.getUpdated(previousState, currentState);
+                const different = Helpers.getUpdated(previousState, currentState);
 
                 different.forEach((current, name) => {
                         const previous = previousState.get(name);
@@ -281,8 +281,8 @@ module ActionHandlers {
 
         function saveNarrativeDifference (
                 url: string,
-                previous: Im.Narrative,
-                current: Im.Narrative)
+                previous: Narrative.Narrative,
+                current: Narrative.Narrative)
         {
                 const narrativeName = current.name;
 
@@ -302,9 +302,9 @@ module ActionHandlers {
 //                        Request.saveProfiles,
 //                        Request.deleteProfiles);
 
-                const saveMessage = (name: string, message: Im.Message) =>
+                const saveMessage = (name: string, message: Message.Message) =>
                         AsyncRequest.saveMessage(url, narrativeName, message);
-                const deleteMessage = (name: string, message: Im.Message) =>
+                const deleteMessage = (name: string, message: Message.Message) =>
                         AsyncRequest.deleteMessage(url, narrativeName, name);
                 saveMapDifference(
                         previous.messages,
@@ -320,10 +320,10 @@ module ActionHandlers {
                 deleteFn: (key: U, value: V) => void)
         {
                 if (previous !== current) {
-                        const updated = Im.getUpdated(previous, current);
+                        const updated = Helpers.getUpdated(previous, current);
                         updated.forEach((value, key) => saveFn(key, value));
 
-                        const removed = Im.getRemoved(previous, current);
+                        const removed = Helpers.getRemoved(previous, current);
                         removed.forEach((value, key) => deleteFn(key, value));
                 }
         }
@@ -337,41 +337,41 @@ module ActionHandlers {
                 const centreX = Math.round(scrollX + (width / 2));
                 const centreY = Math.round(scrollY + (height / 2));
 
-                return Im.Coord({
+                return MathUtils.Coord({
                         x: centreX,
                         y: centreY,
                 });
         }
 
         function onNarrativeUpdate (
-                store: Im.Store, config: Im.Config)
+                store: State.Store, config: Config.Config)
         {
                 const narratives = store.narratives;
                 const activeNarrative = store.activeNarrative;
                 const narrative = narratives.get(activeNarrative);
                 const messages = narrative.messages;
-                const newMessages = Im.markMessagesValid(
+                const newMessages = Message.markMessagesValid(
                         messages, narrative.strings, narrative.profiles);
                 const newNarrative = narrative.set('messages', newMessages);
                 const newNarratives = narratives.set(
                         activeNarrative, newNarrative);
 
-                const newEdges = Im.createEdges(
+                const newEdges = Edge.createEdges(
                         newMessages, config.vertexSize);
                 return store.set('edges', newEdges)
                         .set('narratives', newNarratives);
         }
 
         export function handleCreateMessage (
-                store: Im.Store,
-                config: Im.Config,
+                store: State.Store,
+                config: Config.Config,
                 action: Actions.CreateMessage)
         {
-                const narrative = Im.getActiveNarrative(store);
+                const narrative = Narrative.getActiveNarrative(store);
                 const messages = narrative.messages;
-                const name = Im.createUniqueMessageName(messages);
+                const name = Message.createUniqueMessageName(messages);
                 const newPosition = getCentrePosition();
-                const tempMessage = Im.Message().
+                const tempMessage = Message.Message().
                         set('position', newPosition);
                 const newMessage = tempMessage.set('name', name);
                 const newMessages = messages.set(name, newMessage);
@@ -383,12 +383,12 @@ module ActionHandlers {
         }
 
         export function handleDeleteMessage (
-                store: Im.Store,
-                config: Im.Config,
+                store: State.Store,
+                config: Config.Config,
                 action: Actions.DeleteMessage)
         {
                 const name = action.parameters;
-                const narrative = Im.getActiveNarrative(store);
+                const narrative = Narrative.getActiveNarrative(store);
 
                 const newMessages = narrative.messages.delete(name);
                 const newNarrative = narrative.set('messages', newMessages);
@@ -403,33 +403,33 @@ module ActionHandlers {
         }
 
         export function handleDeselectMessage (
-                store: Im.Store,
-                config: Im.Config,
+                store: State.Store,
+                config: Config.Config,
                 action: Actions.DeselectMessage)
         {
                 const name = action.parameters;
-                const narrative = Im.getActiveNarrative(store);
+                const narrative = Narrative.getActiveNarrative(store);
                 const message = narrative.messages.get(name);
-                const selected = Immutable.Map<string, Im.Message>(
+                const selected = Immutable.Map<string, Message.Message>(
                         [[name, message]]);
                 return deselectMessages(selected, store);
         }
 
         export function handleDeselectAllMessages (
-                store: Im.Store,
-                config: Im.Config,
+                store: State.Store,
+                config: Config.Config,
                 action: Actions.DeselectAllMessages)
         {
-                const narrative = Im.getActiveNarrative(store);
+                const narrative = Narrative.getActiveNarrative(store);
                 const messages = narrative.messages;
-                const selected = Im.getSelectedMessages(messages);
+                const selected = Message.getSelectedMessages(messages);
                 return deselectMessages(selected, store);
         }
 
         export function deselectMessages (
-                selected: Im.Messages, store: Im.Store)
+                selected: Narrative.Messages, store: State.Store)
         {
-                const narrative = Im.getActiveNarrative(store);
+                const narrative = Narrative.getActiveNarrative(store);
 
                 const updatedMessages = selected.map(message =>
                         message.set('selected', false));
@@ -447,8 +447,8 @@ module ActionHandlers {
         }
 
         export function handleSelectMessage (
-                store: Im.Store,
-                config: Im.Config,
+                store: State.Store,
+                config: Config.Config,
                 action: Actions.SelectMessage)
         {
                 const name = action.parameters;
@@ -456,23 +456,23 @@ module ActionHandlers {
         }
 
         export function handleUniqueSelectMessage (
-                store: Im.Store,
-                config: Im.Config,
+                store: State.Store,
+                config: Config.Config,
                 action: Actions.UniqueSelectMessage)
         {
                 const name = action.parameters;
 
-                const narrative = Im.getActiveNarrative(store);
+                const narrative = Narrative.getActiveNarrative(store);
                 const messages = narrative.messages;
-                const selected = Im.getSelectedMessages(messages);
+                const selected = Message.getSelectedMessages(messages);
                 const newStore = deselectMessages(selected, store);
 
                 return selectMessage(name, newStore);
         }
 
-        function selectMessage(name: string, store: Im.Store)
+        function selectMessage(name: string, store: State.Store)
         {
-                const narrative = Im.getActiveNarrative(store);
+                const narrative = Narrative.getActiveNarrative(store);
                 const messages = narrative.messages;
                 const message = messages.get(name);
                 const newMessage = message.set('selected', true);
@@ -485,8 +485,8 @@ module ActionHandlers {
         }
 
         export function handleSetEditedMessageName (
-                store: Im.Store,
-                config: Im.Config,
+                store: State.Store,
+                config: Config.Config,
                 action: Actions.SetEditedMessageName)
         {
                 const parameters = action.parameters;
@@ -500,8 +500,8 @@ module ActionHandlers {
         }
 
         export function handleSetMessageName (
-                store: Im.Store,
-                config: Im.Config,
+                store: State.Store,
+                config: Config.Config,
                 action: Actions.SetMessageName)
         {
                 const parameters = action.parameters;
@@ -509,7 +509,7 @@ module ActionHandlers {
                 const newName = store.nameScratchpad.get(name);
 
                 const narratives = store.narratives;
-                const narrative = Im.getActiveNarrative(store);
+                const narrative = Narrative.getActiveNarrative(store);
                 const messages = narrative.messages;
                 const message = messages.get(name);
                 const newMessage = message.set('name', newName);
@@ -531,10 +531,10 @@ module ActionHandlers {
                 name: string,
                 propertyName: string,
                 propertyValue: any,
-                store: Im.Store)
+                store: State.Store)
         {
                 const narratives = store.narratives;
-                const narrative = Im.getActiveNarrative(store);
+                const narrative = Narrative.getActiveNarrative(store);
                 const messages = narrative.messages;
                 const message = messages.get(name);
                 const newMessage = message.set(propertyName, propertyValue);
@@ -543,7 +543,7 @@ module ActionHandlers {
                 const newNarratives = narratives.set(
                         narrative.name, newNarrative);
 
-                return Im.Store({
+                return State.Store({
                         activeNarrative: store.activeNarrative,
                         activeMessage: store.activeMessage,
                         narratives: newNarratives,
@@ -553,8 +553,8 @@ module ActionHandlers {
         }
 
         export function handleSetMessageSubject (
-                store: Im.Store,
-                config: Im.Config,
+                store: State.Store,
+                config: Config.Config,
                 action: Actions.SetMessageSubject)
         {
                 const parameters = action.parameters;
@@ -567,8 +567,8 @@ module ActionHandlers {
         }
 
         export function handleSetMessageEndGame (
-                store: Im.Store,
-                config: Im.Config,
+                store: State.Store,
+                config: Config.Config,
                 action: Actions.SetMessageEndGame)
         {
                 const parameters = action.parameters;
@@ -581,8 +581,8 @@ module ActionHandlers {
         }
 
         export function handleSetMessageEncrypted (
-                store: Im.Store,
-                config: Im.Config,
+                store: State.Store,
+                config: Config.Config,
                 action: Actions.SetMessageEncrypted)
         {
                 const parameters = action.parameters;
@@ -595,8 +595,8 @@ module ActionHandlers {
         }
 
         export function handleSetMessageScript (
-                store: Im.Store,
-                config: Im.Config,
+                store: State.Store,
+                config: Config.Config,
                 action: Actions.SetMessageScript)
         {
                 const parameters = action.parameters;
@@ -609,8 +609,8 @@ module ActionHandlers {
         }
 
         export function handleSetMessagePosition (
-                store: Im.Store,
-                config: Im.Config,
+                store: State.Store,
+                config: Config.Config,
                 action: Actions.SetMessagePosition)
         {
                 const parameters = action.parameters;
@@ -623,8 +623,8 @@ module ActionHandlers {
         }
 
         export function handleSetMessageContent (
-                store: Im.Store,
-                config: Im.Config,
+                store: State.Store,
+                config: Config.Config,
                 action: Actions.SetMessageContent)
         {
                 const parameters = action.parameters;
@@ -637,8 +637,8 @@ module ActionHandlers {
         }
 
         export function handleSetMessageFallback (
-                store: Im.Store,
-                config: Im.Config,
+                store: State.Store,
+                config: Config.Config,
                 action: Actions.SetMessageFallback)
         {
                 const parameters = action.parameters;
@@ -651,8 +651,8 @@ module ActionHandlers {
         }
 
         export function handleSetMessageChildren (
-                store: Im.Store,
-                config: Im.Config,
+                store: State.Store,
+                config: Config.Config,
                 action: Actions.SetMessageChildren)
         {
                 const parameters = action.parameters;
@@ -665,8 +665,8 @@ module ActionHandlers {
         }
 
         export function handleSetMessageReplyOptions (
-                store: Im.Store,
-                config: Im.Config,
+                store: State.Store,
+                config: Config.Config,
                 action: Actions.SetMessageReplyOptions)
         {
                 const parameters = action.parameters;
@@ -679,15 +679,15 @@ module ActionHandlers {
         }
 
         export function handleSetString (
-                store: Im.Store,
-                config: Im.Config,
+                store: State.Store,
+                config: Config.Config,
                 action: Actions.SetString)
         {
                 const parameters = action.parameters;
                 const name = parameters.name;
                 const value = parameters.value;
 
-                const narrative = Im.getActiveNarrative(store);
+                const narrative = Narrative.getActiveNarrative(store);
                 const strings = narrative.strings;
                 const newStrings = strings.set(name, value);
 
@@ -695,7 +695,7 @@ module ActionHandlers {
                 const newNarratives = store.narratives.set(
                         narrative.name, newNarrative);
 
-                return Im.Store({
+                return State.Store({
                         activeNarrative: store.activeNarrative,
                         activeMessage: store.activeMessage,
                         narratives: newNarratives,

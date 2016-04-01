@@ -1,5 +1,5 @@
 module Component {
-        type AbsoluteProps = Redux.Props<Im.Coord>;
+        type AbsoluteProps = Redux.Props<MathUtils.Coord>;
 
         function render (props: AbsoluteProps)
         {

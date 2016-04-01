@@ -3,19 +3,19 @@
 /// <reference path="textlist.ts" />
 
 module Component {
-        type OnSet = (content: Im.MessageContent) => void;
+        type OnSet = (content: Message.MessageContent) => void;
 
         interface MessageContentInt {
-                message: Im.MessageContent;
-                profiles: Im.Profiles;
-                strings: Im.Strings;
+                message: Message.MessageContent;
+                profiles: Narrative.Profiles;
+                strings: Narrative.Strings;
                 name: string;
                 onSet: OnSet;
         };
         export type MessageContentData = Immutable.Record.IRecord<MessageContentInt>;
         export const MessageContentData = Immutable.Record<MessageContentInt>({
-                message: Im.MessageContent(),
-                profiles: Immutable.Map<string, Im.Profile>(),
+                message: Message.MessageContent(),
+                profiles: Immutable.Map<string, Profile.Profile>(),
                 strings: Immutable.Map<string, string>(),
                 name: '',
                 onSet: () => {},
@@ -47,7 +47,7 @@ module Component {
 
         function onSetFrom (
                 onSet: OnSet,
-                content: Im.MessageContent,
+                content: Message.MessageContent,
                 from: string)
         {
                 const newContent = content.set('from', from);
@@ -56,7 +56,7 @@ module Component {
 
         function onSetTo (
                 onSet: OnSet,
-                content: Im.MessageContent,
+                content: Message.MessageContent,
                 newTo: Immutable.List<string>)
         {
                 const newContent = content.set('to', newTo);
@@ -65,7 +65,7 @@ module Component {
 
         function onSetPassage (
                 onSet: OnSet,
-                content: Im.MessageContent,
+                content: Message.MessageContent,
                 text: string,
                 index: number)
         {
@@ -74,7 +74,7 @@ module Component {
                 onSet(newContent);
         }
 
-        function onAddPassage (onSet: OnSet, content: Im.MessageContent)
+        function onAddPassage (onSet: OnSet, content: Message.MessageContent)
         {
                 const body = content.body;
                 const newBody = body.push('');
@@ -84,7 +84,7 @@ module Component {
 
         function onRemovePassage (
                 onSet: OnSet,
-                content: Im.MessageContent,
+                content: Message.MessageContent,
                 index: number)
         {
                 const body = content.body;
@@ -95,8 +95,8 @@ module Component {
 
         function createBody (
                 onSet: OnSet,
-                content: Im.MessageContent,
-                strings: Im.Strings)
+                content: Message.MessageContent,
+                strings: Narrative.Strings)
         {
                 const body = content.body;
 
@@ -129,8 +129,8 @@ module Component {
 
         function createFrom (
                 onSet: OnSet,
-                content: Im.MessageContent,
-                profiles: Im.Profiles)
+                content: Message.MessageContent,
+                profiles: Narrative.Profiles)
         {
                 const value = content.from;
                 const onChange = (text: string) =>
@@ -148,8 +148,8 @@ module Component {
 
         function createTo (
                 onSet: OnSet,
-                content: Im.MessageContent,
-                profiles: Im.Profiles)
+                content: Message.MessageContent,
+                profiles: Narrative.Profiles)
         {
                 const values = content.to;
                 const onChange = (newTo: Immutable.List<string>) =>

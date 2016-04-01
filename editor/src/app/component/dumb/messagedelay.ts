@@ -3,15 +3,15 @@
 
 module Component {
         interface MessageDelayInt {
-                delay: Im.MessageDelay;
-                onChange: (delay: Im.MessageDelay) => void;
-                messages: Im.Messages;
+                delay: Message.MessageDelay;
+                onChange: (delay: Message.MessageDelay) => void;
+                messages: Narrative.Messages;
         };
         export type MessageDelayData = Immutable.Record.IRecord<MessageDelayInt>;
         export const MessageDelayData = Immutable.Record<MessageDelayInt>({
-                delay: Im.MessageDelay(),
+                delay: Message.MessageDelay(),
                 onChange: () => {},
-                messages: Immutable.Map<string, Im.Message>(),
+                messages: Immutable.Map<string, Message.Message>(),
         }, 'MessageDelay');
 
         type MessageDelayProps = Redux.Props<MessageDelayData>;

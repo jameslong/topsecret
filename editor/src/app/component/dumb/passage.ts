@@ -2,7 +2,7 @@
 
 module Component {
         interface PassageInt {
-                strings: Im.Strings;
+                strings: Narrative.Strings;
                 name: string;
                 onSetName: (value: string) => void;
                 onSetBody: (value: string) => void;
@@ -46,7 +46,7 @@ module Component {
         function createBody (
                 name: string,
                 onChange: (value: string) => void,
-                strings: Im.Strings)
+                strings: Narrative.Strings)
         {
                 const bodyText = strings.get(name) || '';
                 const valid = !!bodyText;

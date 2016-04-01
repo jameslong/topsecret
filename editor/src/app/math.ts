@@ -1,4 +1,4 @@
-module Im {
+module MathUtils {
         export interface CoordInt {
                 x: number;
                 y: number;
@@ -7,9 +7,9 @@ module Im {
         export const Coord = Immutable.Record<CoordInt>({
                 x: 0, y: 0 }, 'Coord');
 
-        export function add (a: Im.Coord, b: Im.Coord)
+        export function add (a: MathUtils.Coord, b: MathUtils.Coord)
         {
-                return Im.Coord({
+                return Coord({
                         x: a.x + b.y,
                         y: a.y + b.y,
                 });
@@ -24,8 +24,8 @@ module Im {
                 x: 0, y: 0, width: 0, height: 0 }, 'Rect');
 
         interface LineInt {
-                start: Im.Coord;
-                end: Im.Coord;
+                start: Coord;
+                end: Coord;
         };
         export type Line = Immutable.Record.IRecord<LineInt>;
         export const Line = Immutable.Record<LineInt>({

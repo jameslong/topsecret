@@ -1,4 +1,4 @@
-module Im {
+module Helpers {
         export function log<K, V>(object: Immutable.Iterable<K, V>)
         {
                 console.log(object.toJS());

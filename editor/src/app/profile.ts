@@ -1,4 +1,4 @@
-module Im {
+module Profile {
         export interface ProfileMutable {
                 name: string;
                 emailLocal: string;

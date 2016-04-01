@@ -3,14 +3,14 @@
 module Component {
         interface ReplyOptionsContainerInt {
                 name: string;
-                replyOptions: Im.ReplyOptions;
-                messages: Im.Messages;
+                replyOptions: ReplyOption.ReplyOptions;
+                messages: Narrative.Messages;
         };
         export type ReplyOptionsContainerData = Immutable.Record.IRecord<ReplyOptionsContainerInt>;
         export const ReplyOptionsContainerData = Immutable.Record<ReplyOptionsContainerInt>({
                 name: '',
-                replyOptions: Immutable.List<Im.ReplyOption>(),
-                messages: Immutable.Map<string, Im.Message>(),
+                replyOptions: Immutable.List<ReplyOption.ReplyOption>(),
+                messages: Immutable.Map<string, Message.Message>(),
         }, 'ReplyOptionsContainer');
 
         type ReplyOptionsContainerProps = Redux.Props<ReplyOptionsContainerData>;
@@ -24,7 +24,7 @@ module Component {
                         name: name,
                         replyOptions: data.replyOptions,
                         messages: data.messages,
-                        onSet: (options: Im.ReplyOptions) =>
+                        onSet: (options: ReplyOption.ReplyOptions) =>
                                 setReplyOptions(name, options),
                 });
                 return ReplyOptions(replyOptionsData);
@@ -33,7 +33,7 @@ module Component {
         export const ReplyOptionsContainer =
                 Redux.createFactory(render, 'ReplyOptionsContainer');
 
-        function setReplyOptions (name: string, replyOptions: Im.ReplyOptions)
+        function setReplyOptions (name: string, replyOptions: ReplyOption.ReplyOptions)
         {
                 const action = ActionCreators.setMessageReplyOptions({
                         name: name,

@@ -1,7 +1,7 @@
 /// <reference path="../dumb/editpanel.ts" />
 
 module Component {
-        type EditPanelContainerProps = Redux.Props<Im.Store>;
+        type EditPanelContainerProps = Redux.Props<State.Store>;
 
         function render (props: EditPanelContainerProps)
         {
