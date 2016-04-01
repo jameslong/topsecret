@@ -1,6 +1,6 @@
-/// <reference path="../../../../typings/jquery/jquery.d.ts" />
+/// <reference path="../../../typings/jquery/jquery.d.ts" />
 
-module Request {
+module AsyncRequest {
         export function requestNarratives (url: string)
         {
                 const requestURL = url + '/narratives';

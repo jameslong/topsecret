@@ -1,4 +1,4 @@
-///<reference path='../im/edge.ts'/>
+///<reference path='../edge.ts'/>
 
 module Action {
         function setActiveNarrative (
@@ -286,9 +286,9 @@ module Action {
                 const narrativeName = current.name;
 
                 const saveString = (name: string, value: string) =>
-                        Request.saveString(url, narrativeName, name, value);
+                        AsyncRequest.saveString(url, narrativeName, name, value);
                 const deleteString = (name: string) =>
-                        Request.deleteString(url, narrativeName, name);
+                        AsyncRequest.deleteString(url, narrativeName, name);
                 saveMapDifference(
                         previous.strings,
                         current.strings,
@@ -302,9 +302,9 @@ module Action {
 //                        Request.deleteProfiles);
 
                 const saveMessage = (name: string, message: Im.Message) =>
-                        Request.saveMessage(url, narrativeName, message);
+                        AsyncRequest.saveMessage(url, narrativeName, message);
                 const deleteMessage = (name: string, message: Im.Message) =>
-                        Request.deleteMessage(url, narrativeName, name);
+                        AsyncRequest.deleteMessage(url, narrativeName, name);
                 saveMapDifference(
                         previous.messages,
                         current.messages,

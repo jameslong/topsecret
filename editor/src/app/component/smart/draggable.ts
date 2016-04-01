@@ -1,4 +1,4 @@
-///<reference path='../../im/misc.ts'/>
+///<reference path='../../misc.ts'/>
 
 module Component {
         export interface DragData {

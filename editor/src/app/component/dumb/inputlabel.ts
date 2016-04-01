@@ -1,4 +1,4 @@
-///<reference path='../../im/misc.ts'/>
+///<reference path='../../misc.ts'/>
 
 module Component {
         type InputLabelProps = Flux.Props<Im.KeyValue>;

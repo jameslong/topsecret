@@ -1,4 +1,4 @@
-///<reference path='../im/math.ts'/>
+///<reference path='./math.ts'/>
 
 module Im {
         interface ConfigInt {

@@ -5,13 +5,13 @@
 ///<reference path='action/actionhandlermap.ts'/>
 ///<reference path='flux/flux.ts'/>
 ///<reference path='flux/react.ts'/>
-///<reference path='im/config.ts'/>
-///<reference path='im/misc.ts'/>
-///<reference path='im/state.ts'/>
-///<reference path='im/edge.ts'/>
-///<reference path='request/asyncrequest.ts'/>
+///<reference path='./config.ts'/>
+///<reference path='./misc.ts'/>
+///<reference path='./state.ts'/>
+///<reference path='./edge.ts'/>
+///<reference path='./asyncrequest.ts'/>
 ///<reference path='component/dumb/root.ts'/>
-///<reference path='eventhandler/eventhandler.ts'/>
+///<reference path='./eventhandler.ts'/>
 
 window.onload = () => {
         const wrapper = document.getElementById('wrapper');
@@ -42,6 +42,6 @@ window.onload = () => {
 
         Flux.init(state, Action.handleNewAction, Component.Root, wrapper);
 
-        Request.requestNarratives(config.serverURL);
+        AsyncRequest.requestNarratives(config.serverURL);
         EventHandler.addKeyHandlers();
 };

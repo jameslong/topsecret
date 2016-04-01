@@ -1,4 +1,4 @@
-///<reference path='../im/state.ts'/>
+///<reference path='../state.ts'/>
 ///<reference path='actions.ts'/>
 
 module Action {
