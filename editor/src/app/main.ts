@@ -2,47 +2,47 @@
 /// <reference path="../../../typings/react/react-global.d.ts" />
 ///<reference path='../../../node_modules/immutable/dist/immutable.d.ts'/>
 ///<reference path='../../../typings/immutable/immutable-overrides.d.ts'/>
-/// <reference path="../../../typings/es6-polyfill/es6-polyfill.d.ts" />
-///<reference path='action/actionhandlermap.ts'/>
-///<reference path='flux/flux.ts'/>
-///<reference path='flux/react.ts'/>
-///<reference path='im/config.ts'/>
-///<reference path='im/misc.ts'/>
-///<reference path='im/state.ts'/>
-///<reference path='im/edge.ts'/>
-///<reference path='request/asyncrequest.ts'/>
-///<reference path='component/dumb/root.ts'/>
-///<reference path='eventhandler/eventhandler.ts'/>
+///<reference path="../../../typings/es6-polyfill/es6-polyfill.d.ts" />
 
-window.onload = () => {
-        const wrapper = document.getElementById('wrapper');
+import ActionHandlerMap = require('./action/actionhandlermap');
+import AsyncRequest = require('./asyncrequest');
+import Config = require('./config');
+import Edge = require('./edge');
+import EventHandler = require('./eventhandler');
+import Immutable = require('immutable');
+import MathUtils = require('./math');
+import Narrative = require('./narrative');
+import Redux = require('./redux/redux');
+import Root = require('./component/dumb/root');
+import State = require('./state');
 
-        const config = Im.Config({
-                serverURL: 'http://127.0.0.1:3000',
-                autosaveDelayms: 3000,
-                maxUndos: 30,
-                gridSize: 11,
-                vertexSize: Im.Coord({ x: 66, y: 66 }),
-        });
+const wrapper = document.getElementById('wrapper');
 
-        const store = Im.Store({
-                activeNarrative: '',
-                activeMessage: '',
-                narratives: Immutable.Map<string, Im.Narrative>(),
-                edges: Immutable.List<Im.Edge>(),
-                nameScratchpad: Immutable.Map<string, string>(),
-        });
+const config = Config.Config({
+        serverURL: 'http://127.0.0.1:3000',
+        autosaveDelayms: 3000,
+        maxUndos: 30,
+        gridSize: 11,
+        vertexSize: MathUtils.Coord({ x: 66, y: 66 }),
+});
 
-        const state = Im.State({
-                config: config,
-                stores: Immutable.List.of<Im.Store>(store),
-                activeStoreIndex: 0,
-                lastSavedStore: store,
-                dirty: false,
-        });
+const store = State.Store({
+        activeNarrative: '',
+        activeMessage: '',
+        narratives: Immutable.Map<string, Narrative.Narrative>(),
+        edges: Immutable.List<Edge.Edge>(),
+        nameScratchpad: Immutable.Map<string, string>(),
+});
 
-        Flux.init(state, Action.handleNewAction, Component.Root, wrapper);
+const state = State.State({
+        config: config,
+        stores: Immutable.List.of<State.Store>(store),
+        activeStoreIndex: 0,
+        lastSavedStore: store,
+        dirty: false,
+});
 
-        Request.requestNarratives(config.serverURL);
-        EventHandler.addKeyHandlers();
-};
+Redux.init(state, ActionHandlerMap.handleNewAction, Root.Root, wrapper);
+
+AsyncRequest.requestNarratives(config.serverURL);
+EventHandler.addKeyHandlers();

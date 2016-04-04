@@ -1,17 +1,20 @@
-module Component {
-        type SurfaceSVGProps = Flux.Props<void>;
+import ReactUtils = require('../../redux/react');
 
-        function render (props: SurfaceSVGProps)
-        {
-                const data = props.data;
-                const children = props.children;
+import Core = require('../core');
+import SVG = Core.SVG;
 
-                const svgProps = {
-                        className: 'surface-svg',
-                };
+type SurfaceSVGProps = ReactUtils.Props<void>;
 
-                return SVG(svgProps, children);
-        }
+function render (props: SurfaceSVGProps)
+{
+        const data = props.data;
+        const children = props.children;
 
-        export const SurfaceSVG = Flux.createFactory(render, 'SurfaceSvg');
+        const svgProps = {
+                className: 'surface-svg',
+        };
+
+        return SVG(svgProps, children);
 }
+
+export const SurfaceSVG = ReactUtils.createFactory(render, 'SurfaceSvg');

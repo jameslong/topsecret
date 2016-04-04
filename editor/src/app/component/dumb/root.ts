@@ -1,40 +1,44 @@
-/// <reference path="../core.ts" />
-/// <reference path="../smart/editareacontainer.ts" />
-/// <reference path="../smart/editpanelcontainer.ts" />
-/// <reference path="../smart/menubarcontainer.ts" />
+import Helpers = require('../../helpers');
+import Message = require('../../message');
+import Narrative = require('../../narrative');
+import ReactUtils = require('../../redux/react');
+import State = require('../../state');
 
-module Component {
-        type RootProps = Flux.Props<Im.State>;
+import Core = require('../core');
+import Div = Core.Div;
+import EditAreaContainer = require('../smart/editareacontainer');
+import EditPanelContainer = require('../smart/editpanelcontainer');
+import MenuBarContainer = require('../smart/menubarcontainer');
 
-        function render (props: RootProps)
-        {
-                const state = props.data;
-                const store = Im.getActiveStore(state);
-                const narrativeNames = Im.keys(store.narratives);
+type RootProps = ReactUtils.Props<State.State>;
 
-                const activeNarrative = store.activeNarrative;
-                const activeMessage = store.activeMessage;
+function render (props: RootProps)
+{
+        const state = props.data;
+        const store = State.getActiveStore(state);
+        const narrativeNames = Helpers.keys(store.narratives);
 
-                const message = activeMessage ?
-                        EditPanelContainer(store) : null;
+        const activeNarrative = store.activeNarrative;
+        const activeMessage = store.activeMessage;
 
-                const narrative = Im.getActiveNarrative(store);
-                const messages = narrative.messages;
-                const singleSelected = Im.getSingleSelectedMessage(messages);
+        const message = activeMessage ?
+                EditPanelContainer.EditPanelContainer(store) : null;
 
-                const menuBarData = MenuBarContainerData({
-                        narrativeNames,
-                        activeNarrative,
-                        activeMessage: singleSelected,
-                });
+        const narrative = Narrative.getActiveNarrative(store);
+        const messages = narrative.messages;
+        const singleSelected = Message.getSingleSelectedMessage(messages);
 
-                return Div({ className: 'root' },
-                        EditAreaContainer(store),
-                        MenuBarContainer(menuBarData),
-                        message
-                );
-        }
+        const menuBarData = MenuBarContainer.MenuBarContainerData({
+                narrativeNames,
+                activeNarrative,
+                activeMessage: singleSelected,
+        });
 
-        export const Root = Flux.createFactory(render, 'Root');
-
+        return Div({ className: 'root' },
+                EditAreaContainer.EditAreaContainer(store),
+                MenuBarContainer.MenuBarContainer(menuBarData),
+                message
+        );
 }
+
+export const Root = ReactUtils.createFactory(render, 'Root');

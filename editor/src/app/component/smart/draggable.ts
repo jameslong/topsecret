@@ -1,40 +1,42 @@
-///<reference path='../../im/misc.ts'/>
+import Misc = require('../../misc');
 
-module Component {
-        export interface DragData {
-                id: string,
-                x: number,
-                y: number,
-        }
+import Core = require('../core');
+import Div = Core.Div;
+import ReactUtils = require('../../redux/react');
 
-        type DraggableProps = Flux.Props<Im.Value>;
+export interface DragData {
+        id: string,
+        x: number,
+        y: number,
+}
 
-        function render (props: DraggableProps)
-        {
-                const children = props.children;
+type DraggableProps = ReactUtils.Props<Misc.Value>;
 
-                const onStart = (e: DragEvent) => onDragStart(props, e);
+function render (props: DraggableProps)
+{
+        const children = props.children;
 
-                return Div({
-                        draggable: true,
-                        onDragStart: onStart,
-                 }, children);
-        }
+        const onStart = (e: DragEvent) => onDragStart(props, e);
 
-        export const Draggable = Flux.createFactory(render, 'Draggable');
+        return Div({
+                draggable: true,
+                onDragStart: onStart,
+         }, children);
+}
 
-        function onDragStart (props: DraggableProps, e: DragEvent)
-        {
-                const data = props.data;
+export const Draggable = ReactUtils.createFactory(render, 'Draggable');
 
-                const dragData: DragData = {
-                        id: data.value,
-                        x: e.screenX,
-                        y: e.screenY,
-                };
+function onDragStart (props: DraggableProps, e: DragEvent)
+{
+        const data = props.data;
 
-                const dataPacket = JSON.stringify(dragData);
+        const dragData: DragData = {
+                id: data.value,
+                x: e.screenX,
+                y: e.screenY,
+        };
 
-                e.dataTransfer.setData('text/plain', dataPacket);
-        }
+        const dataPacket = JSON.stringify(dragData);
+
+        e.dataTransfer.setData('text/plain', dataPacket);
 }

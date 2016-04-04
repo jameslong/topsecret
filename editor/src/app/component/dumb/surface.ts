@@ -1,16 +1,18 @@
-/// <reference path="../smart/dragzone.ts" />
+import ReactUtils = require('../../redux/react');
 
-module Component {
-        type SurfaceProps = Flux.Props<void>;
+import Core = require('../core');
+import Div = Core.Div;
+import Dragzone = require('../smart/dragzone');
 
-        function render (props: SurfaceProps)
-        {
-                const data = props.data;
-                const children = props.children;
+type SurfaceProps = ReactUtils.Props<void>;
 
-                return Div({ className: 'surface' },
-                        Dragzone('surface-dragzone', children));
-        }
+function render (props: SurfaceProps)
+{
+        const data = props.data;
+        const children = props.children;
 
-        export const Surface = Flux.createFactory(render, 'Surface');
+        return Div({ className: 'surface' },
+                Dragzone.Dragzone('surface-dragzone', children));
 }
+
+export const Surface = ReactUtils.createFactory(render, 'Surface');
