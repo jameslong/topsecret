@@ -32,7 +32,8 @@ grunt
 
 ### Client
 
-1. Open *client/index.html*
+1. Run the server (see above)
+2. Open *client/index.html*
 
 ##Contact
 
