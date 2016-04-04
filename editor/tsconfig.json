@@ -3,8 +3,10 @@
                 "noImplicitAny": true,
                 "removeComments": true,
                 "preserveConstEnums": true,
-                "outFile": "build/main.js",
-                "sourceMap": true
+                "module": "amd",
+                "sourceMap": false,
+                "noEmitOnError": true,
+                "outDir": "build"
         },
         "files": [
                 "src/app/main.ts"

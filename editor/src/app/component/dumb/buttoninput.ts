@@ -1,31 +1,35 @@
-module ButtonInput {
-        interface ButtonInt {
-                text: string;
-                disabled: boolean;
-                onClick: (event: Event) => void;
-                className: string;
-        };
-        export type ButtonData = Immutable.Record.IRecord<ButtonInt>;
-        export const ButtonData = Immutable.Record<ButtonInt>({
-                text: '',
-                disabled: false,
-                onClick: () => {},
-                className: null,
-        }, 'Button');
+import Immutable = require('immutable');
+import ReactUtils = require('../../redux/react');
 
-        type ButtonInputProps = Redux.Props<ButtonData>;
+import Core = require('../core');
+import Button = Core.Button;
 
-        function render (props: ButtonInputProps)
-        {
-                const data = props.data;
-                const onClick = (event: Event) => data.onClick(event);
+interface ButtonInt {
+        text: string;
+        disabled: boolean;
+        onClick: (event: Event) => void;
+        className: string;
+};
+export type ButtonData = Immutable.Record.IRecord<ButtonInt>;
+export const ButtonData = Immutable.Record<ButtonInt>({
+        text: '',
+        disabled: false,
+        onClick: () => {},
+        className: null,
+}, 'Button');
 
-                return Core.Button({
-                        disabled: data.disabled,
-                        onClick: onClick,
-                        className: data.className,
-                }, data.text);
-        }
+type ButtonInputProps = ReactUtils.Props<ButtonData>;
 
-        export const ButtonInput = Redux.createFactory(render, 'ButtonInput');
+function render (props: ButtonInputProps)
+{
+        const data = props.data;
+        const onClick = (event: Event) => data.onClick(event);
+
+        return Button({
+                disabled: data.disabled,
+                onClick: onClick,
+                className: data.className,
+        }, data.text);
 }
+
+export const ButtonInput = ReactUtils.createFactory(render, 'ButtonInput');

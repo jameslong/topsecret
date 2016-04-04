@@ -1,175 +1,180 @@
 /// <reference path="../../../typings/jquery/jquery.d.ts" />
 
-module AsyncRequest {
-        export function requestNarratives (url: string)
-        {
-                const requestURL = url + '/narratives';
-                const data = {};
+import $ = require('jquery');
+import ActionCreators = require('./action/actioncreators');
+import Helpers = require('./helpers');
+import Message = require('./message');
+import Narrative = require('./narrative');
+import Redux = require('./redux/redux');
 
-                const onSuccess: AjaxSuccess<Narrative.NarrativesMutable> =
-                        (data, textStatus, jqXHR) => onNarratives(data);
+export function requestNarratives (url: string)
+{
+        const requestURL = url + '/narratives';
+        const data = {};
 
-                get(requestURL, data, onSuccess, onAjaxError);
+        const onSuccess: AjaxSuccess<Narrative.NarrativesMutable> =
+                (data, textStatus, jqXHR) => onNarratives(data);
 
-                console.log('loading narratives...');
-        }
+        get(requestURL, data, onSuccess, onAjaxError);
 
-        function onNarratives(narrativesMutable: Narrative.NarrativesMutable)
-        {
-                console.log('loaded narratives');
+        console.log('loading narratives...');
+}
 
-                const narratives = Helpers.mapFromObject(
-                        narrativesMutable, Narrative.convertToImmutableNarrative);
+function onNarratives(narrativesMutable: Narrative.NarrativesMutable)
+{
+        console.log('loaded narratives');
 
-                const action = ActionCreators.setGameData(narratives);
-                Redux.handleAction(action);
-        }
+        const narratives = Helpers.mapFromObject(
+                narrativesMutable, Narrative.convertToImmutableNarrative);
 
-        export function saveMessage (
-                url: string,
-                narrativeName: string,
-                message: Message.Message)
-        {
-                const requestURL = url + '/savemessage';
+        const action = ActionCreators.setGameData(narratives);
+        Redux.handleAction(action);
+}
 
-                const name = message.name;
-                const messageMutable = Message.convertToMutableMessage(
-                        message);
-                const data = {
-                        narrativeName: narrativeName,
-                        message: messageMutable,
-                };
+export function saveMessage (
+        url: string,
+        narrativeName: string,
+        message: Message.Message)
+{
+        const requestURL = url + '/savemessage';
 
-                const onSuccess: AjaxSuccess<void> =
-                        (data, textStatus, jqXHR) => onSaveMessage(name);
+        const name = message.name;
+        const messageMutable = Message.convertToMutableMessage(
+                message);
+        const data = {
+                narrativeName: narrativeName,
+                message: messageMutable,
+        };
 
-                post(requestURL, data, onSuccess, onAjaxError);
-                console.log(`saving message ${name}...`);
-        }
+        const onSuccess: AjaxSuccess<void> =
+                (data, textStatus, jqXHR) => onSaveMessage(name);
 
-        function onSaveMessage (name: string)
-        {
-                console.log(`saved message ${name}`);
-        }
+        post(requestURL, data, onSuccess, onAjaxError);
+        console.log(`saving message ${name}...`);
+}
 
-        export function deleteMessage (
-                url: string, narrativeName: string, name: string)
-        {
-                const requestURL = url + '/deletemessage';
+function onSaveMessage (name: string)
+{
+        console.log(`saved message ${name}`);
+}
 
-                const data = {
-                        narrativeName: narrativeName,
-                        messageName: name,
-                };
+export function deleteMessage (
+        url: string, narrativeName: string, name: string)
+{
+        const requestURL = url + '/deletemessage';
 
-                const onSuccess: AjaxSuccess<void> =
-                        (data, textStatus, jqXHR) => onDeleteMessage(name);
+        const data = {
+                narrativeName: narrativeName,
+                messageName: name,
+        };
 
-                post(requestURL, data, onSuccess, onAjaxError);
-                console.log(`deleting message ${name}...`);
-        }
+        const onSuccess: AjaxSuccess<void> =
+                (data, textStatus, jqXHR) => onDeleteMessage(name);
 
-        function onDeleteMessage (name: string)
-        {
-                console.log(`deleted message ${name}`);
-        }
+        post(requestURL, data, onSuccess, onAjaxError);
+        console.log(`deleting message ${name}...`);
+}
 
-        export function saveString (
-                url: string,
-                narrativeName: string,
-                name: string,
-                value: string)
-        {
-                const requestURL = url + '/savestring';
+function onDeleteMessage (name: string)
+{
+        console.log(`deleted message ${name}`);
+}
 
-                const data = {
-                        narrativeName: narrativeName,
-                        name: name,
-                        value: value,
-                };
+export function saveString (
+        url: string,
+        narrativeName: string,
+        name: string,
+        value: string)
+{
+        const requestURL = url + '/savestring';
 
-                const onSuccess: AjaxSuccess<void> =
-                        (data, textStatus, jqXHR) => onSaveString(name);
+        const data = {
+                narrativeName: narrativeName,
+                name: name,
+                value: value,
+        };
 
-                post(requestURL, data, onSuccess, onAjaxError);
-                console.log(`saving string ${name}...`);
-        }
+        const onSuccess: AjaxSuccess<void> =
+                (data, textStatus, jqXHR) => onSaveString(name);
 
-        function onSaveString (name: string)
-        {
-                console.log(`saved string ${name}`);
-        }
+        post(requestURL, data, onSuccess, onAjaxError);
+        console.log(`saving string ${name}...`);
+}
 
-        export function deleteString (
-                url: string, narrativeName: string, name: string)
-        {
-                const requestURL = url + '/deletestring';
+function onSaveString (name: string)
+{
+        console.log(`saved string ${name}`);
+}
 
-                const data = {
-                        narrativeName: narrativeName,
-                        name: name,
-                };
+export function deleteString (
+        url: string, narrativeName: string, name: string)
+{
+        const requestURL = url + '/deletestring';
 
-                const onSuccess: AjaxSuccess<void> =
-                        (data, textStatus, jqXHR) => onDeleteString(name);
+        const data = {
+                narrativeName: narrativeName,
+                name: name,
+        };
 
-                post(requestURL, data, onSuccess, onAjaxError);
-                console.log(`deleting string ${name}...`);
-        }
+        const onSuccess: AjaxSuccess<void> =
+                (data, textStatus, jqXHR) => onDeleteString(name);
 
-        function onDeleteString (name: string)
-        {
-                console.log(`deleted string ${name}`);
-        }
+        post(requestURL, data, onSuccess, onAjaxError);
+        console.log(`deleting string ${name}...`);
+}
 
-        export function onAjaxError (
-                jqXHR: JQueryXHR, textStatus: string, errorThrown: string)
-        {
-                var errorInfo = {
-                        jqXHR: jqXHR,
-                        textStatus: textStatus,
-                        errorThrown: errorThrown,
-                };
-                console.log('AJAX request error', errorInfo);
-        }
+function onDeleteString (name: string)
+{
+        console.log(`deleted string ${name}`);
+}
 
-        interface AjaxSuccess<T> {
-                (data: T, textStatus: string, jqXHR: JQueryXHR): void;
-        }
+export function onAjaxError (
+        jqXHR: JQueryXHR, textStatus: string, errorThrown: string)
+{
+        var errorInfo = {
+                jqXHR: jqXHR,
+                textStatus: textStatus,
+                errorThrown: errorThrown,
+        };
+        console.log('AJAX request error', errorInfo);
+}
 
-        type AjaxError = (
-                jqXHR: JQueryXHR,
-                textStatus: string,
-                errorThrown: string) => void;
+interface AjaxSuccess<T> {
+        (data: T, textStatus: string, jqXHR: JQueryXHR): void;
+}
 
-        export function post<T> (
-                url: string,
-                data: Object,
-                onSuccess: AjaxSuccess<T>,
-                onError: AjaxError)
-        {
-                var stringData = JSON.stringify(data);
+type AjaxError = (
+        jqXHR: JQueryXHR,
+        textStatus: string,
+        errorThrown: string) => void;
 
-                $.ajax(url, {
-                        type: 'POST',
-                        contentType: 'application/json',
-                        data: stringData,
-                        success: onSuccess,
-                        error: onError,
-                });
-        }
+export function post<T> (
+        url: string,
+        data: Object,
+        onSuccess: AjaxSuccess<T>,
+        onError: AjaxError)
+{
+        var stringData = JSON.stringify(data);
 
-        export function get<T> (
-                url: string,
-                data: Object,
-                onSuccess: AjaxSuccess<T>,
-                onError: AjaxError)
-        {
-                $.ajax({
-                        url: url,
-                        data: data,
-                        success: onSuccess,
-                        error: onError,
-                });
-        }
+        $.ajax(url, {
+                type: 'POST',
+                contentType: 'application/json',
+                data: stringData,
+                success: onSuccess,
+                error: onError,
+        });
+}
+
+export function get<T> (
+        url: string,
+        data: Object,
+        onSuccess: AjaxSuccess<T>,
+        onError: AjaxError)
+{
+        $.ajax({
+                url: url,
+                data: data,
+                success: onSuccess,
+                error: onError,
+        });
 }

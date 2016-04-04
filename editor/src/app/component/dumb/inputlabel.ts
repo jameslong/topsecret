@@ -1,20 +1,23 @@
-///<reference path='../../misc.ts'/>
+import Misc = require('../../misc');
+import ReactUtils = require('../../redux/react');
 
-module InputLabel {
-        type InputLabelProps = Redux.Props<Misc.KeyValue>;
+import Core = require('../core');
+import Div = Core.Div;
+import Label = Core.Label;
 
-        function render (props: InputLabelProps)
-        {
-                const label = props.data.value;
+type InputLabelProps = ReactUtils.Props<Misc.KeyValue>;
 
-                const labelName = Core.Div({ className: 'label-name' },
-                        label);
-                const labelValue = Core.Div({ className: 'label-value' },
-                        props.children);
+function render (props: InputLabelProps)
+{
+        const label = props.data.value;
 
-                return Core.Label({ className: 'label' },
-                        labelName, labelValue);
-        }
+        const labelName = Div({ className: 'label-name' },
+                label);
+        const labelValue = Div({ className: 'label-value' },
+                props.children);
 
-        export const InputLabel = Redux.createFactory(render, 'InputLabel');
+        return Label({ className: 'label' },
+                labelName, labelValue);
 }
+
+export const InputLabel = ReactUtils.createFactory(render, 'InputLabel');

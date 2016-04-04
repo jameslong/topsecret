@@ -1,25 +1,28 @@
-/// <reference path="../dumb/editpanel.ts" />
+import ActionCreators = require('../../action/actioncreators');
+import ReactUtils = require('../../redux/react');
+import Redux = require('../../redux/redux');
+import State = require('../../state');
 
-module EditPanelContainer {
-        type EditPanelContainerProps = Redux.Props<State.Store>;
+import EditPanel = require('../dumb/editpanel');
 
-        function render (props: EditPanelContainerProps)
-        {
-                const data = props.data;
-                const editPanelData = EditPanel.EditPanelData({
-                        store: data,
-                        onClick: onClick,
-                });
-                return EditPanel.EditPanel(editPanelData);
-        }
+type EditPanelContainerProps = ReactUtils.Props<State.Store>;
 
-        export const EditPanelContainer = Redux.createFactory(render, 'EditPanelContainer');
+function render (props: EditPanelContainerProps)
+{
+        const data = props.data;
+        const editPanelData = EditPanel.EditPanelData({
+                store: data,
+                onClick: onClick,
+        });
+        return EditPanel.EditPanel(editPanelData);
+}
 
-        function onClick (e: MouseEvent)
-        {
-                e.stopPropagation();
+export const EditPanelContainer = ReactUtils.createFactory(render, 'EditPanelContainer');
 
-                const action = ActionCreators.closeMessage();
-                Redux.handleAction(action);
-        }
+function onClick (e: MouseEvent)
+{
+        e.stopPropagation();
+
+        const action = ActionCreators.closeMessage();
+        Redux.handleAction(action);
 }

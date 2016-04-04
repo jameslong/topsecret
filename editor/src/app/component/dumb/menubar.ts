@@ -1,80 +1,84 @@
-/// <reference path="../dumb/buttoninput.ts" />
-/// <reference path="../dumb/selectinput.ts" />
+import Immutable = require('immutable');
+import ReactUtils = require('../../redux/react');
 
-module MenuBar {
-        interface MenuBarInt {
-                narrativeNames: Immutable.List<string>;
-                activeNarrative: string;
-                activeMessage: string;
-                onAddMessage: () => void;
-                onTest: () => void;
-                onSelectNarrative: (name: string) => void;
-        };
-        export type MenuBarData = Immutable.Record.IRecord<MenuBarInt>;
-        export const MenuBarData = Immutable.Record<MenuBarInt>({
-                narrativeNames: Immutable.List<string>(),
-                activeNarrative: null,
-                activeMessage: null,
-                onAddMessage: () => {},
-                onTest: () => {},
-                onSelectNarrative: () => {},
-        }, 'MenuBar');
+import Core = require('../core');
+import Div = Core.Div;
+import Label = Core.Label;
+import ButtonInput = require('./buttoninput');
+import SelectInput = require('./selectinput');
 
-        export type MenuBarProps = Redux.Props<MenuBarData>;
+interface MenuBarInt {
+        narrativeNames: Immutable.List<string>;
+        activeNarrative: string;
+        activeMessage: string;
+        onAddMessage: () => void;
+        onTest: () => void;
+        onSelectNarrative: (name: string) => void;
+};
+export type MenuBarData = Immutable.Record.IRecord<MenuBarInt>;
+export const MenuBarData = Immutable.Record<MenuBarInt>({
+        narrativeNames: Immutable.List<string>(),
+        activeNarrative: null,
+        activeMessage: null,
+        onAddMessage: () => {},
+        onTest: () => {},
+        onSelectNarrative: () => {},
+}, 'MenuBar');
 
-        function render (props: MenuBarProps)
-        {
-                const data = props.data;
-                const narrativeNames = data.narrativeNames;
-                const activeNarrative = data.activeNarrative;
-                const activeMessage = data.activeMessage;
+export type MenuBarProps = ReactUtils.Props<MenuBarData>;
 
-                const narrativeSelect = createNarrativeSelect(
-                        data.onSelectNarrative,
-                        narrativeNames,
-                        activeNarrative);
-                const addMessage = createAddMessage(data.onAddMessage);
-                const test = createTest(activeMessage, data.onTest);
+function render (props: MenuBarProps)
+{
+        const data = props.data;
+        const narrativeNames = data.narrativeNames;
+        const activeNarrative = data.activeNarrative;
+        const activeMessage = data.activeMessage;
 
-                return Core.Div({ className: 'menu-bar' },
-                        narrativeSelect, addMessage, test);
-        }
+        const narrativeSelect = createNarrativeSelect(
+                data.onSelectNarrative,
+                narrativeNames,
+                activeNarrative);
+        const addMessage = createAddMessage(data.onAddMessage);
+        const test = createTest(activeMessage, data.onTest);
 
-        export const MenuBar = Redux.createFactory(render, 'MenuBar');
+        return Div({ className: 'menu-bar' },
+                narrativeSelect, addMessage, test);
+}
 
-        function createAddMessage (onAddMessage: () => void)
-        {
-                const deleteProps = ButtonInput.ButtonData({
-                        text: 'Message +',
-                        disabled: false,
-                        onClick: onAddMessage,
-                        className: null,
-                });
-                return ButtonInput.ButtonInput(deleteProps);
-        }
+export const MenuBar = ReactUtils.createFactory(render, 'MenuBar');
 
-        function createNarrativeSelect (
-                onSelectNarrative: (name: string) => void,
-                names: Immutable.List<string>,
-                active: string)
-        {
-                const groupProps = SelectInput.SelectInputData({
-                        onChange: onSelectNarrative,
-                        options: names,
-                        value: active,
-                });
-                return SelectInput.SelectInput(groupProps);
-        }
+function createAddMessage (onAddMessage: () => void)
+{
+        const deleteProps = ButtonInput.ButtonData({
+                text: 'Message +',
+                disabled: false,
+                onClick: onAddMessage,
+                className: null,
+        });
+        return ButtonInput.ButtonInput(deleteProps);
+}
 
-        function createTest (messageName: string, onClick: () => void)
-        {
-                const disabled = !messageName;
-                const props = ButtonInput.ButtonData({
-                        text: 'Test',
-                        disabled,
-                        onClick,
-                        className: null,
-                });
-                return ButtonInput.ButtonInput(props);
-        }
+function createNarrativeSelect (
+        onSelectNarrative: (name: string) => void,
+        names: Immutable.List<string>,
+        active: string)
+{
+        const groupProps = SelectInput.SelectInputData({
+                onChange: onSelectNarrative,
+                options: names,
+                value: active,
+        });
+        return SelectInput.SelectInput(groupProps);
+}
+
+function createTest (messageName: string, onClick: () => void)
+{
+        const disabled = !messageName;
+        const props = ButtonInput.ButtonData({
+                text: 'Test',
+                disabled,
+                onClick,
+                className: null,
+        });
+        return ButtonInput.ButtonInput(props);
 }

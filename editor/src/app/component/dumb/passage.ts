@@ -1,60 +1,66 @@
-/// <reference path="textareainput.ts" />
+import Immutable = require('immutable');
+import Narrative = require('../../narrative');
+import ReactUtils = require('../../redux/react');
+import TextInputValidated = require('../textinputvalidated');
 
-module Passage {
-        interface PassageInt {
-                strings: Narrative.Strings;
-                name: string;
-                onSetName: (value: string) => void;
-                onSetBody: (value: string) => void;
-        };
-        export type PassageData = Immutable.Record.IRecord<PassageInt>;
-        export const PassageData = Immutable.Record<PassageInt>({
-                strings: Immutable.Map<string, string>(),
-                name: '',
-                onSetName: () => {},
-                onSetBody: () => {},
-        }, 'Passage');
+import Core = require('../core');
+import Div = Core.Div;
+import TextComponent = require('./text');
+import TextAreaInput = require('./textareainput');
 
-        type PassageProps = Redux.Props<PassageData>;
+interface PassageInt {
+        strings: Narrative.Strings;
+        name: string;
+        onSetName: (value: string) => void;
+        onSetBody: (value: string) => void;
+};
+export type PassageData = Immutable.Record.IRecord<PassageInt>;
+export const PassageData = Immutable.Record<PassageInt>({
+        strings: Immutable.Map<string, string>(),
+        name: '',
+        onSetName: () => {},
+        onSetBody: () => {},
+}, 'Passage');
 
-        function render (props: PassageProps)
-        {
-                const data = props.data;
+type PassageProps = ReactUtils.Props<PassageData>;
 
-                const name = createName(data.name, data.onSetName);
-                const body = createBody(
-                        data.name, data.onSetBody, data.strings);
+function render (props: PassageProps)
+{
+        const data = props.data;
 
-                return Core.Div({ className: 'message-passage' },
-                        name, body);
-        }
+        const name = createName(data.name, data.onSetName);
+        const body = createBody(
+                data.name, data.onSetBody, data.strings);
 
-        export const Passage = Redux.createFactory(render, 'Passage');
+        return Div({ className: 'message-passage' },
+                name, body);
+}
 
-        function createName (name: string, onChange: (value: string) => void)
-        {
-                const valid = !!name;
-                const data = TextComponent.TextData({
-                        placeholder: 'passage_string_name',
-                        value: name,
-                        onChange: onChange,
-                        list: 'stringNames',
-                });
-                return TextInputValidated.createValidatedText({ data: data }, valid);
-        }
+export const Passage = ReactUtils.createFactory(render, 'Passage');
 
-        function createBody (
-                name: string,
-                onChange: (value: string) => void,
-                strings: Narrative.Strings)
-        {
-                const bodyText = strings.get(name) || '';
-                const valid = !!bodyText;
-                const data = TextAreaInput.TextAreaData({
-                        placeholder: 'Passage content',
-                        value: bodyText,
-                        onChange: onChange,
-                });
-                return TextInputValidated.createValidatedTextArea({ data: data }, valid);
-        }
+function createName (name: string, onChange: (value: string) => void)
+{
+        const valid = !!name;
+        const data = TextComponent.TextData({
+                placeholder: 'passage_string_name',
+                value: name,
+                onChange: onChange,
+                list: 'stringNames',
+        });
+        return TextInputValidated.createValidatedText({ data: data }, valid);
+}
+
+function createBody (
+        name: string,
+        onChange: (value: string) => void,
+        strings: Narrative.Strings)
+{
+        const bodyText = strings.get(name) || '';
+        const valid = !!bodyText;
+        const data = TextAreaInput.TextAreaData({
+                placeholder: 'Passage content',
+                value: bodyText,
+                onChange: onChange,
+        });
+        return TextInputValidated.createValidatedTextArea({ data: data }, valid);
 }

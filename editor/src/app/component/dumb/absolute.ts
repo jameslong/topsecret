@@ -1,17 +1,21 @@
-module Absolute {
-        type AbsoluteProps = Redux.Props<MathUtils.Coord>;
+import MathUtils = require('../../math');
+import ReactUtils = require('../../redux/react');
 
-        function render (props: AbsoluteProps)
-        {
-                const data = props.data;
-                const children = props.children;
-                const style = {
-                        position: 'absolute',
-                        left: data.x,
-                        top: data.y,
-                };
-                return Core.Div({ style: style }, children);
-        }
+import Core = require('../core');
+import Div = Core.Div;
 
-        export const Absolute = Redux.createFactory(render, 'Absolute');
+type AbsoluteProps = ReactUtils.Props<MathUtils.Coord>;
+
+function render (props: AbsoluteProps)
+{
+        const data = props.data;
+        const children = props.children;
+        const style = {
+                position: 'absolute',
+                left: data.x,
+                top: data.y,
+        };
+        return Div({ style: style }, children);
 }
+
+export const Absolute = ReactUtils.createFactory(render, 'Absolute');

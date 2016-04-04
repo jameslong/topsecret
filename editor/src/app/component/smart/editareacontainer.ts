@@ -1,25 +1,28 @@
-/// <reference path="../dumb/editarea.ts" />
+import ActionCreators = require('../../action/actioncreators');
+import ReactUtils = require('../../redux/react');
+import Redux = require('../../redux/redux');
+import State = require('../../state');
 
-module EditAreaContainer {
-        type EditAreaContainerProps = Redux.Props<State.Store>;
+import EditArea = require('../dumb/editarea');
 
-        function render (props: EditAreaContainerProps)
-        {
-                const data = props.data;
-                const editAreaData = EditArea.EditAreaData({
-                        store: data,
-                        onClick: onClick,
-                });
-                return EditArea.EditArea(editAreaData);
-        }
+type EditAreaContainerProps = ReactUtils.Props<State.Store>;
 
-        export const EditAreaContainer = Redux.createFactory(render, 'EditAreaContainer');
+function render (props: EditAreaContainerProps)
+{
+        const data = props.data;
+        const editAreaData = EditArea.EditAreaData({
+                store: data,
+                onClick: onClick,
+        });
+        return EditArea.EditArea(editAreaData);
+}
 
-        function onClick (event: MouseEvent)
-        {
-                event.stopPropagation();
+export const EditAreaContainer = ReactUtils.createFactory(render, 'EditAreaContainer');
 
-                const action = ActionCreators.deselectAllMessages();
-                Redux.handleAction(action);
-        }
+function onClick (event: MouseEvent)
+{
+        event.stopPropagation();
+
+        const action = ActionCreators.deselectAllMessages();
+        Redux.handleAction(action);
 }
