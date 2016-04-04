@@ -23,7 +23,8 @@ grunt
 
 ### Server
 
-1. Run the following in the *server* directory: `node build/server/src/app/main.js`
+1. Copy the `server/example_credentials` directory and paste as `server/credentials` (this only needs to be done once)
+2. Run the following in the *server* directory: `node build/server/src/app/main.js`
 
 ### Editor
 
