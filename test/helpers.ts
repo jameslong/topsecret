@@ -1,3 +1,5 @@
+/// <reference path="../typings/es6-polyfill/es6-polyfill.d.ts" />
+
 import Data = require('../server/src/app/data/data');
 import DBTypes = require('../core/src/app/dbtypes');
 import FileSystem = require('../server/src/app/data/filesystem');

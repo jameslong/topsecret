@@ -14,5 +14,7 @@ declare module PromisesAPlus {
 
 	interface Thenable<T> {
 		then<R>(onFulfill?: (value: T) => Thenable<R>|R, onReject?: (error: any) => Thenable<R>|R): Thenable<R>;
+		then<R>(onFulfill?: (value: T) => Thenable<R>|R, onReject?: (error: any) => void): Thenable<R>;
+                catch<R>(onRejected?: (error: any) => R | Thenable<R>): Thenable<R>;
 	}
 }

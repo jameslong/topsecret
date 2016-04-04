@@ -2,6 +2,7 @@
 /// <reference path="../../../typings/react/react-global.d.ts" />
 ///<reference path='../../../node_modules/immutable/dist/immutable.d.ts'/>
 ///<reference path='../../../typings/immutable/immutable-overrides.d.ts'/>
+/// <reference path="../../../typings/es6-polyfill/es6-polyfill.d.ts" />
 ///<reference path='action/actionhandlermap.ts'/>
 ///<reference path='flux/flux.ts'/>
 ///<reference path='flux/react.ts'/>

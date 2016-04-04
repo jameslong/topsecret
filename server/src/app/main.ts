@@ -1,3 +1,5 @@
+/// <reference path="../../../typings/es6-polyfill/es6-polyfill.d.ts" />
+
 import App = require('./app');
 import Config = require('./config');
 import ConfigData = require('./configdata');

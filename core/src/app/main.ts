@@ -1,5 +1,3 @@
-/// <reference path="global.d.ts"/>
-
 import Arr = require('./utils/array');
 import DBTypes = require('./dbtypes');
 import Fun = require('./utils/function');

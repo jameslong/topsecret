@@ -1,5 +1,3 @@
-/// <reference path="../global.d.ts"/>
-
 export type Factory<T, U> = (data: T) => Promise<U>;
 
 export function executeSequentially<T> (

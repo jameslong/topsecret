@@ -1,4 +1,4 @@
-/// <reference path="../../../core/src/app/global.d.ts"/>
+/// <reference path="../../../typings/es6-polyfill/es6-polyfill.d.ts" />
 
 import ConfigData = require('./data/config');
 import MessageData = require('./data/messages');

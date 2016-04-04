@@ -1,4 +1,3 @@
-/// <reference path="global.d.ts"/>
 /// <reference path='../../../typings/kbpgp/kbpgp.d.ts'/>
 
 import Arr = require('./utils/array');

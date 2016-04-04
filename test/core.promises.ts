@@ -1,6 +1,6 @@
 /// <reference path="../typings/chai-as-promised/chai-as-promised.d.ts"/>
 /// <reference path="../typings/mocha/mocha.d.ts" />
-/// <reference path="../core/src/app/global.d.ts"/>
+/// <reference path="../typings/es6-polyfill/es6-polyfill.d.ts" />
 
 import Promises = require('../core/src/app/promises');
 import TestHelpers = require('./helpers');
