@@ -1,4 +1,4 @@
-module Component {
+module NumberComponent {
         interface NumberInt {
                 placeholder: number;
                 value: number;
@@ -11,7 +11,7 @@ module Component {
                 onChange: (value: number) => {},
         }, 'Number');
 
-        type NumberProps = Flux.Props<NumberData>;
+        type NumberProps = Redux.Props<NumberData>;
 
         interface NumberEvent {
                 target: {
@@ -27,7 +27,7 @@ module Component {
                         return data.onChange(value);
                 };
 
-                return Input({
+                return Core.Input({
                         placeholder: data.placeholder,
                         value: data.value,
                         onChange: onChange,
@@ -35,5 +35,5 @@ module Component {
                 });
         }
 
-        export const Number = Flux.createFactory(render, 'Number');
+        export const Number = Redux.createFactory(render, 'Number');
 }

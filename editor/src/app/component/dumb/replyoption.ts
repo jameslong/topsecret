@@ -1,19 +1,19 @@
 /// <reference path="../dumb/textlist.ts" />
 
-module Component {
+module ReplyOptionComponent {
         interface ReplyOptionInt {
-                onSet: (option: Im.ReplyOption) => void;
-                replyOption: Im.ReplyOption;
-                messages: Im.Messages;
+                onSet: (option: ReplyOption.ReplyOption) => void;
+                replyOption: ReplyOption.ReplyOption;
+                messages: Narrative.Messages;
         };
         export type ReplyOptionData = Immutable.Record.IRecord<ReplyOptionInt>;
         export const ReplyOptionData = Immutable.Record<ReplyOptionInt>({
                 onSet: () => {},
-                replyOption: Im.ReplyOptionKeyword(),
-                messages: Immutable.Map<string, Im.Message>(),
+                replyOption: ReplyOption.ReplyOptionKeyword(),
+                messages: Immutable.Map<string, Message.Message>(),
         }, 'ReplyOption');
 
-        type ReplyOptionProps = Flux.Props<ReplyOptionData>;
+        type ReplyOptionProps = Redux.Props<ReplyOptionData>;
 
         function render (props: ReplyOptionProps)
         {
@@ -24,38 +24,38 @@ module Component {
 
                 const onSetType = (value: string) =>
                         setType(onSet, option, value);
-                const validType = Im.isReplyOptionType(optionType);
-                const typeData = TextData({
+                const validType = ReplyOption.isReplyOptionType(optionType);
+                const typeData = TextComponent.TextData({
                         placeholder: 'type',
                         value: optionType,
                         onChange: onSetType,
                         list: 'replyOptionTypes',
                 });
-                const typeText  = createValidatedText({
+                const typeText  = TextInputValidated.createValidatedText({
                         data: typeData,
                 }, validType);
-                const type = wrapInLabel('Type', typeText);
+                const type = EditMessage.wrapInLabel('Type', typeText);
 
                 const parameters = renderParameters(onSet, option);
 
-                const onSetDelay = (delay: Im.MessageDelay) =>
+                const onSetDelay = (delay: Message.MessageDelay) =>
                         setMessageDelay(onSet, option, delay);
-                const delayProps = MessageDelayData({
+                const delayProps = MessageDelay.MessageDelayData({
                         delay: option.messageDelay,
                         onChange: onSetDelay,
                         messages: data.messages,
                 });
-                const delay = MessageDelay(delayProps);
+                const delay = MessageDelay.MessageDelay(delayProps);
 
-                return Div({ className: 'reply-option' },
+                return Core.Div({ className: 'reply-option' },
                         type, parameters, delay);
         }
 
-        export const ReplyOption = Flux.createFactory(render, 'ReplyOption');
+        export const ReplyOptionComponent = Redux.createFactory(render, 'ReplyOption');
 
         function setType (
-                onSet: (option: Im.ReplyOption) => void,
-                option: Im.ReplyOption,
+                onSet: (option: ReplyOption.ReplyOption) => void,
+                option: ReplyOption.ReplyOption,
                 newType: string)
         {
                 const newOption = option.set('type', newType);
@@ -63,21 +63,21 @@ module Component {
         }
 
         function setMessageDelay (
-                onSet: (option: Im.ReplyOption) => void,
-                option: Im.ReplyOption,
-                newDelay: Im.MessageDelay)
+                onSet: (option: ReplyOption.ReplyOption) => void,
+                option: ReplyOption.ReplyOption,
+                newDelay: Message.MessageDelay)
         {
                 const newOption = option.set('messageDelay', newDelay);
                 onSet(newOption);
         }
 
         function renderParameters  (
-                onSet: (option: Im.ReplyOption) => void,
-                option: Im.ReplyOption)
+                onSet: (option: ReplyOption.ReplyOption) => void,
+                option: ReplyOption.ReplyOption)
         {
-                if (option.type === Im.ReplyOptionType.Keyword) {
+                if (option.type === ReplyOption.ReplyOptionType.Keyword) {
                         const keyword =
-                                <Im.ReplyOptionKeyword><any>option;
+                                <ReplyOption.ReplyOptionKeyword><any>option;
                         return renderMatches(onSet, keyword);
                 } else {
                         return null;
@@ -85,27 +85,27 @@ module Component {
         }
 
         function renderMatches (
-                onSet: (option: Im.ReplyOption) => void,
-                option: Im.ReplyOptionKeyword)
+                onSet: (option: ReplyOption.ReplyOption) => void,
+                option: ReplyOption.ReplyOptionKeyword)
         {
                 const values = option.parameters.matches;
                 const onChange = (newMatches: Immutable.List<string>) =>
                         setMatches(onSet, option, newMatches);
                 const valid = (values.every(match => !!match) &&
                         values.size > 0);
-                const data = TextListData({
+                const data = TextList.TextListData({
                         placeholder: 'match0, match1, match2',
                         values: values,
                         onChange: onChange,
                 });
-                const matches = createValidatedTextList(
+                const matches = TextInputValidated.createValidatedTextList(
                         { data: data}, valid);
-                return wrapInLabel('Matches', matches);
+                return EditMessage.wrapInLabel('Matches', matches);
         }
 
         function setMatches (
-                onSet: (option: Im.ReplyOption) => void,
-                option: Im.ReplyOptionKeyword,
+                onSet: (option: ReplyOption.ReplyOption) => void,
+                option: ReplyOption.ReplyOptionKeyword,
                 newMatches: Immutable.List<string>)
         {
                 const parameters = option.parameters;
@@ -113,5 +113,4 @@ module Component {
                 const newOption = option.set('parameters', newParameters);
                 onSet(newOption);
         }
-
 }

@@ -1,48 +1,48 @@
 /// <reference path="../dumb/messagecontent.ts" />
 
-module Component {
+module MessageContentContainer {
         interface MessageContentContainerInt {
-                message: Im.MessageContent;
-                profiles: Im.Profiles;
-                strings: Im.Strings;
+                message: Message.MessageContent;
+                profiles: Narrative.Profiles;
+                strings: Narrative.Strings;
                 name: string;
         };
         export type MessageContentContainerData = Immutable.Record.IRecord<MessageContentContainerInt>;
         export const MessageContentContainerData = Immutable.Record<MessageContentContainerInt>({
-                message: Im.MessageContent(),
-                profiles: Immutable.Map<string, Im.Profile>(),
+                message: Message.MessageContent(),
+                profiles: Immutable.Map<string, Profile.Profile>(),
                 strings: Immutable.Map<string, string>(),
                 name: '',
         }, 'MessageContentContainer');
 
-        type MessageContentContainerProps = Flux.Props<MessageContentContainerData>;
+        type MessageContentContainerProps = Redux.Props<MessageContentContainerData>;
 
         function render (props: MessageContentContainerProps)
         {
                 const data = props.data;
                 const name = data.name;
-                const onSet = (content: Im.MessageContent) =>
+                const onSet = (content: Message.MessageContent) =>
                         onSetMessageContent(name, content);
-                const contentData = MessageContentData({
+                const contentData = MessageContent.MessageContentData({
                         message: data.message,
                         profiles: data.profiles,
                         strings: data.strings,
                         name: data.name,
                         onSet: onSet,
                 });
-                return MessageContent(contentData);
+                return MessageContent.MessageContent(contentData);
         }
 
-        export const MessageContentContainer = Flux.createFactory(
+        export const MessageContentContainer = Redux.createFactory(
                 render, 'MessageContentContainer');
 
         function onSetMessageContent (
-                messageName: string, newContent: Im.MessageContent)
+                messageName: string, newContent: Message.MessageContent)
         {
-                const action = Action.setMessageContent({
+                const action = ActionCreators.setMessageContent({
                         name: messageName,
                         value: newContent,
                 });
-                Flux.handleAction(action);
+                Redux.handleAction(action);
         }
 }

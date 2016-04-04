@@ -1,6 +1,6 @@
 /// <reference path="buttoninput.ts" />
 
-module Component {
+module Optional {
         interface OptionalInt {
                 child: React.ReactElement<any>;
                 onAdd: () => void;
@@ -13,7 +13,7 @@ module Component {
                 onRemove: () => {},
         }, 'Optional');
 
-        type OptionalProps = Flux.Props<OptionalData>;
+        type OptionalProps = Redux.Props<OptionalData>;
 
         function render (props: OptionalProps)
         {
@@ -25,33 +25,33 @@ module Component {
                         const onRemoveLocal = (event: Event) =>
                                 onRemove(removeFn, event);
                         const enabled = true;
-                        const removeProps = ButtonData({
+                        const removeProps = ButtonInput.ButtonData({
                                 text: 'x',
                                 disabled: !enabled,
                                 onClick: onRemoveLocal,
                                 className: 'button-remove',
                         });
-                        const remove = ButtonInput(removeProps);
+                        const remove = ButtonInput.ButtonInput(removeProps);
 
-                        return Div({}, child, remove);
+                        return Core.Div({}, child, remove);
                 } else {
                         const addFn = data.onAdd;
                         const onAddLocal = (event: Event) =>
                                 onAdd(addFn, event);
                         const enabled = true;
-                        const addProps = ButtonData({
+                        const addProps = ButtonInput.ButtonData({
                                 text: '+',
                                 disabled: !enabled,
                                 onClick: onAddLocal,
                                 className: 'button-add',
                         });
-                        const add = ButtonInput(addProps);
+                        const add = ButtonInput.ButtonInput(addProps);
 
-                        return Div({}, add);
+                        return Core.Div({}, add);
                 }
         }
 
-        export const Optional = Flux.createFactory(render, 'Optional');
+        export const Optional = Redux.createFactory(render, 'Optional');
 
         function onAdd (addFn: () => void, event: Event)
         {

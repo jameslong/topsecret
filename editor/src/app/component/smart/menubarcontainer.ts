@@ -1,6 +1,6 @@
 /// <reference path="../dumb/menubar.ts" />
 
-module Component {
+module MenuBarContainer {
         interface MenuBarContainerInt {
                 narrativeNames: Immutable.List<string>;
                 activeNarrative: string;
@@ -13,7 +13,7 @@ module Component {
                 activeMessage: null,
         }, 'MenuBarContainer');
 
-        export type MenuBarContainerProps = Flux.Props<MenuBarContainerData>;
+        export type MenuBarContainerProps = Redux.Props<MenuBarContainerData>;
 
         function render (props: MenuBarContainerProps)
         {
@@ -22,7 +22,7 @@ module Component {
                 const activeMessage = data.activeMessage;
                 const onTestLocal = () => onTest(version, activeMessage);
 
-                const menuBarData = MenuBarData({
+                const menuBarData = MenuBar.MenuBarData({
                         narrativeNames: data.narrativeNames,
                         activeNarrative: data.activeNarrative,
                         activeMessage,
@@ -30,21 +30,21 @@ module Component {
                         onTest: onTestLocal,
                         onSelectNarrative,
                 });
-                return MenuBar(menuBarData);
+                return MenuBar.MenuBar(menuBarData);
         }
 
-        export const MenuBarContainer = Flux.createFactory(render, 'MenuBarContainer');
+        export const MenuBarContainer = Redux.createFactory(render, 'MenuBarContainer');
 
         function onAddMessage ()
         {
-                const action = Action.createMessage();
-                Flux.handleAction(action);
+                const action = ActionCreators.createMessage();
+                Redux.handleAction(action);
         }
 
         function onSelectNarrative (name: string)
         {
-                const action = Action.setActiveNarrative(name);
-                Flux.handleAction(action);
+                const action = ActionCreators.setActiveNarrative(name);
+                Redux.handleAction(action);
         }
 
         function onTest (version: string, messageName: string)

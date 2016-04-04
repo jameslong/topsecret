@@ -1,20 +1,20 @@
 /// <reference path="number.ts" />
 /// <reference path="../textinputvalidated.ts" />
 
-module Component {
+module MessageDelay {
         interface MessageDelayInt {
-                delay: Im.MessageDelay;
-                onChange: (delay: Im.MessageDelay) => void;
-                messages: Im.Messages;
+                delay: Message.MessageDelay;
+                onChange: (delay: Message.MessageDelay) => void;
+                messages: Narrative.Messages;
         };
         export type MessageDelayData = Immutable.Record.IRecord<MessageDelayInt>;
         export const MessageDelayData = Immutable.Record<MessageDelayInt>({
-                delay: Im.MessageDelay(),
+                delay: Message.MessageDelay(),
                 onChange: () => {},
-                messages: Immutable.Map<string, Im.Message>(),
+                messages: Immutable.Map<string, Message.Message>(),
         }, 'MessageDelay');
 
-        type MessageDelayProps = Flux.Props<MessageDelayData>;
+        type MessageDelayProps = Redux.Props<MessageDelayData>;
 
         function render (props: MessageDelayProps)
         {
@@ -27,48 +27,48 @@ module Component {
                         onSetName(data, name);
                 const validName =
                         messages.get(delayName) !== undefined;
-                const textData = TextData({
+                const textData = TextComponent.TextData({
                         placeholder: 'message_name',
                         value: delayName,
                         onChange: onSetNameLocal,
                         list: 'messageNames',
                 });
-                const nameText = createValidatedText({
+                const nameText = TextInputValidated.createValidatedText({
                         data: textData,
                 }, validName);
-                const name = Div({ className: 'message-delay-name' },
+                const name = Core.Div({ className: 'message-delay-name' },
                         nameText);
 
                 const delayCondition = delay.condition;
                 const onSetConditionLocal = (condition: string) =>
                         onSetCondition(data, condition);
-                const conditionTextData = TextData({
+                const conditionTextData = TextComponent.TextData({
                         placeholder: 'condition',
                         value: delayCondition,
                         onChange: onSetConditionLocal,
                 });
-                const conditionText = Text(conditionTextData);
-                const condition = Div({ className: 'message-delay-condition' },
+                const conditionText = TextComponent.Text(conditionTextData);
+                const condition = Core.Div({ className: 'message-delay-condition' },
                         conditionText);
 
                 const onSetDelayLocal = (delayMins: number) =>
                         onSetDelay(data, delayMins);
-                const delayMinsProps = NumberData({
+                const delayMinsProps = NumberComponent.NumberData({
                         placeholder: 0,
                         value: delay.delayMins,
                         onChange: onSetDelayLocal,
                 });
-                const delayMins = Div({ className: 'message-delay-mins' },
-                        Number(delayMinsProps));
+                const delayMins = Core.Div({ className: 'message-delay-mins' },
+                        NumberComponent.Number(delayMinsProps));
 
-                const messageDelay = wrapInLabel('Name/delay',
+                const messageDelay = EditMessage.wrapInLabel('Name/delay',
                         name, condition, delayMins);
 
-                return Div({ className: 'message-delay' },
+                return Core.Div({ className: 'message-delay' },
                         messageDelay);
         }
 
-        export const MessageDelay = Flux.createFactory(render, 'MessageDelay');
+        export const MessageDelay = Redux.createFactory(render, 'MessageDelay');
 
         function onSetName (data: MessageDelayData, name: string)
         {

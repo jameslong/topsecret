@@ -3,46 +3,46 @@
 ///<reference path='../../../node_modules/immutable/dist/immutable.d.ts'/>
 ///<reference path='../../../typings/immutable/immutable-overrides.d.ts'/>
 /// <reference path="../../../typings/es6-polyfill/es6-polyfill.d.ts" />
+///<reference path='redux/redux.ts'/>
+///<reference path='redux/react.ts'/>
 ///<reference path='action/actionhandlermap.ts'/>
-///<reference path='flux/flux.ts'/>
-///<reference path='flux/react.ts'/>
-///<reference path='im/config.ts'/>
-///<reference path='im/misc.ts'/>
-///<reference path='im/state.ts'/>
-///<reference path='im/edge.ts'/>
-///<reference path='request/asyncrequest.ts'/>
+///<reference path='./config.ts'/>
+///<reference path='./misc.ts'/>
+///<reference path='./state.ts'/>
+///<reference path='./edge.ts'/>
+///<reference path='./asyncrequest.ts'/>
 ///<reference path='component/dumb/root.ts'/>
-///<reference path='eventhandler/eventhandler.ts'/>
+///<reference path='./eventhandler.ts'/>
 
 window.onload = () => {
         const wrapper = document.getElementById('wrapper');
 
-        const config = Im.Config({
+        const config = Config.Config({
                 serverURL: 'http://127.0.0.1:3000',
                 autosaveDelayms: 3000,
                 maxUndos: 30,
                 gridSize: 11,
-                vertexSize: Im.Coord({ x: 66, y: 66 }),
+                vertexSize: MathUtils.Coord({ x: 66, y: 66 }),
         });
 
-        const store = Im.Store({
+        const store = State.Store({
                 activeNarrative: '',
                 activeMessage: '',
-                narratives: Immutable.Map<string, Im.Narrative>(),
-                edges: Immutable.List<Im.Edge>(),
+                narratives: Immutable.Map<string, Narrative.Narrative>(),
+                edges: Immutable.List<Edge.Edge>(),
                 nameScratchpad: Immutable.Map<string, string>(),
         });
 
-        const state = Im.State({
+        const state = State.State({
                 config: config,
-                stores: Immutable.List.of<Im.Store>(store),
+                stores: Immutable.List.of<State.Store>(store),
                 activeStoreIndex: 0,
                 lastSavedStore: store,
                 dirty: false,
         });
 
-        Flux.init(state, Action.handleNewAction, Component.Root, wrapper);
+        Redux.init(state, ActionHandlerMap.handleNewAction, Root.Root, wrapper);
 
-        Request.requestNarratives(config.serverURL);
+        AsyncRequest.requestNarratives(config.serverURL);
         EventHandler.addKeyHandlers();
 };

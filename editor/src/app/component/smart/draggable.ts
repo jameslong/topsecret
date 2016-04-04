@@ -1,13 +1,13 @@
-///<reference path='../../im/misc.ts'/>
+///<reference path='../../misc.ts'/>
 
-module Component {
+module Draggable {
         export interface DragData {
                 id: string,
                 x: number,
                 y: number,
         }
 
-        type DraggableProps = Flux.Props<Im.Value>;
+        type DraggableProps = Redux.Props<Misc.Value>;
 
         function render (props: DraggableProps)
         {
@@ -15,13 +15,13 @@ module Component {
 
                 const onStart = (e: DragEvent) => onDragStart(props, e);
 
-                return Div({
+                return Core.Div({
                         draggable: true,
                         onDragStart: onStart,
                  }, children);
         }
 
-        export const Draggable = Flux.createFactory(render, 'Draggable');
+        export const Draggable = Redux.createFactory(render, 'Draggable');
 
         function onDragStart (props: DraggableProps, e: DragEvent)
         {

@@ -1,8 +1,8 @@
-///<reference path='../im/state.ts'/>
+///<reference path='../state.ts'/>
 ///<reference path='actions.ts'/>
 
-module Action {
-        function createAction<T> (type: string, parameters: T): Flux.Action<T>
+module ActionCreators {
+        function createAction<T> (type: string, parameters: T): Redux.Action<T>
         {
                 return {
                         type: type,
@@ -17,7 +17,7 @@ module Action {
 
         function createNameValueActionCreator<T> (type: string)
         {
-                return (parameters: NameValueParameters<T>) =>
+                return (parameters: Actions.NameValueParameters<T>) =>
                         createAction(type, parameters);
         }
 
@@ -26,33 +26,33 @@ module Action {
                 return () => createAction(type, null);
         }
 
-        export const undo = createEmptyActionCreator(Types.UNDO);
-        export const redo = createEmptyActionCreator(Types.REDO);
-        export const save = createEmptyActionCreator(Types.SAVE);
-        export const setGameData = createActionCreator<Im.Narratives>(Types.SET_GAME_DATA);
+        export const undo = createEmptyActionCreator(Actions.Types.UNDO);
+        export const redo = createEmptyActionCreator(Actions.Types.REDO);
+        export const save = createEmptyActionCreator(Actions.Types.SAVE);
+        export const setGameData = createActionCreator<Narrative.Narratives>(Actions.Types.SET_GAME_DATA);
 
-        export const endDrag = createActionCreator<EndDragParameters>(Types.END_DRAG);
-        export const setActiveNarrative = createActionCreator<string>(Types.SET_ACTIVE_NARRATIVE);
-        export const openMessage = createActionCreator<string>(Types.OPEN_MESSAGE);
-        export const closeMessage = createEmptyActionCreator(Types.CLOSE_MESSAGE);
-        export const createMessage = createEmptyActionCreator(Types.CREATE_MESSAGE);
-        export const deleteMessage = createActionCreator<string>(Types.DELETE_MESSAGE);
-        export const selectMessage = createActionCreator<string>(Types.SELECT_MESSAGE);
-        export const uniqueSelectMessage = createActionCreator<string>(Types.UNIQUE_SELECT_MESSAGE);
-        export const deselectMessage = createActionCreator<string>(Types.DESELECT_MESSAGE);
-        export const deselectAllMessages = createEmptyActionCreator(Types.DESELECT_ALL_MESSAGES);
+        export const endDrag = createActionCreator<Actions.EndDragParameters>(Actions.Types.END_DRAG);
+        export const setActiveNarrative = createActionCreator<string>(Actions.Types.SET_ACTIVE_NARRATIVE);
+        export const openMessage = createActionCreator<string>(Actions.Types.OPEN_MESSAGE);
+        export const closeMessage = createEmptyActionCreator(Actions.Types.CLOSE_MESSAGE);
+        export const createMessage = createEmptyActionCreator(Actions.Types.CREATE_MESSAGE);
+        export const deleteMessage = createActionCreator<string>(Actions.Types.DELETE_MESSAGE);
+        export const selectMessage = createActionCreator<string>(Actions.Types.SELECT_MESSAGE);
+        export const uniqueSelectMessage = createActionCreator<string>(Actions.Types.UNIQUE_SELECT_MESSAGE);
+        export const deselectMessage = createActionCreator<string>(Actions.Types.DESELECT_MESSAGE);
+        export const deselectAllMessages = createEmptyActionCreator(Actions.Types.DESELECT_ALL_MESSAGES);
 
-        export const setEditedMessageName = createNameValueActionCreator<string>(Types.SET_EDITED_MESSAGE_NAME);
-        export const setMessageName = createNameValueActionCreator(Types.SET_MESSAGE_NAME);
-        export const setMessageSubject = createNameValueActionCreator<string>(Types.SET_MESSAGE_SUBJECT);
-        export const setMessageEndGame = createNameValueActionCreator<boolean>(Types.SET_MESSAGE_END_GAME);
-        export const setMessageEncrypted = createNameValueActionCreator<boolean>(Types.SET_MESSAGE_ENCRYPTED);
-        export const setMessageScript = createNameValueActionCreator<string>(Types.SET_MESSAGE_SCRIPT);
-        export const setMessagePosition = createNameValueActionCreator<Im.Coord>(Types.SET_MESSAGE_POSITION);
-        export const setMessageContent = createNameValueActionCreator<Im.MessageContent>(Types.SET_MESSAGE_CONTENT);
-        export const setMessageFallback = createNameValueActionCreator<Im.MessageDelay>(Types.SET_MESSAGE_FALLBACK);
-        export const setMessageChildren = createNameValueActionCreator<Immutable.List<Im.MessageDelay>>(Types.SET_MESSAGE_CHILDREN);
-        export const setMessageReplyOptions = createNameValueActionCreator<Immutable.List<Im.ReplyOption>>(Types.SET_MESSAGE_REPLY_OPTIONS);
+        export const setEditedMessageName = createNameValueActionCreator<string>(Actions.Types.SET_EDITED_MESSAGE_NAME);
+        export const setMessageName = createNameValueActionCreator(Actions.Types.SET_MESSAGE_NAME);
+        export const setMessageSubject = createNameValueActionCreator<string>(Actions.Types.SET_MESSAGE_SUBJECT);
+        export const setMessageEndGame = createNameValueActionCreator<boolean>(Actions.Types.SET_MESSAGE_END_GAME);
+        export const setMessageEncrypted = createNameValueActionCreator<boolean>(Actions.Types.SET_MESSAGE_ENCRYPTED);
+        export const setMessageScript = createNameValueActionCreator<string>(Actions.Types.SET_MESSAGE_SCRIPT);
+        export const setMessagePosition = createNameValueActionCreator<MathUtils.Coord>(Actions.Types.SET_MESSAGE_POSITION);
+        export const setMessageContent = createNameValueActionCreator<Message.MessageContent>(Actions.Types.SET_MESSAGE_CONTENT);
+        export const setMessageFallback = createNameValueActionCreator<Message.MessageDelay>(Actions.Types.SET_MESSAGE_FALLBACK);
+        export const setMessageChildren = createNameValueActionCreator<Immutable.List<Message.MessageDelay>>(Actions.Types.SET_MESSAGE_CHILDREN);
+        export const setMessageReplyOptions = createNameValueActionCreator<Immutable.List<ReplyOption.ReplyOption>>(Actions.Types.SET_MESSAGE_REPLY_OPTIONS);
 
-        export const setString = createNameValueActionCreator<string>(Types.SET_STRING);
+        export const setString = createNameValueActionCreator<string>(Actions.Types.SET_STRING);
 }

@@ -1,6 +1,6 @@
 /// <reference path="buttoninput.ts" />
 
-module Component {
+module Multiple {
         interface MultipleInt {
                 children: Immutable.Iterable<number, any>;
                 onAdd: () => void;
@@ -13,7 +13,7 @@ module Component {
                 onRemove: () => {},
         }, 'Multiple');
 
-        type MultipleProps = Flux.Props<MultipleData>;
+        type MultipleProps = Redux.Props<MultipleData>;
 
         function onAdd (addFn: () => void, e: Event)
         {
@@ -42,33 +42,33 @@ module Component {
 
                 const addFn = (e: Event) => onAdd(data.onAdd, e);
                 const enabled = true;
-                const addProps = ButtonData({
+                const addProps = ButtonInput.ButtonData({
                         text: '+',
                         disabled: !enabled,
                         onClick: addFn,
                         className: 'button-add',
                 });
-                const add = ButtonInput(addProps);
+                const add = ButtonInput.ButtonInput(addProps);
 
-                return Div({}, wrappedChildren, add);
+                return Core.Div({}, wrappedChildren, add);
         }
 
-        export const Multiple = Flux.createFactory(render, 'Multiple');
+        export const Multiple = Redux.createFactory(render, 'Multiple');
 
         function wrapChild (
                 removeFn: (index: number) => void,
                 child: React.ReactElement<any>,
                 index: number)
         {
-                const removeProps = ButtonData({
+                const removeProps = ButtonInput.ButtonData({
                         text: 'x',
                         disabled: false,
                         onClick: (e: Event) => onRemove(removeFn, e, index),
                         className: 'button-remove',
                 });
-                const remove = ButtonInput(removeProps);
+                const remove = ButtonInput.ButtonInput(removeProps);
 
-                return Div({ className: 'multiple-child', key: index },
+                return Core.Div({ className: 'multiple-child', key: index },
                         child, remove);
         }
 }

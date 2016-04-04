@@ -2,26 +2,26 @@
 /// <reference path="dumb/textlist.ts" />
 /// <reference path="dumb/textareainput.ts" />
 
-module Component {
-        export function createValidatedText (props: TextProps, valid: boolean)
+module TextInputValidated {
+        export function createValidatedText (props: TextComponent.TextProps, valid: boolean)
         {
-                return createValidatedComponent(props, Text, valid);
+                return createValidatedComponent(props, TextComponent.Text, valid);
         }
 
         export function createValidatedTextList (
-                props: TextListProps, valid: boolean)
+                props: TextList.TextListProps, valid: boolean)
         {
-                return createValidatedComponent(props, TextList, valid);
+                return createValidatedComponent(props, TextList.TextList, valid);
         }
 
         export function createValidatedTextArea (
-                props: TextAreaProps, valid: boolean)
+                props: TextAreaInput.TextAreaProps, valid: boolean)
         {
-                return createValidatedComponent(props, TextAreaInput, valid);
+                return createValidatedComponent(props, TextAreaInput.TextAreaInput, valid);
         }
 
         type Props = Immutable.Record.IRecord<{ className?: string }>;
-        export function createValidatedComponent<U extends Flux.Props<Props>> (
+        export function createValidatedComponent<U extends Redux.Props<Props>> (
                 props: U,
                 createComponent: React.Factory<U>,
                 valid: boolean)

@@ -1,4 +1,4 @@
-module Component {
+module Checkbox {
         interface CheckboxInt {
                 checked: boolean;
                 onChange: (value: boolean) => void;
@@ -9,7 +9,7 @@ module Component {
                 onChange: (value: boolean) => {},
         }, 'Checkbox');
 
-        type CheckboxProps = Flux.Props<CheckboxData>;
+        type CheckboxProps = Redux.Props<CheckboxData>;
 
         interface CheckEvent {
                 target: {
@@ -23,12 +23,12 @@ module Component {
                 const onChange = (event: CheckEvent) =>
                         data.onChange(event.target.checked);
 
-                return Input({
+                return Core.Input({
                         type: 'checkbox',
                         checked: data.checked,
                         onChange: onChange,
                 });
         }
 
-        export const Checkbox = Flux.createFactory(render, 'Checkbox');
+        export const Checkbox = Redux.createFactory(render, 'Checkbox');
 }

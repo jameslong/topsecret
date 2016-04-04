@@ -9,10 +9,10 @@
 /// <reference path="../smart/messagecontentcontainer.ts" />
 /// <reference path="../smart/replyoptionscontainer.ts" />
 
-module Component {
+module EditMessage {
         interface EditMessageInt {
                 name: string,
-                store: Im.Store;
+                store: State.Store;
                 onDelete: () => void;
                 onSetNameScratchpad: (newName: string) => void;
                 onSetName: () => void;
@@ -21,13 +21,13 @@ module Component {
                 onSetEndGame: (endGame: boolean) => void;
                 onSetEncrypted: (encrypted: boolean) => void;
                 onSetScript: (script: string) => void;
-                onSetChildren: (delays: Im.MessageDelays) => void;
-                onSetFallback: (delay: Im.MessageDelay) => void;
+                onSetChildren: (delays: Message.MessageDelays) => void;
+                onSetFallback: (delay: Message.MessageDelay) => void;
         };
         export type EditMessageData = Immutable.Record.IRecord<EditMessageInt>;
         export const EditMessageData = Immutable.Record<EditMessageInt>({
                 name: '',
-                store: Im.Store(),
+                store: State.Store(),
                 onDelete: () => {},
                 onSetNameScratchpad: () => {},
                 onSetName: () => {},
@@ -40,13 +40,13 @@ module Component {
                 onSetFallback: () => {},
         }, 'EditMessage');
 
-        type EditMessageProps = Flux.Props<EditMessageData>;
+        type EditMessageProps = Redux.Props<EditMessageData>;
 
         function render (props: EditMessageProps)
         {
                 const data = props.data;
                 const store = data.store;
-                const narrative = Im.getActiveNarrative(store);
+                const narrative = Narrative.getActiveNarrative(store);
 
                 const messageName = data.name;
                 const scratchpadName =
@@ -88,11 +88,11 @@ module Component {
 
                 const deleteButton = createDeleteButton(
                         messageName, data.onDelete);
-                const header = Div({ className: 'edit-mesage-header' },
+                const header = Core.Div({ className: 'edit-mesage-header' },
                         deleteButton);
 
                 const dataLists = createDataLists(narrative);
-                return Div({ className: 'edit-message'},
+                return Core.Div({ className: 'edit-message'},
                         dataLists,
                         wrapInGroup(
                                 wrapInSubgroup(header),
@@ -109,20 +109,20 @@ module Component {
                 );
         }
 
-        export const EditMessage = Flux.createFactory(render, 'EditMessage');
+        export const EditMessage = Redux.createFactory(render, 'EditMessage');
 
         export function wrapInLabel<P>(
                 label: string, ...components: React.ReactElement<any>[])
         {
-                const props = Im.KeyValue({ name: '', value: label });
-                return InputLabel(props, ...components);
+                const props = Misc.KeyValue({ name: '', value: label });
+                return InputLabel.InputLabel(props, ...components);
         }
 
         export function wrapInGroup(
                 ...components: React.ReactElement<any>[])
         {
-                return Div({ className: 'edit-message-group' },
-                        Div({ className: 'edit-message-group-content' },
+                return Core.Div({ className: 'edit-message-group' },
+                        Core.Div({ className: 'edit-message-group-content' },
                                 ...components)
                 );
         }
@@ -130,15 +130,15 @@ module Component {
         export function wrapInSubgroup(
                 ...components: React.ReactElement<any>[])
         {
-                return Div({ className: 'edit-message-subgroup' }, ...components);
+                return Core.Div({ className: 'edit-message-subgroup' }, ...components);
         }
 
         export function wrapInTitleGroup(
                 title: string, ...components: React.ReactElement<any>[])
         {
-                return Div({ className: 'edit-message-group' },
-                        Div({ className: 'edit-message-group-title' }, title),
-                        Div({ className: 'edit-message-group-content' },
+                return Core.Div({ className: 'edit-message-group' },
+                        Core.Div({ className: 'edit-message-group-title' }, title),
+                        Core.Div({ className: 'edit-message-group-content' },
                                 ...components)
                 );
         }
@@ -146,111 +146,111 @@ module Component {
         function createName (
                 messageName: string,
                 scratchpadName: string,
-                messages: Im.Messages,
+                messages: Narrative.Messages,
                 onSetNameScratchpad: (newName: string) => void,
                 onSetName: () => void)
         {
                 const onSet = (name: string) => onSetNameScratchpad(name);
                 const displayName = scratchpadName || messageName;
-                const data = TextData({
+                const data = TextComponent.TextData({
                         placeholder: 'message_name',
                         value: displayName,
                         onChange: onSet,
                         list: 'messageNames',
                 });
-                const name = Text(data);
+                const name = TextComponent.Text(data);
 
                 const disabled = messages.has(displayName);
-                const buttonProps = ButtonData({
+                const buttonProps = ButtonInput.ButtonData({
                         text: 'Rename',
                         disabled: disabled,
                         onClick: onSetName,
                         className: null,
                 });
-                const setButton = ButtonInput(buttonProps);
+                const setButton = ButtonInput.ButtonInput(buttonProps);
 
-                return Div({}, name, setButton);
+                return Core.Div({}, name, setButton);
         }
 
         function createMessageContent (
-                message: Im.Message,
-                strings: Im.Strings,
-                profiles: Im.Profiles)
+                message: Message.Message,
+                strings: Narrative.Strings,
+                profiles: Narrative.Profiles)
         {
-                const messageProps = MessageContentContainerData({
+                const messageProps = MessageContentContainer.MessageContentContainerData({
                         profiles: profiles,
                         strings: strings,
                         message: message.message,
                         name: message.name,
                 });
-                return MessageContentContainer(messageProps);
+                return MessageContentContainer.MessageContentContainer(messageProps);
         }
 
         function createReplyOptions (
-                message: Im.Message, messages: Im.Messages)
+                message: Message.Message, messages: Narrative.Messages)
         {
-                const replyOptionsProps = ReplyOptionsContainerData({
+                const replyOptionsProps = ReplyOptionsContainer.ReplyOptionsContainerData({
                         name: message.name,
                         replyOptions: message.replyOptions,
                         messages: messages,
                 });
-                return ReplyOptionsContainer(replyOptionsProps);
+                return ReplyOptionsContainer.ReplyOptionsContainer(replyOptionsProps);
         }
 
         function createEndGame (
-                message: Im.Message,
+                message: Message.Message,
                 onSetEndGame: (endGame: boolean) => void)
         {
-                const newEndGameProps = CheckboxData({
+                const newEndGameProps = Checkbox.CheckboxData({
                         checked: message.endGame,
                         onChange: onSetEndGame,
                 });
-                return wrapInLabel('End game', Checkbox(newEndGameProps));
+                return wrapInLabel('End game', Checkbox.Checkbox(newEndGameProps));
         }
 
         function createEncrypted (
-                message: Im.Message,
+                message: Message.Message,
                 onSetEncrypted: (encrypted: boolean) => void)
         {
-                const newEncryptedProps = CheckboxData({
+                const newEncryptedProps = Checkbox.CheckboxData({
                         checked: message.encrypted,
                         onChange: onSetEncrypted,
                 });
                 return wrapInLabel(
-                        'Encrypted', Checkbox(newEncryptedProps));
+                        'Encrypted', Checkbox.Checkbox(newEncryptedProps));
         }
 
         function createScript (
-                message: Im.Message,
+                message: Message.Message,
                 onSetScript: (script: string) => void)
         {
                 const script = message.script;
                 const messageName = message.name;
 
-                const nameProps = TextData({
+                const nameProps = TextComponent.TextData({
                         placeholder: '',
                         value: script,
                         onChange: onSetScript,
                 });
-                return Text({ data: nameProps });
+                return TextComponent.Text({ data: nameProps });
         }
 
         function createDeleteButton (
                 name: string, onDelete: () => void)
         {
                 const disabled = !name;
-                const deleteProps = ButtonData({
+                const deleteProps = ButtonInput.ButtonData({
                         text: 'Delete',
                         disabled: disabled,
                         onClick: onDelete,
                         className: null,
                 });
-                return ButtonInput(deleteProps);
+                return ButtonInput.ButtonInput(deleteProps);
         }
 
         function createSubject (
-                message: Im.Message,
-                strings: Im.Strings,
+                message: Message.Message,
+                strings: Narrative.Strings,
                 onSetSubjectName: (subjectName: string) => void,
                 onSetString: (name: string, value: string) => void)
         {
@@ -258,30 +258,30 @@ module Component {
                 const subjectValue = strings.get(subjectName);
                 const messageName = message.name;
 
-                const nameProps = TextData({
+                const nameProps = TextComponent.TextData({
                         placeholder: 'subject_string_name',
                         value: subjectName,
                         onChange: onSetSubjectName,
                         list: 'stringNames',
                 });
-                const name = Text({ data: nameProps });
+                const name = TextComponent.Text({ data: nameProps });
 
                 const onChangeString = (value: string) =>
                         onSetString(subjectName, value);
-                const subjectProps = TextData({
+                const subjectProps = TextComponent.TextData({
                         placeholder: 'subject',
                         value: subjectValue,
                         onChange: onChangeString,
                 });
-                const subject = Text({ data: subjectProps });
+                const subject = TextComponent.Text({ data: subjectProps });
 
-                return Div({}, name, subject);
+                return Core.Div({}, name, subject);
         }
 
         function onSetChild (
-                onSetChildren: (delays: Im.MessageDelays) => void,
-                message: Im.Message,
-                delay: Im.MessageDelay,
+                onSetChildren: (delays: Message.MessageDelays) => void,
+                message: Message.Message,
+                delay: Message.MessageDelay,
                 index: number)
         {
                 const children = message.children;
@@ -290,18 +290,18 @@ module Component {
         }
 
         function onAddChild (
-                onSetChildren: (delays: Im.MessageDelays) => void,
-                message: Im.Message)
+                onSetChildren: (delays: Message.MessageDelays) => void,
+                message: Message.Message)
         {
-                const newChild = Im.MessageDelay();
+                const newChild = Message.MessageDelay();
                 const children = message.children;
                 const newChildren = children.push(newChild);
                 onSetChildren(newChildren);
         }
 
         function onRemoveChild (
-                onSetChildren: (delays: Im.MessageDelays) => void,
-                message: Im.Message, index: number)
+                onSetChildren: (delays: Message.MessageDelays) => void,
+                message: Message.Message, index: number)
         {
                 const children = message.children;
                 const newChildren = children.delete(index);
@@ -309,86 +309,86 @@ module Component {
         }
 
         function createChildren (
-                onSetChildren: (delays: Im.MessageDelays) => void,
-                message: Im.Message,
-                messages: Im.Messages)
+                onSetChildren: (delays: Message.MessageDelays) => void,
+                message: Message.Message,
+                messages: Narrative.Messages)
         {
                 const onAdd = () => onAddChild(onSetChildren, message);
                 const onRemove = (index: number) =>
                         onRemoveChild(onSetChildren, message, index);
                 const delays = message.children;
                 const children = delays.map((delay, index) => {
-                        const onSet = (delay: Im.MessageDelay) =>
+                        const onSet = (delay: Message.MessageDelay) =>
                                 onSetChild(onSetChildren, message, delay, index);
-                        const props = MessageDelayData({
+                        const props = MessageDelay.MessageDelayData({
                                 delay: delay,
                                 onChange: onSet,
                                 messages: messages,
                         });
-                        return MessageDelay(props);
+                        return MessageDelay.MessageDelay(props);
                 });
-                const multipleProps = MultipleData({
+                const multipleProps = Multiple.MultipleData({
                         children: children,
                         onAdd: onAdd,
                         onRemove: onRemove,
                 });
-                return Multiple(multipleProps);
+                return Multiple.Multiple(multipleProps);
         }
 
-        function onAddFallback (onSetFallback: (delay: Im.MessageDelay) => void)
+        function onAddFallback (onSetFallback: (delay: Message.MessageDelay) => void)
         {
-                const newDelay = Im.MessageDelay();
+                const newDelay = Message.MessageDelay();
                 onSetFallback(newDelay);
         }
 
         function createFallback (
-                onSetFallback: (delay: Im.MessageDelay) => void,
-                message: Im.Message,
-                messages: Im.Messages)
+                onSetFallback: (delay: Message.MessageDelay) => void,
+                message: Message.Message,
+                messages: Narrative.Messages)
         {
                 const delay = message.fallback;
                 const messageName = message.name;
 
                 const onAdd = () => onAddFallback(onSetFallback);
                 const onRemove = () => onSetFallback(null);
-                const fallbackProps = MessageDelayData({
+                const fallbackProps = MessageDelay.MessageDelayData({
                         delay: delay,
                         onChange: onSetFallback,
                         messages: messages,
                 });
                 const fallback = delay ?
-                        MessageDelay(fallbackProps) : null;
-                const optionalProps = OptionalData({
+                        MessageDelay.MessageDelay(fallbackProps) : null;
+                const optionalProps = Optional.OptionalData({
                         child: fallback,
                         onAdd: onAdd,
                         onRemove: onRemove,
                 });
-                return Optional(optionalProps);
+                return Optional.Optional(optionalProps);
         }
 
-        function createDataLists (narrative: Im.Narrative)
+        function createDataLists (narrative: Narrative.Narrative)
         {
                 const messages = narrative.messages;
                 const profiles = narrative.profiles;
                 const strings = narrative.strings;
 
-                const messageNames = Im.keys(messages)
+                const messageNames = Helpers.keys(messages)
                 const messageDataList = createDataList(
                         'messageNames', messageNames);
 
-                const profileNames = Im.keys(profiles)
+                const profileNames = Helpers.keys(profiles)
                 const profileDataList = createDataList(
                         'profileNames', profileNames);
 
-                const stringNames = Im.keys(strings);
+                const stringNames = Helpers.keys(strings);
                 const stringDataList = createDataList(
                         'stringNames', stringNames);
 
-                const replyOptionTypes = Im.getReplyOptionTypes();
+                const replyOptionTypes = ReplyOption.getReplyOptionTypes();
                 const replyOptionDataList = createDataList(
                         'replyOptionTypes', replyOptionTypes);
 
-                return Div({},
+                return Core.Div({},
                         messageDataList,
                         profileDataList,
                         stringDataList,
@@ -397,10 +397,10 @@ module Component {
 
         function createDataList (id: string, names: Immutable.List<string>)
         {
-                const options = names.map(name => Option({
+                const options = names.map(name => Core.Option({
                         value: name,
                         key: name,
                  }));
-                return DataList({ id: id }, options);
+                return Core.DataList({ id: id }, options);
         }
 }

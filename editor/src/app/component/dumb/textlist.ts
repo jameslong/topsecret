@@ -1,4 +1,4 @@
-module Component {
+module TextList {
         interface TextListInt {
                 placeholder: string;
                 values: Immutable.List<string>;
@@ -19,7 +19,7 @@ module Component {
                 }
         }
 
-        export type TextListProps = Flux.Props<TextListData>;
+        export type TextListProps = Redux.Props<TextListData>;
 
         function render (props: TextListProps)
         {
@@ -31,7 +31,7 @@ module Component {
                 };
                 const value = data.values.join();
 
-                return Input({
+                return Core.Input({
                         placeholder: data.placeholder,
                         value: value,
                         onChange: onChange,
@@ -39,7 +39,7 @@ module Component {
                 });
         }
 
-        export const TextList = Flux.createFactory(render, 'TextList');
+        export const TextList = Redux.createFactory(render, 'TextList');
 
         function splitToString (newValue: string)
         {

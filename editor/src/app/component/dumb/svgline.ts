@@ -1,5 +1,5 @@
-module Component {
-        type SvgLineClassProps = Flux.Props<Im.Line>;
+module SvgLine {
+        type SvgLineClassProps = Redux.Props<MathUtils.Line>;
 
         function render (props: SvgLineClassProps)
         {
@@ -7,7 +7,7 @@ module Component {
                 const start = data.start;
                 const end = data.end;
 
-                return Line({
+                return Core.Line({
                         x1: start.x,
                         y1: start.y,
                         x2: end.x,
@@ -16,5 +16,5 @@ module Component {
                 });
         }
 
-        export const SvgLine = Flux.createFactory(render, 'SvgLine');
+        export const SvgLine = Redux.createFactory(render, 'SvgLine');
 }

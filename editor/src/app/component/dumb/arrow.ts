@@ -1,7 +1,7 @@
 /// <reference path="svgline.ts" />
 
-module Component {
-        type ArrowClassProps = Flux.Props<Im.Edge>;
+module Arrow {
+        type ArrowClassProps = Redux.Props<Edge.Edge>;
 
         function render (props: ArrowClassProps) {
                 const data = props.data;
@@ -10,7 +10,7 @@ module Component {
 
                 const arrowhead = createArrowhead(start, end);
 
-                const line = Line({
+                const line = Core.Line({
                         x1: start.x,
                         y1: start.y,
                         x2: end.x,
@@ -20,21 +20,21 @@ module Component {
 
                 const className = getClassName(data.type);
 
-                return G({ className: className }, line, arrowhead);
+                return Core.G({ className: className }, line, arrowhead);
         }
 
-        export const Arrow = Flux.createFactory(render, 'Arrow');
+        export const Arrow = Redux.createFactory(render, 'Arrow');
 
-        function createArrowhead (start: Im.Coord, end: Im.Coord)
+        function createArrowhead (start: MathUtils.Coord, end: MathUtils.Coord)
         {
                 const width = 10;
                 const height = 10;
 
-                const points = Immutable.List.of<Im.Coord>(
-                        Im.Coord({ x: 0, y: 0 }),
-                        Im.Coord({ x: width/2, y: 0 }),
-                        Im.Coord({ x: 0, y: height }),
-                        Im.Coord({ x: -width/2, y: 0 })
+                const points = Immutable.List.of<MathUtils.Coord>(
+                        MathUtils.Coord({ x: 0, y: 0 }),
+                        MathUtils.Coord({ x: width/2, y: 0 }),
+                        MathUtils.Coord({ x: 0, y: height }),
+                        MathUtils.Coord({ x: -width/2, y: 0 })
                 );
 
                 const pointString = points.reduce(
@@ -47,7 +47,7 @@ module Component {
                 const angle = Math.atan2(dy, dx);
                 const angleDegrees = angle * 180 / Math.PI;
 
-                const position = Im.Coord({
+                const position = MathUtils.Coord({
                         x: end.x - (Math.cos(angle) * height),
                         y: end.y - (Math.sin(angle) * height),
                 });
@@ -55,20 +55,20 @@ module Component {
                         `translate(${position.x},${position.y})`;
                 const rotation = `rotate(${angleDegrees - 90})`;
 
-                return Polygon({
+                return Core.Polygon({
                         points: pointString,
                         transform: `${translation}, ${rotation}`,
                         });
         }
 
-        function getClassName (type: Im.Type)
+        function getClassName (type: Edge.Type)
         {
                 switch (type) {
-                case Im.Type.Fallback:
+                case Edge.Type.Fallback:
                         return 'arrow-fallback';
-                case Im.Type.Child:
+                case Edge.Type.Child:
                         return 'arrow-child';
-                case Im.Type.ReplyOption:
+                case Edge.Type.ReplyOption:
                         return 'arrow-reply-option';
                 default:
                         return '';

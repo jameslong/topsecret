@@ -1,6 +1,6 @@
 /// <reference path="../../../../typings/react/react-dom.d.ts"/>
 
-module Flux {
+module Redux {
         export interface Action<T> {
                 type: string;
                 parameters: T;
@@ -16,7 +16,7 @@ module Flux {
         {
                 let appState = { state: state };
 
-                Flux.handleAction = (action: Action<U>) => {
+                Redux.handleAction = (action: Action<U>) => {
                         appState.state = reducer(appState.state, action);
                         render(appState.state, rootComponent, wrapper);
                 };

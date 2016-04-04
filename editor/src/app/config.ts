@@ -1,12 +1,12 @@
-///<reference path='../im/math.ts'/>
+///<reference path='./math.ts'/>
 
-module Im {
+module Config {
         interface ConfigInt {
                 serverURL: string;
                 autosaveDelayms: number;
                 maxUndos: number;
                 gridSize: number;
-                vertexSize: Coord;
+                vertexSize: MathUtils.Coord;
         }
         export type Config = Immutable.Record.IRecord<ConfigInt>;
         export const Config = Immutable.Record<ConfigInt>({
@@ -14,6 +14,6 @@ module Im {
                 autosaveDelayms: 0,
                 maxUndos: 0,
                 gridSize: 0,
-                vertexSize: Coord(),
+                vertexSize: MathUtils.Coord(),
         }, 'Config');
 }

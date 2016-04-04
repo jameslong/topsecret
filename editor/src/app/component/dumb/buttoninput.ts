@@ -1,4 +1,4 @@
-module Component {
+module ButtonInput {
         interface ButtonInt {
                 text: string;
                 disabled: boolean;
@@ -13,19 +13,19 @@ module Component {
                 className: null,
         }, 'Button');
 
-        type ButtonInputProps = Flux.Props<ButtonData>;
+        type ButtonInputProps = Redux.Props<ButtonData>;
 
         function render (props: ButtonInputProps)
         {
                 const data = props.data;
                 const onClick = (event: Event) => data.onClick(event);
 
-                return Button({
+                return Core.Button({
                         disabled: data.disabled,
                         onClick: onClick,
                         className: data.className,
                 }, data.text);
         }
 
-        export const ButtonInput = Flux.createFactory(render, 'ButtonInput');
+        export const ButtonInput = Redux.createFactory(render, 'ButtonInput');
 }

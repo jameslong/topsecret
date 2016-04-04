@@ -1,18 +1,18 @@
 /// <reference path="absolute.ts" />
 /// <reference path="../smart/draggable.ts" />
 
-module Component {
+module NodeComponent {
         interface NodeInt {
-                message: Im.Message;
+                message: Message.Message;
                 onClick: (e: MouseEvent) => void;
         };
         export type NodeData = Immutable.Record.IRecord<NodeInt>;
         export const NodeData = Immutable.Record<NodeInt>({
-                message: Im.Message(),
+                message: Message.Message(),
                 onClick: () => {},
         }, 'Node');
 
-        type NodeProps = Flux.Props<NodeData>;
+        type NodeProps = Redux.Props<NodeData>;
 
         function render (props: NodeProps)
         {
@@ -20,12 +20,12 @@ module Component {
                 const message = props.data.message;
                 const name = message.name;
                 const position = message.position;
-                const nameProps = Im.Value({
+                const nameProps = Misc.Value({
                         value: name,
                 });
                 const selected = message.selected;
                 const invalid = !message.valid;
-                const className = Flux.classNames(
+                const className = Redux.classNames(
                         'node',
                         { ['node-selected']: selected },
                         { ['node-invalid']: invalid });
@@ -35,15 +35,15 @@ module Component {
                         onClick: data.onClick,
                 };
 
-                return Absolute(position,
-                        Draggable(nameProps,
-                                Div(nodeProps,
-                                        Div({ className: 'node-title' },
+                return Absolute.Absolute(position,
+                        Draggable.Draggable(nameProps,
+                                Core.Div(nodeProps,
+                                        Core.Div({ className: 'node-title' },
                                                 name)
                                 )
                         )
                 );
         }
 
-        export const Node = Flux.createFactory(render, 'Node');
+        export const Node = Redux.createFactory(render, 'Node');
 }

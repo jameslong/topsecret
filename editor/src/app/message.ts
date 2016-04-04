@@ -1,6 +1,6 @@
 ///<reference path='math.ts'/>
 
-module Im {
+module Message {
         interface MessageContentMutable {
                 from: string;
                 to: string[];
@@ -42,13 +42,13 @@ module Im {
         export interface MessageMutable {
                 name: string;
                 threadSubject: string;
-                position: Coord;
+                position: MathUtils.Coord;
                 endGame: boolean;
                 message: MessageContentMutable;
                 encrypted: boolean;
                 script: string;
                 receiver: string;
-                replyOptions: ReplyOptionMutable[];
+                replyOptions: ReplyOption.ReplyOptionMutable[];
                 children: MessageDelayMutable[];
                 fallback: MessageDelayMutable;
         }
@@ -56,13 +56,13 @@ module Im {
         interface MessageInt {
                 name: string;
                 threadSubject: string;
-                position: Coord;
+                position: MathUtils.Coord;
                 endGame: boolean;
                 message: MessageContent;
                 encrypted: boolean;
                 script: string;
                 receiver: string;
-                replyOptions: ReplyOptions;
+                replyOptions: ReplyOption.ReplyOptions;
                 children: MessageDelays;
                 fallback: MessageDelay;
                 selected: boolean;
@@ -72,13 +72,13 @@ module Im {
         export const Message = Immutable.Record<MessageInt>({
                 name: '',
                 threadSubject: '',
-                position: Coord(),
+                position: MathUtils.Coord(),
                 endGame: false,
                 message: MessageContent(),
                 encrypted: true,
                 script: '',
                 receiver: null,
-                replyOptions: Immutable.List<ReplyOption>(),
+                replyOptions: Immutable.List<ReplyOption.ReplyOption>(),
                 children: Immutable.List<MessageDelay>(),
                 fallback: null,
                 selected: false,
@@ -105,9 +105,9 @@ module Im {
                 });
         }
 
-        function convertToImmutableCoord (coordMutable: Coord)
+        function convertToImmutableCoord (coordMutable: MathUtils.Coord)
         {
-                return Coord({
+                return MathUtils.Coord({
                         x: coordMutable.x,
                         y: coordMutable.y,
                 });
@@ -124,17 +124,17 @@ module Im {
                 const fallback = fallbackMutable ?
                         convertToImmutableMessageDelay(fallbackMutable) : null;
 
-                const children = listFromArray(
+                const children = Helpers.listFromArray(
                         messageMutable.children,
                         convertToImmutableMessageDelay);
 
                 const positionMutable = messageMutable.position;
                 const position = positionMutable ?
                         convertToImmutableCoord(positionMutable) :
-                        Coord();
+                        MathUtils.Coord();
 
                 const replyOptionsMutable = messageMutable.replyOptions;
-                const replyOptions = convertToImmutableReplyOptions(
+                const replyOptions = ReplyOption.convertToImmutableReplyOptions(
                         replyOptionsMutable);
 
                 return Message({
@@ -163,26 +163,26 @@ module Im {
                 return messageMutable;
         }
 
-        export function getSelectedMessages (messages: Im.Messages)
+        export function getSelectedMessages (messages: Narrative.Messages)
         {
-                return <Im.Messages>messages.filter(
+                return <Narrative.Messages>messages.filter(
                         message => message.selected);
         }
 
-        export function getSingleSelectedMessage (messages: Im.Messages)
+        export function getSingleSelectedMessage (messages: Narrative.Messages)
         {
                 const selected = getSelectedMessages(messages);
-                const selectedList = <Immutable.List<Im.Message>>(selected.toList());
+                const selectedList = <Immutable.List<Message.Message>>(selected.toList());
                 return selectedList.count() === 1 ?
                         selectedList.get(0).name : null;
         }
 
         export function markMessagesValid (
-                messages: Messages,
-                strings: Strings,
-                profiles: Profiles)
+                messages: Narrative.Messages,
+                strings: Narrative.Strings,
+                profiles: Narrative.Profiles)
         {
-                return <Messages>messages.map(message =>
+                return <Narrative.Messages>messages.map(message =>
                         markMessageValid(
                                 message,
                                 messages,
@@ -192,9 +192,9 @@ module Im {
 
         export function markMessageValid (
                 message: Message,
-                messages: Messages,
-                strings: Strings,
-                profiles: Profiles)
+                messages: Narrative.Messages,
+                strings: Narrative.Strings,
+                profiles: Narrative.Profiles)
         {
                 const valid = isValidMessage(
                         message, messages, strings, profiles);
@@ -203,9 +203,9 @@ module Im {
 
         export function isValidMessage (
                 message: Message,
-                messages: Messages,
-                strings: Strings,
-                profiles: Profiles)
+                messages: Narrative.Messages,
+                strings: Narrative.Strings,
+                profiles: Narrative.Profiles)
         {
                 return validSubject(message, strings) &&
                         validContent(message, strings, profiles) &&
@@ -214,7 +214,7 @@ module Im {
                         validChildren(message, messages);
         }
 
-        function validSubject (message: Message, strings: Im.Strings)
+        function validSubject (message: Message, strings: Narrative.Strings)
         {
                 const subject = message.threadSubject;
                 return !subject || strings.get(subject);
@@ -222,8 +222,8 @@ module Im {
 
         function validContent (
                 message: Message,
-                strings: Strings,
-                profiles: Profiles)
+                strings: Narrative.Strings,
+                profiles: Narrative.Profiles)
         {
                 const content = message.message;
                 const validFrom = profiles.has(content.from);
@@ -234,30 +234,30 @@ module Im {
                 return validFrom && validTo && validBody;
         }
 
-        function validMessageDelay (delay: MessageDelay, messages: Messages)
+        function validMessageDelay (delay: MessageDelay, messages: Narrative.Messages)
         {
                 return messages.has(delay.name);
         }
 
-        function validFallback (message: Message, messages: Messages)
+        function validFallback (message: Message, messages: Narrative.Messages)
         {
                 return !message.fallback ||
                         validMessageDelay(message.fallback, messages);
         }
 
-        function validReplyOptions (message: Message, messages: Messages)
+        function validReplyOptions (message: Message, messages: Narrative.Messages)
         {
                 return message.replyOptions.every(option =>
                         validMessageDelay(option.messageDelay, messages));
         }
 
-        function validChildren (message: Message, messages: Messages)
+        function validChildren (message: Message, messages: Narrative.Messages)
         {
                 return message.children.every(child =>
                         validMessageDelay(child, messages));
         }
 
-        export function createUniqueMessageName(messages: Messages)
+        export function createUniqueMessageName(messages: Narrative.Messages)
         {
                 let stem = 'untitled';
                 let name = '';

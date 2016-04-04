@@ -1,4 +1,4 @@
-module Component {
+module TextAreaInput {
         interface TextAreaInt {
                 placeholder: string;
                 value: string;
@@ -11,9 +11,9 @@ module Component {
                 value: '',
                 onChange: (value: string) => {},
                 className: undefined,
-        }, 'TextArea');
+        }, 'TextAreaData');
 
-        export type TextAreaProps = Flux.Props<TextAreaData>;
+        export type TextAreaProps = Redux.Props<TextAreaData>;
 
         interface InputEvent {
                 target: {
@@ -27,7 +27,7 @@ module Component {
                 const onChange = (event: InputEvent) =>
                         data.onChange(event.target.value);
 
-                return TextArea({
+                return Core.TextArea({
                         placeholder: data.placeholder,
                         value: data.value,
                         onChange: onChange,
@@ -35,5 +35,5 @@ module Component {
                 });
         }
 
-        export const TextAreaInput = Flux.createFactory(render, 'TextArea');
+        export const TextAreaInput = Redux.createFactory(render, 'TextAreaInput');
 }

@@ -1,25 +1,25 @@
 /// <reference path="../dumb/editarea.ts" />
 
-module Component {
-        type EditAreaContainerProps = Flux.Props<Im.Store>;
+module EditAreaContainer {
+        type EditAreaContainerProps = Redux.Props<State.Store>;
 
         function render (props: EditAreaContainerProps)
         {
                 const data = props.data;
-                const editAreaData = EditAreaData({
+                const editAreaData = EditArea.EditAreaData({
                         store: data,
                         onClick: onClick,
                 });
-                return EditArea(editAreaData);
+                return EditArea.EditArea(editAreaData);
         }
 
-        export const EditAreaContainer = Flux.createFactory(render, 'EditAreaContainer');
+        export const EditAreaContainer = Redux.createFactory(render, 'EditAreaContainer');
 
         function onClick (event: MouseEvent)
         {
                 event.stopPropagation();
 
-                const action = Action.deselectAllMessages();
-                Flux.handleAction(action);
+                const action = ActionCreators.deselectAllMessages();
+                Redux.handleAction(action);
         }
 }

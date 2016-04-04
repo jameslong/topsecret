@@ -3,38 +3,38 @@
 /// <reference path="../smart/editpanelcontainer.ts" />
 /// <reference path="../smart/menubarcontainer.ts" />
 
-module Component {
-        type RootProps = Flux.Props<Im.State>;
+module Root {
+        type RootProps = Redux.Props<State.State>;
 
         function render (props: RootProps)
         {
                 const state = props.data;
-                const store = Im.getActiveStore(state);
-                const narrativeNames = Im.keys(store.narratives);
+                const store = State.getActiveStore(state);
+                const narrativeNames = Helpers.keys(store.narratives);
 
                 const activeNarrative = store.activeNarrative;
                 const activeMessage = store.activeMessage;
 
                 const message = activeMessage ?
-                        EditPanelContainer(store) : null;
+                        EditPanelContainer.EditPanelContainer(store) : null;
 
-                const narrative = Im.getActiveNarrative(store);
+                const narrative = Narrative.getActiveNarrative(store);
                 const messages = narrative.messages;
-                const singleSelected = Im.getSingleSelectedMessage(messages);
+                const singleSelected = Message.getSingleSelectedMessage(messages);
 
-                const menuBarData = MenuBarContainerData({
+                const menuBarData = MenuBarContainer.MenuBarContainerData({
                         narrativeNames,
                         activeNarrative,
                         activeMessage: singleSelected,
                 });
 
-                return Div({ className: 'root' },
-                        EditAreaContainer(store),
-                        MenuBarContainer(menuBarData),
+                return Core.Div({ className: 'root' },
+                        EditAreaContainer.EditAreaContainer(store),
+                        MenuBarContainer.MenuBarContainer(menuBarData),
                         message
                 );
         }
 
-        export const Root = Flux.createFactory(render, 'Root');
+        export const Root = Redux.createFactory(render, 'Root');
 
 }

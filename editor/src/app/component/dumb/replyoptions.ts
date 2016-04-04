@@ -1,23 +1,23 @@
 /// <reference path="../dumb/replyoption.ts" />
 
-module Component {
-        type OnSet = (options: Im.ReplyOptions) => void;
+module ReplyOptions {
+        type OnSet = (options: ReplyOption.ReplyOptions) => void;
 
         interface ReplyOptionsInt {
                 name: string;
-                replyOptions: Im.ReplyOptions;
-                messages: Im.Messages;
+                replyOptions: ReplyOption.ReplyOptions;
+                messages: Narrative.Messages;
                 onSet: OnSet;
         };
         export type ReplyOptionsData = Immutable.Record.IRecord<ReplyOptionsInt>;
         export const ReplyOptionsData = Immutable.Record<ReplyOptionsInt>({
                 name: '',
-                replyOptions: Immutable.List<Im.ReplyOption>(),
-                messages: Immutable.Map<string, Im.Message>(),
+                replyOptions: Immutable.List<ReplyOption.ReplyOption>(),
+                messages: Immutable.Map<string, Message.Message>(),
                 onSet: () => {},
         }, 'ReplyOptions');
 
-        type ReplyOptionsProps = Flux.Props<ReplyOptionsData>;
+        type ReplyOptionsProps = Redux.Props<ReplyOptionsData>;
 
         function render (props: ReplyOptionsProps)
         {
@@ -29,30 +29,30 @@ module Component {
                 const replyOptions = renderReplyOptions(
                         onSet, options, messages);
 
-                return Div({}, replyOptions);
+                return Core.Div({}, replyOptions);
         }
 
-        export const ReplyOptions = Flux.createFactory(render, 'ReplyOptions');
+        export const ReplyOptions = Redux.createFactory(render, 'ReplyOptions');
 
         function onSetReplyOption (
                 onSet: OnSet,
-                options: Im.ReplyOptions,
+                options: ReplyOption.ReplyOptions,
                 index: number,
-                option: Im.ReplyOption)
+                option: ReplyOption.ReplyOption)
         {
                 const newOptions = options.set(index, option);
                 onSet(newOptions);
         }
 
-        function onAddReplyOption (onSet: OnSet, options: Im.ReplyOptions)
+        function onAddReplyOption (onSet: OnSet, options: ReplyOption.ReplyOptions)
         {
-                const newOption = Im.ReplyOptionKeyword();
+                const newOption = ReplyOption.ReplyOptionKeyword();
                 const newOptions = options.push(newOption);
                 onSet(newOptions);
         }
 
         function onRemoveReplyOption (
-                onSet: OnSet, options: Im.ReplyOptions, index: number)
+                onSet: OnSet, options: ReplyOption.ReplyOptions, index: number)
         {
                 const newOptions = options.delete(index);
                 onSet(newOptions);
@@ -60,27 +60,27 @@ module Component {
 
         function renderReplyOptions (
                 onSet: OnSet,
-                options: Im.ReplyOptions,
-                messages: Im.Messages)
+                options: ReplyOption.ReplyOptions,
+                messages: Narrative.Messages)
         {
                 const children = options.map((option, index) => {
-                        const onSetReplyOptionLocal = (option: Im.ReplyOption) =>
+                        const onSetReplyOptionLocal = (option: ReplyOption.ReplyOption) =>
                                 onSetReplyOption(onSet, options, index, option);
-                        const props = ReplyOptionData({
+                        const props = ReplyOptionComponent.ReplyOptionData({
                                 onSet: onSetReplyOptionLocal,
                                 replyOption: option,
                                 messages: messages,
                         });
-                        return ReplyOption(props);
+                        return ReplyOptionComponent.ReplyOptionComponent(props);
                 });
                 const onAdd = () => onAddReplyOption(onSet, options);
                 const onRemove = (index: number) =>
                         onRemoveReplyOption(onSet, options, index);
-                const multipleProps = MultipleData({
+                const multipleProps = Multiple.MultipleData({
                         children: children,
                         onAdd: onAdd,
                         onRemove: onRemove,
                 });
-                return Multiple(multipleProps);
+                return Multiple.Multiple(multipleProps);
         }
 }

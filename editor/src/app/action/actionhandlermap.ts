@@ -2,46 +2,46 @@
 ///<reference path='actionhandlers.ts'/>
 ///<reference path='actioncreators.ts'/>
 
-module Action {
+module ActionHandlerMap {
         export interface ActionHandler<T, U> {
-                (state: U, action: Flux.Action<T>): U
+                (state: U, action: Redux.Action<T>): U
         }
 
         interface HandlerMap {
-                [s: string]: ActionHandler<any, Im.State>;
+                [s: string]: ActionHandler<any, State.State>;
         }
 
         export const handlerMap: HandlerMap = {
-                [Types.UNDO]: handleUndo,
-                [Types.REDO]: handleRedo,
-                [Types.SAVE]: handleSave,
-                [Types.SET_GAME_DATA]: handleSetGameData,
-                [Types.END_DRAG]: wrapStoreUpdateFunc(handleEndDrag),
-                [Types.SET_ACTIVE_NARRATIVE]: wrapStoreUpdateFunc(handleSetActiveNarrative),
-                [Types.OPEN_MESSAGE]: wrapStoreUpdateFunc(handleOpenMessage),
-                [Types.CLOSE_MESSAGE]: wrapStoreUpdateFunc(handleCloseMessage),
-                [Types.CREATE_MESSAGE]: wrapStoreUpdateFunc(handleCreateMessage),
-                [Types.DELETE_MESSAGE]: wrapStoreUpdateFunc(handleDeleteMessage),
-                [Types.SELECT_MESSAGE]: wrapStoreUpdateFunc(handleSelectMessage),
-                [Types.UNIQUE_SELECT_MESSAGE]: wrapStoreUpdateFunc(handleUniqueSelectMessage),
-                [Types.DESELECT_MESSAGE]: wrapStoreUpdateFunc(handleDeselectMessage),
-                [Types.DESELECT_ALL_MESSAGES]: wrapStoreUpdateFunc(handleDeselectAllMessages),
-                [Types.SET_EDITED_MESSAGE_NAME]: wrapStoreUpdateFunc(handleSetEditedMessageName),
-                [Types.SET_MESSAGE_NAME]: wrapStoreUpdateFunc(handleSetMessageName),
-                [Types.SET_MESSAGE_SUBJECT]: wrapStoreUpdateFunc(handleSetMessageSubject),
-                [Types.SET_MESSAGE_END_GAME]: wrapStoreUpdateFunc(handleSetMessageEndGame),
-                [Types.SET_MESSAGE_ENCRYPTED]: wrapStoreUpdateFunc(handleSetMessageEncrypted),
-                [Types.SET_MESSAGE_SCRIPT]: wrapStoreUpdateFunc(handleSetMessageScript),
-                [Types.SET_MESSAGE_POSITION]: wrapStoreUpdateFunc(handleSetMessagePosition),
-                [Types.SET_MESSAGE_CONTENT]: wrapStoreUpdateFunc(handleSetMessageContent),
-                [Types.SET_MESSAGE_FALLBACK]: wrapStoreUpdateFunc(handleSetMessageFallback),
-                [Types.SET_MESSAGE_CHILDREN]: wrapStoreUpdateFunc(handleSetMessageChildren),
-                [Types.SET_MESSAGE_REPLY_OPTIONS]: wrapStoreUpdateFunc(handleSetMessageReplyOptions),
-                [Types.SET_STRING]: wrapStoreUpdateFunc(handleSetString),
+                [Actions.Types.UNDO]: ActionHandlers.handleUndo,
+                [Actions.Types.REDO]: ActionHandlers.handleRedo,
+                [Actions.Types.SAVE]: ActionHandlers.handleSave,
+                [Actions.Types.SET_GAME_DATA]: ActionHandlers.handleSetGameData,
+                [Actions.Types.END_DRAG]: ActionHandlers.wrapStoreUpdateFunc(ActionHandlers.handleEndDrag),
+                [Actions.Types.SET_ACTIVE_NARRATIVE]: ActionHandlers.wrapStoreUpdateFunc(ActionHandlers.handleSetActiveNarrative),
+                [Actions.Types.OPEN_MESSAGE]: ActionHandlers.wrapStoreUpdateFunc(ActionHandlers.handleOpenMessage),
+                [Actions.Types.CLOSE_MESSAGE]: ActionHandlers.wrapStoreUpdateFunc(ActionHandlers.handleCloseMessage),
+                [Actions.Types.CREATE_MESSAGE]: ActionHandlers.wrapStoreUpdateFunc(ActionHandlers.handleCreateMessage),
+                [Actions.Types.DELETE_MESSAGE]: ActionHandlers.wrapStoreUpdateFunc(ActionHandlers.handleDeleteMessage),
+                [Actions.Types.SELECT_MESSAGE]: ActionHandlers.wrapStoreUpdateFunc(ActionHandlers.handleSelectMessage),
+                [Actions.Types.UNIQUE_SELECT_MESSAGE]: ActionHandlers.wrapStoreUpdateFunc(ActionHandlers.handleUniqueSelectMessage),
+                [Actions.Types.DESELECT_MESSAGE]: ActionHandlers.wrapStoreUpdateFunc(ActionHandlers.handleDeselectMessage),
+                [Actions.Types.DESELECT_ALL_MESSAGES]: ActionHandlers.wrapStoreUpdateFunc(ActionHandlers.handleDeselectAllMessages),
+                [Actions.Types.SET_EDITED_MESSAGE_NAME]: ActionHandlers.wrapStoreUpdateFunc(ActionHandlers.handleSetEditedMessageName),
+                [Actions.Types.SET_MESSAGE_NAME]: ActionHandlers.wrapStoreUpdateFunc(ActionHandlers.handleSetMessageName),
+                [Actions.Types.SET_MESSAGE_SUBJECT]: ActionHandlers.wrapStoreUpdateFunc(ActionHandlers.handleSetMessageSubject),
+                [Actions.Types.SET_MESSAGE_END_GAME]: ActionHandlers.wrapStoreUpdateFunc(ActionHandlers.handleSetMessageEndGame),
+                [Actions.Types.SET_MESSAGE_ENCRYPTED]: ActionHandlers.wrapStoreUpdateFunc(ActionHandlers.handleSetMessageEncrypted),
+                [Actions.Types.SET_MESSAGE_SCRIPT]: ActionHandlers.wrapStoreUpdateFunc(ActionHandlers.handleSetMessageScript),
+                [Actions.Types.SET_MESSAGE_POSITION]: ActionHandlers.wrapStoreUpdateFunc(ActionHandlers.handleSetMessagePosition),
+                [Actions.Types.SET_MESSAGE_CONTENT]: ActionHandlers.wrapStoreUpdateFunc(ActionHandlers.handleSetMessageContent),
+                [Actions.Types.SET_MESSAGE_FALLBACK]: ActionHandlers.wrapStoreUpdateFunc(ActionHandlers.handleSetMessageFallback),
+                [Actions.Types.SET_MESSAGE_CHILDREN]: ActionHandlers.wrapStoreUpdateFunc(ActionHandlers.handleSetMessageChildren),
+                [Actions.Types.SET_MESSAGE_REPLY_OPTIONS]: ActionHandlers.wrapStoreUpdateFunc(ActionHandlers.handleSetMessageReplyOptions),
+                [Actions.Types.SET_STRING]: ActionHandlers.wrapStoreUpdateFunc(ActionHandlers.handleSetString),
         };
 
         export function handleNewAction (
-                state: Im.State, action: Flux.Action<any>)
+                state: State.State, action: Redux.Action<any>)
         {
                 return handlerMap[action.type](state, action);
         }

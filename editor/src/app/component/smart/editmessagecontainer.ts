@@ -1,17 +1,17 @@
 /// <reference path="../dumb/editmessage.ts" />
 
-module Component {
+module EditMessageContainer {
         interface EditMessageContainerInt {
                 name: string,
-                store: Im.Store;
+                store: State.Store;
         };
         export type EditMessageContainerData = Immutable.Record.IRecord<EditMessageContainerInt>;
         export const EditMessageContainerData = Immutable.Record<EditMessageContainerInt>({
                 name: '',
-                store: Im.Store(),
+                store: State.Store(),
         }, 'EditMessageContainer');
 
-        type EditMessageContainerProps = Flux.Props<EditMessageContainerData>;
+        type EditMessageContainerProps = Redux.Props<EditMessageContainerData>;
 
         function render (props: EditMessageContainerProps)
         {
@@ -32,12 +32,12 @@ module Component {
                         onSetEncrypted(name, encrypted);
                 const onSetScriptLocal = (script: string) =>
                         onSetScript(name, script);
-                const onSetChildrenLocal = (delays: Im.MessageDelays) =>
+                const onSetChildrenLocal = (delays: Message.MessageDelays) =>
                         onSetChildren(name, delays);
-                const onSetFallbackLocal = (delay: Im.MessageDelay) =>
+                const onSetFallbackLocal = (delay: Message.MessageDelay) =>
                         onSetFallback(name, delay);
 
-                const editMessageData = EditMessageData({
+                const editMessageData = EditMessage.EditMessageData({
                         name: data.name,
                         store: data.store,
                         onDelete: onDeleteLocal,
@@ -51,85 +51,85 @@ module Component {
                         onSetChildren: onSetChildrenLocal,
                         onSetFallback: onSetFallbackLocal,
                 });
-                return EditMessage(editMessageData);
+                return EditMessage.EditMessage(editMessageData);
         }
 
-        export const EditMessageContainer = Flux.createFactory(render, 'EditMessageContainer');
+        export const EditMessageContainer = Redux.createFactory(render, 'EditMessageContainer');
 
         function onDelete (name: string)
         {
-                const action = Action.deleteMessage(name);
-                Flux.handleAction(action);
+                const action = ActionCreators.deleteMessage(name);
+                Redux.handleAction(action);
         }
 
         function onSetNameScratchpad (
                 messageName: string, newName: string)
         {
-                const action = Action.setEditedMessageName({
+                const action = ActionCreators.setEditedMessageName({
                         name: messageName,
                         value: newName,
                 });
-                Flux.handleAction(action);
+                Redux.handleAction(action);
         }
 
         function onSetName (messageName: string)
         {
-                const action = Action.setMessageName({
+                const action = ActionCreators.setMessageName({
                         name: messageName,
                         value: null,
                 });
-                Flux.handleAction(action);
+                Redux.handleAction(action);
         }
 
         function onSetSubjectName (messageName: string, newSubject: string)
         {
-                const action = Action.setMessageSubject({
+                const action = ActionCreators.setMessageSubject({
                         name: messageName,
                         value: newSubject,
                 });
-                Flux.handleAction(action);
+                Redux.handleAction(action);
         }
 
         export function onSetString (
                 stringName: string, value: string)
         {
-                const action = Action.setString({
+                const action = ActionCreators.setString({
                         name: stringName,
                         value: value,
                 });
-                Flux.handleAction(action);
+                Redux.handleAction(action);
         }
 
         function onSetEndGame (messageName: string, newEndGame: boolean)
         {
-                const action = Action.setMessageEndGame({
+                const action = ActionCreators.setMessageEndGame({
                         name: messageName,
                         value: newEndGame,
                 });
-                Flux.handleAction(action);
+                Redux.handleAction(action);
         }
 
         function onSetEncrypted (messageName: string, newEncrypted: boolean)
         {
-                const action = Action.setMessageEncrypted({
+                const action = ActionCreators.setMessageEncrypted({
                         name: messageName,
                         value: newEncrypted,
                 });
-                Flux.handleAction(action);
+                Redux.handleAction(action);
         }
 
         function onSetScript (messageName: string, newScript: string)
         {
-                const action = Action.setMessageScript({
+                const action = ActionCreators.setMessageScript({
                         name: messageName,
                         value: newScript,
                 });
-                Flux.handleAction(action);
+                Redux.handleAction(action);
         }
 
         function onSetChild (
-                message: Im.Message,
-                delay: Im.MessageDelay,
+                message: Message.Message,
+                delay: Message.MessageDelay,
                 index: number)
         {
                 const children = message.children;
@@ -139,42 +139,42 @@ module Component {
 
         function onSetChildren (
                 messageName: string,
-                delays: Immutable.List<Im.MessageDelay>)
+                delays: Immutable.List<Message.MessageDelay>)
         {
-                const action = Action.setMessageChildren({
+                const action = ActionCreators.setMessageChildren({
                         name: messageName,
                         value: delays,
                 });
-                Flux.handleAction(action);
+                Redux.handleAction(action);
         }
 
-        function onAddChild (message: Im.Message)
+        function onAddChild (message: Message.Message)
         {
-                const newChild = Im.MessageDelay();
+                const newChild = Message.MessageDelay();
                 const children = message.children;
                 const newChildren = children.push(newChild);
                 onSetChildren(message.name, newChildren);
         }
 
-        function onRemoveChild (message: Im.Message, index: number)
+        function onRemoveChild (message: Message.Message, index: number)
         {
                 const children = message.children;
                 const newChildren = children.delete(index);
                 onSetChildren(message.name, newChildren);
         }
 
-        function onSetFallback (messageName: string, newDelay: Im.MessageDelay)
+        function onSetFallback (messageName: string, newDelay: Message.MessageDelay)
         {
-                const action = Action.setMessageFallback({
+                const action = ActionCreators.setMessageFallback({
                         name: messageName,
                         value: newDelay,
                 });
-                Flux.handleAction(action);
+                Redux.handleAction(action);
         }
 
         function onAddFallback (messageName: string)
         {
-                const newDelay = Im.MessageDelay();
+                const newDelay = Message.MessageDelay();
                 onSetFallback(messageName, newDelay);
         }
 

@@ -1,4 +1,4 @@
-module Action {
+module Actions {
         export const Types = {
                 UNDO: 'UNDO',
                 REDO: 'REDO',
@@ -32,27 +32,27 @@ module Action {
                 name: string;
                 value: T;
         }
-        export interface NameValueAction<T> extends Flux.Action<NameValueParameters<T>> {}
+        export interface NameValueAction<T> extends Redux.Action<NameValueParameters<T>> {}
 
-        export interface Undo extends Flux.Action<void> {}
-        export interface Redo extends Flux.Action<void> {}
-        export interface Save extends Flux.Action<void> {}
-        export interface SetGameData extends Flux.Action<Im.Narratives> {}
+        export interface Undo extends Redux.Action<void> {}
+        export interface Redo extends Redux.Action<void> {}
+        export interface Save extends Redux.Action<void> {}
+        export interface SetGameData extends Redux.Action<Narrative.Narratives> {}
 
         export interface EndDragParameters {
                 id: string;
-                delta: Im.Coord;
+                delta: MathUtils.Coord;
         }
-        export interface EndDrag extends Flux.Action<EndDragParameters> {}
-        export interface SetActiveNarrative extends Flux.Action<string> {}
-        export interface OpenMessage extends Flux.Action<string> {}
-        export interface CloseMessage extends Flux.Action<void> {}
-        export interface CreateMessage extends Flux.Action<void> {}
-        export interface DeleteMessage extends Flux.Action<string> {}
-        export interface SelectMessage extends Flux.Action<string> {}
-        export interface UniqueSelectMessage extends Flux.Action<string> {}
-        export interface DeselectMessage extends Flux.Action<string> {}
-        export interface DeselectAllMessages extends Flux.Action<void> {}
+        export interface EndDrag extends Redux.Action<EndDragParameters> {}
+        export interface SetActiveNarrative extends Redux.Action<string> {}
+        export interface OpenMessage extends Redux.Action<string> {}
+        export interface CloseMessage extends Redux.Action<void> {}
+        export interface CreateMessage extends Redux.Action<void> {}
+        export interface DeleteMessage extends Redux.Action<string> {}
+        export interface SelectMessage extends Redux.Action<string> {}
+        export interface UniqueSelectMessage extends Redux.Action<string> {}
+        export interface DeselectMessage extends Redux.Action<string> {}
+        export interface DeselectAllMessages extends Redux.Action<void> {}
 
         export interface SetEditedMessageName extends NameValueAction<string> {}
         export interface SetMessageName extends NameValueAction<void> {}
@@ -60,11 +60,11 @@ module Action {
         export interface SetMessageEndGame extends NameValueAction<boolean> {}
         export interface SetMessageEncrypted extends NameValueAction<boolean> {}
         export interface SetMessageScript extends NameValueAction<string> {}
-        export interface SetMessagePosition extends NameValueAction<Im.Coord> {}
-        export interface SetMessageContent extends NameValueAction<Im.MessageContent> {}
-        export interface SetMessageFallback extends NameValueAction<Im.MessageDelay> {}
-        export interface SetMessageChildren extends NameValueAction<Immutable.List<Im.MessageDelay>> {}
-        export interface SetMessageReplyOptions extends NameValueAction<Immutable.List<Im.ReplyOption>> {}
+        export interface SetMessagePosition extends NameValueAction<MathUtils.Coord> {}
+        export interface SetMessageContent extends NameValueAction<Message.MessageContent> {}
+        export interface SetMessageFallback extends NameValueAction<Message.MessageDelay> {}
+        export interface SetMessageChildren extends NameValueAction<Immutable.List<Message.MessageDelay>> {}
+        export interface SetMessageReplyOptions extends NameValueAction<Immutable.List<ReplyOption.ReplyOption>> {}
 
         export interface SetString extends NameValueAction<string> {}
 }

@@ -1,12 +1,12 @@
-/// <reference path="../../../../typings/jquery/jquery.d.ts" />
+/// <reference path="../../../typings/jquery/jquery.d.ts" />
 
-module Request {
+module AsyncRequest {
         export function requestNarratives (url: string)
         {
                 const requestURL = url + '/narratives';
                 const data = {};
 
-                const onSuccess: AjaxSuccess<Im.NarrativesMutable> =
+                const onSuccess: AjaxSuccess<Narrative.NarrativesMutable> =
                         (data, textStatus, jqXHR) => onNarratives(data);
 
                 get(requestURL, data, onSuccess, onAjaxError);
@@ -14,26 +14,26 @@ module Request {
                 console.log('loading narratives...');
         }
 
-        function onNarratives(narrativesMutable: Im.NarrativesMutable)
+        function onNarratives(narrativesMutable: Narrative.NarrativesMutable)
         {
                 console.log('loaded narratives');
 
-                const narratives = Im.mapFromObject(
-                        narrativesMutable, Im.convertToImmutableNarrative);
+                const narratives = Helpers.mapFromObject(
+                        narrativesMutable, Narrative.convertToImmutableNarrative);
 
-                const action = Action.setGameData(narratives);
-                Flux.handleAction(action);
+                const action = ActionCreators.setGameData(narratives);
+                Redux.handleAction(action);
         }
 
         export function saveMessage (
                 url: string,
                 narrativeName: string,
-                message: Im.Message)
+                message: Message.Message)
         {
                 const requestURL = url + '/savemessage';
 
                 const name = message.name;
-                const messageMutable = Im.convertToMutableMessage(
+                const messageMutable = Message.convertToMutableMessage(
                         message);
                 const data = {
                         narrativeName: narrativeName,

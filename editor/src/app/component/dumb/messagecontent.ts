@@ -2,26 +2,26 @@
 /// <reference path="passage.ts" />
 /// <reference path="textlist.ts" />
 
-module Component {
-        type OnSet = (content: Im.MessageContent) => void;
+module MessageContent {
+        type OnSet = (content: Message.MessageContent) => void;
 
         interface MessageContentInt {
-                message: Im.MessageContent;
-                profiles: Im.Profiles;
-                strings: Im.Strings;
+                message: Message.MessageContent;
+                profiles: Narrative.Profiles;
+                strings: Narrative.Strings;
                 name: string;
                 onSet: OnSet;
         };
         export type MessageContentData = Immutable.Record.IRecord<MessageContentInt>;
         export const MessageContentData = Immutable.Record<MessageContentInt>({
-                message: Im.MessageContent(),
-                profiles: Immutable.Map<string, Im.Profile>(),
+                message: Message.MessageContent(),
+                profiles: Immutable.Map<string, Profile.Profile>(),
                 strings: Immutable.Map<string, string>(),
                 name: '',
                 onSet: () => {},
         }, 'MessageContent');
 
-        type MessageContentProps = Flux.Props<MessageContentData>;
+        type MessageContentProps = Redux.Props<MessageContentData>;
 
         function render (props: MessageContentProps)
         {
@@ -35,19 +35,19 @@ module Component {
                 const to = createTo(onSet, message, profiles)
                 const body = createBody(onSet, message, strings);
 
-                return Div({},
-                        wrapInSubgroup(from),
-                        wrapInSubgroup(to),
-                        wrapInSubgroup(body)
+                return Core.Div({},
+                        EditMessage.wrapInSubgroup(from),
+                        EditMessage.wrapInSubgroup(to),
+                        EditMessage.wrapInSubgroup(body)
                 );
         }
 
-        export const MessageContent = Flux.createFactory(
+        export const MessageContent = Redux.createFactory(
                 render, 'MessageContent');
 
         function onSetFrom (
                 onSet: OnSet,
-                content: Im.MessageContent,
+                content: Message.MessageContent,
                 from: string)
         {
                 const newContent = content.set('from', from);
@@ -56,7 +56,7 @@ module Component {
 
         function onSetTo (
                 onSet: OnSet,
-                content: Im.MessageContent,
+                content: Message.MessageContent,
                 newTo: Immutable.List<string>)
         {
                 const newContent = content.set('to', newTo);
@@ -65,7 +65,7 @@ module Component {
 
         function onSetPassage (
                 onSet: OnSet,
-                content: Im.MessageContent,
+                content: Message.MessageContent,
                 text: string,
                 index: number)
         {
@@ -74,7 +74,7 @@ module Component {
                 onSet(newContent);
         }
 
-        function onAddPassage (onSet: OnSet, content: Im.MessageContent)
+        function onAddPassage (onSet: OnSet, content: Message.MessageContent)
         {
                 const body = content.body;
                 const newBody = body.push('');
@@ -84,7 +84,7 @@ module Component {
 
         function onRemovePassage (
                 onSet: OnSet,
-                content: Im.MessageContent,
+                content: Message.MessageContent,
                 index: number)
         {
                 const body = content.body;
@@ -95,8 +95,8 @@ module Component {
 
         function createBody (
                 onSet: OnSet,
-                content: Im.MessageContent,
-                strings: Im.Strings)
+                content: Message.MessageContent,
+                strings: Narrative.Strings)
         {
                 const body = content.body;
 
@@ -105,63 +105,63 @@ module Component {
                                 onSetPassage(onSet, content, newName, index);
 
                         const onSetBody = (value: string) =>
-                                onSetString(name, value);
+                                EditMessageContainer.onSetString(name, value);
 
-                        const props = PassageData({
+                        const props = Passage.PassageData({
                                 onSetName: onSetName,
                                 onSetBody: onSetBody,
                                 name: name,
                                 strings: strings
                         });
-                        return Passage(props);
+                        return Passage.Passage(props);
                 });
 
                 const onAdd = () => onAddPassage(onSet, content);
                 const onRemove = (index: number) =>
                         onRemovePassage(onSet, content, index);
-                const props = MultipleData({
+                const props = Multiple.MultipleData({
                         onAdd: onAdd,
                         onRemove: onRemove,
                         children: passages,
                 });
-                return Multiple(props);
+                return Multiple.Multiple(props);
         }
 
         function createFrom (
                 onSet: OnSet,
-                content: Im.MessageContent,
-                profiles: Im.Profiles)
+                content: Message.MessageContent,
+                profiles: Narrative.Profiles)
         {
                 const value = content.from;
                 const onChange = (text: string) =>
                         onSetFrom(onSet, content, text);
                 const valid = profiles.get(value) !== undefined;
-                const data = TextData({
+                const data = TextComponent.TextData({
                         placeholder: 'sarah',
                         value: value,
                         onChange: onChange,
                         list: 'profileNames',
                 });
-                const from = createValidatedText({ data: data }, valid);
-                return wrapInLabel('From', from);
+                const from = TextInputValidated.createValidatedText({ data: data }, valid);
+                return EditMessage.wrapInLabel('From', from);
         }
 
         function createTo (
                 onSet: OnSet,
-                content: Im.MessageContent,
-                profiles: Im.Profiles)
+                content: Message.MessageContent,
+                profiles: Narrative.Profiles)
         {
                 const values = content.to;
                 const onChange = (newTo: Immutable.List<string>) =>
                         onSetTo(onSet, content, newTo);
                 const valid = values.every(
                         to => profiles.get(to) !== undefined);
-                const data = TextListData({
+                const data = TextList.TextListData({
                         placeholder: 'joe, sarah, mark',
                         values: values,
                         onChange: onChange,
                 });
-                const to = createValidatedTextList({ data: data }, valid);
-                return wrapInLabel('To', to);
+                const to = TextInputValidated.createValidatedTextList({ data: data }, valid);
+                return EditMessage.wrapInLabel('To', to);
         }
 }

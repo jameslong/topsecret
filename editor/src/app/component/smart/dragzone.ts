@@ -1,12 +1,12 @@
-module Component {
-        type DragzoneProps = Flux.Props<string>;
+module Dragzone {
+        type DragzoneProps = Redux.Props<string>;
 
         function render (props: DragzoneProps)
         {
                 const className = props.data;
                 const children = props.children;
 
-                return Div({
+                return Core.Div({
                         className: className,
                         onDragEnter: (e: Event) => e.preventDefault(),
                         onDragOver: (e: Event) => e.preventDefault(),
@@ -14,28 +14,28 @@ module Component {
                 }, children);
         }
 
-        export const Dragzone = Flux.createFactory(render, 'Dragzone');
+        export const Dragzone = Redux.createFactory(render, 'Dragzone');
 
         function onDrop (e: DragEvent)
         {
                 e.preventDefault();
 
                 const data =  e.dataTransfer.getData('text/plain');
-                const dragData: DragData = JSON.parse(data);
+                const dragData: Draggable.DragData = JSON.parse(data);
 
                 const deltaX = e.screenX - dragData.x;
                 const deltaY = e.screenY - dragData.y;
 
-                const delta = Im.Coord({
+                const delta = MathUtils.Coord({
                         x: deltaX,
                         y: deltaY,
                 });
 
-                const action = Action.endDrag({
+                const action = ActionCreators.endDrag({
                         id: dragData.id,
                         delta: delta,
                 });
 
-                Flux.handleAction(action);
+                Redux.handleAction(action);
         }
 }

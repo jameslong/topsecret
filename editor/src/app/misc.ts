@@ -1,6 +1,6 @@
 ///<reference path='edge.ts'/>
 
-module Im {
+module Misc {
         export type ImObject = Immutable.Record.IRecord<{}>;
         export const ImObject = Immutable.Record<{}>({}, 'ImObject');
 

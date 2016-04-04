@@ -1,5 +1,5 @@
-module Component {
-        type SurfaceSVGProps = Flux.Props<void>;
+module SurfaceSVG {
+        type SurfaceSVGProps = Redux.Props<void>;
 
         function render (props: SurfaceSVGProps)
         {
@@ -10,8 +10,8 @@ module Component {
                         className: 'surface-svg',
                 };
 
-                return SVG(svgProps, children);
+                return Core.SVG(svgProps, children);
         }
 
-        export const SurfaceSVG = Flux.createFactory(render, 'SurfaceSvg');
+        export const SurfaceSVG = Redux.createFactory(render, 'SurfaceSvg');
 }

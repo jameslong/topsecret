@@ -1,6 +1,6 @@
 ///<reference path='math.ts'/>
 
-module Im {
+module Edge {
         export enum Type {
                 Fallback,
                 Child,
@@ -11,7 +11,7 @@ module Im {
                 name: string;
                 source: string;
                 target: string;
-                line: Line;
+                line: MathUtils.Line;
                 type: Type;
         };
         export type Edge = Immutable.Record.IRecord<EdgeInt>;
@@ -19,14 +19,14 @@ module Im {
                 name: '',
                 source: '',
                 target: '',
-                line: Line(),
+                line: MathUtils.Line(),
                 type: Type.Fallback,
         }, 'Edge');
 
         export type Edges = Immutable.List<Edge>;
 
         export function createEdges (
-                messages: Messages, vertexSize: Coord)
+                messages: Narrative.Messages, vertexSize: MathUtils.Coord)
         {
                 const edgeList = Immutable.List<Edge>();
 
@@ -40,9 +40,9 @@ module Im {
         }
 
         function createMessageEdges (
-                messages: Messages,
-                message: Message,
-                vertexSize: Coord)
+                messages: Narrative.Messages,
+                message: Message.Message,
+                vertexSize: MathUtils.Coord)
         {
                 const fallback = createFallbackEdge(
                         messages, message, vertexSize);
@@ -51,7 +51,7 @@ module Im {
                 const children =
                         createChildrenEdges(messages, message, vertexSize);
                 const temp =
-                        concat(children, replyOptions).push(fallback);
+                        Helpers.concat(children, replyOptions).push(fallback);
                 return temp.filter(edge => edge !== null);
         }
 
@@ -62,9 +62,9 @@ module Im {
         }
 
         function createFallbackEdge (
-                messages: Messages,
-                source: Message,
-                vertexSize: Coord)
+                messages: Narrative.Messages,
+                source: Message.Message,
+                vertexSize: MathUtils.Coord)
         {
                 const fallback = source.fallback;
                 const type = Type.Fallback;
@@ -81,11 +81,11 @@ module Im {
         }
 
         function createReplyOptionEdges (
-                messages: Messages,
-                source: Message,
-                vertexSize: Coord)
+                messages: Narrative.Messages,
+                source: Message.Message,
+                vertexSize: MathUtils.Coord)
         {
-                return map(source.replyOptions,
+                return Helpers.map(source.replyOptions,
                         (option, index) => {
                                 const type = Type.ReplyOption;
                                 const name = createEdgeName(
@@ -103,12 +103,12 @@ module Im {
         }
 
         function createChildrenEdges (
-                messages: Messages,
-                source: Message,
-                vertexSize: Coord)
+                messages: Narrative.Messages,
+                source: Message.Message,
+                vertexSize: MathUtils.Coord)
                 : Immutable.List<Edge>
         {
-                return map(source.children,
+                return Helpers.map(source.children,
                         (child, index) => {
                                 const type = Type.Child;
                                 const name = createEdgeName(
@@ -125,12 +125,12 @@ module Im {
         }
 
         function createMessageDelayEdge (
-                messages: Messages,
-                source: Message,
-                messageDelay: MessageDelay,
+                messages: Narrative.Messages,
+                source: Message.Message,
+                messageDelay: Message.MessageDelay,
                 type: Type,
                 name: string,
-                vertexSize: Coord)
+                vertexSize: MathUtils.Coord)
         {
                 const target = messages.get(messageDelay.name);
                 return target ?
@@ -144,17 +144,17 @@ module Im {
         }
 
         function createEdge (
-                source: Message,
-                target: Message,
+                source: Message.Message,
+                target: Message.Message,
                 type: Type,
                 name: string,
-                vertexSize: Coord)
+                vertexSize: MathUtils.Coord)
         {
                 const sourceName = source.name;
                 const targetName = target.name;
 
-                const sourcePosition = add(source.position, vertexSize);
-                const line = Line({
+                const sourcePosition = MathUtils.add(source.position, vertexSize);
+                const line = MathUtils.Line({
                         start: sourcePosition,
                         end: target.position,
                 });

@@ -1,4 +1,4 @@
-module Component {
+module TextComponent {
         interface TextInt {
                 placeholder: string;
                 value: string;
@@ -15,7 +15,7 @@ module Component {
                 className: undefined,
         }, 'Text');
 
-        export type TextProps = Flux.Props<TextData>;
+        export type TextProps = Redux.Props<TextData>;
 
         interface InputEvent {
                 target: {
@@ -29,7 +29,7 @@ module Component {
                 const onChange = (event: InputEvent) =>
                         data.onChange(event.target.value);
 
-                return Input({
+                return Core.Input({
                         placeholder: data.placeholder,
                         value: data.value,
                         onChange: onChange,
@@ -38,5 +38,5 @@ module Component {
                 });
         }
 
-        export const Text = Flux.createFactory(render, 'Text');
+        export const Text = Redux.createFactory(render, 'Text');
 }
