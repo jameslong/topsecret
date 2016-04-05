@@ -1,0 +1,22 @@
+{
+        "name": "delay_child_0",
+        "threadSubject": "",
+        "position": {
+                "x": 275,
+                "y": 627
+        },
+        "endGame": false,
+        "message": {
+                "from": "james",
+                "to": [],
+                "body": [
+                        "delay_child_0_body"
+                ]
+        },
+        "encrypted": true,
+        "script": "",
+        "receiver": null,
+        "replyOptions": [],
+        "children": [],
+        "fallback": null
+}

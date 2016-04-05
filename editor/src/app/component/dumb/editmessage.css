@@ -61,8 +61,16 @@
 
 .edit-message .message-delay-name,
 .edit-message .message-delay-condition,
-.edit-message .message-delay-mins {
+.edit-message .message-delay-day,
+.edit-message .message-delay-hour,
+.edit-message .message-delay-min {
         display: table-cell;
+}
+
+.edit-message .message-delay-day,
+.edit-message .message-delay-hour,
+.edit-message .message-delay-min {
+        width: 10%;
 }
 
 .edit-message .button-remove {

@@ -90,29 +90,6 @@ export function getSelectedReply (
         return (selectedOption ? selectedOption.name : null);
 }
 
-export function calculateFallbackEndTimestampMs (
-        threadMessage: Message.ThreadMessage,
-        beginTimestampMs: number,
-        timeFactor: number)
-        : number
-{
-        var delayMins = threadMessage.fallback.delayMins;
-        return calculateDelayEndTimestampMs(
-                threadMessage, delayMins, beginTimestampMs, timeFactor);
-}
-
-export function calculateDelayEndTimestampMs (
-        threadMessage: Message.ThreadMessage,
-        delayMins: number,
-        beginTimestampMs: number,
-        timeFactor: number)
-        : number
-{
-        var fallbackDelayMs = (delayMins * 1000 * 60 * timeFactor);
-
-        return (beginTimestampMs + fallbackDelayMs);
-}
-
 export function getReplyDelay (
         replyIndex: number, threadMessage: Message.ThreadMessage): Message.ThreadDelay
 {

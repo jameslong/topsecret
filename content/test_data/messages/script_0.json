@@ -21,12 +21,12 @@
                 {
                         "name": "script_child",
                         "condition": "x",
-                        "delayMins": 0
+                        "delay": [0, 0, 0]
                 }
         ],
         "fallback": {
                 "name": "script_fallback",
                 "condition": "x",
-                "delayMins": 0
+                "delay": [0, 0, 0]
         }
 }
