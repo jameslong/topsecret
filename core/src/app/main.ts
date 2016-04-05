@@ -65,6 +65,7 @@ function pendingChildren (
         promises: DBTypes.PromiseFactories)
 {
         const { message, player } = state;
+        const offsetHours = player.timezoneOffset;
         const domain = app.emailDomain;
 
         const messageData = groupData.messages[message.name];
@@ -74,7 +75,7 @@ function pendingChildren (
         const indices = children.map((child, index) => index);
         const unsent = indices.filter(index => !message.childrenSent[index]);
         const expired = unsent.filter(index =>
-                isExpiredThreadDelay(children[index], sentMs, currentMs)
+                isExpiredThreadDelay(children[index], offsetHours, sentMs, currentMs)
         );
 
         return expired.map(index =>
@@ -95,14 +96,15 @@ function pendingResponse (
         currentMs: number,
         promises: DBTypes.PromiseFactories)
 {
-        const message = state.message;
+        const { message, player } = state;
+        const offsetHours = player.timezoneOffset;
         const messageData = groupData.messages[message.name];
         const sentMs = message.sentTimestampMs;
         const fallback = hasFallback(messageData);
         const replyOptions = hasReplyOptions(messageData);
 
         if (!hasSentReply(message)) {
-                if (replyOptions && hasExpiredReply(message, messageData, sentMs, currentMs)) {
+                if (replyOptions && hasExpiredReply(message, messageData, offsetHours, sentMs, currentMs)) {
                         return [pendingReply(
                                 groupData,
                                 state,
@@ -110,7 +112,7 @@ function pendingResponse (
                                 app.emailDomain)];
                 }
 
-                if (fallback && hasExpiredFallback(message, messageData, sentMs, currentMs)) {
+                if (fallback && hasExpiredFallback(message, messageData, offsetHours, sentMs, currentMs)) {
                         return [pendingFallback(
                                 groupData,
                                 state,
@@ -173,6 +175,7 @@ function hasPendingReply (
 function hasExpiredReply (
         message: Message.MessageState,
         messageData: Message.ThreadMessage,
+        offsetHours: number,
         sentMs: number,
         currentMs: number)
 {
@@ -181,7 +184,8 @@ function hasExpiredReply (
                 const replyIndex = reply.replyIndex;
                 const replyDelay = MessageHelpers.getReplyDelay(
                         replyIndex, messageData);
-                return isExpiredThreadDelay(replyDelay, sentMs, currentMs);
+                return isExpiredThreadDelay(
+                        replyDelay, offsetHours, sentMs, currentMs);
         } else {
                 return false;
         }
@@ -197,11 +201,13 @@ function hasPendingFallback (
 function hasExpiredFallback (
         message: Message.MessageState,
         messageData: Message.ThreadMessage,
+        offsetHours: number,
         sentMs: number,
         currentMs: number)
 {
+        const fallback = messageData.fallback;
         return hasPendingFallback(message, messageData) &&
-                isExpiredThreadDelay(messageData.fallback, sentMs, currentMs);
+                isExpiredThreadDelay(fallback, offsetHours, sentMs, currentMs);
 }
 
 function hasSentReply (message: Message.MessageState)
@@ -234,13 +240,17 @@ function isExpired (
 }
 
 export function isExpiredThreadDelay (
-        threadDelay: Message.ThreadDelay, sentMs: number, currentMs: number)
+        threadDelay: Message.ThreadDelay,
+        offsetHours: number,
+        sentMs: number,
+        currentMs: number)
 {
         const relative = threadDelay.delay[0] === 0;
 
         return relative ?
                 isExpiredThreadDelayRelative(threadDelay, sentMs, currentMs) :
-                isExpiredThreadDelayAbsolute(threadDelay, sentMs, currentMs);
+                isExpiredThreadDelayAbsolute(
+                        threadDelay, offsetHours, sentMs, currentMs);
 }
 
 export function isExpiredThreadDelayRelative (
@@ -253,15 +263,18 @@ export function isExpiredThreadDelayRelative (
 }
 
 export function isExpiredThreadDelayAbsolute (
-        threadDelay: Message.ThreadDelay, sentMs: number, currentMs: number)
+        threadDelay: Message.ThreadDelay,
+        offsetHours: number,
+        sentMs: number,
+        currentMs: number)
 {
         const [days, hours, mins] = threadDelay.delay;
         const sent = new Date(sentMs);
         const required = new Date();
-        required.setDate(sent.getDate() + days);
+        required.setUTCDate(sent.getUTCDate() + days);
         required.setUTCHours(hours);
         required.setUTCMinutes(mins);
-        const requiredMs = required.getTime();
+        const requiredMs = required.getTime() - (offsetHours * 3600 * 1000);
 
         return (currentMs > requiredMs);
 }
