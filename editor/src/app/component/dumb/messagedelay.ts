@@ -29,8 +29,8 @@ function render (props: MessageDelayProps)
 {
         const data = props.data;
         const messages = data.messages;
-        const delay = data.delay;
-        const delayName = delay.name;
+        const messageDelay = data.delay;
+        const delayName = messageDelay.name;
 
         const onSetNameLocal = (name: string) =>
                 onSetName(data, name);
@@ -48,7 +48,7 @@ function render (props: MessageDelayProps)
         const name = Div({ className: 'message-delay-name' },
                 nameText);
 
-        const delayCondition = delay.condition;
+        const delayCondition = messageDelay.condition;
         const onSetConditionLocal = (condition: string) =>
                 onSetCondition(data, condition);
         const conditionTextData = TextComponent.TextData({
@@ -60,21 +60,35 @@ function render (props: MessageDelayProps)
         const condition = Div({ className: 'message-delay-condition' },
                 conditionText);
 
-        const onSetDelayLocal = (delayMins: number) =>
-                onSetDelay(data, delayMins);
-        const delayMinsProps = NumberComponent.NumberData({
+        const onSetDayLocal = (value: number) => onSetDay(data, value);
+        const onSetHourLocal = (value: number) => onSetHour(data, value);
+        const onSetMinLocal = (value: number) => onSetMin(data, value);
+        const dayData = NumberComponent.NumberData({
                 placeholder: 0,
-                value: delay.delayMins,
-                onChange: onSetDelayLocal,
+                value: messageDelay.delay.get(0),
+                onChange: onSetDayLocal,
         });
-        const delayMins = Div({ className: 'message-delay-mins' },
-                NumberComponent.Number(delayMinsProps));
+        const hourData = NumberComponent.NumberData({
+                placeholder: 0,
+                value: messageDelay.delay.get(1),
+                onChange: onSetHourLocal,
+        });
+        const minData = NumberComponent.NumberData({
+                placeholder: 0,
+                value: messageDelay.delay.get(2),
+                onChange: onSetMinLocal,
+        });
+        const day = Div({ className: 'message-delay-day' },
+                NumberComponent.Number(dayData));
+        const hour = Div({ className: 'message-delay-hour' },
+                NumberComponent.Number(hourData));
+        const min = Div({ className: 'message-delay-min' },
+                NumberComponent.Number(minData));
 
-        const messageDelay = EditMessage.wrapInLabel('Name/delay',
-                name, condition, delayMins);
+        const child = EditMessage.wrapInLabel('Name/delay',
+                name, condition, day, hour, min);
 
-        return Div({ className: 'message-delay' },
-                messageDelay);
+        return Div({ className: 'message-delay' }, child);
 }
 
 export const MessageDelayComponent = ReactUtils.createFactory(render, 'MessageDelay');
@@ -91,9 +105,25 @@ function onSetCondition (data: MessageDelayData, condition: string)
         data.onChange(newDelay);
 }
 
-function onSetDelay (
-        data: MessageDelayData, delayMins: number)
+function onSetDay (data: MessageDelayData, value: number)
 {
-        const newDelay = data.delay.set('delayMins', delayMins);
-        data.onChange(newDelay);
+        onSetTime(data, 0, value);
+}
+
+function onSetHour (data: MessageDelayData, value: number)
+{
+        onSetTime(data, 1, value);
+}
+
+function onSetMin (data: MessageDelayData, value: number)
+{
+        onSetTime(data, 2, value);
+}
+
+function onSetTime (data: MessageDelayData, index: number, value: number)
+{
+        const delay = data.delay.delay;
+        const newDelay = delay.set(index, value);
+        const newData = data.delay.set('delay', newDelay);
+        data.onChange(newData);
 }

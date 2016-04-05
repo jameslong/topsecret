@@ -23,6 +23,6 @@
         "fallback": {
                 "name": "fallback_0",
                 "condition": "",
-                "delayMins": 10000000
+                "delay": [100000000, 0, 0]
         }
 }

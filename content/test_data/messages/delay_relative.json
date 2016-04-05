@@ -1,0 +1,32 @@
+{
+        "name": "delay_relative",
+        "threadSubject": "delay_relative_subject",
+        "position": {
+                "x": 275,
+                "y": 550
+        },
+        "endGame": false,
+        "message": {
+                "from": "james",
+                "to": [],
+                "body": [
+                        "delay_relative_body"
+                ]
+        },
+        "encrypted": true,
+        "script": "",
+        "receiver": null,
+        "replyOptions": [],
+        "children": [
+                {
+                        "name": "delay_child_0",
+                        "condition": "",
+                        "delay": [
+                                0,
+                                0,
+                                10
+                        ]
+                }
+        ],
+        "fallback": null
+}

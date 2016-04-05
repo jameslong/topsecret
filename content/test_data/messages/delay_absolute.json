@@ -1,0 +1,32 @@
+{
+        "name": "delay_absolute",
+        "threadSubject": "delay_absolute_subject",
+        "position": {
+                "x": 385,
+                "y": 550
+        },
+        "endGame": false,
+        "message": {
+                "from": "james",
+                "to": [],
+                "body": [
+                        "delay_absolute_body"
+                ]
+        },
+        "encrypted": true,
+        "script": "",
+        "receiver": null,
+        "replyOptions": [],
+        "children": [
+                {
+                        "name": "delay_child_0",
+                        "condition": "",
+                        "delay": [
+                                1,
+                                9,
+                                0
+                        ]
+                }
+        ],
+        "fallback": null
+}

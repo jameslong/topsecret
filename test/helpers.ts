@@ -18,8 +18,9 @@ export function createPlayer0 ()
         const firstName = 'John';
         const lastName = 'Smith';
         const version = 'test';
+        const timezoneOffset = 0;
         return Player.createPlayerState(
-                email, publicKey, version, firstName, lastName);
+                email, publicKey, version, firstName, lastName, timezoneOffset);
 }
 
 export function createMessage0 ()

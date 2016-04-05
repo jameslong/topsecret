@@ -23,12 +23,12 @@
                 {
                         "name": "child_0",
                         "condition": "",
-                        "delayMins": 0
+                        "delay": [0, 0, 0]
                 },
                 {
                         "name": "child_1",
                         "condition": "",
-                        "delayMins": 0
+                        "delay": [0, 0, 0]
                 }
         ],
         "fallback": null

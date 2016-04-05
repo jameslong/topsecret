@@ -8,9 +8,15 @@
                         "properties": {
                                 "name": { "type": "string" },
                                 "condition": { "type": "string" },
-                                "delayMins": { "type": "number" }
+                                "delay": {
+                                        "type": "array",
+                                        "items": { "type": "number" },
+                                        "minItems": 3,
+                                        "maxItems": 3,
+                                        "uniqueItems": false
+                                }
                         },
-                        "required": ["name", "condition", "delayMins"]
+                        "required": ["name", "condition", "delay"]
                 },
                 "coord": {
                         "type": "object",

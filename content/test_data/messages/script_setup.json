@@ -21,6 +21,6 @@
         "fallback": {
                 "name": "script_0",
                 "condition": "",
-                "delayMins": 0
+                "delay": [0, 0, 0]
         }
 }

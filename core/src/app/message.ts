@@ -48,7 +48,7 @@ export interface ThreadMessage {
 
 export interface ThreadDelay {
         name: string;
-        delayMins: number;
+        delay: [number, number, number]; // days, hours, minutes
         condition: string;
 }
 
