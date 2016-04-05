@@ -22,8 +22,9 @@ export function beginDemo (
         const firstName = playerData.firstName;
         const lastName = playerData.lastName;
         const version = state.config.content.defaultNarrativeGroup;
+        const timezoneOffset = 0;
         const player = Player.createPlayerState(
-                email, publicKey, version, firstName, lastName);
+                email, publicKey, version, firstName, lastName, timezoneOffset);
 
         return Promises.beginGame(
                 threadMessageName,

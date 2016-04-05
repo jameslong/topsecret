@@ -73,11 +73,11 @@ export function beginGame (
         config: ConfigData.ConfigData,
         server: Server)
 {
-        const { email, publicKey, firstName, lastName } = playerData;
+        const { email, publicKey, firstName, lastName, timezoneOffset } = playerData;
         const { version, beginGameMessage, emailDomain } = config;
 
         const player = Player.createPlayerState(
-                email, publicKey, version, firstName, lastName);
+                email, publicKey, version, firstName, lastName, timezoneOffset);
 
         const groupData = server.app.data[version];
         const promises = server.app.promises;

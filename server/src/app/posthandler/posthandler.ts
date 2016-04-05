@@ -203,23 +203,30 @@ export function createAddPlayerCallback (state: App.State)
 {
         return (req: any, res: any) =>
                 {
-                        var data: {
+                        const data: {
                                 email: string;
                                 publicKey: string;
                                 firstName: string;
                                 lastName: string;
+                                timezoneOffset: number;
                                 } = req.body;
-                        var email = data.email;
-                        var publicKey = (data.publicKey || null);
-                        var firstName = data.firstName;
-                        var lastName = data.lastName;
+                        const email = data.email;
+                        const publicKey = (data.publicKey || null);
+                        const firstName = data.firstName;
+                        const lastName = data.lastName;
+                        const timezoneOffset = data.timezoneOffset;
 
-                        var app = state.app;
-                        var promises = app.promises;
+                        const app = state.app;
+                        const promises = app.promises;
 
                         const version = state.config.content.defaultNarrativeGroup;
                         const player = Player.createPlayerState(
-                                email, publicKey, version, firstName, lastName);
+                                email,
+                                publicKey,
+                                version,
+                                firstName,
+                                lastName,
+                                timezoneOffset);
 
                         const promise = promises.addPlayer(player);
                         return createRequestCallback(res, promise);
