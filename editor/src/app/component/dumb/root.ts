@@ -31,7 +31,7 @@ function render (props: RootProps)
         }
 
         const narrative = Narrative.getActiveNarrative(store);
-        const messages = narrative.messages;
+        const messages = narrative.messagesById;
         const singleSelected = Message.getSingleSelectedMessage(messages);
 
         const menuBarData = MenuBarContainer.MenuBarContainerData({

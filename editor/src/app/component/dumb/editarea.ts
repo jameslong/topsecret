@@ -27,7 +27,7 @@ function render (props: EditAreaProps)
         const data = props.data;
         const store = data.store;
         const narrative = Narrative.getActiveNarrative(store);
-        const messages = narrative.messages;
+        const messages = narrative.messagesById;
         const messageList = messages.toList();
 
         const messageComponents = messageList.map(

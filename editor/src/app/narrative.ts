@@ -21,37 +21,37 @@ export type Narratives = Immutable.Map<string, Narrative>;
 
 interface NarrativeInt {
         name: string;
-        messages: Message.Messages;
-        profiles: Profile.Profiles;
-        strings: Strings;
+        messagesById: Message.Messages;
+        profilesById: Profile.Profiles;
+        stringsById: Strings;
 };
 export type Narrative = Immutable.Record.IRecord<NarrativeInt>;
 export const Narrative = Immutable.Record<NarrativeInt>({
         name: '',
-        messages: Immutable.Map<string, Message.Message>(),
-        profiles: Immutable.Map<string, Profile.Profile>(),
-        strings: Immutable.Map<string, string>(),
+        messagesById: Immutable.Map<string, Message.Message>(),
+        profilesById: Immutable.Map<string, Profile.Profile>(),
+        stringsById: Immutable.Map<string, string>(),
 }, 'Narrative');
 
 export function convertToImmutableNarrative (
         narrativeMutable: NarrativeMutable)
 {
         const messagesMutable = narrativeMutable.messages;
-        const messages = Helpers.mapFromObject(
+        const messagesById = Helpers.mapFromObject(
                 messagesMutable, Message.convertToImmutableMessage);
 
         const profilesMutable = narrativeMutable.profiles;
-        const profiles = Helpers.mapFromObject(
+        const profilesById = Helpers.mapFromObject(
                 profilesMutable, Profile.convertToImmutableProfile);
 
         const stringsMutable = narrativeMutable.strings;
-        const strings = Helpers.mapFromObject(stringsMutable, text => text);
+        const stringsById = Helpers.mapFromObject(stringsMutable, text => text);
 
         return Narrative({
                 name: narrativeMutable.name,
-                messages: messages,
-                profiles: profiles,
-                strings: strings,
+                messagesById,
+                profilesById,
+                stringsById,
         });
 }
 
@@ -63,10 +63,10 @@ export function getActiveNarrative (store: State.Store)
 export function markNarrativeValid (narrative: Narrative)
 {
         const name = narrative.name;
-        const profiles = narrative.profiles;
-        const strings = narrative.strings;
+        const profiles = narrative.profilesById;
+        const strings = narrative.stringsById;
         const newMessages = Message.markMessagesValid(
-                narrative.messages, strings, profiles);
+                narrative.messagesById, strings, profiles);
 
-        return narrative.set('messages', newMessages);
+        return narrative.set('messagesById', newMessages);
 }

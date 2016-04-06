@@ -64,10 +64,10 @@ function render (props: EditMessageProps)
         const scratchpadName =
                 store.nameScratchpad.get(messageName);
 
-        const messages = narrative.messages;
+        const messages = narrative.messagesById;
         const message = messages.get(messageName);
-        const profiles = narrative.profiles;
-        const strings = narrative.strings;
+        const profiles = narrative.profilesById;
+        const strings = narrative.stringsById;
 
         const name = createName(
                 messageName,
@@ -380,9 +380,9 @@ function createFallback (
 
 function createDataLists (narrative: Narrative.Narrative)
 {
-        const messages = narrative.messages;
-        const profiles = narrative.profiles;
-        const strings = narrative.strings;
+        const messages = narrative.messagesById;
+        const profiles = narrative.profilesById;
+        const strings = narrative.stringsById;
 
         const messageNames = Helpers.keys(messages)
         const messageDataList = createDataList(

@@ -14,7 +14,7 @@ function setActiveNarrative (
         name: string, store: State.Store, config: Config.Config)
 {
         const narrative = store.narratives.get(name);
-        const messages = narrative.messages;
+        const messages = narrative.messagesById;
 
         const newEdges = Edge.createEdges(
                 messages, config.vertexSize);
@@ -153,7 +153,7 @@ export function handleRedo (state: State.State, action: Actions.Redo)
 export function getMessageGroup (name: string, store: State.Store)
 {
         const narrative = Narrative.getActiveNarrative(store);
-        const messages = narrative.messages;
+        const messages = narrative.messagesById;
         const message = messages.get(name);
         const selected = message.selected;
 
@@ -173,13 +173,13 @@ export function handleEndDrag (
         const selectedMessages = getMessageGroup(name, store);
 
         const narrative = Narrative.getActiveNarrative(store);
-        const messages = narrative.messages;
+        const messages = narrative.messagesById;
 
         const updatedMessages = <Message.Messages>selectedMessages.map(
                 message => updatePosition(delta, gridSize, message));
         const newMessages = messages.merge(updatedMessages);
 
-        const newNarrative = narrative.set('messages', newMessages);
+        const newNarrative = narrative.set('messagesById', newMessages);
         const newNarratives = store.narratives.set(
                 narrative.name, newNarrative);
 
@@ -297,8 +297,8 @@ function saveNarrativeDifference (
         const deleteString = (name: string) =>
                 AsyncRequest.deleteString(url, narrativeName, name);
         saveMapDifference(
-                previous.strings,
-                current.strings,
+                previous.stringsById,
+                current.stringsById,
                 saveString,
                 deleteString);
 
@@ -313,8 +313,8 @@ function saveNarrativeDifference (
         const deleteMessage = (name: string, message: Message.Message) =>
                 AsyncRequest.deleteMessage(url, narrativeName, name);
         saveMapDifference(
-                previous.messages,
-                current.messages,
+                previous.messagesById,
+                current.messagesById,
                 saveMessage,
                 deleteMessage);
 }
@@ -355,10 +355,10 @@ function onNarrativeUpdate (
         const narratives = store.narratives;
         const activeNarrative = store.activeNarrative;
         const narrative = narratives.get(activeNarrative);
-        const messages = narrative.messages;
+        const messages = narrative.messagesById;
         const newMessages = Message.markMessagesValid(
-                messages, narrative.strings, narrative.profiles);
-        const newNarrative = narrative.set('messages', newMessages);
+                messages, narrative.stringsById, narrative.profilesById);
+        const newNarrative = narrative.set('messagesById', newMessages);
         const newNarratives = narratives.set(
                 activeNarrative, newNarrative);
 
@@ -374,14 +374,14 @@ export function handleCreateMessage (
         action: Actions.CreateMessage)
 {
         const narrative = Narrative.getActiveNarrative(store);
-        const messages = narrative.messages;
+        const messages = narrative.messagesById;
         const name = Message.createUniqueMessageName(messages);
         const newPosition = getCentrePosition();
         const tempMessage = Message.Message().
                 set('position', newPosition);
         const newMessage = tempMessage.set('name', name);
         const newMessages = messages.set(name, newMessage);
-        const newNarrative = narrative.set('messages', newMessages);
+        const newNarrative = narrative.set('messagesById', newMessages);
         const newNarratives = store.narratives.set(
                 narrative.name, newNarrative);
 
@@ -396,8 +396,8 @@ export function handleDeleteMessage (
         const name = action.parameters;
         const narrative = Narrative.getActiveNarrative(store);
 
-        const newMessages = narrative.messages.delete(name);
-        const newNarrative = narrative.set('messages', newMessages);
+        const newMessages = narrative.messagesById.delete(name);
+        const newNarrative = narrative.set('messagesById', newMessages);
         const newNarratives = store.narratives.set(
                 narrative.name, newNarrative);
         let newStore = store.set('narratives', newNarratives);
@@ -415,7 +415,7 @@ export function handleDeselectMessage (
 {
         const name = action.parameters;
         const narrative = Narrative.getActiveNarrative(store);
-        const message = narrative.messages.get(name);
+        const message = narrative.messagesById.get(name);
         const selected = Immutable.Map<string, Message.Message>(
                 [[name, message]]);
         return deselectMessages(selected, store);
@@ -427,7 +427,7 @@ export function handleDeselectAllMessages (
         action: Actions.DeselectAllMessages)
 {
         const narrative = Narrative.getActiveNarrative(store);
-        const messages = narrative.messages;
+        const messages = narrative.messagesById;
         const selected = Message.getSelectedMessages(messages);
         return deselectMessages(selected, store);
 }
@@ -439,8 +439,8 @@ export function deselectMessages (
 
         const updatedMessages = selected.map(message =>
                 message.set('selected', false));
-        const newMessages = narrative.messages.merge(updatedMessages);
-        const newNarrative = narrative.set('messages', newMessages);
+        const newMessages = narrative.messagesById.merge(updatedMessages);
+        const newNarrative = narrative.set('messagesById', newMessages);
         const newNarratives = store.narratives.set(
                 narrative.name, newNarrative);
 
@@ -469,7 +469,7 @@ export function handleUniqueSelectMessage (
         const name = action.parameters;
 
         const narrative = Narrative.getActiveNarrative(store);
-        const messages = narrative.messages;
+        const messages = narrative.messagesById;
         const selected = Message.getSelectedMessages(messages);
         const newStore = deselectMessages(selected, store);
 
@@ -479,11 +479,11 @@ export function handleUniqueSelectMessage (
 function selectMessage(name: string, store: State.Store)
 {
         const narrative = Narrative.getActiveNarrative(store);
-        const messages = narrative.messages;
+        const messages = narrative.messagesById;
         const message = messages.get(name);
         const newMessage = message.set('selected', true);
         const newMessages = messages.set(name, newMessage);
-        const newNarrative = narrative.set('messages', newMessages);
+        const newNarrative = narrative.set('messagesById', newMessages);
         const newNarratives = store.narratives.set(
                 narrative.name, newNarrative);
 
@@ -516,12 +516,12 @@ export function handleSetMessageName (
 
         const narratives = store.narratives;
         const narrative = Narrative.getActiveNarrative(store);
-        const messages = narrative.messages;
+        const messages = narrative.messagesById;
         const message = messages.get(name);
         const newMessage = message.set('name', newName);
         const tempMessages = messages.set(newName, newMessage);
         const newMessages = tempMessages.delete(name);
-        const newNarrative = narrative.set('messages', newMessages);
+        const newNarrative = narrative.set('messagesById', newMessages);
         const newNarratives = store.narratives.set(
                 narrative.name, newNarrative);
 
@@ -541,11 +541,11 @@ function setMessageProperty (
 {
         const narratives = store.narratives;
         const narrative = Narrative.getActiveNarrative(store);
-        const messages = narrative.messages;
+        const messages = narrative.messagesById;
         const message = messages.get(name);
         const newMessage = message.set(propertyName, propertyValue);
         const newMessages = messages.set(name, newMessage);
-        const newNarrative = narrative.set('messages', newMessages);
+        const newNarrative = narrative.set('messagesById', newMessages);
         const newNarratives = narratives.set(
                 narrative.name, newNarrative);
 
@@ -694,10 +694,10 @@ export function handleSetString (
         const value = parameters.value;
 
         const narrative = Narrative.getActiveNarrative(store);
-        const strings = narrative.strings;
+        const strings = narrative.stringsById;
         const newStrings = strings.set(name, value);
 
-        const newNarrative = narrative.set('strings', newStrings);
+        const newNarrative = narrative.set('stringsById', newStrings);
         const newNarratives = store.narratives.set(
                 narrative.name, newNarrative);
 
