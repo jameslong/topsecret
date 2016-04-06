@@ -8,14 +8,14 @@ import MenuBar = require('../dumb/menubar');
 
 interface MenuBarContainerInt {
         narrativeNames: Immutable.List<string>;
-        activeNarrative: string;
-        activeMessage: string;
+        activeNarrativeId: string;
+        activeMessageId: string;
 };
 export type MenuBarContainerData = Immutable.Record.IRecord<MenuBarContainerInt>;
 export const MenuBarContainerData = Immutable.Record<MenuBarContainerInt>({
         narrativeNames: Immutable.List<string>(),
-        activeNarrative: null,
-        activeMessage: null,
+        activeNarrativeId: null,
+        activeMessageId: null,
 }, 'MenuBarContainer');
 
 export type MenuBarContainerProps = ReactUtils.Props<MenuBarContainerData>;
@@ -23,14 +23,14 @@ export type MenuBarContainerProps = ReactUtils.Props<MenuBarContainerData>;
 function render (props: MenuBarContainerProps)
 {
         const data = props.data;
-        const version = data.activeNarrative;
-        const activeMessage = data.activeMessage;
-        const onTestLocal = () => onTest(version, activeMessage);
+        const version = data.activeNarrativeId;
+        const activeMessageId = data.activeMessageId;
+        const onTestLocal = () => onTest(version, activeMessageId);
 
         const menuBarData = MenuBar.MenuBarData({
                 narrativeNames: data.narrativeNames,
-                activeNarrative: data.activeNarrative,
-                activeMessage,
+                activeNarrativeId: data.activeNarrativeId,
+                activeMessageId,
                 onAddMessage,
                 onTest: onTestLocal,
                 onSelectNarrative,

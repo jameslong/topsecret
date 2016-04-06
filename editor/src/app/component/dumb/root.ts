@@ -16,10 +16,10 @@ function render (props: RootProps)
 {
         const state = props.data;
         const store = State.getActiveStore(state);
-        const narrativeNames = Helpers.keys(store.narratives);
+        const narrativeNames = Helpers.keys(store.narrativesById);
 
-        const activeNarrative = store.activeNarrative;
-        const activeMessage = store.activeMessage;
+        const activeNarrativeId = store.activeNarrativeId;
+        const activeMessage = store.activeMessageId;
 
         const message = activeMessage ?
                 EditPanelContainer.EditPanelContainer(store) : null;
@@ -36,8 +36,8 @@ function render (props: RootProps)
 
         const menuBarData = MenuBarContainer.MenuBarContainerData({
                 narrativeNames,
-                activeNarrative,
-                activeMessage: singleSelected,
+                activeNarrativeId,
+                activeMessageId: singleSelected,
         });
 
         return Div({ className: 'root' },

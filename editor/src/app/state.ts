@@ -4,17 +4,17 @@ import Edge = require('./edge');
 import Narrative = require('./narrative');
 
 interface StoreInt {
-        activeNarrative: string;
-        activeMessage: string;
-        narratives: Narrative.Narratives;
+        activeNarrativeId: string;
+        activeMessageId: string;
+        narrativesById: Narrative.Narratives;
         edges: Edge.Edges;
         nameScratchpad: Narrative.Strings;
 };
 export type Store = Immutable.Record.IRecord<StoreInt>;
 export const Store = Immutable.Record<StoreInt>({
-        activeNarrative: '',
-        activeMessage: '',
-        narratives: Immutable.Map<string, Narrative.Narrative>(),
+        activeNarrativeId: '',
+        activeMessageId: '',
+        narrativesById: Immutable.Map<string, Narrative.Narrative>(),
         edges: Immutable.List<Edge.Edge>(),
         nameScratchpad: Immutable.Map<string, string>(),
 }, 'Store');

@@ -57,7 +57,7 @@ export function convertToImmutableNarrative (
 
 export function getActiveNarrative (store: State.Store)
 {
-        return store.narratives.get(store.activeNarrative);
+        return store.narrativesById.get(store.activeNarrativeId);
 }
 
 export function markNarrativeValid (narrative: Narrative)

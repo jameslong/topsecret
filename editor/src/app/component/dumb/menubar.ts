@@ -9,8 +9,8 @@ import SelectInput = require('./selectinput');
 
 interface MenuBarInt {
         narrativeNames: Immutable.List<string>;
-        activeNarrative: string;
-        activeMessage: string;
+        activeNarrativeId: string;
+        activeMessageId: string;
         onAddMessage: () => void;
         onTest: () => void;
         onSelectNarrative: (name: string) => void;
@@ -18,8 +18,8 @@ interface MenuBarInt {
 export type MenuBarData = Immutable.Record.IRecord<MenuBarInt>;
 export const MenuBarData = Immutable.Record<MenuBarInt>({
         narrativeNames: Immutable.List<string>(),
-        activeNarrative: null,
-        activeMessage: null,
+        activeNarrativeId: null,
+        activeMessageId: null,
         onAddMessage: () => {},
         onTest: () => {},
         onSelectNarrative: () => {},
@@ -31,8 +31,8 @@ function render (props: MenuBarProps)
 {
         const data = props.data;
         const narrativeNames = data.narrativeNames;
-        const activeNarrative = data.activeNarrative;
-        const activeMessage = data.activeMessage;
+        const activeNarrative = data.activeNarrativeId;
+        const activeMessage = data.activeMessageId;
 
         const narrativeSelect = createNarrativeSelect(
                 data.onSelectNarrative,

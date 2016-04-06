@@ -13,7 +13,7 @@ import State = require('../state');
 function setActiveNarrative (
         name: string, store: State.Store, config: Config.Config)
 {
-        const narrative = store.narratives.get(name);
+        const narrative = store.narrativesById.get(name);
         const messages = narrative.messagesById;
 
         const newEdges = Edge.createEdges(
@@ -21,9 +21,9 @@ function setActiveNarrative (
         const newScratchpad = Immutable.Map<string, string>();
 
         return State.Store({
-                activeNarrative: name,
-                activeMessage: store.activeMessage,
-                narratives: store.narratives,
+                activeNarrativeId: name,
+                activeMessageId: store.activeMessageId,
+                narrativesById: store.narrativesById,
                 edges: newEdges,
                 nameScratchpad: newScratchpad,
         });
@@ -35,7 +35,7 @@ export function handleSetGameData (
         const narratives = action.parameters;
         const newNarratives = narratives.map(Narrative.markNarrativeValid);
         const store = State.getActiveStore(state);
-        const tempStore = store.set('narratives', newNarratives);
+        const tempStore = store.set('narrativesById', newNarratives);
 
         const names = Helpers.keys(narratives);
         const activeNarrative = names.get(0);
@@ -180,16 +180,16 @@ export function handleEndDrag (
         const newMessages = messages.merge(updatedMessages);
 
         const newNarrative = narrative.set('messagesById', newMessages);
-        const newNarratives = store.narratives.set(
+        const newNarratives = store.narrativesById.set(
                 narrative.name, newNarrative);
 
         const newEdges = Edge.createEdges(
                 newMessages, config.vertexSize);
 
         return State.Store({
-                activeNarrative: store.activeNarrative,
-                activeMessage: store.activeMessage,
-                narratives: newNarratives,
+                activeNarrativeId: store.activeNarrativeId,
+                activeMessageId: store.activeMessageId,
+                narrativesById: newNarratives,
                 edges: newEdges,
                 nameScratchpad: store.nameScratchpad,
         });
@@ -237,7 +237,7 @@ export function handleOpenMessage (
         action: Actions.OpenMessage)
 {
         const name = action.parameters;
-        return store.set('activeMessage', name);
+        return store.set('activeMessageId', name);
 }
 
 export function handleCloseMessage (
@@ -245,7 +245,7 @@ export function handleCloseMessage (
         config: Config.Config,
         action: Actions.CloseMessage)
 {
-        const newStore = store.set('activeMessage', null);
+        const newStore = store.set('activeMessageId', null);
         return onNarrativeUpdate(newStore, config);
 }
 
@@ -268,8 +268,8 @@ function saveStoreDifference (
 {
         saveNarrativesDifference(
                 url,
-                previousStore.narratives,
-                currentStore.narratives);
+                previousStore.narrativesById,
+                currentStore.narrativesById);
 }
 
 function saveNarrativesDifference (
@@ -352,8 +352,8 @@ function getCentrePosition ()
 function onNarrativeUpdate (
         store: State.Store, config: Config.Config)
 {
-        const narratives = store.narratives;
-        const activeNarrative = store.activeNarrative;
+        const narratives = store.narrativesById;
+        const activeNarrative = store.activeNarrativeId;
         const narrative = narratives.get(activeNarrative);
         const messages = narrative.messagesById;
         const newMessages = Message.markMessagesValid(
@@ -365,7 +365,7 @@ function onNarrativeUpdate (
         const newEdges = Edge.createEdges(
                 newMessages, config.vertexSize);
         return store.set('edges', newEdges)
-                .set('narratives', newNarratives);
+                .set('narrativesById', newNarratives);
 }
 
 export function handleCreateMessage (
@@ -382,10 +382,10 @@ export function handleCreateMessage (
         const newMessage = tempMessage.set('name', name);
         const newMessages = messages.set(name, newMessage);
         const newNarrative = narrative.set('messagesById', newMessages);
-        const newNarratives = store.narratives.set(
+        const newNarratives = store.narrativesById.set(
                 narrative.name, newNarrative);
 
-        return store.set('narratives', newNarratives);
+        return store.set('narrativesById', newNarratives);
 }
 
 export function handleDeleteMessage (
@@ -398,12 +398,12 @@ export function handleDeleteMessage (
 
         const newMessages = narrative.messagesById.delete(name);
         const newNarrative = narrative.set('messagesById', newMessages);
-        const newNarratives = store.narratives.set(
+        const newNarratives = store.narrativesById.set(
                 narrative.name, newNarrative);
-        let newStore = store.set('narratives', newNarratives);
+        let newStore = store.set('narrativesById', newNarratives);
 
-        newStore = (newStore.activeMessage === name) ?
-                newStore.set('activeMessage', '') : newStore;
+        newStore = (newStore.activeMessageId === name) ?
+                newStore.set('activeMessageId', '') : newStore;
 
         return onNarrativeUpdate(newStore, config);
 }
@@ -441,14 +441,14 @@ export function deselectMessages (
                 message.set('selected', false));
         const newMessages = narrative.messagesById.merge(updatedMessages);
         const newNarrative = narrative.set('messagesById', newMessages);
-        const newNarratives = store.narratives.set(
+        const newNarratives = store.narrativesById.set(
                 narrative.name, newNarrative);
 
         const scratchpad = store.nameScratchpad;
         const newScratchpad = scratchpad.filter((newName, name) =>
                 !selected.has(name));
 
-        return store.set('narratives', newNarratives)
+        return store.set('narrativesById', newNarratives)
                 .set('nameScratchpad', newScratchpad);
 }
 
@@ -484,10 +484,10 @@ function selectMessage(name: string, store: State.Store)
         const newMessage = message.set('selected', true);
         const newMessages = messages.set(name, newMessage);
         const newNarrative = narrative.set('messagesById', newMessages);
-        const newNarratives = store.narratives.set(
+        const newNarratives = store.narrativesById.set(
                 narrative.name, newNarrative);
 
-        return store.set('narratives', newNarratives);
+        return store.set('narrativesById', newNarratives);
 }
 
 export function handleSetEditedMessageName (
@@ -514,7 +514,7 @@ export function handleSetMessageName (
         const name = parameters.name;
         const newName = store.nameScratchpad.get(name);
 
-        const narratives = store.narratives;
+        const narratives = store.narrativesById;
         const narrative = Narrative.getActiveNarrative(store);
         const messages = narrative.messagesById;
         const message = messages.get(name);
@@ -522,15 +522,15 @@ export function handleSetMessageName (
         const tempMessages = messages.set(newName, newMessage);
         const newMessages = tempMessages.delete(name);
         const newNarrative = narrative.set('messagesById', newMessages);
-        const newNarratives = store.narratives.set(
+        const newNarratives = store.narrativesById.set(
                 narrative.name, newNarrative);
 
         const scratchpad = store.nameScratchpad;
         const newScratchpad = scratchpad.delete(name);
 
-        return store.set('narratives', newNarratives)
+        return store.set('narrativesById', newNarratives)
                 .set('nameScratchpad', newScratchpad)
-                .set('activeMessage', newName);
+                .set('activeMessageId', newName);
 }
 
 function setMessageProperty (
@@ -539,7 +539,7 @@ function setMessageProperty (
         propertyValue: any,
         store: State.Store)
 {
-        const narratives = store.narratives;
+        const narratives = store.narrativesById;
         const narrative = Narrative.getActiveNarrative(store);
         const messages = narrative.messagesById;
         const message = messages.get(name);
@@ -550,9 +550,9 @@ function setMessageProperty (
                 narrative.name, newNarrative);
 
         return State.Store({
-                activeNarrative: store.activeNarrative,
-                activeMessage: store.activeMessage,
-                narratives: newNarratives,
+                activeNarrativeId: store.activeNarrativeId,
+                activeMessageId: store.activeMessageId,
+                narrativesById: newNarratives,
                 edges: store.edges,
                 nameScratchpad: store.nameScratchpad,
         });
@@ -698,13 +698,13 @@ export function handleSetString (
         const newStrings = strings.set(name, value);
 
         const newNarrative = narrative.set('stringsById', newStrings);
-        const newNarratives = store.narratives.set(
+        const newNarratives = store.narrativesById.set(
                 narrative.name, newNarrative);
 
         return State.Store({
-                activeNarrative: store.activeNarrative,
-                activeMessage: store.activeMessage,
-                narratives: newNarratives,
+                activeNarrativeId: store.activeNarrativeId,
+                activeMessageId: store.activeMessageId,
+                narrativesById: newNarratives,
                 edges: store.edges,
                 nameScratchpad: store.nameScratchpad,
         });

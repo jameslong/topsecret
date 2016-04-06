@@ -26,7 +26,7 @@ function render (props: EditPanelProps)
         const narrative = Narrative.getActiveNarrative(store);
 
         const editMessageData = EditMessageContainer.EditMessageContainerData({
-                name: store.activeMessage,
+                name: store.activeMessageId,
                 store: store,
         });
         const editMessage = EditMessageContainer.EditMessageContainer(editMessageData);

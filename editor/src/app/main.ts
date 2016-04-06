@@ -27,9 +27,9 @@ const config = Config.Config({
 });
 
 const store = State.Store({
-        activeNarrative: '',
-        activeMessage: '',
-        narratives: Immutable.Map<string, Narrative.Narrative>(),
+        activeNarrativeId: '',
+        activeMessageId: '',
+        narrativesById: Immutable.Map<string, Narrative.Narrative>(),
         edges: Immutable.List<Edge.Edge>(),
         nameScratchpad: Immutable.Map<string, string>(),
 });
