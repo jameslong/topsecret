@@ -237,8 +237,6 @@ export function handleOpenMessage (
         action: Actions.OpenMessage)
 {
         const name = action.parameters;
-        window.document.body.classList.add('open-modal');
-
         return store.set('activeMessage', name);
 }
 
@@ -247,7 +245,6 @@ export function handleCloseMessage (
         config: Config.Config,
         action: Actions.CloseMessage)
 {
-        window.document.body.classList.remove('open-modal');
         const newStore = store.set('activeMessage', null);
         return onNarrativeUpdate(newStore, config);
 }

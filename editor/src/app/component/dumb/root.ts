@@ -24,6 +24,12 @@ function render (props: RootProps)
         const message = activeMessage ?
                 EditPanelContainer.EditPanelContainer(store) : null;
 
+        if (activeMessage) {
+                window.document.body.classList.add('open-modal');
+        } else {
+                window.document.body.classList.remove('open-modal');
+        }
+
         const narrative = Narrative.getActiveNarrative(store);
         const messages = narrative.messages;
         const singleSelected = Message.getSingleSelectedMessage(messages);
