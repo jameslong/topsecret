@@ -2,8 +2,8 @@
         "name": "delay_absolute",
         "threadSubject": "delay_absolute_subject",
         "position": {
-                "x": 385,
-                "y": 550
+                "x": 990,
+                "y": 55
         },
         "endGame": false,
         "message": {

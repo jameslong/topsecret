@@ -2,8 +2,8 @@
         "name": "delay_relative",
         "threadSubject": "delay_relative_subject",
         "position": {
-                "x": 275,
-                "y": 550
+                "x": 825,
+                "y": 55
         },
         "endGame": false,
         "message": {

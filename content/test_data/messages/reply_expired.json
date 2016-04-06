@@ -2,7 +2,7 @@
         "name": "reply_expired",
         "threadSubject": "reply_expired_subject",
         "position": {
-                "x": 495,
+                "x": 440,
                 "y": 385
         },
         "endGame": false,
@@ -29,7 +29,11 @@
                         "messageDelay": {
                                 "name": "reply_0",
                                 "condition": "",
-                                "delay": [0, 0, 0]
+                                "delay": [
+                                        0,
+                                        0,
+                                        0
+                                ]
                         }
                 },
                 {
@@ -38,7 +42,11 @@
                         "messageDelay": {
                                 "name": "reply_default",
                                 "condition": "",
-                                "delay": [0, 0, 0]
+                                "delay": [
+                                        0,
+                                        0,
+                                        0
+                                ]
                         }
                 }
         ],

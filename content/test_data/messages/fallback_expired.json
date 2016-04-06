@@ -2,7 +2,7 @@
         "name": "fallback_expired",
         "threadSubject": "fallback_expired_subject",
         "position": {
-                "x": 495,
+                "x": 440,
                 "y": 55
         },
         "endGame": false,
@@ -23,6 +23,10 @@
         "fallback": {
                 "name": "fallback_0",
                 "condition": "",
-                "delay": [0, 0, 0]
+                "delay": [
+                        0,
+                        0,
+                        0
+                ]
         }
 }
