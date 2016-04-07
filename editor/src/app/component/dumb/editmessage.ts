@@ -61,8 +61,7 @@ function render (props: EditMessageProps)
         const narrative = Narrative.getActiveNarrative(store);
 
         const messageName = data.name;
-        const scratchpadName =
-                store.nameScratchpad.get(messageName);
+        const scratchpadName = store.ui.nameScratchpad.get(messageName);
 
         const messages = narrative.messagesById;
         const message = messages.get(messageName);

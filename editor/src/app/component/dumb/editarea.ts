@@ -37,7 +37,7 @@ function render (props: EditAreaProps)
                 })
         );
 
-        const edges = store.edges;
+        const edges = store.data.edges;
         const connections = edges.map(
                 edge => Arrow.Arrow({
                         key: edge.name,

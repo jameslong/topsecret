@@ -16,10 +16,10 @@ function render (props: RootProps)
 {
         const state = props.data;
         const store = State.getActiveStore(state);
-        const narrativeNames = Helpers.keys(store.narrativesById);
+        const narrativeNames = Helpers.keys(store.data.narrativesById);
 
-        const activeNarrativeId = store.activeNarrativeId;
-        const activeMessage = store.activeMessageId;
+        const activeNarrativeId = store.ui.activeNarrativeId;
+        const activeMessage = store.ui.activeMessageId;
 
         const message = activeMessage ?
                 EditPanelContainer.EditPanelContainer(store) : null;

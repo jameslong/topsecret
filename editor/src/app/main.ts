@@ -26,13 +26,18 @@ const config = Config.Config({
         vertexSize: MathUtils.Coord({ x: 66, y: 66 }),
 });
 
-const store = State.Store({
-        activeNarrativeId: '',
-        activeMessageId: '',
+const data = State.Data({
         narrativesById: Immutable.Map<string, Narrative.Narrative>(),
         edges: Immutable.List<Edge.Edge>(),
+});
+
+const ui = State.UI({
+        activeNarrativeId: '',
+        activeMessageId: '',
         nameScratchpad: Immutable.Map<string, string>(),
 });
+
+const store = State.Store({ data, ui });
 
 const state = State.State({
         config: config,

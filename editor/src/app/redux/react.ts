@@ -1,5 +1,6 @@
 /// <reference path="../../../../typings/react/react.d.ts" />
 
+import Immutable = require('immutable');
 import React = require('react');
 
 /* React can't handle immutable props so we need to wrap them in a
@@ -26,7 +27,7 @@ function wrapFactory<P> (factory: React.Factory<Props<P>>): Factory<P>
         function newFactory (data: any, ...children: Child[]): React.ReactElement<Props<P>>
         {
                 let props = <Props<P>><any>data;
-                props = (props && props.data) ?
+                props = (props && props.data && !Immutable.Iterable.isIterable(props)) ?
                         props :
                         { data: <P><any>props };
                 return factory(props, ...children);
