@@ -51,11 +51,11 @@ export function handleSetGameData (
         const newStore = setActiveNarrative(
                 activeNarrative, tempStore, state.config);
 
-        const newStores = Immutable.List.of<State.Store>(newStore);
         return State.State({
                 config: state.config,
-                stores: newStores,
-                activeStoreIndex: 0,
+                past: Immutable.List.of<State.Store>(),
+                present: newStore,
+                future: Immutable.List.of<State.Store>(),
                 lastSavedStore: newStore,
                 dirty: false,
         });
@@ -80,24 +80,21 @@ export function wrapStoreUpdate<T> (
 {
         const store = State.getActiveStore(state);
         const config = state.config;
-        const newStore = handler(store, config, action);
-        const lastStore = state.stores.last();
+        const present = handler(store, config, action);
+        const last = state.past.last();
 
-        return (newStore === lastStore) ?
-                state : addNewStore(state, newStore);
+        return (last === present) ?
+                state : addNewStore(state, present);
 }
 
-export function addNewStore (state: State.State, store: State.Store)
+export function addNewStore (state: State.State, present: State.Store)
 {
         console.log('new store');
-        const newActiveIndex = state.activeStoreIndex + 1;
-        const stores = state.stores;
-        const size = stores.size;
-        const numRemoved = size - newActiveIndex;
-        const newStores = stores.splice(
-                newActiveIndex, numRemoved, store);
-        const tempState = state.set('stores', newStores)
-                .set('activeStoreIndex', newActiveIndex);
+        const past = state.past.push(state.present);
+        const future = Immutable.List.of<State.Store>();
+        const tempState = state.set('past', past)
+                .set('present', present)
+                .set('future', future);
         const newState = trimStores(tempState);
         return setDirtyState(newState);
 }
@@ -105,19 +102,23 @@ export function addNewStore (state: State.State, store: State.Store)
 export function trimStores (state: State.State)
 {
         const maxUndos = state.config.maxUndos;
-        const stores = state.stores;
-        if (stores.size <= maxUndos) {
-                return state;
-        } else {
-                console.log('undo/redo limit hit');
-                const newStores = stores.slice(-maxUndos);
-                const newState =  state.set('stores', newStores);
+        const maxRedos = maxUndos;
+        const past = state.past;
+        const future = state.future;
 
-                const lastIndex = Math.max(0, maxUndos - 1);
-                return (state.activeStoreIndex > lastIndex) ?
-                        newState.set('activeStoreIndex', lastIndex) :
-                        newState;
+        if (past.size > maxUndos) {
+                console.log('undo limit hit');
         }
+        const newPast = (past.size <= maxUndos) ?
+                past : past.slice(-maxUndos);
+
+        if (future.size > maxRedos) {
+                console.log('redo limit hit');
+        }
+        const newFuture = (future.size <= maxRedos) ?
+                future : past.slice(0, maxUndos);
+
+        return state.set('past', newPast).set('future', newFuture);
 }
 
 export function onDirtyState (delayms: number)
@@ -145,18 +146,44 @@ export function setDirtyState (state: State.State)
 
 export function handleUndo (state: State.State, action: Actions.Undo)
 {
-        const newIndex = Math.max(0, state.activeStoreIndex - 1);
-        const newState = state.set('activeStoreIndex', newIndex);
-        return setDirtyState(newState);
+        const past = state.past;
+        if (past.size) {
+                const present = state.present;
+                const future = state.future;
+
+                const newFuture = future.unshift(present);
+                const newPresent = past.last();
+                const newPast = past.pop();
+                const newState = state.set('past', newPast)
+                        .set('present', newPresent)
+                        .set('future', newFuture);
+                console.log(newState.toJS());
+                return setDirtyState(newState);
+        } else {
+                console.log('No more undos');
+                return state;
+        }
 }
 
 export function handleRedo (state: State.State, action: Actions.Redo)
 {
-        const lastIndex = Math.max(0, state.stores.size - 1);
-        const currentIndex = state.activeStoreIndex;
-        const newIndex = Math.min(lastIndex, currentIndex + 1);
-        const newState = state.set('activeStoreIndex', newIndex);
-        return setDirtyState(newState);
+        const future = state.future;
+        if (future.size) {
+                const present = state.present;
+                const past = state.past;
+
+                const newPast = past.push(present);
+                const newPresent = future.first();
+                const newFuture = future.shift();
+                const newState = state.set('past', newPast)
+                        .set('present', newPresent)
+                        .set('future', newFuture);
+                console.log(newState.toJS());
+                return setDirtyState(newState);
+        } else {
+                console.log('No more redos');
+                return state;
+        }
 }
 
 export function getMessageGroup (name: string, store: State.Store)

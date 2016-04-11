@@ -37,21 +37,23 @@ export const Store = Immutable.Record<StoreInt>({
 
 interface StateInt {
         config: Config.Config;
-        stores: Immutable.List<Store>;
-        activeStoreIndex: number;
+        past: Immutable.List<Store>;
+        present: Store;
+        future: Immutable.List<Store>;
         lastSavedStore: Store;
         dirty: boolean;
 };
 export type State = Immutable.Record.IRecord<StateInt>;
 export const State = Immutable.Record<StateInt>({
         config: Config.Config(),
-        stores: Immutable.List<Store>(),
-        activeStoreIndex: 0,
+        past: Immutable.List<Store>(),
+        present: Store(),
+        future: Immutable.List<Store>(),
         lastSavedStore: null,
         dirty: false,
 }, 'State');
 
 export function getActiveStore (state: State)
 {
-        return state.stores.get(state.activeStoreIndex);
+        return state.present;
 }

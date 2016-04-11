@@ -41,8 +41,9 @@ const store = State.Store({ data, ui });
 
 const state = State.State({
         config: config,
-        stores: Immutable.List.of<State.Store>(store),
-        activeStoreIndex: 0,
+        past: Immutable.List.of<State.Store>(),
+        present: store,
+        future: Immutable.List.of<State.Store>(),
         lastSavedStore: store,
         dirty: false,
 });
