@@ -56,7 +56,7 @@ export function handleSetGameData (
                 past: Immutable.List.of<State.Store>(),
                 present: newStore,
                 future: Immutable.List.of<State.Store>(),
-                lastSavedStore: newStore,
+                lastSaved: newStore,
                 dirty: false,
         });
 }
@@ -291,11 +291,10 @@ export function handleSave (state: State.State, action: Actions.Save)
         const activeStore = State.getActiveStore(state);
 
         const url = state.config.serverURL;
-        const lastSavedStore = state.lastSavedStore;
-        saveStoreDifference(url, lastSavedStore, activeStore);
+        const lastSaved = state.lastSaved;
+        saveStoreDifference(url, lastSaved, activeStore);
 
-        return state.set('dirty', false)
-                .set('lastSavedStore', activeStore);
+        return state.set('dirty', false).set('lastSaved', activeStore);
 }
 
 function saveStoreDifference (

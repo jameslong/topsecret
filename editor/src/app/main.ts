@@ -44,7 +44,7 @@ const state = State.State({
         past: Immutable.List.of<State.Store>(),
         present: store,
         future: Immutable.List.of<State.Store>(),
-        lastSavedStore: store,
+        lastSaved: store,
         dirty: false,
 });
 

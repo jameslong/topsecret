@@ -40,7 +40,7 @@ interface StateInt {
         past: Immutable.List<Store>;
         present: Store;
         future: Immutable.List<Store>;
-        lastSavedStore: Store;
+        lastSaved: Store;
         dirty: boolean;
 };
 export type State = Immutable.Record.IRecord<StateInt>;
@@ -49,7 +49,7 @@ export const State = Immutable.Record<StateInt>({
         past: Immutable.List<Store>(),
         present: Store(),
         future: Immutable.List<Store>(),
-        lastSavedStore: null,
+        lastSaved: null,
         dirty: false,
 }, 'State');
 
