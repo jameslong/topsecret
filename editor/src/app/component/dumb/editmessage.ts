@@ -58,10 +58,11 @@ function render (props: EditMessageProps)
 {
         const data = props.data;
         const store = data.store;
+        const narrativeId = store.ui.activeNarrativeId;
         const narrative = Narrative.getActiveNarrative(store);
 
         const messageName = data.name;
-        const scratchpadName = store.ui.nameScratchpad.get(messageName);
+        const scratchpadName = store.data.nameScratchpad.get(messageName);
 
         const messages = narrative.messagesById;
         const message = messages.get(messageName);
@@ -82,7 +83,7 @@ function render (props: EditMessageProps)
                 data.onSetString);
 
         const messageContent = createMessageContent(
-                message, strings, profiles);
+                narrativeId, message, strings, profiles);
 
         const fallback = createFallback(
                 data.onSetFallback, message, messages);
@@ -90,8 +91,7 @@ function render (props: EditMessageProps)
         const children = createChildren(
                 data.onSetChildren, message, messages);
 
-        const replyOptions = createReplyOptions(
-                message, messages);
+        const replyOptions = createReplyOptions(narrativeId, message, messages);
 
         const endGame = createEndGame(message, data.onSetEndGame);
         const encrypted = createEncrypted(message, data.onSetEncrypted);
@@ -184,6 +184,7 @@ function createName (
 }
 
 function createMessageContent (
+        narrativeId: string,
         message: Message.Message,
         strings: Narrative.Strings,
         profiles: Profile.Profiles)
@@ -193,15 +194,19 @@ function createMessageContent (
                 strings: strings,
                 message: message.message,
                 name: message.name,
+                narrativeId,
         });
         return MessageContentContainer.MessageContentContainer(messageProps);
 }
 
 function createReplyOptions (
-        message: Message.Message, messages: Message.Messages)
+        narrativeId: string,
+        message: Message.Message,
+        messages: Message.Messages)
 {
         const replyOptionsProps = ReplyOptionsContainer.ReplyOptionsContainerData({
                 name: message.name,
+                narrativeId,
                 replyOptions: message.replyOptions,
                 messages: messages,
         });

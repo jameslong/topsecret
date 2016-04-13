@@ -4,7 +4,6 @@
 ///<reference path='../../../typings/immutable/immutable-overrides.d.ts'/>
 ///<reference path="../../../typings/es6-polyfill/es6-polyfill.d.ts" />
 
-import ActionHandlerMap = require('./action/actionhandlermap');
 import AsyncRequest = require('./asyncrequest');
 import Config = require('./config');
 import Edge = require('./edge');
@@ -15,6 +14,7 @@ import Narrative = require('./narrative');
 import Redux = require('./redux/redux');
 import Root = require('./component/dumb/root');
 import State = require('./state');
+import StateReducers = require('./action/statereducers');
 
 const wrapper = document.getElementById('wrapper');
 
@@ -29,12 +29,12 @@ const config = Config.Config({
 const data = State.Data({
         narrativesById: Immutable.Map<string, Narrative.Narrative>(),
         edges: Immutable.List<Edge.Edge>(),
+        nameScratchpad: Immutable.Map<string, string>(),
 });
 
 const ui = State.UI({
         activeNarrativeId: '',
         activeMessageId: '',
-        nameScratchpad: Immutable.Map<string, string>(),
 });
 
 const store = State.Store({ data, ui });
@@ -48,7 +48,7 @@ const state = State.State({
         dirty: false,
 });
 
-Redux.init(state, ActionHandlerMap.handleNewAction, Root.Root, wrapper);
+Redux.init(state, StateReducers.state, Root.Root, wrapper);
 
 AsyncRequest.requestNarratives(config.serverURL);
 EventHandler.addKeyHandlers();

@@ -25,13 +25,14 @@ function render (props: MenuBarContainerProps)
         const data = props.data;
         const version = data.activeNarrativeId;
         const activeMessageId = data.activeMessageId;
+        const narrativeId = data.activeNarrativeId;
         const onTestLocal = () => onTest(version, activeMessageId);
 
         const menuBarData = MenuBar.MenuBarData({
                 narrativeNames: data.narrativeNames,
-                activeNarrativeId: data.activeNarrativeId,
+                activeNarrativeId: narrativeId,
                 activeMessageId,
-                onAddMessage,
+                onAddMessage: () => onAddMessage(narrativeId),
                 onTest: onTestLocal,
                 onSelectNarrative,
         });
@@ -40,9 +41,9 @@ function render (props: MenuBarContainerProps)
 
 export const MenuBarContainer = ReactUtils.createFactory(render, 'MenuBarContainer');
 
-function onAddMessage ()
+function onAddMessage (narrativeId: string)
 {
-        const action = ActionCreators.createMessage();
+        const action = ActionCreators.createMessage(narrativeId);
         Redux.handleAction(action);
 }
 

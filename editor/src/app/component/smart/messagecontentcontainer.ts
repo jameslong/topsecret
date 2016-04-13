@@ -1,4 +1,5 @@
 import ActionCreators = require('../../action/actioncreators');
+import EditMessageContainer = require('../smart/editmessagecontainer');
 import Immutable = require('immutable');
 import Message = require('../../message');
 import Narrative = require('../../narrative');
@@ -13,6 +14,7 @@ interface MessageContentContainerInt {
         profiles: Profile.Profiles;
         strings: Narrative.Strings;
         name: string;
+        narrativeId: string;
 };
 export type MessageContentContainerData = Immutable.Record.IRecord<MessageContentContainerInt>;
 export const MessageContentContainerData = Immutable.Record<MessageContentContainerInt>({
@@ -20,6 +22,7 @@ export const MessageContentContainerData = Immutable.Record<MessageContentContai
         profiles: Immutable.Map<string, Profile.Profile>(),
         strings: Immutable.Map<string, string>(),
         name: '',
+        narrativeId: '',
 }, 'MessageContentContainer');
 
 type MessageContentContainerProps = ReactUtils.Props<MessageContentContainerData>;
@@ -28,14 +31,18 @@ function render (props: MessageContentContainerProps)
 {
         const data = props.data;
         const name = data.name;
+        const narrativeId = data.narrativeId;
         const onSet = (content: Message.MessageContent) =>
-                onSetMessageContent(name, content);
+                onSetMessageContent(narrativeId, name, content);
+        const onSetString = (name: string, value: string) =>
+                EditMessageContainer.onSetString(narrativeId, name, value);
         const contentData = MessageContent.MessageContentData({
                 message: data.message,
                 profiles: data.profiles,
                 strings: data.strings,
                 name: data.name,
                 onSet: onSet,
+                onSetString: onSetString,
         });
         return MessageContent.MessageContent(contentData);
 }
@@ -44,9 +51,12 @@ export const MessageContentContainer = ReactUtils.createFactory(
         render, 'MessageContentContainer');
 
 function onSetMessageContent (
-        messageName: string, newContent: Message.MessageContent)
+        narrativeId: string,
+        messageName: string,
+        newContent: Message.MessageContent)
 {
         const action = ActionCreators.setMessageContent({
+                narrativeId,
                 name: messageName,
                 value: newContent,
         });

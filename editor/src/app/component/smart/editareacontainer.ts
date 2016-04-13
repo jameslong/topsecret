@@ -10,19 +10,20 @@ type EditAreaContainerProps = ReactUtils.Props<State.Store>;
 function render (props: EditAreaContainerProps)
 {
         const data = props.data;
+        const narrativeId = data.ui.activeNarrativeId;
         const editAreaData = EditArea.EditAreaData({
                 store: data,
-                onClick: onClick,
+                onClick: (e: MouseEvent) => onClick(narrativeId, e),
         });
         return EditArea.EditArea(editAreaData);
 }
 
 export const EditAreaContainer = ReactUtils.createFactory(render, 'EditAreaContainer');
 
-function onClick (event: MouseEvent)
+function onClick (narrativeId: string, e: MouseEvent)
 {
-        event.stopPropagation();
+        e.stopPropagation();
 
-        const action = ActionCreators.deselectAllMessages();
+        const action = ActionCreators.deselectAllMessages(narrativeId);
         Redux.handleAction(action);
 }

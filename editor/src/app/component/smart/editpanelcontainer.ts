@@ -10,19 +10,20 @@ type EditPanelContainerProps = ReactUtils.Props<State.Store>;
 function render (props: EditPanelContainerProps)
 {
         const data = props.data;
+        const narrativeId = data.ui.activeNarrativeId;
         const editPanelData = EditPanel.EditPanelData({
                 store: data,
-                onClick: onClick,
+                onClick: (e: MouseEvent) => onClick(narrativeId, e),
         });
         return EditPanel.EditPanel(editPanelData);
 }
 
 export const EditPanelContainer = ReactUtils.createFactory(render, 'EditPanelContainer');
 
-function onClick (e: MouseEvent)
+function onClick (narrativeId: string, e: MouseEvent)
 {
         e.stopPropagation();
 
-        const action = ActionCreators.closeMessage();
+        const action = ActionCreators.closeMessage(narrativeId);
         Redux.handleAction(action);
 }

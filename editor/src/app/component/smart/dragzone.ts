@@ -2,28 +2,41 @@ import ActionCreators = require('../../action/actioncreators');
 import Core = require('../core');
 import Draggable = require('./draggable');
 import Div = Core.Div;
+import Immutable = require('immutable');
 import MathUtils = require('../../math');
 import ReactUtils = require('../../redux/react');
 import Redux = require('../../redux/redux');
 
-type DragzoneProps = ReactUtils.Props<string>;
+interface DragzoneInt {
+        className: string,
+        narrativeId: string;
+};
+export type DragzoneData = Immutable.Record.IRecord<DragzoneInt>;
+export const DragzoneData = Immutable.Record<DragzoneInt>({
+        className: '',
+        narrativeId: '',
+}, 'Dragzone');
+
+type DragzoneProps = ReactUtils.Props<DragzoneData>;
 
 function render (props: DragzoneProps)
 {
-        const className = props.data;
+        const data = props.data;
+        const narrativeId = data.narrativeId;
+        const className = data.className;
         const children = props.children;
 
         return Div({
-                className: className,
+                className,
                 onDragEnter: (e: Event) => e.preventDefault(),
                 onDragOver: (e: Event) => e.preventDefault(),
-                onDrop: onDrop,
+                onDrop: (e: DragEvent) => onDrop(narrativeId, e),
         }, children);
 }
 
 export const Dragzone = ReactUtils.createFactory(render, 'Dragzone');
 
-function onDrop (e: DragEvent)
+function onDrop (narrativeId: string, e: DragEvent)
 {
         e.preventDefault();
 
@@ -40,6 +53,7 @@ function onDrop (e: DragEvent)
 
         const action = ActionCreators.endDrag({
                 id: dragData.id,
+                narrativeId,
                 delta: delta,
         });
 

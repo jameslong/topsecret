@@ -26,6 +26,7 @@ function render (props: EditAreaProps)
 {
         const data = props.data;
         const store = data.store;
+        const narrativeId = store.ui.activeNarrativeId;
         const narrative = Narrative.getActiveNarrative(store);
         const messages = narrative.messagesById;
         const messageList = messages.toList();
@@ -33,7 +34,8 @@ function render (props: EditAreaProps)
         const messageComponents = messageList.map(
                 message => NodeContainer.NodeContainer({
                         key: message.name,
-                        data: message
+                        data: NodeContainer.NodeContainerData({
+                                message, narrativeId })
                 })
         );
 
@@ -50,9 +52,11 @@ function render (props: EditAreaProps)
                 onClick: data.onClick,
         };
 
+        const surfaceProps = { narrativeId };
+
         return Div(editProps,
                 SurfaceSVG.SurfaceSVG(null, connections),
-                Surface.Surface(null, messageComponents)
+                Surface.Surface(narrativeId, messageComponents)
         );
 }
 

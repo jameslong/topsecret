@@ -1,0 +1,539 @@
+import Actions = require('./actions');
+import Config = require('../config');
+import Edge = require('../edge');
+import Immutable = require('immutable');
+import MathUtils = require('../math');
+import Message = require('../message');
+import Narrative = require('../narrative');
+import Redux = require('../redux/redux');
+import State = require('../state');
+
+export function data (
+        state: State.Data, config: Config.Config, action: Redux.Action<any>)
+{
+        switch (action.type) {
+        case Actions.Types.END_DRAG:
+                const endDrag = <Actions.EndDrag><any>action;
+                return handleEndDrag(state, config, endDrag);
+
+        case Actions.Types.SET_ACTIVE_NARRATIVE:
+                const setActive = <Actions.SetActiveNarrative><any>action;
+                return handleSetActiveNarrative(state, config, setActive);
+
+        case Actions.Types.CLOSE_MESSAGE:
+                const close = <Actions.CloseMessage><any>action;
+                return handleCloseMessage(state, config, close);
+
+        case Actions.Types.CREATE_MESSAGE:
+                const create = <Actions.CreateMessage><any>action;
+                return handleCreateMessage(state, config, create);
+
+        case Actions.Types.DELETE_MESSAGE:
+                const deleteMessage = <Actions.DeleteMessage><any>action;
+                return handleDeleteMessage(state, config, deleteMessage);
+
+        case Actions.Types.SELECT_MESSAGE:
+                const select = <Actions.SelectMessage><any>action;
+                return handleSelectMessage(state, config, select);
+
+        case Actions.Types.UNIQUE_SELECT_MESSAGE:
+                const uniqueSelect = <Actions.UniqueSelectMessage><any>action;
+                return handleUniqueSelectMessage(state, config, uniqueSelect);
+
+        case Actions.Types.DESELECT_MESSAGE:
+                const deselect = <Actions.DeselectMessage><any>action;
+                return handleDeselectMessage(state, config, deselect);
+
+        case Actions.Types.DESELECT_ALL_MESSAGES:
+                const deselectAll = <Actions.DeselectAllMessages><any>action;
+                return handleDeselectAllMessages(state, config, deselectAll);
+
+        case Actions.Types.SET_EDITED_MESSAGE_NAME:
+                const setEditedName = <Actions.SetEditedMessageName><any>action;
+                return handleSetEditedMessageName(state, config, setEditedName);
+
+        case Actions.Types.SET_MESSAGE_NAME:
+                const setName = <Actions.SetMessageName><any>action;
+                return handleSetMessageName(state, config, setName);
+
+        case Actions.Types.SET_MESSAGE_SUBJECT:
+                const setSubject = <Actions.SetMessageSubject><any>action;
+                return handleSetMessageSubject(state, config, setSubject);
+
+        case Actions.Types.SET_MESSAGE_END_GAME:
+                const setEndGame = <Actions.SetMessageEndGame><any>action;
+                return handleSetMessageEndGame(state, config, setEndGame);
+
+        case Actions.Types.SET_MESSAGE_ENCRYPTED:
+                const setEncrypted = <Actions.SetMessageEncrypted><any>action;
+                return handleSetMessageEncrypted(state, config, setEncrypted);
+
+        case Actions.Types.SET_MESSAGE_SCRIPT:
+                const setScript = <Actions.SetMessageScript><any>action;
+                return handleSetMessageScript(state, config, setScript);
+
+        case Actions.Types.SET_MESSAGE_POSITION:
+                const setPosition = <Actions.SetMessagePosition><any>action;
+                return handleSetMessagePosition(state, config, setPosition);
+
+        case Actions.Types.SET_MESSAGE_CONTENT:
+                const setContent = <Actions.SetMessageContent><any>action;
+                return handleSetMessageContent(state, config, setContent);
+
+        case Actions.Types.SET_MESSAGE_FALLBACK:
+                const setFallback = <Actions.SetMessageFallback><any>action;
+                return handleSetMessageFallback(state, config, setFallback);
+
+        case Actions.Types.SET_MESSAGE_CHILDREN:
+                const setChildren = <Actions.SetMessageChildren><any>action;
+                return handleSetMessageChildren(state, config, setChildren);
+
+        case Actions.Types.SET_MESSAGE_REPLY_OPTIONS:
+                const setReplyOptions = <Actions.SetMessageReplyOptions><any>action;
+                return handleSetMessageReplyOptions(state, config, setReplyOptions);
+
+        case Actions.Types.SET_STRING:
+                const setString = <Actions.SetString><any>action;
+                return handleSetString(state, config, setString);
+
+        default:
+                return state;
+        }
+}
+
+function handleEndDrag (
+        state: State.Data,
+        config: Config.Config,
+        action: Actions.EndDrag)
+{
+        const gridSize = config.gridSize;
+        const parameters = action.parameters;
+        const name = parameters.id;
+        const delta = parameters.delta;
+        const narrativeId = parameters.narrativeId;
+        const narratives = state.narrativesById;
+        const narrative = narratives.get(narrativeId);
+        const messages = narrative.messagesById;
+        const message = messages.get(name);
+        const selectedMessages = message.selected ?
+                messages.filter(message => message.selected) :
+                Immutable.Map<string, Message.Message>(
+                        [[message.name, message]]);
+
+        const updatedMessages = <Message.Messages>selectedMessages.map(
+                message => updatePosition(delta, gridSize, message));
+        const newMessages = messages.merge(updatedMessages);
+        const newNarrative = narrative.set('messagesById', newMessages);
+        const newNarratives = narratives.set(newNarrative.name, newNarrative);
+        const newEdges = Edge.createEdges(newMessages, config.vertexSize);
+
+        return State.Data({
+                narrativesById: newNarratives,
+                edges: newEdges,
+                nameScratchpad: state.nameScratchpad,
+        });
+}
+
+function updatePosition (
+        delta: MathUtils.Coord,
+        gridSize: number,
+        message: Message.Message)
+{
+        const position = message.position;
+        const newX = position.x + delta.x;
+        const newY = position.y + delta.y;
+        const roundedX = roundToNearestMultiple(gridSize, newX);
+        const roundedY = roundToNearestMultiple(gridSize, newY);
+
+        const newPosition = MathUtils.Coord({
+                x: roundedX,
+                y: roundedY,
+        });
+
+        return message.set('position', newPosition);
+}
+
+function roundToNearestMultiple (multiple: number, value: number)
+{
+        const diff = value % multiple;
+        return (diff <= multiple / 2) ?
+                value - diff :
+                value + multiple - diff;
+}
+
+function handleSetActiveNarrative (
+        state: State.Data,
+        config: Config.Config,
+        action: Actions.SetActiveNarrative)
+{
+        const name = action.parameters;
+        const narrative = state.narrativesById.get(name);
+        const messages = narrative.messagesById;
+        const newEdges = Edge.createEdges(messages, config.vertexSize);
+        const newScratchpad = Immutable.Map<string, string>();
+        return state.set('edges', newEdges).set('nameScratchpad', newScratchpad);
+}
+
+function handleCloseMessage (
+        state: State.Data,
+        config: Config.Config,
+        action: Actions.CloseMessage)
+{
+        const narrativeId = action.parameters;
+        return onNarrativeUpdate(state, narrativeId, config);
+}
+
+function onNarrativeUpdate (
+        data: State.Data, narrativeId: string, config: Config.Config)
+{
+        const narratives = data.narrativesById;
+        const narrative = narratives.get(narrativeId);
+        const messages = narrative.messagesById;
+        const newMessages = Message.markMessagesValid(
+                messages, narrative.stringsById, narrative.profilesById);
+        const newNarrative = narrative.set('messagesById', newMessages);
+        const newNarratives = narratives.set(narrativeId, newNarrative);
+
+        const newEdges = Edge.createEdges(newMessages, config.vertexSize);
+        return data.set('edges', newEdges).set('narrativesById', newNarratives);
+}
+
+function handleCreateMessage (
+        state: State.Data,
+        config: Config.Config,
+        action: Actions.CreateMessage)
+{
+        const narrativeId = action.parameters;
+        const narratives = state.narrativesById;
+        const narrative = narratives.get(narrativeId);
+        const messages = narrative.messagesById;
+        const name = Message.createUniqueMessageName(messages);
+        const newPosition = getCentrePosition();
+        const newMessage = Message.Message()
+                .set('position', newPosition)
+                .set('name', name);
+        const newMessages = messages.set(name, newMessage);
+        const newNarrative = narrative.set('messagesById', newMessages);
+        const newNarratives = narratives.set(narrative.name, newNarrative);
+        return state.set('narrativesById', newNarratives);
+}
+
+function getCentrePosition ()
+{
+        const scrollX = window.scrollX;
+        const scrollY = window.scrollY
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        const centreX = Math.round(scrollX + (width / 2));
+        const centreY = Math.round(scrollY + (height / 2));
+
+        return MathUtils.Coord({
+                x: centreX,
+                y: centreY,
+        });
+}
+
+function handleDeleteMessage (
+        state: State.Data,
+        config: Config.Config,
+        action: Actions.DeleteMessage)
+{
+        const parameters = action.parameters;
+        const name = parameters.name;
+        const narrativeId = parameters.narrativeId;
+        const narratives = state.narrativesById;
+        const narrative = narratives.get(narrativeId);
+
+        const newMessages = narrative.messagesById.delete(name);
+        const newNarrative = narrative.set('messagesById', newMessages);
+        const newNarratives = narratives.set(narrative.name, newNarrative);
+        const newData = state.set('narrativesById', newNarratives);
+
+        return onNarrativeUpdate(newData, narrativeId, config);
+}
+
+function handleSelectMessage (
+        state: State.Data,
+        config: Config.Config,
+        action: Actions.SelectMessage)
+{
+        const parameters = action.parameters;
+        const name = parameters.name;
+        const narrativeId = parameters.narrativeId;
+        const narratives = state.narrativesById;
+        const narrative = narratives.get(narrativeId);
+        const messages = narrative.messagesById;
+
+        const message = messages.get(name);
+        const newMessage = message.set('selected', true);
+        const newMessages = messages.set(name, newMessage);
+        const newNarrative = narrative.set('messagesById', newMessages);
+        const newNarratives = narratives.set(newNarrative.name, newNarrative);
+
+        return state.set('narrativesById', newNarratives);
+}
+
+function handleUniqueSelectMessage (
+        state: State.Data,
+        config: Config.Config,
+        action: Actions.UniqueSelectMessage)
+{
+        const parameters = action.parameters;
+        const name = parameters.name;
+        const narrativeId = parameters.narrativeId;
+        const narratives = state.narrativesById;
+        const narrative = narratives.get(narrativeId);
+        const messages = <Immutable.Map<string, Message.Message>>narrative.messagesById.map(message =>
+                message.set('selected', false));
+
+        const message = messages.get(name);
+        const newMessage = message.set('selected', true);
+        const newMessages = messages.set(name, newMessage);
+        const newNarrative = narrative.set('messagesById', newMessages);
+        const newNarratives = narratives.set(newNarrative.name, newNarrative);
+
+        return state.set('narrativesById', newNarratives);
+}
+
+function handleDeselectMessage (
+        state: State.Data,
+        config: Config.Config,
+        action: Actions.DeselectMessage)
+{
+        const parameters = action.parameters;
+        const name = parameters.name;
+        const narrativeId = parameters.narrativeId;
+        const narratives = state.narrativesById;
+        const narrative = narratives.get(narrativeId);
+
+        const messages = narrative.messagesById;
+        const message = messages.get(name);
+        const updatedMessage = message.set('selected', false);
+        const updatedMessages = messages.set(updatedMessage.name, updatedMessage);
+        const newNarrative = narrative.set('messagesById', updatedMessages);
+        const newNarratives = narratives.set(newNarrative.name, newNarrative);
+
+        const newScratchpad = state.nameScratchpad.filter(
+                (newName, current) => name === current);
+
+        return state.set('narrativesById', newNarratives)
+                .set('nameScratchpad', newScratchpad);
+}
+
+function handleDeselectAllMessages (
+        state: State.Data,
+        config: Config.Config,
+        action: Actions.DeselectAllMessages)
+{
+        const narrativeId = action.parameters;
+        const narratives = state.narrativesById;
+        const narrative = narratives.get(narrativeId);
+        const messages = narrative.messagesById;
+        const updatedMessages = messages.map(message =>
+                message.set('selected', false));
+        const newNarrative = narrative.set('messagesById', updatedMessages);
+        const newNarratives = narratives.set(newNarrative.name, newNarrative);
+
+        const newScratchpad = Immutable.Map<string, string>();
+
+        return state.set('narrativesById', newNarratives)
+                .set('nameScratchpad', newScratchpad);
+}
+
+function handleSetEditedMessageName (
+        state: State.Data,
+        config: Config.Config,
+        action: Actions.SetEditedMessageName)
+{
+        const parameters = action.parameters;
+        const name = parameters.name;
+        const newName = parameters.value;
+
+        const scratchpad = state.nameScratchpad;
+        const newScratchpad = scratchpad.set(name, newName);
+        return state.set('nameScratchpad', newScratchpad);
+}
+
+function handleSetMessageName (
+        state: State.Data,
+        config: Config.Config,
+        action: Actions.SetMessageName)
+{
+        const parameters = action.parameters;
+        const name = parameters.name;
+        const newName = parameters.value;
+        const narrativeId = parameters.narrativeId;
+        const narratives = state.narrativesById;
+        const narrative = narratives.get(narrativeId);
+
+        const messages = narrative.messagesById;
+        const message = messages.get(name);
+        const newMessage = message.set('name', newName);
+        const newMessages =
+                messages.set(newName, newMessage).delete(name);
+        const newNarrative = narrative.set('messagesById', newMessages);
+        const newNarratives = narratives.set(narrative.name, newNarrative);
+
+        return state.set('narrativesById', newNarratives)
+}
+
+function setMessageProperty (
+        name: string,
+        propertyName: string,
+        propertyValue: any,
+        narrativeId: string,
+        data: State.Data)
+{
+        const narratives = data.narrativesById;
+        const narrative = narratives.get(narrativeId);
+        const messages = narrative.messagesById;
+        const message = messages.get(name);
+        const newMessage = message.set(propertyName, propertyValue);
+        const newMessages = messages.set(name, newMessage);
+        const newNarrative = narrative.set('messagesById', newMessages);
+        const newNarratives = narratives.set(newNarrative.name, newNarrative);
+        return data.set('narrativesById', newNarratives);
+}
+
+function handleSetMessageSubject (
+        state: State.Data,
+        config: Config.Config,
+        action: Actions.SetMessageSubject)
+{
+        const parameters = action.parameters;
+        return setMessageProperty(
+                parameters.name,
+                'threadSubject',
+                parameters.value,
+                parameters.narrativeId,
+                state);
+}
+
+function handleSetMessageEndGame (
+        state: State.Data,
+        config: Config.Config,
+        action: Actions.SetMessageEndGame)
+{
+        const parameters = action.parameters;
+        return setMessageProperty(
+                parameters.name,
+                'endGame',
+                parameters.value,
+                parameters.narrativeId,
+                state);
+}
+
+function handleSetMessageEncrypted (
+        state: State.Data,
+        config: Config.Config,
+        action: Actions.SetMessageEncrypted)
+{
+        const parameters = action.parameters;
+        return setMessageProperty(
+                parameters.name,
+                'encrypted',
+                parameters.value,
+                parameters.narrativeId,
+                state);
+}
+
+function handleSetMessageScript (
+        state: State.Data,
+        config: Config.Config,
+        action: Actions.SetMessageScript)
+{
+        const parameters = action.parameters;
+        return setMessageProperty(
+                parameters.name,
+                'script',
+                parameters.value,
+                parameters.narrativeId,
+                state);
+}
+
+function handleSetMessagePosition (
+        state: State.Data,
+        config: Config.Config,
+        action: Actions.SetMessagePosition)
+{
+        const parameters = action.parameters;
+        return setMessageProperty(
+                parameters.name,
+                'position',
+                parameters.value,
+                parameters.narrativeId,
+                state);
+}
+
+function handleSetMessageContent (
+        state: State.Data,
+        config: Config.Config,
+        action: Actions.SetMessageContent)
+{
+        const parameters = action.parameters;
+        return setMessageProperty(
+                parameters.name,
+                'message',
+                parameters.value,
+                parameters.narrativeId,
+                state);
+}
+
+function handleSetMessageFallback (
+        state: State.Data,
+        config: Config.Config,
+        action: Actions.SetMessageFallback)
+{
+        const parameters = action.parameters;
+        return setMessageProperty(
+                parameters.name,
+                'fallback',
+                parameters.value,
+                parameters.narrativeId,
+                state);
+}
+
+function handleSetMessageChildren (
+        state: State.Data,
+        config: Config.Config,
+        action: Actions.SetMessageChildren)
+{
+        const parameters = action.parameters;
+        return setMessageProperty(
+                parameters.name,
+                'children',
+                parameters.value,
+                parameters.narrativeId,
+                state);
+}
+function handleSetMessageReplyOptions (
+        state: State.Data,
+        config: Config.Config,
+        action: Actions.SetMessageReplyOptions)
+{
+        const parameters = action.parameters;
+        return setMessageProperty(
+                parameters.name,
+                'replyOptions',
+                parameters.value,
+                parameters.narrativeId,
+                state);
+}
+
+function handleSetString (
+        state: State.Data,
+        config: Config.Config,
+        action: Actions.SetString)
+{
+        const parameters = action.parameters;
+        const name = parameters.name;
+        const value = parameters.value;
+        const narrativeId = parameters.narrativeId;
+        const narratives = state.narrativesById;
+        const narrative = narratives.get(narrativeId);
+        const strings = narrative.stringsById;
+        const newStrings = strings.set(name, value);
+        const newNarrative = narrative.set('stringsById', newStrings);
+        const newNarratives = narratives.set(newNarrative.name, newNarrative);
+        return state.set('narrativesById', newNarratives);
+}

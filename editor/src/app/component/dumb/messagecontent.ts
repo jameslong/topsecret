@@ -8,13 +8,13 @@ import TextInputValidated = require('../textinputvalidated');
 import Core = require('../core');
 import Div = Core.Div;
 import EditMessage = require('./editmessage');
-import EditMessageContainer = require('../smart/editmessagecontainer');
 import Multiple = require('./multiple');
 import Passage = require('./passage');
 import TextComponent = require('./text');
 import TextList = require('./textlist');
 
 type OnSet = (content: Message.MessageContent) => void;
+type OnSetString = (name: string, value: string) => void;
 
 interface MessageContentInt {
         message: Message.MessageContent;
@@ -22,6 +22,7 @@ interface MessageContentInt {
         strings: Narrative.Strings;
         name: string;
         onSet: OnSet;
+        onSetString: OnSetString;
 };
 export type MessageContentData = Immutable.Record.IRecord<MessageContentInt>;
 export const MessageContentData = Immutable.Record<MessageContentInt>({
@@ -30,6 +31,7 @@ export const MessageContentData = Immutable.Record<MessageContentInt>({
         strings: Immutable.Map<string, string>(),
         name: '',
         onSet: () => {},
+        onSetString: () => {},
 }, 'MessageContent');
 
 type MessageContentProps = ReactUtils.Props<MessageContentData>;
@@ -38,13 +40,14 @@ function render (props: MessageContentProps)
 {
         const data = props.data;
         const onSet = data.onSet;
+        const onSetString = data.onSetString;
         const message = data.message;
         const profiles = data.profiles;
         const strings = data.strings;
 
         const from = createFrom(onSet, message, profiles)
         const to = createTo(onSet, message, profiles)
-        const body = createBody(onSet, message, strings);
+        const body = createBody(onSet, onSetString, message, strings);
 
         return Div({},
                 EditMessage.wrapInSubgroup(from),
@@ -106,6 +109,7 @@ function onRemovePassage (
 
 function createBody (
         onSet: OnSet,
+        onSetString: OnSetString,
         content: Message.MessageContent,
         strings: Narrative.Strings)
 {
@@ -115,8 +119,7 @@ function createBody (
                 const onSetName = (newName: string) =>
                         onSetPassage(onSet, content, newName, index);
 
-                const onSetBody = (value: string) =>
-                        EditMessageContainer.onSetString(name, value);
+                const onSetBody = (value: string) => onSetString(name, value);
 
                 const props = Passage.PassageData({
                         onSetName: onSetName,

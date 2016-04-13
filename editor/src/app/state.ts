@@ -6,23 +6,23 @@ import Narrative = require('./narrative');
 interface UIInt {
         activeNarrativeId: string;
         activeMessageId: string;
-        nameScratchpad: Narrative.Strings;
 };
 export type UI = Immutable.Record.IRecord<UIInt>;
 export const UI = Immutable.Record<UIInt>({
         activeNarrativeId: '',
         activeMessageId: '',
-        nameScratchpad: Immutable.Map<string, string>(),
 }, 'UI');
 
 interface DataInt {
         narrativesById: Narrative.Narratives;
         edges: Edge.Edges;
+        nameScratchpad: Narrative.Strings;
 };
 export type Data = Immutable.Record.IRecord<DataInt>;
 export const Data = Immutable.Record<DataInt>({
         narrativesById: Immutable.Map<string, Narrative.Narrative>(),
         edges: Immutable.List<Edge.Edge>(),
+        nameScratchpad: Immutable.Map<string, string>(),
 }, 'Data');
 
 interface StoreInt {

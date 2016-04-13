@@ -36,40 +36,82 @@ export const Types = {
 
 export interface NameValueParameters<T> {
         name: string;
+        narrativeId: string;
         value: T;
 }
-export interface NameValueAction<T> extends Redux.Action<NameValueParameters<T>> {}
 
 export interface Undo extends Redux.Action<void> {}
 export interface Redo extends Redux.Action<void> {}
 export interface Save extends Redux.Action<void> {}
-export interface SetGameData extends Redux.Action<Narrative.Narratives> {}
+export type SetGameDataParams = Narrative.Narratives;
+export interface SetGameData extends Redux.Action<SetGameDataParams> {}
 
-export interface EndDragParameters {
+export interface EndDragParams {
         id: string;
         delta: MathUtils.Coord;
+        narrativeId: string;
 }
-export interface EndDrag extends Redux.Action<EndDragParameters> {}
-export interface SetActiveNarrative extends Redux.Action<string> {}
-export interface OpenMessage extends Redux.Action<string> {}
-export interface CloseMessage extends Redux.Action<void> {}
-export interface CreateMessage extends Redux.Action<void> {}
-export interface DeleteMessage extends Redux.Action<string> {}
-export interface SelectMessage extends Redux.Action<string> {}
-export interface UniqueSelectMessage extends Redux.Action<string> {}
-export interface DeselectMessage extends Redux.Action<string> {}
-export interface DeselectAllMessages extends Redux.Action<void> {}
+export interface EndDrag extends Redux.Action<EndDragParams> {}
 
-export interface SetEditedMessageName extends NameValueAction<string> {}
-export interface SetMessageName extends NameValueAction<void> {}
-export interface SetMessageSubject extends NameValueAction<string> {}
-export interface SetMessageEndGame extends NameValueAction<boolean> {}
-export interface SetMessageEncrypted extends NameValueAction<boolean> {}
-export interface SetMessageScript extends NameValueAction<string> {}
-export interface SetMessagePosition extends NameValueAction<MathUtils.Coord> {}
-export interface SetMessageContent extends NameValueAction<Message.MessageContent> {}
-export interface SetMessageFallback extends NameValueAction<MessageDelay.MessageDelay> {}
-export interface SetMessageChildren extends NameValueAction<Immutable.List<MessageDelay.MessageDelay>> {}
-export interface SetMessageReplyOptions extends NameValueAction<Immutable.List<ReplyOption.ReplyOption>> {}
+export type SetActiveNarrativeParams = string;
+export interface SetActiveNarrative extends Redux.Action<SetActiveNarrativeParams> {}
 
-export interface SetString extends NameValueAction<string> {}
+export type OpenMessageParams = string;
+export interface OpenMessage extends Redux.Action<OpenMessageParams> {}
+
+export type CloseMessageParams = string;
+export interface CloseMessage extends Redux.Action<CloseMessageParams> {}
+
+export type CreateMessageParams = string;
+export interface CreateMessage extends Redux.Action<CreateMessageParams> {}
+
+export type DeleteMessageParams = { name: string; narrativeId: string };
+export interface DeleteMessage extends Redux.Action<DeleteMessageParams> {}
+
+export type SelectMessageParams = { name: string; narrativeId: string };
+export interface SelectMessage extends Redux.Action<SelectMessageParams> {}
+
+export type UniqueSelectMessageParams = { name: string; narrativeId: string };
+export interface UniqueSelectMessage extends Redux.Action<UniqueSelectMessageParams> {}
+
+export type DeselectMessageParams = { name: string; narrativeId: string };
+export interface DeselectMessage extends Redux.Action<DeselectMessageParams> {}
+
+export type DeselectAllMessagesParams = string;
+export interface DeselectAllMessages extends Redux.Action<DeselectAllMessagesParams> {}
+
+export type SetEditedMessageNameParams = NameValueParameters<string>;
+export interface SetEditedMessageName extends Redux.Action<SetEditedMessageNameParams> {}
+
+export type SetMessageNameParams = NameValueParameters<string>;
+export interface SetMessageName extends Redux.Action<SetMessageNameParams> {}
+
+export type SetMessageSubjectParams = NameValueParameters<string>;
+export interface SetMessageSubject extends Redux.Action<SetMessageSubjectParams> {}
+
+export type SetMessageEndGameParams = NameValueParameters<boolean>;
+export interface SetMessageEndGame extends Redux.Action<SetMessageEndGameParams> {}
+
+export type SetMessageEncryptedParams = NameValueParameters<boolean>;
+export interface SetMessageEncrypted extends Redux.Action<SetMessageEncryptedParams> {}
+
+export type SetMessageScriptParams = NameValueParameters<string>;
+export interface SetMessageScript extends Redux.Action<SetMessageScriptParams> {}
+
+export type SetMessagePositionParams = NameValueParameters<MathUtils.Coord>;
+export interface SetMessagePosition extends Redux.Action<SetMessagePositionParams> {}
+
+export type SetMessageContentParams = NameValueParameters<Message.MessageContent>;
+export interface SetMessageContent extends Redux.Action<SetMessageContentParams> {}
+
+export type SetMessageFallbackParams = NameValueParameters<MessageDelay.MessageDelay>;
+export interface SetMessageFallback extends Redux.Action<SetMessageFallbackParams> {}
+
+export type SetMessageChildrenParams = NameValueParameters<Immutable.List<MessageDelay.MessageDelay>>;
+export interface SetMessageChildren extends Redux.Action<SetMessageChildrenParams> {}
+
+export type SetMessageReplyOptionsParams = NameValueParameters<Immutable.List<ReplyOption.ReplyOption>>;
+export interface SetMessageReplyOptions extends Redux.Action<SetMessageReplyOptionsParams> {}
+
+export type SetStringParams = NameValueParameters<string>;
+export interface SetString extends Redux.Action<SetStringParams> {}

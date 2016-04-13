@@ -10,12 +10,14 @@ import ReplyOptions = require('../dumb/replyoptions');
 
 interface ReplyOptionsContainerInt {
         name: string;
+        narrativeId: string;
         replyOptions: ReplyOption.ReplyOptions;
         messages: Message.Messages;
 };
 export type ReplyOptionsContainerData = Immutable.Record.IRecord<ReplyOptionsContainerInt>;
 export const ReplyOptionsContainerData = Immutable.Record<ReplyOptionsContainerInt>({
         name: '',
+        narrativeId: '',
         replyOptions: Immutable.List<ReplyOption.ReplyOption>(),
         messages: Immutable.Map<string, Message.Message>(),
 }, 'ReplyOptionsContainer');
@@ -26,13 +28,14 @@ function render (props: ReplyOptionsContainerProps)
 {
         const data = props.data;
         const name = data.name;
+        const narrativeId = data.narrativeId;
 
         const replyOptionsData = ReplyOptions.ReplyOptionsData({
                 name: name,
                 replyOptions: data.replyOptions,
                 messages: data.messages,
                 onSet: (options: ReplyOption.ReplyOptions) =>
-                        setReplyOptions(name, options),
+                        setReplyOptions(narrativeId, name, options),
         });
         return ReplyOptions.ReplyOptions(replyOptionsData);
 }
@@ -40,9 +43,13 @@ function render (props: ReplyOptionsContainerProps)
 export const ReplyOptionsContainer =
         ReactUtils.createFactory(render, 'ReplyOptionsContainer');
 
-function setReplyOptions (name: string, replyOptions: ReplyOption.ReplyOptions)
+function setReplyOptions (
+        narrativeId: string,
+        name: string,
+        replyOptions: ReplyOption.ReplyOptions)
 {
         const action = ActionCreators.setMessageReplyOptions({
+                narrativeId,
                 name: name,
                 value: replyOptions,
         });
