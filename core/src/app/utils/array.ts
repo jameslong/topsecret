@@ -22,6 +22,11 @@ export function push<T>(array: T[], value: T)
         return array.concat([value]);
 }
 
+export function unshift<T>(array: T[], value: T)
+{
+        return [value].concat(array);
+}
+
 export function remove<T>(array: T[], value: T)
 {
         return array.filter(element => element !== value);

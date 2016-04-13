@@ -105,7 +105,7 @@ export function storeMessage (
         data: Data, message: Message.Message, folderId: string)
 {
         const messageIds = data.messageIdsByFolderId[folderId];
-        const newMessageIds = Arr.push(messageIds, message.id);
+        const newMessageIds = Arr.unshift(messageIds, message.id);
         const messageIdsByFolderId = Map.set(
                 data.messageIdsByFolderId, folderId, newMessageIds);
         const messagesById = Map.set(
