@@ -2,6 +2,10 @@
         width: 100%;
 }
 
+.selectable-rows td {
+        padding: 0 0.25rem;
+}
+
 .selectable-rows-highlighted {
         color: var(--unread-font-colour);
 }
