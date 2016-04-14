@@ -1,18 +1,9 @@
-import Immutable = require('immutable');
 import MathUtils = require('./math');
 
-interface ConfigInt {
+export interface Config {
         serverURL: string;
         autosaveDelayms: number;
         maxUndos: number;
         gridSize: number;
         vertexSize: MathUtils.Coord;
 }
-export type Config = Immutable.Record.IRecord<ConfigInt>;
-export const Config = Immutable.Record<ConfigInt>({
-        serverURL: '',
-        autosaveDelayms: 0,
-        maxUndos: 0,
-        gridSize: 0,
-        vertexSize: MathUtils.Coord(),
-}, 'Config');

@@ -107,10 +107,10 @@ export interface SetMessageContent extends Redux.Action<SetMessageContentParams>
 export type SetMessageFallbackParams = NameValueParameters<MessageDelay.MessageDelay>;
 export interface SetMessageFallback extends Redux.Action<SetMessageFallbackParams> {}
 
-export type SetMessageChildrenParams = NameValueParameters<Immutable.List<MessageDelay.MessageDelay>>;
+export type SetMessageChildrenParams = NameValueParameters<MessageDelay.MessageDelay[]>;
 export interface SetMessageChildren extends Redux.Action<SetMessageChildrenParams> {}
 
-export type SetMessageReplyOptionsParams = NameValueParameters<Immutable.List<ReplyOption.ReplyOption>>;
+export type SetMessageReplyOptionsParams = NameValueParameters<ReplyOption.ReplyOption[]>;
 export interface SetMessageReplyOptions extends Redux.Action<SetMessageReplyOptionsParams> {}
 
 export type SetStringParams = NameValueParameters<string>;

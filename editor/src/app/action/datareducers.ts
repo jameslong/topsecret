@@ -1,7 +1,8 @@
 import Actions = require('./actions');
 import Config = require('../config');
 import Edge = require('../edge');
-import Immutable = require('immutable');
+import Helpers = require('./../../../../core/src/app/utils/helpers');
+import Map = require('./../../../../core/src/app/utils/map');
 import MathUtils = require('../math');
 import Message = require('../message');
 import Narrative = require('../narrative');
@@ -112,25 +113,25 @@ function handleEndDrag (
         const delta = parameters.delta;
         const narrativeId = parameters.narrativeId;
         const narratives = state.narrativesById;
-        const narrative = narratives.get(narrativeId);
+        const narrative = narratives[narrativeId];
         const messages = narrative.messagesById;
-        const message = messages.get(name);
-        const selectedMessages = message.selected ?
-                messages.filter(message => message.selected) :
-                Immutable.Map<string, Message.Message>(
-                        [[message.name, message]]);
+        const message = messages[name];
+        const selectedMessages: Map.Map<Message.Message> = message.selected ?
+                Map.filter(messages, message => message.selected) :
+                { [message.name]: message };
 
-        const updatedMessages = <Message.Messages>selectedMessages.map(
+        const updatedMessages = Map.map(selectedMessages,
                 message => updatePosition(delta, gridSize, message));
-        const newMessages = messages.merge(updatedMessages);
-        const newNarrative = narrative.set('messagesById', newMessages);
-        const newNarratives = narratives.set(newNarrative.name, newNarrative);
+        const newMessages = Helpers.assign(messages, updatedMessages);
+        const newNarrative = Helpers.assign(narrative,
+                { messagesById: newMessages });
+        const newNarratives = Helpers.assign(narratives,
+                { [newNarrative.name]: newNarrative });
         const newEdges = Edge.createEdges(newMessages, config.vertexSize);
 
-        return State.Data({
+        return Helpers.assign(state, {
                 narrativesById: newNarratives,
                 edges: newEdges,
-                nameScratchpad: state.nameScratchpad,
         });
 }
 
@@ -145,12 +146,12 @@ function updatePosition (
         const roundedX = roundToNearestMultiple(gridSize, newX);
         const roundedY = roundToNearestMultiple(gridSize, newY);
 
-        const newPosition = MathUtils.Coord({
+        const newPosition = {
                 x: roundedX,
                 y: roundedY,
-        });
+        };
 
-        return message.set('position', newPosition);
+        return Helpers.assign(message, { position: newPosition });
 }
 
 function roundToNearestMultiple (multiple: number, value: number)
@@ -167,11 +168,14 @@ function handleSetActiveNarrative (
         action: Actions.SetActiveNarrative)
 {
         const name = action.parameters;
-        const narrative = state.narrativesById.get(name);
+        const narrative = state.narrativesById[name];
         const messages = narrative.messagesById;
         const newEdges = Edge.createEdges(messages, config.vertexSize);
-        const newScratchpad = Immutable.Map<string, string>();
-        return state.set('edges', newEdges).set('nameScratchpad', newScratchpad);
+        const newScratchpad: Map.Map<string> = {};
+        return Helpers.assign(state, {
+                edges: newEdges,
+                nameScratchpad: newScratchpad,
+        });
 }
 
 function handleCloseMessage (
@@ -187,15 +191,20 @@ function onNarrativeUpdate (
         data: State.Data, narrativeId: string, config: Config.Config)
 {
         const narratives = data.narrativesById;
-        const narrative = narratives.get(narrativeId);
+        const narrative = narratives[narrativeId];
         const messages = narrative.messagesById;
         const newMessages = Message.markMessagesValid(
                 messages, narrative.stringsById, narrative.profilesById);
-        const newNarrative = narrative.set('messagesById', newMessages);
-        const newNarratives = narratives.set(narrativeId, newNarrative);
+        const newNarrative = Helpers.assign(narrative, {
+                messagesById: newMessages });
+        const newNarratives = Helpers.assign(narratives, {
+                [narrativeId]: newNarrative });
 
         const newEdges = Edge.createEdges(newMessages, config.vertexSize);
-        return data.set('edges', newEdges).set('narrativesById', newNarratives);
+        return Helpers.assign(data, {
+                edges: newEdges,
+                narrativesById: newNarratives,
+        });
 }
 
 function handleCreateMessage (
@@ -205,20 +214,39 @@ function handleCreateMessage (
 {
         const narrativeId = action.parameters;
         const narratives = state.narrativesById;
-        const narrative = narratives.get(narrativeId);
+        const narrative = narratives[narrativeId];
         const messages = narrative.messagesById;
         const name = Message.createUniqueMessageName(messages);
-        const newPosition = getCentrePosition();
-        const newMessage = Message.Message()
-                .set('position', newPosition)
-                .set('name', name);
-        const newMessages = messages.set(name, newMessage);
-        const newNarrative = narrative.set('messagesById', newMessages);
-        const newNarratives = narratives.set(narrative.name, newNarrative);
-        return state.set('narrativesById', newNarratives);
+        const position = getCentrePosition();
+        const newMessage: Message.Message = {
+                name,
+                threadSubject: '',
+                position,
+                endGame: false,
+                message: {
+                        from: '',
+                        to: [],
+                        body: [],
+                },
+                encrypted: true,
+                script: '',
+                receiver: null,
+                replyOptions: [],
+                children: [],
+                fallback: null,
+                selected: false,
+                valid: false,
+
+        };
+        const newMessages = Helpers.assign(messages, { [name]: newMessage });
+        const newNarrative = Helpers.assign(narrative,
+                { messagesById: newMessages });
+        const newNarratives = Helpers.assign(narratives,
+                { [newNarrative.name]: newNarrative });
+        return Helpers.assign(state, { narrativesById: newNarratives });
 }
 
-function getCentrePosition ()
+function getCentrePosition (): MathUtils.Coord
 {
         const scrollX = window.scrollX;
         const scrollY = window.scrollY
@@ -227,10 +255,10 @@ function getCentrePosition ()
         const centreX = Math.round(scrollX + (width / 2));
         const centreY = Math.round(scrollY + (height / 2));
 
-        return MathUtils.Coord({
+        return {
                 x: centreX,
                 y: centreY,
-        });
+        };
 }
 
 function handleDeleteMessage (
@@ -242,12 +270,14 @@ function handleDeleteMessage (
         const name = parameters.name;
         const narrativeId = parameters.narrativeId;
         const narratives = state.narrativesById;
-        const narrative = narratives.get(narrativeId);
+        const narrative = narratives[narrativeId];
 
-        const newMessages = narrative.messagesById.delete(name);
-        const newNarrative = narrative.set('messagesById', newMessages);
-        const newNarratives = narratives.set(narrative.name, newNarrative);
-        const newData = state.set('narrativesById', newNarratives);
+        const newMessages = Map.remove(narrative.messagesById, name);
+        const newNarrative = Helpers.assign(narrative,
+                { messagesById: newMessages });
+        const newNarratives = Helpers.assign(narratives,
+                { [newNarrative.name]: newNarrative });
+        const newData = Helpers.assign(state, { narrativesById: newNarratives });
 
         return onNarrativeUpdate(newData, narrativeId, config);
 }
@@ -261,16 +291,18 @@ function handleSelectMessage (
         const name = parameters.name;
         const narrativeId = parameters.narrativeId;
         const narratives = state.narrativesById;
-        const narrative = narratives.get(narrativeId);
+        const narrative = narratives[narrativeId];
         const messages = narrative.messagesById;
 
-        const message = messages.get(name);
-        const newMessage = message.set('selected', true);
-        const newMessages = messages.set(name, newMessage);
-        const newNarrative = narrative.set('messagesById', newMessages);
-        const newNarratives = narratives.set(newNarrative.name, newNarrative);
+        const message = messages[name];
+        const newMessage = Helpers.assign(message, { selected: true });
+        const newMessages = Helpers.assign(messages, { [name]: newMessage });
+        const newNarrative = Helpers.assign(narrative,
+                { messagesById: newMessages });
+        const newNarratives = Helpers.assign(narratives,
+                { [newNarrative.name]: newNarrative });
 
-        return state.set('narrativesById', newNarratives);
+        return Helpers.assign(state, { narrativesById: newNarratives });
 }
 
 function handleUniqueSelectMessage (
@@ -282,17 +314,18 @@ function handleUniqueSelectMessage (
         const name = parameters.name;
         const narrativeId = parameters.narrativeId;
         const narratives = state.narrativesById;
-        const narrative = narratives.get(narrativeId);
-        const messages = <Immutable.Map<string, Message.Message>>narrative.messagesById.map(message =>
-                message.set('selected', false));
+        const narrative = narratives[narrativeId];
+        const messages = Map.map(narrative.messagesById, message =>
+                Helpers.assign(message, { selected: false }));
 
-        const message = messages.get(name);
-        const newMessage = message.set('selected', true);
-        const newMessages = messages.set(name, newMessage);
-        const newNarrative = narrative.set('messagesById', newMessages);
-        const newNarratives = narratives.set(newNarrative.name, newNarrative);
+        const message = messages[name];
+        const newMessage = Helpers.assign(message, { selected: true });
+        const newMessages = Helpers.assign(messages, { [name]: newMessage });
+        const newNarrative = Helpers.assign(narrative, { messagesById: newMessages });
+        const newNarratives = Helpers.assign(narratives,
+                { [newNarrative.name]: newNarrative });
 
-        return state.set('narrativesById', newNarratives);
+        return Helpers.assign(state, { narrativesById: newNarratives });
 }
 
 function handleDeselectMessage (
@@ -304,20 +337,25 @@ function handleDeselectMessage (
         const name = parameters.name;
         const narrativeId = parameters.narrativeId;
         const narratives = state.narrativesById;
-        const narrative = narratives.get(narrativeId);
+        const narrative = narratives[narrativeId];
 
         const messages = narrative.messagesById;
-        const message = messages.get(name);
-        const updatedMessage = message.set('selected', false);
-        const updatedMessages = messages.set(updatedMessage.name, updatedMessage);
-        const newNarrative = narrative.set('messagesById', updatedMessages);
-        const newNarratives = narratives.set(newNarrative.name, newNarrative);
+        const message = messages[name];
+        const updatedMessage = Helpers.assign(message, { selected: false });
+        const updatedMessages = Helpers.assign(messages,
+                { [updatedMessage.name]: updatedMessage });
+        const newNarrative = Helpers.assign(narrative,
+                { messagesById: updatedMessages });
+        const newNarratives = Helpers.assign(narratives,
+                { [newNarrative.name]: newNarrative });
 
-        const newScratchpad = state.nameScratchpad.filter(
+        const newScratchpad = Map.filter(state.nameScratchpad,
                 (newName, current) => name === current);
 
-        return state.set('narrativesById', newNarratives)
-                .set('nameScratchpad', newScratchpad);
+        return Helpers.assign(state, {
+                narrativesById: newNarratives,
+                nameScratchpad: newScratchpad,
+        });
 }
 
 function handleDeselectAllMessages (
@@ -327,17 +365,21 @@ function handleDeselectAllMessages (
 {
         const narrativeId = action.parameters;
         const narratives = state.narrativesById;
-        const narrative = narratives.get(narrativeId);
+        const narrative = narratives[narrativeId];
         const messages = narrative.messagesById;
-        const updatedMessages = messages.map(message =>
-                message.set('selected', false));
-        const newNarrative = narrative.set('messagesById', updatedMessages);
-        const newNarratives = narratives.set(newNarrative.name, newNarrative);
+        const updatedMessages = Map.map(messages, message =>
+                Helpers.assign(message, { selected: false }));
+        const newNarrative = Helpers.assign(narrative,
+                { messagesById: updatedMessages });
+        const newNarratives = Helpers.assign(narratives,
+                { [newNarrative.name]: newNarrative });
 
-        const newScratchpad = Immutable.Map<string, string>();
+        const newScratchpad: Map.Map<string> = {};
 
-        return state.set('narrativesById', newNarratives)
-                .set('nameScratchpad', newScratchpad);
+        return Helpers.assign(state, {
+                narrativesById: newNarratives,
+                nameScratchpad: newScratchpad,
+        });
 }
 
 function handleSetEditedMessageName (
@@ -350,8 +392,8 @@ function handleSetEditedMessageName (
         const newName = parameters.value;
 
         const scratchpad = state.nameScratchpad;
-        const newScratchpad = scratchpad.set(name, newName);
-        return state.set('nameScratchpad', newScratchpad);
+        const newScratchpad = Helpers.assign(scratchpad, { [name]: newName });
+        return Helpers.assign(state, { nameScratchpad: newScratchpad });
 }
 
 function handleSetMessageName (
@@ -364,17 +406,19 @@ function handleSetMessageName (
         const newName = parameters.value;
         const narrativeId = parameters.narrativeId;
         const narratives = state.narrativesById;
-        const narrative = narratives.get(narrativeId);
+        const narrative = narratives[narrativeId];
 
         const messages = narrative.messagesById;
-        const message = messages.get(name);
-        const newMessage = message.set('name', newName);
-        const newMessages =
-                messages.set(newName, newMessage).delete(name);
-        const newNarrative = narrative.set('messagesById', newMessages);
-        const newNarratives = narratives.set(narrative.name, newNarrative);
+        const message = messages[name];
+        const newMessage = Helpers.assign(message, { name: newName });
+        const tempMessages = Map.set(messages, newName, newMessage);
+        const newMessages = Map.remove(messages, name);
+        const newNarrative = Helpers.assign(narrative,
+                { messagesById: newMessages });
+        const newNarratives = Map.set(
+                narratives, newNarrative.name, newNarrative);
 
-        return state.set('narrativesById', newNarratives)
+        return Helpers.assign(state, { narrativesById: newNarratives });
 }
 
 function setMessageProperty (
@@ -385,14 +429,17 @@ function setMessageProperty (
         data: State.Data)
 {
         const narratives = data.narrativesById;
-        const narrative = narratives.get(narrativeId);
+        const narrative = narratives[narrativeId];
         const messages = narrative.messagesById;
-        const message = messages.get(name);
-        const newMessage = message.set(propertyName, propertyValue);
-        const newMessages = messages.set(name, newMessage);
-        const newNarrative = narrative.set('messagesById', newMessages);
-        const newNarratives = narratives.set(newNarrative.name, newNarrative);
-        return data.set('narrativesById', newNarratives);
+        const message = messages[name];
+        const newMessage = Helpers.assign(message,
+                { [propertyName]: propertyValue });
+        const newMessages = Map.set(messages, name, newMessage);
+        const newNarrative = Helpers.assign(narrative,
+                { messagesById: newMessages });
+        const newNarratives =
+                Map.set(narratives, newNarrative.name, newNarrative);
+        return Helpers.assign(data, { narrativesById: newNarratives });
 }
 
 function handleSetMessageSubject (
@@ -530,10 +577,12 @@ function handleSetString (
         const value = parameters.value;
         const narrativeId = parameters.narrativeId;
         const narratives = state.narrativesById;
-        const narrative = narratives.get(narrativeId);
+        const narrative = narratives[narrativeId];
         const strings = narrative.stringsById;
-        const newStrings = strings.set(name, value);
-        const newNarrative = narrative.set('stringsById', newStrings);
-        const newNarratives = narratives.set(newNarrative.name, newNarrative);
-        return state.set('narrativesById', newNarratives);
+        const newStrings = Map.set(strings, name, value);
+        const newNarrative =
+                Helpers.assign(narrative, { stringsById: newStrings });
+        const newNarratives =
+                Map.set(narratives, newNarrative.name, newNarrative);
+        return Helpers.assign(state, { narrativesById: newNarratives });
 }

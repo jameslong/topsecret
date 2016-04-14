@@ -52,3 +52,8 @@ export function mapFromNameArray<T extends { name: string }>(array: T[])
 {
         return mapFromArray<T, T>(array, Func.name, Func.identity);
 }
+
+export function mapSubset<T> (map: Map.Map<T>, keys: string[])
+{
+        return mapFromArray(keys, Func.identity, key => map[key]);
+}

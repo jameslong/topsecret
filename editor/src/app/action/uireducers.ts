@@ -1,5 +1,6 @@
 import Actions = require('./actions');
 import Config = require('../config');
+import Helpers = require('./../../../../core/src/app/utils/helpers');
 import Redux = require('../redux/redux');
 import State = require('../state');
 
@@ -38,7 +39,7 @@ function handleSetActiveNarrative (
         action: Actions.SetActiveNarrative)
 {
         const name = action.parameters;
-        return state.set('activeNarrativeId', name);
+        return Helpers.assign(state, { activeNarrativeId: name });
 }
 
 function handleOpenMessage (
@@ -47,7 +48,7 @@ function handleOpenMessage (
         action: Actions.OpenMessage)
 {
         const name = action.parameters;
-        return state.set('activeMessageId', name);
+        return Helpers.assign(state, { activeMessageId: name });
 }
 
 function handleCloseMessage (
@@ -55,7 +56,7 @@ function handleCloseMessage (
         config: Config.Config,
         action: Actions.CloseMessage)
 {
-        return state.set('activeMessageId', null);
+        return Helpers.assign(state, { activeMessageId: null });
 }
 
 function handleDeleteMessage (
@@ -65,7 +66,8 @@ function handleDeleteMessage (
 {
         const name = action.parameters.name;
         return (state.activeMessageId === name) ?
-                state.set('activeMessageId', null) : state;
+                Helpers.assign(state, { activeMessageId: null }) :
+                state;
 }
 
 function handleSetMessageName (
@@ -76,5 +78,6 @@ function handleSetMessageName (
         const name = action.parameters.name;
         const newName = action.parameters.value;
         return (state.activeMessageId === name) ?
-                state.set('activeMessageId', newName) : state;
+                Helpers.assign(state, { activeMessageId: newName }) :
+                state;
 }

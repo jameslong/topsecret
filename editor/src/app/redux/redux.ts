@@ -1,5 +1,5 @@
+/// <reference path="../../../../typings/react/react.d.ts"/>
 /// <reference path="../../../../typings/react/react-dom.d.ts"/>
-
 import ReactDOM = require('react-dom');
 import ReactUtils = require('./react');
 
@@ -13,7 +13,7 @@ export let handleAction: <T>(action: Action<T>) => void = null;
 export function init<T, U>(
         state: T,
         reducer: (state: T, action: Action<U>) => T,
-        rootComponent: ReactUtils.Factory<T>,
+        rootComponent: React.Factory<T>,
         wrapper: HTMLElement)
 {
         let appState = { state: state };
@@ -26,7 +26,7 @@ export function init<T, U>(
 
 function render <T>(
         state: T,
-        rootComponent: ReactUtils.Factory<T>,
+        rootComponent: React.Factory<T>,
         wrapper: HTMLElement)
 {
         const root = rootComponent(state);

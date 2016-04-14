@@ -1,63 +1,43 @@
-import Immutable = require('immutable');
-import Helpers = require('./helpers');
+import Helpers = require('./../../../core/src/app/utils/helpers');
+import Map = require('./../../../core/src/app/utils/map');
 import Message = require('./message');
 import MessageDelay = require('./messagedelay');
 import Profile = require('./profile');
 import State = require('./state');
 
-export interface NarrativeMutable {
+export type Strings = Map.Map<string>;
+
+export interface NarrativeData {
         name: string;
-        messages: { [key: string]: Message.MessageMutable; };
-        profiles: { [key: string]: Profile.ProfileMutable; };
-        strings: { [key: string]: string; };
+        messages: Message.Messages;
+        profiles: Profile.Profiles;
+        strings: Strings;
 }
 
-export interface NarrativesMutable {
-        [i: string]: NarrativeMutable;
-}
+export type NarrativesData = Map.Map<NarrativeData>;
 
-export type Strings = Immutable.Map<string, string>;
-export type Narratives = Immutable.Map<string, Narrative>;
-
-interface NarrativeInt {
+export interface Narrative {
         name: string;
         messagesById: Message.Messages;
         profilesById: Profile.Profiles;
         stringsById: Strings;
 };
-export type Narrative = Immutable.Record.IRecord<NarrativeInt>;
-export const Narrative = Immutable.Record<NarrativeInt>({
-        name: '',
-        messagesById: Immutable.Map<string, Message.Message>(),
-        profilesById: Immutable.Map<string, Profile.Profile>(),
-        stringsById: Immutable.Map<string, string>(),
-}, 'Narrative');
 
-export function convertToImmutableNarrative (
-        narrativeMutable: NarrativeMutable)
+export type Narratives = Map.Map<Narrative>;
+
+export function convertToNarrative (data: NarrativeData): Narrative
 {
-        const messagesMutable = narrativeMutable.messages;
-        const messagesById = Helpers.mapFromObject(
-                messagesMutable, Message.convertToImmutableMessage);
-
-        const profilesMutable = narrativeMutable.profiles;
-        const profilesById = Helpers.mapFromObject(
-                profilesMutable, Profile.convertToImmutableProfile);
-
-        const stringsMutable = narrativeMutable.strings;
-        const stringsById = Helpers.mapFromObject(stringsMutable, text => text);
-
-        return Narrative({
-                name: narrativeMutable.name,
-                messagesById,
-                profilesById,
-                stringsById,
-        });
+        return {
+                name: data.name,
+                messagesById: data.messages,
+                profilesById: data.profiles,
+                stringsById: data.strings,
+        };
 }
 
 export function getActiveNarrative (store: State.Store)
 {
-        return store.data.narrativesById.get(store.ui.activeNarrativeId);
+        return store.data.narrativesById[store.ui.activeNarrativeId];
 }
 
 export function markNarrativeValid (narrative: Narrative)
@@ -68,5 +48,5 @@ export function markNarrativeValid (narrative: Narrative)
         const newMessages = Message.markMessagesValid(
                 narrative.messagesById, strings, profiles);
 
-        return narrative.set('messagesById', newMessages);
+        return Helpers.assign(narrative, { messagesById: newMessages });
 }

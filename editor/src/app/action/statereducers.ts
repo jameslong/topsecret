@@ -1,9 +1,10 @@
 import Actions = require('./actions');
+import Arr = require('./../../../../core/src/app/utils/array');
 import AsyncRequest = require('../asyncrequest');
 import Config = require('../config');
 import Edge = require('../edge');
-import Helpers = require('../helpers');
-import Immutable = require('immutable');
+import Helpers = require('./../../../../core/src/app/utils/helpers');
+import Map = require('./../../../../core/src/app/utils/map');
 import Message = require('../message');
 import Narrative = require('../narrative');
 import Redux = require('../redux/redux');
@@ -38,55 +39,57 @@ export function state (state: State.State, action: Redux.Action<any>)
 }
 
 function handleSetGameData (state: State.State, action: Actions.SetGameData)
+        : State.State
 {
         const config = state.config;
         const narratives = action.parameters;
-        const newNarratives = <Narrative.Narratives>narratives.map(Narrative.markNarrativeValid);
+        const newNarratives = Map.map(narratives, Narrative.markNarrativeValid);
         const store = State.getActiveStore(state);
         const data = store.data;
 
-        const names = Helpers.keys(narratives);
-        const name = names.get(0);
-        const narrative = newNarratives.get(name);
+        const names = Object.keys(narratives);
+        const name = names[0];
+        const narrative = newNarratives[name];
 
         const messages = narrative.messagesById;
         const newEdges = Edge.createEdges(messages, config.vertexSize);
-        const newScratchpad = Immutable.Map<string, string>();
-        const newData = State.Data({
+        const newScratchpad: Map.Map<string> = {};
+        const newData: State.Data = {
                 narrativesById: newNarratives,
                 edges: newEdges,
                 nameScratchpad: newScratchpad,
-        });
+        };
 
-        const newUI = State.UI({
+        const newUI: State.UI = {
                 activeNarrativeId: name,
                 activeMessageId: null,
-        });
+        };
 
-        const newStore = State.Store({
+        const newStore: State.Store = {
                 ui: newUI,
                 data: newData,
-        });
+        };
 
-        return State.State({
+        return {
                 config: state.config,
-                past: Immutable.List.of<State.Store>(),
+                past: [],
                 present: newStore,
-                future: Immutable.List.of<State.Store>(),
+                future: [],
                 lastSaved: newStore,
                 dirty: false,
-        });
+        };
 }
 
 function handleSave (state: State.State, action: Actions.Save)
 {
         const activeStore = State.getActiveStore(state);
-
         const url = state.config.serverURL;
-        const lastSaved = state.lastSaved;
-        saveStoreDifference(url, lastSaved, activeStore);
+        saveStoreDifference(url, state.lastSaved, activeStore);
 
-        return state.set('dirty', false).set('lastSaved', activeStore);
+        const dirty = false;
+        const lastSaved = activeStore;
+
+        return Helpers.assign(state, { dirty, lastSaved });
 }
 
 function saveStoreDifference (
@@ -105,12 +108,17 @@ function saveNarrativesDifference (
         previousState: Narrative.Narratives,
         currentState: Narrative.Narratives)
 {
-        const different = Helpers.getUpdated(previousState, currentState);
+        const different = getUpdated(previousState, currentState);
 
-        different.forEach((current, name) => {
-                const previous = previousState.get(name);
+        Map.forEach(different, (current, name) => {
+                const previous = previousState[name];
                 saveNarrativeDifference(url, previous, current);
         });
+}
+
+function getUpdated<U>(previous: Map.Map<U>, current: Map.Map<U>)
+{
+        return Map.filter(current, (value, key) => value !== previous[key]);
 }
 
 function saveNarrativeDifference (
@@ -147,35 +155,42 @@ function saveNarrativeDifference (
                 deleteMessage);
 }
 
-function saveMapDifference<U, V> (
-        previous: Immutable.Map<U, V>,
-        current: Immutable.Map<U, V>,
-        saveFn: (key: U, value: V) => void,
-        deleteFn: (key: U, value: V) => void)
+function saveMapDifference<U> (
+        previous: Map.Map<U>,
+        current: Map.Map<U>,
+        saveFn: (key: string, value: U) => void,
+        deleteFn: (key: string, value: U) => void)
 {
         if (previous !== current) {
-                const updated = Helpers.getUpdated(previous, current);
-                updated.forEach((value, key) => saveFn(key, value));
+                const updated = getUpdated(previous, current);
+                Map.forEach(updated, (value, key) => saveFn(key, value));
 
-                const removed = Helpers.getRemoved(previous, current);
-                removed.forEach((value, key) => deleteFn(key, value));
+                const removed = getRemoved(previous, current);
+                Map.forEach(removed, (value, key) => deleteFn(key, value));
         }
+}
+
+function getRemoved<U>(previous: Map.Map<U>, current: Map.Map<U>)
+{
+        return Map.filter(previous, (value, key) => !current[key]);
 }
 
 function handleUndo (state: State.State, action: Actions.Undo)
 {
         const past = state.past;
-        if (past.size) {
+        if (past.length) {
                 const present = state.present;
                 const future = state.future;
 
-                const newFuture = future.unshift(present);
-                const newPresent = past.last();
-                const newPast = past.pop();
-                const newState = state.set('past', newPast)
-                        .set('present', newPresent)
-                        .set('future', newFuture);
-                console.log(newState.toJS());
+                const newFuture = [present, ...future];
+                const newPresent = Arr.last(past);
+                const newPast = past.slice(0, -1);
+                const newState = Helpers.assign(state, {
+                        past: newPast,
+                        present: newPresent,
+                        future: newFuture,
+                });
+                console.log(newState);
                 return setDirtyState(newState);
         } else {
                 console.log('No more undos');
@@ -186,17 +201,19 @@ function handleUndo (state: State.State, action: Actions.Undo)
 function handleRedo (state: State.State, action: Actions.Redo)
 {
         const future = state.future;
-        if (future.size) {
+        if (future.length) {
                 const present = state.present;
                 const past = state.past;
 
-                const newPast = past.push(present);
-                const newPresent = future.first();
-                const newFuture = future.shift();
-                const newState = state.set('past', newPast)
-                        .set('present', newPresent)
-                        .set('future', newFuture);
-                console.log(newState.toJS());
+                const newPast = [...past, present];
+                const newPresent = future[0];
+                const newFuture = future.slice(1);
+                const newState = Helpers.assign(state, {
+                        past: newPast,
+                        present: newPresent,
+                        future: newFuture,
+                });
+                console.log(newState);
                 return setDirtyState(newState);
         } else {
                 console.log('No more redos');
@@ -208,7 +225,7 @@ function setDirtyState (state: State.State)
 {
         if (!state.dirty) {
                 onDirtyState(state.config.autosaveDelayms);
-                return state.set('dirty', true);
+                return Helpers.assign(state, { dirty: true });
         } else {
                 return state;
         }
@@ -230,11 +247,10 @@ function onDirtyState (delayms: number)
 function onNewStore (state: State.State, present: State.Store)
 {
         console.log('new store');
-        const past = state.past.push(state.present);
-        const future = Immutable.List.of<State.Store>();
-        const tempState = state.set('past', past)
-                .set('present', present)
-                .set('future', future);
+        const past = [...state.past, present];
+        const future: State.Store[] = [];
+        const tempState = Helpers.assign(state, {
+                past, present, future });
         const newState = trimStores(tempState);
         return setDirtyState(newState);
 }
@@ -246,17 +262,20 @@ function trimStores (state: State.State)
         const past = state.past;
         const future = state.future;
 
-        if (past.size > maxUndos) {
+        if (past.length > maxUndos) {
                 console.log('undo limit hit');
         }
-        const newPast = (past.size <= maxUndos) ?
+        const newPast = (past.length <= maxUndos) ?
                 past : past.slice(-maxUndos);
 
-        if (future.size > maxRedos) {
+        if (future.length > maxRedos) {
                 console.log('redo limit hit');
         }
-        const newFuture = (future.size <= maxRedos) ?
+        const newFuture = (future.length <= maxRedos) ?
                 future : past.slice(0, maxUndos);
 
-        return state.set('past', newPast).set('future', newFuture);
+        return Helpers.assign(state, {
+                past: newPast,
+                future: newFuture,
+        });
 }

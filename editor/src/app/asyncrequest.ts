@@ -2,7 +2,7 @@
 
 import $ = require('jquery');
 import ActionCreators = require('./action/actioncreators');
-import Helpers = require('./helpers');
+import Map = require('./../../../core/src/app/utils/map');
 import Message = require('./message');
 import Narrative = require('./narrative');
 import Redux = require('./redux/redux');
@@ -12,7 +12,7 @@ export function requestNarratives (url: string)
         const requestURL = url + '/narratives';
         const data = {};
 
-        const onSuccess: AjaxSuccess<Narrative.NarrativesMutable> =
+        const onSuccess: AjaxSuccess<Narrative.NarrativesData> =
                 (data, textStatus, jqXHR) => onNarratives(data);
 
         get(requestURL, data, onSuccess, onAjaxError);
@@ -20,13 +20,11 @@ export function requestNarratives (url: string)
         console.log('loading narratives...');
 }
 
-function onNarratives(narrativesMutable: Narrative.NarrativesMutable)
+function onNarratives(data: Narrative.NarrativesData)
 {
         console.log('loaded narratives');
 
-        const narratives = Helpers.mapFromObject(
-                narrativesMutable, Narrative.convertToImmutableNarrative);
-
+        const narratives = Map.map(data, Narrative.convertToNarrative);
         const action = ActionCreators.setGameData(narratives);
         Redux.handleAction(action);
 }
@@ -39,11 +37,10 @@ export function saveMessage (
         const requestURL = url + '/savemessage';
 
         const name = message.name;
-        const messageMutable = Message.convertToMutableMessage(
-                message);
+        const messageData = Message.convertToMessageData(message);
         const data = {
-                narrativeName: narrativeName,
-                message: messageMutable,
+                narrativeName,
+                message: messageData,
         };
 
         const onSuccess: AjaxSuccess<void> =
@@ -58,13 +55,12 @@ function onSaveMessage (name: string)
         console.log(`saved message ${name}`);
 }
 
-export function deleteMessage (
-        url: string, narrativeName: string, name: string)
+export function deleteMessage (url: string, narrativeName: string, name: string)
 {
         const requestURL = url + '/deletemessage';
 
         const data = {
-                narrativeName: narrativeName,
+                narrativeName,
                 messageName: name,
         };
 
@@ -88,11 +84,7 @@ export function saveString (
 {
         const requestURL = url + '/savestring';
 
-        const data = {
-                narrativeName: narrativeName,
-                name: name,
-                value: value,
-        };
+        const data = { narrativeName, name, value };
 
         const onSuccess: AjaxSuccess<void> =
                 (data, textStatus, jqXHR) => onSaveString(name);
@@ -111,10 +103,7 @@ export function deleteString (
 {
         const requestURL = url + '/deletestring';
 
-        const data = {
-                narrativeName: narrativeName,
-                name: name,
-        };
+        const data = { narrativeName, name };
 
         const onSuccess: AjaxSuccess<void> =
                 (data, textStatus, jqXHR) => onDeleteString(name);

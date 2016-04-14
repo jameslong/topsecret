@@ -1,57 +1,31 @@
 import Config = require('./config');
-import Immutable = require('immutable');
 import Edge = require('./edge');
 import Narrative = require('./narrative');
 
-interface UIInt {
+export interface UI {
         activeNarrativeId: string;
         activeMessageId: string;
 };
-export type UI = Immutable.Record.IRecord<UIInt>;
-export const UI = Immutable.Record<UIInt>({
-        activeNarrativeId: '',
-        activeMessageId: '',
-}, 'UI');
 
-interface DataInt {
+export interface Data {
         narrativesById: Narrative.Narratives;
         edges: Edge.Edges;
         nameScratchpad: Narrative.Strings;
 };
-export type Data = Immutable.Record.IRecord<DataInt>;
-export const Data = Immutable.Record<DataInt>({
-        narrativesById: Immutable.Map<string, Narrative.Narrative>(),
-        edges: Immutable.List<Edge.Edge>(),
-        nameScratchpad: Immutable.Map<string, string>(),
-}, 'Data');
 
-interface StoreInt {
+export interface Store {
         ui: UI;
         data: Data;
 };
-export type Store = Immutable.Record.IRecord<StoreInt>;
-export const Store = Immutable.Record<StoreInt>({
-        ui: UI(),
-        data: Data(),
-}, 'Store');
 
-interface StateInt {
+export interface State {
         config: Config.Config;
-        past: Immutable.List<Store>;
+        past: Store[];
         present: Store;
-        future: Immutable.List<Store>;
+        future: Store[];
         lastSaved: Store;
         dirty: boolean;
 };
-export type State = Immutable.Record.IRecord<StateInt>;
-export const State = Immutable.Record<StateInt>({
-        config: Config.Config(),
-        past: Immutable.List<Store>(),
-        present: Store(),
-        future: Immutable.List<Store>(),
-        lastSaved: null,
-        dirty: false,
-}, 'State');
 
 export function getActiveStore (state: State)
 {
