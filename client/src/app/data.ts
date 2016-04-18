@@ -136,7 +136,7 @@ export function storeKeyManager (
 
 export function deleteKey (data: Data, id: string)
 {
-        const keyManagers = Arr.remove(data.keyManagers, id);
+        const keyManagers = Arr.removeValue(data.keyManagers, id);
         const keyManagersById = Map.remove(data.keyManagersById, id);
 
         const activeKeyId = data.player.activeKeyId;

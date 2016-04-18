@@ -1,16 +1,18 @@
 import MathUtils = require('../../math');
-import ReactUtils = require('../../redux/react');
+import React = require('react');
 
 import Core = require('../core');
 import Line = Core.Line;
 
-type SvgLineClassProps = ReactUtils.Props<MathUtils.Line>;
+interface SvgLineProps extends React.Props<any> {
+        line: MathUtils.Line;
+}
 
-function render (props: SvgLineClassProps)
+function renderSvgLine (props: SvgLineProps)
 {
-        const data = props.data;
-        const start = data.start;
-        const end = data.end;
+        const line = props.line;
+        const start = line.start;
+        const end = line.end;
 
         return Line({
                 x1: start.x,
@@ -21,4 +23,6 @@ function render (props: SvgLineClassProps)
         });
 }
 
-export const SvgLine = ReactUtils.createFactory(render, 'SvgLine');
+const SvgLine = React.createFactory(renderSvgLine);
+
+export = SvgLine;

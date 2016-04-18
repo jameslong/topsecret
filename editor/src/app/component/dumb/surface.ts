@@ -1,23 +1,25 @@
-import ReactUtils = require('../../redux/react');
+import React = require('react');
 
 import Core = require('../core');
 import Div = Core.Div;
 import Dragzone = require('../smart/dragzone');
-import Immutable = require('immutable');
 
-type SurfaceProps = ReactUtils.Props<string>;
-
-function render (props: SurfaceProps)
-{
-        const narrativeId = props.data;
-        const children = props.children;
-        const dragzoneData = Dragzone.DragzoneData({
-                className: 'surface-dragzone',
-                narrativeId,
-        });
-
-        return Div({ className: 'surface' },
-                Dragzone.Dragzone(dragzoneData, children));
+interface SurfaceProps extends React.Props<any> {
+        narrativeId: string;
 }
 
-export const Surface = ReactUtils.createFactory(render, 'Surface');
+function renderSurface (props: SurfaceProps)
+{
+        const narrativeId = props.narrativeId;
+        const children = props.children;
+        const dragzoneProps = {
+                className: 'surface-dragzone',
+                narrativeId,
+        };
+
+        return Div({ className: 'surface' }, Dragzone(dragzoneProps, children));
+}
+
+const Surface = React.createFactory(renderSurface);
+
+export = Surface;

@@ -1,54 +1,42 @@
 import ActionCreators = require('../../action/actioncreators');
 import EditMessageContainer = require('../smart/editmessagecontainer');
-import Immutable = require('immutable');
 import Message = require('../../message');
 import Narrative = require('../../narrative');
 import Profile = require('../../profile');
-import ReactUtils = require('../../redux/react');
+import React = require('react');
 import Redux = require('../../redux/redux');
 
 import MessageContent = require('../dumb/messagecontent');
 
-interface MessageContentContainerInt {
+interface MessageContentContainerProps extends React.Props<any> {
         message: Message.MessageContent;
         profiles: Profile.Profiles;
         strings: Narrative.Strings;
         name: string;
         narrativeId: string;
 };
-export type MessageContentContainerData = Immutable.Record.IRecord<MessageContentContainerInt>;
-export const MessageContentContainerData = Immutable.Record<MessageContentContainerInt>({
-        message: Message.MessageContent(),
-        profiles: Immutable.Map<string, Profile.Profile>(),
-        strings: Immutable.Map<string, string>(),
-        name: '',
-        narrativeId: '',
-}, 'MessageContentContainer');
 
-type MessageContentContainerProps = ReactUtils.Props<MessageContentContainerData>;
-
-function render (props: MessageContentContainerProps)
+function renderMessageContentContainer (props: MessageContentContainerProps)
 {
-        const data = props.data;
-        const name = data.name;
-        const narrativeId = data.narrativeId;
+        const name = props.name;
+        const narrativeId = props.narrativeId;
         const onSet = (content: Message.MessageContent) =>
                 onSetMessageContent(narrativeId, name, content);
-        const onSetString = (name: string, value: string) =>
-                EditMessageContainer.onSetString(narrativeId, name, value);
-        const contentData = MessageContent.MessageContentData({
-                message: data.message,
-                profiles: data.profiles,
-                strings: data.strings,
-                name: data.name,
-                onSet: onSet,
-                onSetString: onSetString,
-        });
-        return MessageContent.MessageContent(contentData);
+        const onSetStringLocal = (name: string, value: string) =>
+                onSetString(narrativeId, name, value);
+        const contentProps = {
+                message: props.message,
+                profiles: props.profiles,
+                strings: props.strings,
+                name: props.name,
+                onSet,
+                onSetString: onSetStringLocal,
+        };
+        return MessageContent(contentProps);
 }
 
-export const MessageContentContainer = ReactUtils.createFactory(
-        render, 'MessageContentContainer');
+const MessageContentContainer =
+        React.createFactory(renderMessageContentContainer);
 
 function onSetMessageContent (
         narrativeId: string,
@@ -62,3 +50,15 @@ function onSetMessageContent (
         });
         Redux.handleAction(action);
 }
+
+function onSetString (narrativeId: string, name: string, value: string)
+{
+        const action = ActionCreators.setString({
+                narrativeId,
+                name,
+                value,
+        });
+        Redux.handleAction(action);
+}
+
+export = MessageContentContainer;

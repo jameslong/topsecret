@@ -1,20 +1,17 @@
-import ReactUtils = require('../../redux/react');
+import React = require('react');
 
 import Core = require('../core');
 import SVG = Core.SVG;
 
-type SurfaceSVGProps = ReactUtils.Props<void>;
+interface SurfaceSVGProps extends React.Props<any> {};
 
-function render (props: SurfaceSVGProps)
+function renderSurfaceSVG (props: SurfaceSVGProps)
 {
-        const data = props.data;
         const children = props.children;
-
-        const svgProps = {
-                className: 'surface-svg',
-        };
-
+        const svgProps = { className: 'surface-svg' };
         return SVG(svgProps, children);
 }
 
-export const SurfaceSVG = ReactUtils.createFactory(render, 'SurfaceSvg');
+const SurfaceSVG = React.createFactory(renderSurfaceSVG);
+
+export = SurfaceSVG;

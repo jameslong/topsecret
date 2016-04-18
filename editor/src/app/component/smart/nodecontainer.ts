@@ -1,43 +1,33 @@
 import ActionCreators = require('../../action/actioncreators');
-import Immutable = require('immutable');
 import Message = require('../../message');
-import ReactUtils = require('../../redux/react');
+import React = require('react');
 import Redux = require('../../redux/redux');
 
 import NodeComponent = require('../dumb/node');
 
-interface NodeContainerInt {
+interface NodeContainerProps extends React.Props<any> {
         message: Message.Message;
         narrativeId: string;
 };
-export type NodeContainerData = Immutable.Record.IRecord<NodeContainerInt>;
-export const NodeContainerData = Immutable.Record<NodeContainerInt>({
-        message: Message.Message(),
-        narrativeId: '',
-}, 'NodeContainerData');
 
-type NodeContainerProps = ReactUtils.Props<NodeContainerData>;
-
-
-function render (props: NodeContainerProps)
+function renderNodeContainer (props: NodeContainerProps)
 {
-        const data = props.data;
-        const narrativeId = data.narrativeId;
-        const message = data.message;
+        const narrativeId = props.narrativeId;
+        const message = props.message;
         const name = message.name;
         const selected = message.selected;
 
         const onClickLocal = (event: MouseEvent) =>
                 onClick(narrativeId, name, selected, event);
-        const nodeData = NodeComponent.NodeData({
+        const nodeProps = {
                 message: message,
                 onClick: onClickLocal,
-        });
+        };
 
-        return NodeComponent.Node(nodeData);
+        return NodeComponent(nodeProps);
 }
 
-export const NodeContainer = ReactUtils.createFactory(render, 'NodeContainer');
+const NodeContainer = React.createFactory(renderNodeContainer);
 
 function onClick (
         narrativeId: string, name: string, selected: boolean, e: MouseEvent)
@@ -84,3 +74,5 @@ function onDoubleClick (name: string)
         const action = ActionCreators.openMessage(name);
         Redux.handleAction(action);
 }
+
+export = NodeContainer;

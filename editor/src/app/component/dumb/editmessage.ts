@@ -1,14 +1,15 @@
-import Immutable = require('immutable');
-import Helpers = require('../../helpers');
+import Arr = require('../../../../../core/src/app/utils/array');
+import Map = require('../../../../../core/src/app/utils/map');
 import Message = require('../../message');
 import MessageDelay = require('../../messagedelay');
 import Misc = require('../../misc');
 import Narrative = require('../../narrative');
-import ReactUtils = require('../../redux/react');
+import React = require('react');
 import ReplyOption = require('../../replyoption');
 import Profile = require('../../profile');
 import State = require('../../state');
 
+import ComponentHelpers = require('../helpers');
 import Core = require('../core');
 import Div = Core.Div;
 import Option = Core.Option;
@@ -22,7 +23,7 @@ import Optional = require('./optional');
 import ReplyOptionsContainer = require('../smart/replyoptionscontainer');
 import TextComponent = require('./text');
 
-interface EditMessageInt {
+interface EditMessageProps extends React.Props<any> {
         name: string,
         store: State.Store;
         onDelete: () => void;
@@ -36,36 +37,18 @@ interface EditMessageInt {
         onSetChildren: (delays: MessageDelay.MessageDelays) => void;
         onSetFallback: (delay: MessageDelay.MessageDelay) => void;
 };
-export type EditMessageData = Immutable.Record.IRecord<EditMessageInt>;
-export const EditMessageData = Immutable.Record<EditMessageInt>({
-        name: '',
-        store: State.Store(),
-        onDelete: () => {},
-        onSetNameScratchpad: () => {},
-        onSetName: () => {},
-        onSetSubjectName: () => {},
-        onSetString: () => {},
-        onSetEndGame: () => {},
-        onSetEncrypted: () => {},
-        onSetScript: () => {},
-        onSetChildren: () => {},
-        onSetFallback: () => {},
-}, 'EditMessage');
 
-type EditMessageProps = ReactUtils.Props<EditMessageData>;
-
-function render (props: EditMessageProps)
+function renderEditMessage (props: EditMessageProps)
 {
-        const data = props.data;
-        const store = data.store;
+        const store = props.store;
         const narrativeId = store.ui.activeNarrativeId;
         const narrative = Narrative.getActiveNarrative(store);
 
-        const messageName = data.name;
-        const scratchpadName = store.data.nameScratchpad.get(messageName);
+        const messageName = props.name;
+        const scratchpadName = store.data.nameScratchpad[messageName];
 
         const messages = narrative.messagesById;
-        const message = messages.get(messageName);
+        const message = messages[messageName];
         const profiles = narrative.profilesById;
         const strings = narrative.stringsById;
 
@@ -73,86 +56,54 @@ function render (props: EditMessageProps)
                 messageName,
                 scratchpadName,
                 messages,
-                data.onSetNameScratchpad,
-                data.onSetName);
+                props.onSetNameScratchpad,
+                props.onSetName);
 
         const subject = createSubject(
                 message,
                 strings,
-                data.onSetSubjectName,
-                data.onSetString);
+                props.onSetSubjectName,
+                props.onSetString);
 
         const messageContent = createMessageContent(
                 narrativeId, message, strings, profiles);
 
         const fallback = createFallback(
-                data.onSetFallback, message, messages);
+                props.onSetFallback, message, messages);
 
         const children = createChildren(
-                data.onSetChildren, message, messages);
+                props.onSetChildren, message, messages);
 
         const replyOptions = createReplyOptions(narrativeId, message, messages);
 
-        const endGame = createEndGame(message, data.onSetEndGame);
-        const encrypted = createEncrypted(message, data.onSetEncrypted);
-        const script = createScript(message, data.onSetScript);
+        const endGame = createEndGame(message, props.onSetEndGame);
+        const encrypted = createEncrypted(message, props.onSetEncrypted);
+        const script = createScript(message, props.onSetScript);
 
         const deleteButton = createDeleteButton(
-                messageName, data.onDelete);
+                messageName, props.onDelete);
         const header = Div({ className: 'edit-mesage-header' },
                 deleteButton);
 
         const dataLists = createDataLists(narrative);
         return Div({ className: 'edit-message'},
                 dataLists,
-                wrapInGroup(
-                        wrapInSubgroup(header),
-                        wrapInSubgroup(name),
-                        wrapInSubgroup(subject),
-                        wrapInSubgroup(endGame, encrypted)
+                ComponentHelpers.wrapInGroup(
+                        ComponentHelpers.wrapInSubgroup(header),
+                        ComponentHelpers.wrapInSubgroup(name),
+                        ComponentHelpers.wrapInSubgroup(subject),
+                        ComponentHelpers.wrapInSubgroup(endGame, encrypted)
                 ),
-                wrapInTitleGroup('Message', messageContent),
-                wrapInTitleGroup('Fallback',
-                        wrapInSubgroup(fallback)),
-                wrapInTitleGroup('Reply options', replyOptions),
-                wrapInTitleGroup('Children', children),
-                wrapInTitleGroup('Script', script)
+                ComponentHelpers.wrapInTitleGroup('Message', messageContent),
+                ComponentHelpers.wrapInTitleGroup('Fallback',
+                        ComponentHelpers.wrapInSubgroup(fallback)),
+                ComponentHelpers.wrapInTitleGroup('Reply options', replyOptions),
+                ComponentHelpers.wrapInTitleGroup('Children', children),
+                ComponentHelpers.wrapInTitleGroup('Script', script)
         );
 }
 
-export const EditMessage = ReactUtils.createFactory(render, 'EditMessage');
-
-export function wrapInLabel<P>(
-        label: string, ...components: React.ReactElement<any>[])
-{
-        const props = Misc.KeyValue({ name: '', value: label });
-        return InputLabel.InputLabel(props, ...components);
-}
-
-export function wrapInGroup(
-        ...components: React.ReactElement<any>[])
-{
-        return Div({ className: 'edit-message-group' },
-                Div({ className: 'edit-message-group-content' },
-                        ...components)
-        );
-}
-
-export function wrapInSubgroup(
-        ...components: React.ReactElement<any>[])
-{
-        return Div({ className: 'edit-message-subgroup' }, ...components);
-}
-
-export function wrapInTitleGroup(
-        title: string, ...components: React.ReactElement<any>[])
-{
-        return Div({ className: 'edit-message-group' },
-                Div({ className: 'edit-message-group-title' }, title),
-                Div({ className: 'edit-message-group-content' },
-                        ...components)
-        );
-}
+const EditMessage = React.createFactory(renderEditMessage);
 
 function createName (
         messageName: string,
@@ -163,22 +114,23 @@ function createName (
 {
         const onSet = (name: string) => onSetNameScratchpad(name);
         const displayName = scratchpadName || messageName;
-        const data = TextComponent.TextData({
+        const props = {
                 placeholder: 'message_name',
                 value: displayName,
                 onChange: onSet,
                 list: 'messageNames',
-        });
-        const name = TextComponent.Text(data);
+        };
+        const name = TextComponent(props);
 
-        const disabled = messages.has(displayName);
-        const buttonProps = ButtonInput.ButtonData({
+        const disabled = Map.exists(messages, displayName);
+        const className: string = null;
+        const buttonProps = {
                 text: 'Rename',
                 disabled: disabled,
                 onClick: onSetName,
-                className: null,
-        });
-        const setButton = ButtonInput.ButtonInput(buttonProps);
+                className,
+        };
+        const setButton = ButtonInput(buttonProps);
 
         return Div({}, name, setButton);
 }
@@ -189,14 +141,14 @@ function createMessageContent (
         strings: Narrative.Strings,
         profiles: Profile.Profiles)
 {
-        const messageProps = MessageContentContainer.MessageContentContainerData({
+        const messageProps = {
                 profiles: profiles,
                 strings: strings,
                 message: message.message,
                 name: message.name,
                 narrativeId,
-        });
-        return MessageContentContainer.MessageContentContainer(messageProps);
+        };
+        return MessageContentContainer(messageProps);
 }
 
 function createReplyOptions (
@@ -204,36 +156,37 @@ function createReplyOptions (
         message: Message.Message,
         messages: Message.Messages)
 {
-        const replyOptionsProps = ReplyOptionsContainer.ReplyOptionsContainerData({
+        const replyOptionsProps = {
                 name: message.name,
                 narrativeId,
                 replyOptions: message.replyOptions,
-                messages: messages,
-        });
-        return ReplyOptionsContainer.ReplyOptionsContainer(replyOptionsProps);
+                messages,
+        };
+        return ReplyOptionsContainer(replyOptionsProps);
 }
 
 function createEndGame (
         message: Message.Message,
         onSetEndGame: (endGame: boolean) => void)
 {
-        const newEndGameProps = Checkbox.CheckboxData({
+        const newEndGameProps = {
                 checked: message.endGame,
                 onChange: onSetEndGame,
-        });
-        return wrapInLabel('End game', Checkbox.Checkbox(newEndGameProps));
+        };
+        return ComponentHelpers.wrapInLabel(
+                'End game', Checkbox(newEndGameProps));
 }
 
 function createEncrypted (
         message: Message.Message,
         onSetEncrypted: (encrypted: boolean) => void)
 {
-        const newEncryptedProps = Checkbox.CheckboxData({
+        const newEncryptedProps = {
                 checked: message.encrypted,
                 onChange: onSetEncrypted,
-        });
-        return wrapInLabel(
-                'Encrypted', Checkbox.Checkbox(newEncryptedProps));
+        };
+        return ComponentHelpers.wrapInLabel(
+                'Encrypted', Checkbox(newEncryptedProps));
 }
 
 function createScript (
@@ -243,25 +196,26 @@ function createScript (
         const script = message.script;
         const messageName = message.name;
 
-        const nameProps = TextComponent.TextData({
+        const props = {
                 placeholder: '',
                 value: script,
                 onChange: onSetScript,
-        });
-        return TextComponent.Text({ data: nameProps });
+        };
+        return TextComponent(props);
 }
 
 function createDeleteButton (
         name: string, onDelete: () => void)
 {
         const disabled = !name;
-        const deleteProps = ButtonInput.ButtonData({
+        const className: string = null;
+        const deleteProps = {
                 text: 'Delete',
                 disabled: disabled,
                 onClick: onDelete,
-                className: null,
-        });
-        return ButtonInput.ButtonInput(deleteProps);
+                className,
+        };
+        return ButtonInput(deleteProps);
 }
 
 function createSubject (
@@ -271,25 +225,25 @@ function createSubject (
         onSetString: (name: string, value: string) => void)
 {
         const subjectName = message.threadSubject;
-        const subjectValue = strings.get(subjectName);
+        const subjectValue = strings[subjectName];
         const messageName = message.name;
 
-        const nameProps = TextComponent.TextData({
+        const nameProps = {
                 placeholder: 'subject_string_name',
                 value: subjectName,
                 onChange: onSetSubjectName,
                 list: 'stringNames',
-        });
-        const name = TextComponent.Text({ data: nameProps });
+        };
+        const name = TextComponent(nameProps);
 
         const onChangeString = (value: string) =>
                 onSetString(subjectName, value);
-        const subjectProps = TextComponent.TextData({
+        const subjectProps = {
                 placeholder: 'subject',
                 value: subjectValue,
                 onChange: onChangeString,
-        });
-        const subject = TextComponent.Text({ data: subjectProps });
+        };
+        const subject = TextComponent(subjectProps);
 
         return Div({}, name, subject);
 }
@@ -301,7 +255,7 @@ function onSetChild (
         index: number)
 {
         const children = message.children;
-        const newChildren = children.set(index, delay);
+        const newChildren = Arr.set(children, index, delay);
         onSetChildren(newChildren);
 }
 
@@ -309,9 +263,9 @@ function onAddChild (
         onSetChildren: (delays: MessageDelay.MessageDelays) => void,
         message: Message.Message)
 {
-        const newChild = MessageDelay.MessageDelay();
+        const newChild = MessageDelay.createMessageDelay();
         const children = message.children;
-        const newChildren = children.push(newChild);
+        const newChildren = Arr.push(children, newChild);
         onSetChildren(newChildren);
 }
 
@@ -320,7 +274,7 @@ function onRemoveChild (
         message: Message.Message, index: number)
 {
         const children = message.children;
-        const newChildren = children.delete(index);
+        const newChildren = Arr.deleteIndex(children, index);
         onSetChildren(newChildren);
 }
 
@@ -336,24 +290,24 @@ function createChildren (
         const children = delays.map((delay, index) => {
                 const onSet = (delay: MessageDelay.MessageDelay) =>
                         onSetChild(onSetChildren, message, delay, index);
-                const props = MessageDelayComponent.MessageDelayData({
+                const props = {
                         delay: delay,
                         onChange: onSet,
                         messages: messages,
-                });
-                return MessageDelayComponent.MessageDelayComponent(props);
+                };
+                return MessageDelayComponent(props);
         });
-        const multipleProps = Multiple.MultipleData({
+        const multipleProps = {
                 children: children,
                 onAdd: onAdd,
                 onRemove: onRemove,
-        });
-        return Multiple.Multiple(multipleProps);
+        };
+        return Multiple(multipleProps);
 }
 
 function onAddFallback (onSetFallback: (delay: MessageDelay.MessageDelay) => void)
 {
-        const newDelay = MessageDelay.MessageDelay();
+        const newDelay = MessageDelay.createMessageDelay();
         onSetFallback(newDelay);
 }
 
@@ -367,19 +321,18 @@ function createFallback (
 
         const onAdd = () => onAddFallback(onSetFallback);
         const onRemove = () => onSetFallback(null);
-        const fallbackProps = MessageDelayComponent.MessageDelayData({
+        const fallbackProps = {
                 delay: delay,
                 onChange: onSetFallback,
                 messages: messages,
-        });
-        const fallback = delay ?
-                MessageDelayComponent.MessageDelayComponent(fallbackProps) : null;
-        const optionalProps = Optional.OptionalData({
+        };
+        const fallback = delay ? MessageDelayComponent(fallbackProps) : null;
+        const optionalProps = {
                 child: fallback,
                 onAdd: onAdd,
                 onRemove: onRemove,
-        });
-        return Optional.Optional(optionalProps);
+        };
+        return Optional(optionalProps);
 }
 
 function createDataLists (narrative: Narrative.Narrative)
@@ -388,17 +341,14 @@ function createDataLists (narrative: Narrative.Narrative)
         const profiles = narrative.profilesById;
         const strings = narrative.stringsById;
 
-        const messageNames = Helpers.keys(messages)
-        const messageDataList = createDataList(
-                'messageNames', messageNames);
+        const messageNames = Object.keys(messages)
+        const messageDataList = createDataList('messageNames', messageNames);
 
-        const profileNames = Helpers.keys(profiles)
-        const profileDataList = createDataList(
-                'profileNames', profileNames);
+        const profileNames = Object.keys(profiles)
+        const profileDataList = createDataList('profileNames', profileNames);
 
-        const stringNames = Helpers.keys(strings);
-        const stringDataList = createDataList(
-                'stringNames', stringNames);
+        const stringNames = Object.keys(strings);
+        const stringDataList = createDataList('stringNames', stringNames);
 
         const replyOptionTypes = ReplyOption.getReplyOptionTypes();
         const replyOptionDataList = createDataList(
@@ -411,11 +361,13 @@ function createDataLists (narrative: Narrative.Narrative)
                 replyOptionDataList);
 }
 
-function createDataList (id: string, names: Immutable.List<string>)
+function createDataList (id: string, names: string[])
 {
         const options = names.map(name => Option({
                 value: name,
                 key: name,
-         }));
+        }));
         return Core.DataList({ id: id }, options);
 }
+
+export = EditMessage;

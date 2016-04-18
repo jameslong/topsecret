@@ -1,10 +1,13 @@
-import Immutable = require('immutable');
+import Arr = require('../../../../../core/src/app/utils/array');
+import Helpers = require('../../../../../core/src/app/utils/helpers');
+import Map = require('../../../../../core/src/app/utils/map');
 import Message = require('../../message');
 import Narrative = require('../../narrative');
 import Profile = require('../../profile');
-import ReactUtils = require('../../redux/react');
+import React = require('react');
 import TextInputValidated = require('../textinputvalidated');
 
+import ComponentHelpers = require('../helpers');
 import Core = require('../core');
 import Div = Core.Div;
 import EditMessage = require('./editmessage');
@@ -16,7 +19,7 @@ import TextList = require('./textlist');
 type OnSet = (content: Message.MessageContent) => void;
 type OnSetString = (name: string, value: string) => void;
 
-interface MessageContentInt {
+interface MessageContentProps extends React.Props<any> {
         message: Message.MessageContent;
         profiles: Profile.Profiles;
         strings: Narrative.Strings;
@@ -24,56 +27,43 @@ interface MessageContentInt {
         onSet: OnSet;
         onSetString: OnSetString;
 };
-export type MessageContentData = Immutable.Record.IRecord<MessageContentInt>;
-export const MessageContentData = Immutable.Record<MessageContentInt>({
-        message: Message.MessageContent(),
-        profiles: Immutable.Map<string, Profile.Profile>(),
-        strings: Immutable.Map<string, string>(),
-        name: '',
-        onSet: () => {},
-        onSetString: () => {},
-}, 'MessageContent');
 
-type MessageContentProps = ReactUtils.Props<MessageContentData>;
-
-function render (props: MessageContentProps)
+function renderMessageContent (props: MessageContentProps)
 {
-        const data = props.data;
-        const onSet = data.onSet;
-        const onSetString = data.onSetString;
-        const message = data.message;
-        const profiles = data.profiles;
-        const strings = data.strings;
+        const onSet = props.onSet;
+        const onSetString = props.onSetString;
+        const message = props.message;
+        const profiles = props.profiles;
+        const strings = props.strings;
 
         const from = createFrom(onSet, message, profiles)
         const to = createTo(onSet, message, profiles)
         const body = createBody(onSet, onSetString, message, strings);
 
         return Div({},
-                EditMessage.wrapInSubgroup(from),
-                EditMessage.wrapInSubgroup(to),
-                EditMessage.wrapInSubgroup(body)
+                ComponentHelpers.wrapInSubgroup(from),
+                ComponentHelpers.wrapInSubgroup(to),
+                ComponentHelpers.wrapInSubgroup(body)
         );
 }
 
-export const MessageContent = ReactUtils.createFactory(
-        render, 'MessageContent');
+const MessageContent = React.createFactory(renderMessageContent);
 
 function onSetFrom (
         onSet: OnSet,
         content: Message.MessageContent,
         from: string)
 {
-        const newContent = content.set('from', from);
+        const newContent = Helpers.assign(content, { from });
         onSet(newContent);
 }
 
 function onSetTo (
         onSet: OnSet,
         content: Message.MessageContent,
-        newTo: Immutable.List<string>)
+        to: string[])
 {
-        const newContent = content.set('to', newTo);
+        const newContent = Helpers.assign(content, { to });
         onSet(newContent);
 }
 
@@ -83,16 +73,15 @@ function onSetPassage (
         text: string,
         index: number)
 {
-        const newBody = content.body.set(index, text);
-        const newContent = content.set('body', newBody);
+        const body = Arr.set(content.body, index, text);
+        const newContent = Helpers.assign(content, { body });
         onSet(newContent);
 }
 
 function onAddPassage (onSet: OnSet, content: Message.MessageContent)
 {
-        const body = content.body;
-        const newBody = body.push('');
-        const newContent = content.set('body', newBody);
+        const body = Arr.push(content.body, '');
+        const newContent = Helpers.assign(content, { body });
         onSet(newContent);
 }
 
@@ -101,9 +90,8 @@ function onRemovePassage (
         content: Message.MessageContent,
         index: number)
 {
-        const body = content.body;
-        const newBody = body.delete(index);
-        const newContent = content.set('body', newBody);
+        const body = Arr.deleteIndex(content.body, index);
+        const newContent = Helpers.assign(content, { body });
         onSet(newContent);
 }
 
@@ -121,24 +109,24 @@ function createBody (
 
                 const onSetBody = (value: string) => onSetString(name, value);
 
-                const props = Passage.PassageData({
+                const props = {
                         onSetName: onSetName,
                         onSetBody: onSetBody,
                         name: name,
                         strings: strings
-                });
-                return Passage.Passage(props);
+                };
+                return Passage(props);
         });
 
         const onAdd = () => onAddPassage(onSet, content);
         const onRemove = (index: number) =>
                 onRemovePassage(onSet, content, index);
-        const props = Multiple.MultipleData({
+        const props = {
                 onAdd: onAdd,
                 onRemove: onRemove,
                 children: passages,
-        });
-        return Multiple.Multiple(props);
+        };
+        return Multiple(props);
 }
 
 function createFrom (
@@ -149,15 +137,15 @@ function createFrom (
         const value = content.from;
         const onChange = (text: string) =>
                 onSetFrom(onSet, content, text);
-        const valid = profiles.get(value) !== undefined;
-        const data = TextComponent.TextData({
+        const valid = Map.exists(profiles, value);
+        const props = {
                 placeholder: 'sarah',
                 value: value,
                 onChange: onChange,
                 list: 'profileNames',
-        });
-        const from = TextInputValidated.createValidatedText({ data: data }, valid);
-        return EditMessage.wrapInLabel('From', from);
+        };
+        const from = TextInputValidated.createValidatedText(props, valid);
+        return ComponentHelpers.wrapInLabel('From', from);
 }
 
 function createTo (
@@ -166,15 +154,15 @@ function createTo (
         profiles: Profile.Profiles)
 {
         const values = content.to;
-        const onChange = (newTo: Immutable.List<string>) =>
-                onSetTo(onSet, content, newTo);
-        const valid = values.every(
-                to => profiles.get(to) !== undefined);
-        const data = TextList.TextListData({
+        const onChange = (newTo: string[]) => onSetTo(onSet, content, newTo);
+        const valid = values.every(to => Map.exists(profiles, to));
+        const props = {
                 placeholder: 'joe, sarah, mark',
                 values: values,
                 onChange: onChange,
-        });
-        const to = TextInputValidated.createValidatedTextList({ data: data }, valid);
-        return EditMessage.wrapInLabel('To', to);
+        };
+        const to = TextInputValidated.createValidatedTextList(props, valid);
+        return ComponentHelpers.wrapInLabel('To', to);
 }
+
+export = MessageContent;

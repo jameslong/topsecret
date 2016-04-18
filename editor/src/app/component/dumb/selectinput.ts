@@ -1,23 +1,14 @@
-import Immutable = require('immutable');
-import ReactUtils = require('../../redux/react');
+import React = require('react');
 
 import Core = require('../core');
 import Option = Core.Option;
 import Select = Core.Select;
 
-interface SelectInputInt {
+interface SelectInputProps {
         value: string;
-        options: Immutable.List<string>;
+        options: string[];
         onChange: (value: string) => void;
 };
-export type SelectInputData = Immutable.Record.IRecord<SelectInputInt>;
-export const SelectInputData = Immutable.Record<SelectInputInt>({
-        value: null,
-        options: Immutable.List<string>(),
-        onChange: (value: string) => {},
-}, 'SelectInput');
-
-export type SelectInputProps = ReactUtils.Props<SelectInputData>;
 
 interface InputEvent {
         target: {
@@ -25,26 +16,27 @@ interface InputEvent {
         }
 }
 
-function render (props: SelectInputProps)
+function renderSelectInput (props: SelectInputProps)
 {
-        const data = props.data;
         const onChange = (event: InputEvent) =>
-                data.onChange(event.target.value);
+                props.onChange(event.target.value);
 
-        const options = createOptions(data.options);
+        const options = createOptions(props.options);
 
         return Select({
-                value: data.value,
+                value: props.value,
                 onChange: onChange,
         }, options);
 }
 
-export const SelectInput = ReactUtils.createFactory(render, 'SelectInput');
+const SelectInput = React.createFactory(renderSelectInput);
 
-function createOptions (options: Immutable.List<string>)
+function createOptions (options: string[])
 {
         return options.map(option => Option({
                 value: option,
                 key: option,
          }, option));
 }
+
+export = SelectInput;

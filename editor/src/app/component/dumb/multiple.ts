@@ -1,23 +1,14 @@
-import Immutable = require('immutable');
-import ReactUtils = require('../../redux/react');
+import React = require('react');
 
 import Core = require('../core');
 import Div = Core.Div;
 import ButtonInput = require('./buttoninput');
 
-interface MultipleInt {
-        children: Immutable.Iterable<number, any>;
+interface MultipleProps extends React.Props<any> {
+        children: React.ReactElement<any>[];
         onAdd: () => void;
         onRemove: (index: number) => void;
 };
-export type MultipleData = Immutable.Record.IRecord<MultipleInt>;
-export const MultipleData = Immutable.Record<MultipleInt>({
-        children: Immutable.List<React.ReactElement<any>>(),
-        onAdd: () => {},
-        onRemove: () => {},
-}, 'Multiple');
-
-type MultipleProps = ReactUtils.Props<MultipleData>;
 
 function onAdd (addFn: () => void, e: Event)
 {
@@ -36,42 +27,42 @@ function onRemove (
         removeFn(index);
 }
 
-function render (props: MultipleProps)
+function renderMultiple (props: MultipleProps)
 {
-        const data = props.data;
-
-        const children = data.children;
+        const children = props.children;
         const wrappedChildren = children.map((child, index) =>
-                wrapChild(data.onRemove, child, index));
+                wrapChild(props.onRemove, child, index));
 
-        const addFn = (e: Event) => onAdd(data.onAdd, e);
+        const addFn = (e: Event) => onAdd(props.onAdd, e);
         const enabled = true;
-        const addProps = ButtonInput.ButtonData({
+        const addProps = {
                 text: '+',
                 disabled: !enabled,
                 onClick: addFn,
                 className: 'button-add',
-        });
-        const add = ButtonInput.ButtonInput(addProps);
+        };
+        const add = ButtonInput(addProps);
 
         return Div({}, wrappedChildren, add);
 }
 
-export const Multiple = ReactUtils.createFactory(render, 'Multiple');
+const Multiple = React.createFactory(renderMultiple);
 
 function wrapChild (
         removeFn: (index: number) => void,
         child: React.ReactElement<any>,
         index: number)
 {
-        const removeProps = ButtonInput.ButtonData({
+        const removeProps = {
                 text: 'x',
                 disabled: false,
                 onClick: (e: Event) => onRemove(removeFn, e, index),
                 className: 'button-remove',
-        });
-        const remove = ButtonInput.ButtonInput(removeProps);
+        };
+        const remove = ButtonInput(removeProps);
 
         return Div({ className: 'multiple-child', key: index },
                 child, remove);
 }
+
+export = Multiple;

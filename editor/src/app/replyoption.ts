@@ -25,6 +25,17 @@ export const ReplyOptionType = {
         ValidPGPKey: 'validPGPKey',
 }
 
+export function createReplyOptionKeyword (): ReplyOptionKeyword
+{
+        return {
+                type: ReplyOptionType.Keyword,
+                parameters: {
+                        matches: []
+                },
+                messageDelay: MessageDelay.createMessageDelay()
+        };
+}
+
 export function isReplyOptionType (type: string)
 {
         return (type === ReplyOptionType.Default ||

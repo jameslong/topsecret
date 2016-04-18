@@ -1,24 +1,26 @@
 import ActionCreators = require('../../action/actioncreators');
-import ReactUtils = require('../../redux/react');
+import React = require('react');
 import Redux = require('../../redux/redux');
 import State = require('../../state');
 
 import EditPanel = require('../dumb/editpanel');
 
-type EditPanelContainerProps = ReactUtils.Props<State.Store>;
-
-function render (props: EditPanelContainerProps)
-{
-        const data = props.data;
-        const narrativeId = data.ui.activeNarrativeId;
-        const editPanelData = EditPanel.EditPanelData({
-                store: data,
-                onClick: (e: MouseEvent) => onClick(narrativeId, e),
-        });
-        return EditPanel.EditPanel(editPanelData);
+interface EditPanelContainerProps extends React.Props<any> {
+        store: State.Store
 }
 
-export const EditPanelContainer = ReactUtils.createFactory(render, 'EditPanelContainer');
+function renderEditPanelContainer (props: EditPanelContainerProps)
+{
+        const store = props.store;
+        const narrativeId = store.ui.activeNarrativeId;
+        const editPanelProps = {
+                store,
+                onClick: (e: MouseEvent) => onClick(narrativeId, e),
+        };
+        return EditPanel(editPanelProps);
+}
+
+const EditPanelContainer = React.createFactory(renderEditPanelContainer);
 
 function onClick (narrativeId: string, e: MouseEvent)
 {
@@ -27,3 +29,5 @@ function onClick (narrativeId: string, e: MouseEvent)
         const action = ActionCreators.closeMessage(narrativeId);
         Redux.handleAction(action);
 }
+
+export = EditPanelContainer;

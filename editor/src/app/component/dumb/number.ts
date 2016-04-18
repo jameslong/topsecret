@@ -1,22 +1,13 @@
-import Immutable = require('immutable');
-import ReactUtils = require('../../redux/react');
+import React = require('react');
 
 import Core = require('../core');
 import Input = Core.Input;
 
-interface NumberInt {
+interface NumberProps extends React.Props<any> {
         placeholder: number;
         value: number;
         onChange: (value: number) => void;
 };
-export type NumberData = Immutable.Record.IRecord<NumberInt>;
-export const NumberData = Immutable.Record<NumberInt>({
-        placeholder: 0,
-        value: 0,
-        onChange: (value: number) => {},
-}, 'Number');
-
-type NumberProps = ReactUtils.Props<NumberData>;
 
 interface NumberEvent {
         target: {
@@ -24,20 +15,21 @@ interface NumberEvent {
         }
 }
 
-function render (props: NumberProps)
+function renderNumber (props: NumberProps)
 {
-        const data = props.data;
         const onChange = (event: NumberEvent) => {
                 const value = parseFloat(event.target.value);
-                return data.onChange(value);
+                return props.onChange(value);
         };
 
         return Input({
-                placeholder: data.placeholder,
-                value: data.value,
+                placeholder: props.placeholder,
+                value: props.value,
                 onChange: onChange,
                 type: 'number',
         });
 }
 
-export const Number = ReactUtils.createFactory(render, 'Number');
+const Number = React.createFactory(renderNumber);
+
+export = Number;

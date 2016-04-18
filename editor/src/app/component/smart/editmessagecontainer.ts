@@ -1,33 +1,24 @@
 import ActionCreators = require('../../action/actioncreators');
-import Immutable = require('immutable');
+import Arr = require('../../../../../core/src/app/utils/array');
 import Message = require('../../message');
 import MessageDelay = require('../../messagedelay');
-import ReactUtils = require('../../redux/react');
+import React = require('react');
 import Redux = require('../../redux/redux');
 import State = require('../../state');
 
 import EditMessage = require('../dumb/editmessage');
 
-interface EditMessageContainerInt {
+interface EditMessageContainerProps extends React.Props<any> {
         name: string;
         narrativeId: string;
         store: State.Store;
 };
-export type EditMessageContainerData = Immutable.Record.IRecord<EditMessageContainerInt>;
-export const EditMessageContainerData = Immutable.Record<EditMessageContainerInt>({
-        name: '',
-        narrativeId: '',
-        store: State.Store(),
-}, 'EditMessageContainer');
 
-type EditMessageContainerProps = ReactUtils.Props<EditMessageContainerData>;
-
-function render (props: EditMessageContainerProps)
+function renderEditMessageContainer (props: EditMessageContainerProps)
 {
-        const data = props.data;
-        const name = data.name;
-        const newName = data.store.data.nameScratchpad.get(name);
-        const narrativeId = data.narrativeId;
+        const name = props.name;
+        const newName = props.store.data.nameScratchpad[name];
+        const narrativeId = props.narrativeId;
 
         const onDeleteLocal = () => onDelete(narrativeId, name);
         const onSetNameScratchpadLocal = (newName: string) =>
@@ -48,9 +39,9 @@ function render (props: EditMessageContainerProps)
         const onSetFallbackLocal = (delay: MessageDelay.MessageDelay) =>
                 onSetFallback(narrativeId, name, delay);
 
-        const editMessageData = EditMessage.EditMessageData({
-                name: data.name,
-                store: data.store,
+        const editMessageProps = {
+                name,
+                store: props.store,
                 onDelete: onDeleteLocal,
                 onSetNameScratchpad: onSetNameScratchpadLocal,
                 onSetName: onSetNameLocal,
@@ -61,11 +52,11 @@ function render (props: EditMessageContainerProps)
                 onSetScript: onSetScriptLocal,
                 onSetChildren: onSetChildrenLocal,
                 onSetFallback: onSetFallbackLocal,
-        });
-        return EditMessage.EditMessage(editMessageData);
+        };
+        return EditMessage(editMessageProps);
 }
 
-export const EditMessageContainer = ReactUtils.createFactory(render, 'EditMessageContainer');
+const EditMessageContainer = React.createFactory(renderEditMessageContainer);
 
 function onDelete (narrativeId: string, name: string)
 {
@@ -105,7 +96,7 @@ function onSetSubjectName (
         Redux.handleAction(action);
 }
 
-export function onSetString (
+function onSetString (
         narrativeId: string, stringName: string, value: string)
 {
         const action = ActionCreators.setString({
@@ -156,14 +147,14 @@ function onSetChild (
         index: number)
 {
         const children = message.children;
-        const newChildren = children.set(index, delay);
+        const newChildren = Arr.set(children, index, delay);
         onSetChildren(narrativeId, message.name, newChildren);
 }
 
 function onSetChildren (
         narrativeId: string,
         messageName: string,
-        delays: Immutable.List<MessageDelay.MessageDelay>)
+        delays: MessageDelay.MessageDelay[])
 {
         const action = ActionCreators.setMessageChildren({
                 narrativeId,
@@ -175,9 +166,9 @@ function onSetChildren (
 
 function onAddChild (narrativeId: string, message: Message.Message)
 {
-        const newChild = MessageDelay.MessageDelay();
+        const newChild = MessageDelay.createMessageDelay();
         const children = message.children;
-        const newChildren = children.push(newChild);
+        const newChildren = Arr.push(children, newChild);
         onSetChildren(narrativeId, message.name, newChildren);
 }
 
@@ -185,7 +176,7 @@ function onRemoveChild (
         narrativeId: string, message: Message.Message, index: number)
 {
         const children = message.children;
-        const newChildren = children.delete(index);
+        const newChildren = Arr.deleteIndex(children, index);
         onSetChildren(narrativeId, message.name, newChildren);
 }
 
@@ -204,7 +195,7 @@ function onSetFallback (
 
 function onAddFallback (narrativeId: string, messageName: string)
 {
-        const newDelay = MessageDelay.MessageDelay();
+        const newDelay = MessageDelay.createMessageDelay();
         onSetFallback(narrativeId, messageName, newDelay);
 }
 
@@ -212,3 +203,5 @@ function onRemoveFallback (narrativeId: string, messageName: string)
 {
         onSetFallback(narrativeId, messageName, null);
 }
+
+export = EditMessageContainer;

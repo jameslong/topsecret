@@ -22,7 +22,19 @@ export function push<T>(array: T[], value: T)
         return array.concat([value]);
 }
 
-export function remove<T>(array: T[], value: T)
+export function set<T>(array: T[], index: number, value: T)
+{
+        const copy = array.slice(0);
+        copy[index] = value;
+        return copy;
+}
+
+export function deleteIndex<T>(array: T[], index: number)
+{
+        return array.slice(index, index + 1);
+}
+
+export function removeValue<T>(array: T[], value: T)
 {
         return array.filter(element => element !== value);
 }

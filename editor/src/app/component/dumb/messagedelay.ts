@@ -1,129 +1,122 @@
-import Immutable = require('immutable');
+import Arr = require('../../../../../core/src/app/utils/array');
+import Helpers = require('../../../../../core/src/app/utils/helpers');
+import Map = require('../../../../../core/src/app/utils/map');
 import Message = require('../../message');
 import MessageDelay = require('../../messagedelay');
 import Narrative = require('../../narrative');
-import ReactUtils = require('../../redux/react');
+import React = require('react');
 import TextInputValidated = require('../textinputvalidated');
 
+import ComponentHelpers = require('../helpers');
 import Core = require('../core');
 import Div = Core.Div;
 import EditMessage = require('./editmessage');
 import NumberComponent = require('./number');
 import TextComponent = require('./text');
 
-interface MessageDelayInt {
+interface MessageDelayProps extends React.Props<any> {
         delay: MessageDelay.MessageDelay;
         onChange: (delay: MessageDelay.MessageDelay) => void;
         messages: Message.Messages;
 };
-export type MessageDelayData = Immutable.Record.IRecord<MessageDelayInt>;
-export const MessageDelayData = Immutable.Record<MessageDelayInt>({
-        delay: MessageDelay.MessageDelay(),
-        onChange: () => {},
-        messages: Immutable.Map<string, Message.Message>(),
-}, 'MessageDelay');
 
-type MessageDelayProps = ReactUtils.Props<MessageDelayData>;
-
-function render (props: MessageDelayProps)
+function renderMessageDelay (props: MessageDelayProps)
 {
-        const data = props.data;
-        const messages = data.messages;
-        const messageDelay = data.delay;
+        const messages = props.messages;
+        const messageDelay = props.delay;
         const delayName = messageDelay.name;
 
-        const onSetNameLocal = (name: string) =>
-                onSetName(data, name);
-        const validName =
-                messages.get(delayName) !== undefined;
-        const textData = TextComponent.TextData({
+        const onSetNameLocal = (name: string) => onSetName(props, name);
+        const validName = Map.exists(messages, delayName);
+        const textProps = {
                 placeholder: 'message_name',
                 value: delayName,
                 onChange: onSetNameLocal,
                 list: 'messageNames',
-        });
-        const nameText = TextInputValidated.createValidatedText({
-                data: textData,
-        }, validName);
+        };
+        const nameText = TextInputValidated.createValidatedText(
+                textProps, validName);
         const name = Div({ className: 'message-delay-name' },
                 nameText);
 
         const delayCondition = messageDelay.condition;
         const onSetConditionLocal = (condition: string) =>
-                onSetCondition(data, condition);
-        const conditionTextData = TextComponent.TextData({
+                onSetCondition(props, condition);
+        const conditionProps = {
                 placeholder: 'condition',
                 value: delayCondition,
                 onChange: onSetConditionLocal,
-        });
-        const conditionText = TextComponent.Text(conditionTextData);
+        };
+        const conditionText = TextComponent(conditionProps);
         const condition = Div({ className: 'message-delay-condition' },
                 conditionText);
 
-        const onSetDayLocal = (value: number) => onSetDay(data, value);
-        const onSetHourLocal = (value: number) => onSetHour(data, value);
-        const onSetMinLocal = (value: number) => onSetMin(data, value);
-        const dayData = NumberComponent.NumberData({
+        const onSetDayLocal = (value: number) => onSetDay(props, value);
+        const onSetHourLocal = (value: number) => onSetHour(props, value);
+        const onSetMinLocal = (value: number) => onSetMin(props, value);
+        const dayProps = {
                 placeholder: 0,
-                value: messageDelay.delay.get(0),
+                value: messageDelay.delay[0],
                 onChange: onSetDayLocal,
-        });
-        const hourData = NumberComponent.NumberData({
+        };
+        const hourProps = {
                 placeholder: 0,
-                value: messageDelay.delay.get(1),
+                value: messageDelay.delay[1],
                 onChange: onSetHourLocal,
-        });
-        const minData = NumberComponent.NumberData({
+        };
+        const minProps = {
                 placeholder: 0,
-                value: messageDelay.delay.get(2),
+                value: messageDelay.delay[2],
                 onChange: onSetMinLocal,
-        });
+        };
         const day = Div({ className: 'message-delay-day' },
-                NumberComponent.Number(dayData));
+                NumberComponent(dayProps));
         const hour = Div({ className: 'message-delay-hour' },
-                NumberComponent.Number(hourData));
+                NumberComponent(hourProps));
         const min = Div({ className: 'message-delay-min' },
-                NumberComponent.Number(minData));
+                NumberComponent(minProps));
 
-        const child = EditMessage.wrapInLabel('Name/delay',
+        const child = ComponentHelpers.wrapInLabel('Name/delay',
                 name, condition, day, hour, min);
 
         return Div({ className: 'message-delay' }, child);
 }
 
-export const MessageDelayComponent = ReactUtils.createFactory(render, 'MessageDelay');
+const MessageDelayComponent = React.createFactory(renderMessageDelay);
 
-function onSetName (data: MessageDelayData, name: string)
+function onSetName (data: MessageDelayProps, name: string)
 {
-        const newDelay = data.delay.set('name', name);
+        const newDelay = Helpers.assign(data.delay, { name });
         data.onChange(newDelay);
 }
 
-function onSetCondition (data: MessageDelayData, condition: string)
+function onSetCondition (data: MessageDelayProps, condition: string)
 {
-        const newDelay = data.delay.set('condition', condition);
+        const newDelay = Helpers.assign(data.delay, { condition });
         data.onChange(newDelay);
 }
 
-function onSetDay (data: MessageDelayData, value: number)
+function onSetDay (data: MessageDelayProps, value: number)
 {
         onSetTime(data, 0, value);
 }
 
-function onSetHour (data: MessageDelayData, value: number)
+function onSetHour (data: MessageDelayProps, value: number)
 {
         onSetTime(data, 1, value);
 }
 
-function onSetMin (data: MessageDelayData, value: number)
+function onSetMin (data: MessageDelayProps, value: number)
 {
         onSetTime(data, 2, value);
 }
 
-function onSetTime (data: MessageDelayData, index: number, value: number)
+function onSetTime (data: MessageDelayProps, index: number, value: number)
 {
         const delay = data.delay.delay;
-        const newDelay = delay.set(index, value);
-        const newData = data.delay.set('delay', newDelay);
+        const newDelay = Arr.set(delay, index, value);
+        const newData = Helpers.assign(data.delay, { delay: newDelay });
         data.onChange(newData);
 }
+
+export = MessageDelayComponent;

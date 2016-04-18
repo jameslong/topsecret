@@ -1,41 +1,32 @@
-import Immutable = require('immutable');
 import Narrative = require('../../narrative');
-import ReactUtils = require('../../redux/react');
+import React = require('react');
 import State = require('../../state');
 
 import Core = require('../core');
 import Div = Core.Div;
 import EditMessageContainer = require('../smart/editmessagecontainer');
 
-interface EditPanelInt {
+interface EditPanelProps {
         store: State.Store;
         onClick: (e: MouseEvent) => void;
 };
-export type EditPanelData = Immutable.Record.IRecord<EditPanelInt>;
-export const EditPanelData = Immutable.Record<EditPanelInt>({
-        store: State.Store(),
-        onClick: () => {},
-}, 'EditPanel');
 
-type EditPanelProps = ReactUtils.Props<EditPanelData>;
-
-function render (props: EditPanelProps)
+function renderEditPanel (props: EditPanelProps)
 {
-        const data = props.data;
-        const store = data.store;
+        const store = props.store;
         const narrativeId = store.ui.activeNarrativeId;
         const narrative = Narrative.getActiveNarrative(store);
 
-        const editMessageData = EditMessageContainer.EditMessageContainerData({
+        const editMessageProps = {
                 name: store.ui.activeMessageId,
                 narrativeId,
                 store: store,
-        });
-        const editMessage = EditMessageContainer.EditMessageContainer(editMessageData);
+        };
+        const editMessage = EditMessageContainer(editMessageProps);
 
         const panelProps = {
                 className: 'edit-panel',
-                onClick: data.onClick,
+                onClick: props.onClick,
         };
 
         const contentProps = {
@@ -48,9 +39,11 @@ function render (props: EditPanelProps)
         );
 }
 
-export const EditPanel = ReactUtils.createFactory(render, 'EditPanel');
+const EditPanel = React.createFactory(renderEditPanel);
 
 function onClick (e: MouseEvent)
 {
         e.stopPropagation();
 }
+
+export = EditPanel;

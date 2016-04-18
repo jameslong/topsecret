@@ -42,7 +42,7 @@ const state: State.State = {
         dirty: false,
 };
 
-Redux.init(state, StateReducers.state, Root.Root, wrapper);
+Redux.init(state, StateReducers.state, Root, wrapper);
 
 AsyncRequest.requestNarratives(config.serverURL);
 EventHandler.addKeyHandlers();

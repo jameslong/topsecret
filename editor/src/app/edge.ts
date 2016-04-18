@@ -1,5 +1,4 @@
 import ActionCreators = require('./action/actioncreators');
-import Helpers = require('./helpers');
 import Map = require('./../../../core/src/app/utils/map');
 import MathUtils = require('./math');
 import Message = require('./message');
@@ -13,7 +12,7 @@ export enum Type {
         ReplyOption,
 }
 
-interface Edge {
+export interface Edge {
         name: string;
         source: string;
         target: string;

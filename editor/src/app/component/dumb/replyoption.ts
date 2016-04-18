@@ -1,11 +1,12 @@
-import Immutable = require('immutable');
+import Helpers = require('../../../../../core/src/app/utils/helpers');
 import Message = require('../../message');
 import MessageDelay = require('../../messagedelay');
 import Narrative = require('../../narrative');
-import ReactUtils = require('../../redux/react');
+import React = require('react');
 import ReplyOption = require('../../replyoption');
 import TextInputValidated = require('../textinputvalidated');
 
+import ComponentHelpers = require('../helpers');
 import Core = require('../core');
 import Div = Core.Div;
 import EditMessage = require('./editmessage');
@@ -13,73 +14,63 @@ import MessageDelayComponent = require('./messagedelay');
 import TextComponent = require('./text');
 import TextList = require('./textlist');
 
-interface ReplyOptionInt {
+interface ReplyOptionProps extends React.Props<any> {
         onSet: (option: ReplyOption.ReplyOption) => void;
         replyOption: ReplyOption.ReplyOption;
         messages: Message.Messages;
 };
-export type ReplyOptionData = Immutable.Record.IRecord<ReplyOptionInt>;
-export const ReplyOptionData = Immutable.Record<ReplyOptionInt>({
-        onSet: () => {},
-        replyOption: ReplyOption.ReplyOptionKeyword(),
-        messages: Immutable.Map<string, Message.Message>(),
-}, 'ReplyOption');
 
-type ReplyOptionProps = ReactUtils.Props<ReplyOptionData>;
-
-function render (props: ReplyOptionProps)
+function renderReplyOption (props: ReplyOptionProps)
 {
-        const data = props.data;
-        const option = data.replyOption;
+        const option = props.replyOption;
         const optionType = option.type;
-        const onSet = data.onSet;
+        const onSet = props.onSet;
 
         const onSetType = (value: string) =>
                 setType(onSet, option, value);
         const validType = ReplyOption.isReplyOptionType(optionType);
-        const typeData = TextComponent.TextData({
+        const typeProps = {
                 placeholder: 'type',
                 value: optionType,
                 onChange: onSetType,
                 list: 'replyOptionTypes',
-        });
-        const typeText  = TextInputValidated.createValidatedText({
-                data: typeData,
-        }, validType);
-        const type = EditMessage.wrapInLabel('Type', typeText);
+        };
+        const typeText  = TextInputValidated.createValidatedText(
+                typeProps, validType);
+        const type = ComponentHelpers.wrapInLabel('Type', typeText);
 
         const parameters = renderParameters(onSet, option);
 
         const onSetDelay = (delay: MessageDelay.MessageDelay) =>
                 setMessageDelay(onSet, option, delay);
-        const delayProps = MessageDelayComponent.MessageDelayData({
+        const delayProps = {
                 delay: option.messageDelay,
                 onChange: onSetDelay,
-                messages: data.messages,
-        });
-        const delay = MessageDelayComponent.MessageDelayComponent(delayProps);
+                messages: props.messages,
+        };
+        const delay = MessageDelayComponent(delayProps);
 
         return Div({ className: 'reply-option' },
                 type, parameters, delay);
 }
 
-export const ReplyOptionComponent = ReactUtils.createFactory(render, 'ReplyOption');
+const ReplyOptionComponent = React.createFactory(renderReplyOption);
 
 function setType (
         onSet: (option: ReplyOption.ReplyOption) => void,
         option: ReplyOption.ReplyOption,
-        newType: string)
+        type: string)
 {
-        const newOption = option.set('type', newType);
+        const newOption = Helpers.assign(option, { type });
         onSet(newOption);
 }
 
 function setMessageDelay (
         onSet: (option: ReplyOption.ReplyOption) => void,
         option: ReplyOption.ReplyOption,
-        newDelay: MessageDelay.MessageDelay)
+        messageDelay: MessageDelay.MessageDelay)
 {
-        const newOption = option.set('messageDelay', newDelay);
+        const newOption = Helpers.assign(option, { messageDelay });
         onSet(newOption);
 }
 
@@ -101,27 +92,27 @@ function renderMatches (
         option: ReplyOption.ReplyOptionKeyword)
 {
         const values = option.parameters.matches;
-        const onChange = (newMatches: Immutable.List<string>) =>
+        const onChange = (newMatches: string[]) =>
                 setMatches(onSet, option, newMatches);
         const valid = (values.every(match => !!match) &&
-                values.size > 0);
-        const data = TextList.TextListData({
+                values.length > 0);
+        const props = {
                 placeholder: 'match0, match1, match2',
                 values: values,
                 onChange: onChange,
-        });
-        const matches = TextInputValidated.createValidatedTextList(
-                { data: data}, valid);
-        return EditMessage.wrapInLabel('Matches', matches);
+        };
+        const matches = TextInputValidated.createValidatedTextList(props, valid);
+        return ComponentHelpers.wrapInLabel('Matches', matches);
 }
 
 function setMatches (
         onSet: (option: ReplyOption.ReplyOption) => void,
         option: ReplyOption.ReplyOptionKeyword,
-        newMatches: Immutable.List<string>)
+        matches: string[])
 {
-        const parameters = option.parameters;
-        const newParameters = parameters.set('matches', newMatches);
-        const newOption = option.set('parameters', newParameters);
+        const parameters = Helpers.assign(option.parameters, { matches });
+        const newOption = Helpers.assign(option, { parameters });
         onSet(newOption);
 }
+
+export = ReplyOptionComponent;

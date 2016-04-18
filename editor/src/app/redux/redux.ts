@@ -13,7 +13,7 @@ export let handleAction: <T>(action: Action<T>) => void = null;
 export function init<T, U>(
         state: T,
         reducer: (state: T, action: Action<U>) => T,
-        rootComponent: React.Factory<T>,
+        rootComponent: React.Factory<{ state: T }>,
         wrapper: HTMLElement)
 {
         let appState = { state: state };
@@ -26,9 +26,9 @@ export function init<T, U>(
 
 function render <T>(
         state: T,
-        rootComponent: React.Factory<T>,
+        rootComponent: React.Factory<{ state: T }>,
         wrapper: HTMLElement)
 {
-        const root = rootComponent(state);
+        const root = rootComponent({ state });
         ReactDOM.render(root, wrapper);
 }

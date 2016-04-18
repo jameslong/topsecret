@@ -1,35 +1,26 @@
-import Immutable = require('immutable');
-import ReactUtils = require('../../redux/react');
+import React = require('react');
 
 import Core = require('../core');
 import Button = Core.Button;
 
-interface ButtonInt {
+interface ButtonInputProps extends React.Props<any> {
         text: string;
         disabled: boolean;
         onClick: (event: Event) => void;
         className: string;
 };
-export type ButtonData = Immutable.Record.IRecord<ButtonInt>;
-export const ButtonData = Immutable.Record<ButtonInt>({
-        text: '',
-        disabled: false,
-        onClick: () => {},
-        className: null,
-}, 'Button');
 
-type ButtonInputProps = ReactUtils.Props<ButtonData>;
-
-function render (props: ButtonInputProps)
+function renderButtonInput (props: ButtonInputProps)
 {
-        const data = props.data;
-        const onClick = (event: Event) => data.onClick(event);
+        const onClick = (event: Event) => props.onClick(event);
 
         return Button({
-                disabled: data.disabled,
+                disabled: props.disabled,
                 onClick: onClick,
-                className: data.className,
-        }, data.text);
+                className: props.className,
+        }, props.text);
 }
 
-export const ButtonInput = ReactUtils.createFactory(render, 'ButtonInput');
+const ButtonInput = React.createFactory(renderButtonInput);
+
+export = ButtonInput;

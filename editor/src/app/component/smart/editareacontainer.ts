@@ -1,24 +1,26 @@
 import ActionCreators = require('../../action/actioncreators');
-import ReactUtils = require('../../redux/react');
+import React = require('react');
 import Redux = require('../../redux/redux');
 import State = require('../../state');
 
 import EditArea = require('../dumb/editarea');
 
-type EditAreaContainerProps = ReactUtils.Props<State.Store>;
+interface EditAreaContainerProps extends React.Props<any> {
+        store: State.Store;
+};
 
-function render (props: EditAreaContainerProps)
+function renderEditAreaContainer (props: EditAreaContainerProps)
 {
-        const data = props.data;
-        const narrativeId = data.ui.activeNarrativeId;
-        const editAreaData = EditArea.EditAreaData({
-                store: data,
+        const store = props.store;
+        const narrativeId = store.ui.activeNarrativeId;
+        const editAreaProps = {
+                store,
                 onClick: (e: MouseEvent) => onClick(narrativeId, e),
-        });
-        return EditArea.EditArea(editAreaData);
+        };
+        return EditArea(editAreaProps);
 }
 
-export const EditAreaContainer = ReactUtils.createFactory(render, 'EditAreaContainer');
+const EditAreaContainer = React.createFactory(renderEditAreaContainer);
 
 function onClick (narrativeId: string, e: MouseEvent)
 {
@@ -27,3 +29,5 @@ function onClick (narrativeId: string, e: MouseEvent)
         const action = ActionCreators.deselectAllMessages(narrativeId);
         Redux.handleAction(action);
 }
+
+export = EditAreaContainer;

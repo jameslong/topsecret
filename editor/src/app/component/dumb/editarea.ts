@@ -1,6 +1,7 @@
-import Immutable = require('immutable');
+import Func = require('../../../../../core/src/app/utils/function');
+import Helpers = require('../../../../../core/src/app/utils/helpers');
 import Narrative = require('../../narrative');
-import ReactUtils = require('../../redux/react');
+import React = require('react');
 import State = require('../../state');
 
 import Core = require('../core');
@@ -10,54 +11,48 @@ import NodeContainer = require('../smart/nodecontainer');
 import Surface = require('./surface');
 import SurfaceSVG = require('./surfacesvg');
 
-interface EditAreaInt {
+interface EditAreaProps extends React.Props<any> {
         store: State.Store;
         onClick: (e: MouseEvent) => void,
 };
-export type EditAreaData = Immutable.Record.IRecord<EditAreaInt>;
-export const EditAreaData = Immutable.Record<EditAreaInt>({
-        store: State.Store(),
-        onClick: () => {},
-}, 'EditArea');
 
-type EditAreaProps = ReactUtils.Props<EditAreaData>;
-
-function render (props: EditAreaProps)
+function renderEditArea (props: EditAreaProps)
 {
-        const data = props.data;
-        const store = data.store;
+        const store = props.store;
         const narrativeId = store.ui.activeNarrativeId;
         const narrative = Narrative.getActiveNarrative(store);
         const messages = narrative.messagesById;
-        const messageList = messages.toList();
+        const messageList = Helpers.arrayFromMap(messages, Func.identity);
 
         const messageComponents = messageList.map(
-                message => NodeContainer.NodeContainer({
+                message => NodeContainer({
                         key: message.name,
-                        data: NodeContainer.NodeContainerData({
-                                message, narrativeId })
+                        message,
+                        narrativeId,
                 })
         );
 
         const edges = store.data.edges;
         const connections = edges.map(
-                edge => Arrow.Arrow({
+                edge => Arrow({
                         key: edge.name,
-                        data: edge,
+                        edge,
                 })
         );
 
         const editProps = {
                 className: 'edit-area',
-                onClick: data.onClick,
+                onClick: props.onClick,
         };
 
         const surfaceProps = { narrativeId };
 
         return Div(editProps,
-                SurfaceSVG.SurfaceSVG(null, connections),
-                Surface.Surface(narrativeId, messageComponents)
+                SurfaceSVG(null, connections),
+                Surface(surfaceProps, messageComponents)
         );
 }
 
-export const EditArea = ReactUtils.createFactory(render, 'EditArea');
+const EditArea = React.createFactory(renderEditArea);
+
+export = EditArea;

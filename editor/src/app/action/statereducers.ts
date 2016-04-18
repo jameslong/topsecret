@@ -247,7 +247,7 @@ function onDirtyState (delayms: number)
 function onNewStore (state: State.State, present: State.Store)
 {
         console.log('new store');
-        const past = [...state.past, present];
+        const past = [...state.past, state.present];
         const future: State.Store[] = [];
         const tempState = Helpers.assign(state, {
                 past, present, future });
