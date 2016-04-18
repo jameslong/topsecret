@@ -4,7 +4,7 @@
         fill: hsl(240, 5%, 90%);
 }
 
-.arrow-child .line {
+.arrow-fallback .line {
         stroke-dasharray: 30,5;
 }
 
