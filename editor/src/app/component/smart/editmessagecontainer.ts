@@ -23,8 +23,8 @@ function renderEditMessageContainer (props: EditMessageContainerProps)
         const onSetNameScratchpadLocal = (newName: string) =>
                 onSetNameScratchpad(narrativeId, name, newName);
         const onSetNameLocal = () => onSetName(narrativeId, name, newName);
-        const onSetSubjectNameLocal = (subjectName: string) =>
-                onSetSubjectName(narrativeId, name, subjectName);
+        const onSetSubjectLocal = (value: string) =>
+                onSetSubject(narrativeId, name, value);
         const onSetStringLocal = (name: string, value: string) =>
                 onSetString(narrativeId, name, value);
         const onSetEndGameLocal = (endGame: boolean) =>
@@ -43,7 +43,7 @@ function renderEditMessageContainer (props: EditMessageContainerProps)
                 store: props.store,
                 onSetNameScratchpad: onSetNameScratchpadLocal,
                 onSetName: onSetNameLocal,
-                onSetSubjectName: onSetSubjectNameLocal,
+                onSetSubject: onSetSubjectLocal,
                 onSetString: onSetStringLocal,
                 onSetEndGame: onSetEndGameLocal,
                 onSetEncrypted: onSetEncryptedLocal,
@@ -84,13 +84,12 @@ function onSetName (narrativeId: string, name: string, newName: string)
         Redux.handleAction(action);
 }
 
-function onSetSubjectName (
-        narrativeId: string, messageName: string, newSubject: string)
+function onSetSubject (narrativeId: string, name: string, value: string)
 {
         const action = ActionCreators.setMessageSubject({
                 narrativeId,
-                name: messageName,
-                value: newSubject,
+                name,
+                value,
         });
         Redux.handleAction(action);
 }

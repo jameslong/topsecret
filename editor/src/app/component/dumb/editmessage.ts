@@ -28,7 +28,7 @@ interface EditMessageProps extends React.Props<any> {
         store: State.Store;
         onSetNameScratchpad: (newName: string) => void;
         onSetName: () => void;
-        onSetSubjectName: (subjectName: string) => void;
+        onSetSubject: (value: string) => void;
         onSetString: (name: string, value: string) => void;
         onSetEndGame: (endGame: boolean) => void;
         onSetEncrypted: (encrypted: boolean) => void;
@@ -58,11 +58,7 @@ function renderEditMessage (props: EditMessageProps)
                 props.onSetNameScratchpad,
                 props.onSetName);
 
-        const subject = createSubject(
-                message,
-                strings,
-                props.onSetSubjectName,
-                props.onSetString);
+        const subject = createSubject(message, strings, props.onSetSubject);
 
         const messageContent = createMessageContent(
                 narrativeId, message, strings, profiles);
@@ -214,31 +210,18 @@ function createDeleteButton (
 function createSubject (
         message: Message.Message,
         strings: Narrative.Strings,
-        onSetSubjectName: (subjectName: string) => void,
-        onSetString: (name: string, value: string) => void)
+        onSetSubject: (value: string) => void)
 {
         const subjectName = message.threadSubject;
         const subjectValue = strings[subjectName];
-        const messageName = message.name;
-
-        const nameProps = {
-                placeholder: 'subject_string_name',
-                value: subjectName,
-                onChange: onSetSubjectName,
-                list: 'stringNames',
-        };
-        const name = TextComponent(nameProps);
-
-        const onChangeString = (value: string) =>
-                onSetString(subjectName, value);
         const subjectProps = {
                 placeholder: 'subject',
                 value: subjectValue,
-                onChange: onChangeString,
+                onChange: onSetSubject,
         };
         const subject = TextComponent(subjectProps);
 
-        return Div({}, name, subject);
+        return Div({}, subject);
 }
 
 function onSetChild (

@@ -450,13 +450,24 @@ function handleSetMessageSubject (
         config: Config.Config,
         action: Actions.SetMessageSubject)
 {
-        const parameters = action.parameters;
-        return setMessageProperty(
-                parameters.name,
+        const { name, narrativeId, value } = action.parameters;
+        const stringName = `${name}_subject`;
+        const threadSubjectValue = value ? stringName : '';
+        const tempState = setMessageProperty(
+                name,
                 'threadSubject',
-                parameters.value,
-                parameters.narrativeId,
+                threadSubjectValue,
+                narrativeId,
                 state);
+        const narratives = tempState.narrativesById;
+        const narrative = narratives[narrativeId];
+        const strings = narrative.stringsById;
+        const newStrings = value ?
+                Map.set(strings, stringName, value) :
+                Map.remove(strings, stringName);
+        const newNarrative = Helpers.assign(narrative, { stringsById: newStrings });
+        const newNarratives = Map.set(narratives, newNarrative.name, newNarrative);
+        return Helpers.assign(tempState, { narrativesById: newNarratives });
 }
 
 function handleSetMessageEndGame (
