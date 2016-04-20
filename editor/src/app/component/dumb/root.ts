@@ -38,6 +38,7 @@ function renderRoot (props: RootProps)
                 narrativeNames,
                 activeNarrativeId,
                 activeMessageId: singleSelected,
+                saving: state.dirty,
         };
 
         return Div({ className: 'root' },

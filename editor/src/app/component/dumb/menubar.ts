@@ -13,6 +13,7 @@ interface MenuBarProps extends React.Props<any> {
         onAddMessage: () => void;
         onTest: () => void;
         onSelectNarrative: (name: string) => void;
+        saving: boolean;
 };
 
 function renderMenuBar (props: MenuBarProps)
@@ -21,6 +22,8 @@ function renderMenuBar (props: MenuBarProps)
         const activeNarrative = props.activeNarrativeId;
         const activeMessage = props.activeMessageId;
 
+        const saveText = props.saving ? 'Saving...' : 'All changes saved';
+        const saveStatus = Div({ className: 'menu-bar-save-status' }, saveText);
         const narrativeSelect = createNarrativeSelect(
                 props.onSelectNarrative,
                 narrativeNames,
@@ -29,7 +32,7 @@ function renderMenuBar (props: MenuBarProps)
         const test = createTest(activeMessage, props.onTest);
 
         return Div({ className: 'menu-bar' },
-                narrativeSelect, addMessage, test);
+                saveStatus, narrativeSelect, addMessage, test);
 }
 
 const MenuBar = React.createFactory(renderMenuBar);

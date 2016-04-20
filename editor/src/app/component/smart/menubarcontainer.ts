@@ -9,6 +9,7 @@ interface MenuBarContainerProps extends React.Props<any> {
         narrativeNames: string[];
         activeNarrativeId: string;
         activeMessageId: string;
+        saving: boolean;
 };
 
 function renderMenuBarContainer (props: MenuBarContainerProps)
@@ -17,6 +18,7 @@ function renderMenuBarContainer (props: MenuBarContainerProps)
         const activeMessageId = props.activeMessageId;
         const narrativeId = props.activeNarrativeId;
         const onTestLocal = () => onTest(version, activeMessageId);
+        const saving = props.saving;
 
         const menuBarProps = {
                 narrativeNames: props.narrativeNames,
@@ -25,6 +27,7 @@ function renderMenuBarContainer (props: MenuBarContainerProps)
                 onAddMessage: () => onAddMessage(narrativeId),
                 onTest: onTestLocal,
                 onSelectNarrative,
+                saving,
         };
         return MenuBar(menuBarProps);
 }

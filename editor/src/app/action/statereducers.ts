@@ -274,7 +274,10 @@ function onNewStore (state: State.State, present: State.Store)
         const tempState = Helpers.assign(state, {
                 past, present, future });
         const newState = trimStores(tempState);
-        return setDirtyState(newState);
+
+        return (newState.present.data !== state.present.data) ?
+                setDirtyState(newState) :
+                newState;
 }
 
 function trimStores (state: State.State)

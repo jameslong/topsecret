@@ -5,3 +5,9 @@
         top: 0;
         left: 0;
 }
+
+.menu-bar-save-status {
+        display: inline-block;
+        color: hsl(240, 5%, 90%);
+        padding-right: 0.5rem;
+}
