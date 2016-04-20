@@ -31,7 +31,7 @@ export function set<T>(array: T[], index: number, value: T)
 
 export function deleteIndex<T>(array: T[], index: number)
 {
-        return array.slice(index, index + 1);
+        return array.filter((value, ind) => ind !== index);
 }
 
 export function removeValue<T>(array: T[], value: T)
