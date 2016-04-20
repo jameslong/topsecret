@@ -37,12 +37,10 @@ function renderMessageContent (props: MessageContentProps)
         const strings = props.strings;
 
         const from = createFrom(onSet, message, profiles)
-        const to = createTo(onSet, message, profiles)
         const body = createBody(onSet, onSetString, message, strings);
 
         return Div({},
                 ComponentHelpers.wrapInSubgroup(from),
-                ComponentHelpers.wrapInSubgroup(to),
                 ComponentHelpers.wrapInSubgroup(body)
         );
 }
@@ -55,15 +53,6 @@ function onSetFrom (
         from: string)
 {
         const newContent = Helpers.assign(content, { from });
-        onSet(newContent);
-}
-
-function onSetTo (
-        onSet: OnSet,
-        content: Message.MessageContent,
-        to: string[])
-{
-        const newContent = Helpers.assign(content, { to });
         onSet(newContent);
 }
 
@@ -146,23 +135,6 @@ function createFrom (
         };
         const from = TextInputValidated.createValidatedText(props, valid);
         return ComponentHelpers.wrapInLabel('From', from);
-}
-
-function createTo (
-        onSet: OnSet,
-        content: Message.MessageContent,
-        profiles: Profile.Profiles)
-{
-        const values = content.to;
-        const onChange = (newTo: string[]) => onSetTo(onSet, content, newTo);
-        const valid = values.every(to => Map.exists(profiles, to));
-        const props = {
-                placeholder: 'joe, sarah, mark',
-                values: values,
-                onChange: onChange,
-        };
-        const to = TextInputValidated.createValidatedTextList(props, valid);
-        return ComponentHelpers.wrapInLabel('To', to);
 }
 
 export = MessageContent;

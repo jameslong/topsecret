@@ -87,12 +87,6 @@
                         "type": "object",
                         "properties": {
                                 "from": { "type": "string" },
-                                "to": {
-                                        "type": "array",
-                                        "items": { "type": "string" },
-                                        "minItems": 0,
-                                        "uniqueItems": true
-                                },
                                 "body": {
                                         "type": "array",
                                         "items": { "type": "string" },
@@ -100,7 +94,7 @@
                                         "uniqueItems": true
                                 }
                         },
-                        "required": ["from", "to", "body"]
+                        "required": ["from", "body"]
                 },
                 "replyOptions": {
                         "type": "array",

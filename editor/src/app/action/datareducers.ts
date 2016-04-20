@@ -225,7 +225,6 @@ function handleCreateMessage (
                 endGame: false,
                 message: {
                         from: '',
-                        to: [],
                         body: [],
                 },
                 encrypted: true,

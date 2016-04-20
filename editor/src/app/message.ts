@@ -10,7 +10,6 @@ type Strings = Map.Map<string>;
 
 export interface MessageContent {
         from: string;
-        to: string[];
         body: string[];
 };
 
@@ -146,10 +145,9 @@ function validContent (
 {
         const content = message.message;
         const validFrom = Map.exists(profiles, content.from);
-        const validTo = content.to.every(name => Map.exists(profiles, name));
         const validBody = content.body.every(name => Map.exists(strings, name));
 
-        return validFrom && validTo && validBody;
+        return validFrom && validBody;
 }
 
 export function createUniqueMessageName(messages: Messages)
