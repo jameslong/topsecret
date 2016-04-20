@@ -1,21 +1,24 @@
 import MathUtils = require('../../math');
-import ReactUtils = require('../../redux/react');
+import React = require('react');
 
 import Core = require('../core');
 import Div = Core.Div;
 
-type AbsoluteProps = ReactUtils.Props<MathUtils.Coord>;
+interface AbsoluteProps extends React.Props<any> {
+        coord: MathUtils.Coord;
+}
 
-function render (props: AbsoluteProps)
+function renderAbsolute (props: AbsoluteProps)
 {
-        const data = props.data;
         const children = props.children;
         const style = {
                 position: 'absolute',
-                left: data.x,
-                top: data.y,
+                left: props.coord.x,
+                top: props.coord.y,
         };
         return Div({ style: style }, children);
 }
 
-export const Absolute = ReactUtils.createFactory(render, 'Absolute');
+const Absolute = React.createFactory(renderAbsolute);
+
+export = Absolute;

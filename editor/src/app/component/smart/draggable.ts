@@ -1,18 +1,14 @@
 import Misc = require('../../misc');
+import React = require('react');
 
 import Core = require('../core');
 import Div = Core.Div;
-import ReactUtils = require('../../redux/react');
 
-export interface DragData {
-        id: string,
-        x: number,
-        y: number,
+interface DraggableProps extends React.Props<any> {
+        value: string;
 }
 
-type DraggableProps = ReactUtils.Props<Misc.Value>;
-
-function render (props: DraggableProps)
+function renderDraggable (props: DraggableProps)
 {
         const children = props.children;
 
@@ -24,14 +20,18 @@ function render (props: DraggableProps)
          }, children);
 }
 
-export const Draggable = ReactUtils.createFactory(render, 'Draggable');
+const Draggable = React.createFactory(renderDraggable);
+
+interface DragData {
+        id: string;
+        x: number;
+        y: number;
+}
 
 function onDragStart (props: DraggableProps, e: DragEvent)
 {
-        const data = props.data;
-
         const dragData: DragData = {
-                id: data.value,
+                id: props.value,
                 x: e.screenX,
                 y: e.screenY,
         };
@@ -40,3 +40,5 @@ function onDragStart (props: DraggableProps, e: DragEvent)
 
         e.dataTransfer.setData('text/plain', dataPacket);
 }
+
+export = Draggable;

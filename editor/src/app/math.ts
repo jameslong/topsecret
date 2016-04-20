@@ -1,55 +1,28 @@
-import Immutable = require('immutable');
-
-export interface CoordInt {
+export interface Coord {
         x: number;
         y: number;
 };
-export type Coord = Immutable.Record.IRecord<CoordInt>;
-export const Coord = Immutable.Record<CoordInt>({
-        x: 0, y: 0 }, 'Coord');
 
-export function add (a: Coord, b: Coord)
+export function add (a: Coord, b: Coord): Coord
 {
-        return Coord({
+        return {
                 x: a.x + b.y,
                 y: a.y + b.y,
-        });
+        };
 }
 
-interface RectInt extends CoordInt {
+export interface Rect extends Coord {
         width: number;
         height: number;
 };
-export type Rect = Immutable.Record.IRecord<RectInt>;
-export const Rect = Immutable.Record<RectInt>({
-        x: 0, y: 0, width: 0, height: 0 }, 'Rect');
 
-interface LineInt {
+export interface Line {
         start: Coord;
         end: Coord;
 };
-export type Line = Immutable.Record.IRecord<LineInt>;
-export const Line = Immutable.Record<LineInt>({
-        start: Coord(),
-        end: Coord(),
-}, 'Line');
 
-interface NodeInt {
+export interface Node {
         name: string;
         position: Coord;
-        connections: Immutable.List<string>;
+        connections: string[];
 };
-export type Node = Immutable.Record.IRecord<NodeInt>;
-export const Node = Immutable.Record<NodeInt>({
-        name: '',
-        position: Coord(),
-        connections: Immutable.List<string>(),
-}, 'Node');
-
-export function convertToImmutableCoord (coordMutable: Coord)
-{
-        return Coord({
-                x: coordMutable.x,
-                y: coordMutable.y,
-        });
-}

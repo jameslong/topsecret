@@ -1,45 +1,20 @@
-import Immutable = require('immutable');
-import Helpers = require('./helpers');
+import Func = require('./../../../core/src/app/utils/function');
+import Helpers = require('./../../../core/src/app/utils/helpers');
+import Map = require('./../../../core/src/app/utils/map');
 import MathUtils = require('./math');
 import MessageDelay = require('./messagedelay');
 import Profile = require('./profile');
 import ReplyOption = require('./replyoption');
 
-type Strings = Immutable.Map<string, string>;
+type Strings = Map.Map<string>;
 
-interface MessageContentMutable {
+export interface MessageContent {
         from: string;
         to: string[];
         body: string[];
-}
-
-interface MessageContentInt {
-        from: string;
-        to: Immutable.List<string>;
-        body: Immutable.List<string>;
 };
-export type MessageContent = Immutable.Record.IRecord<MessageContentInt>;
-export const MessageContent = Immutable.Record<MessageContentInt>({
-        from: '',
-        to: Immutable.List<string>(),
-        body: Immutable.List<string>(),
-}, 'MessageContent');
 
-export interface MessageMutable {
-        name: string;
-        threadSubject: string;
-        position: MathUtils.Coord;
-        endGame: boolean;
-        message: MessageContentMutable;
-        encrypted: boolean;
-        script: string;
-        receiver: string;
-        replyOptions: ReplyOption.ReplyOptionMutable[];
-        children: MessageDelay.MessageDelayMutable[];
-        fallback: MessageDelay.MessageDelayMutable;
-}
-
-interface MessageInt {
+export interface MessageData {
         name: string;
         threadSubject: string;
         position: MathUtils.Coord;
@@ -51,100 +26,55 @@ interface MessageInt {
         replyOptions: ReplyOption.ReplyOptions;
         children: MessageDelay.MessageDelays;
         fallback: MessageDelay.MessageDelay;
+}
+
+export interface Message extends MessageData {
         selected: boolean;
         valid: boolean;
 };
-export type Message = Immutable.Record.IRecord<MessageInt>;
-export const Message = Immutable.Record<MessageInt>({
-        name: '',
-        threadSubject: '',
-        position: MathUtils.Coord(),
-        endGame: false,
-        message: MessageContent(),
-        encrypted: true,
-        script: '',
-        receiver: null,
-        replyOptions: Immutable.List<ReplyOption.ReplyOption>(),
-        children: Immutable.List<MessageDelay.MessageDelay>(),
-        fallback: null,
-        selected: false,
-        valid: false,
-}, 'Message');
 
-export type Messages = Immutable.Map<string, Message>;
+export type Messages = Map.Map<Message>;
 
-function convertToImmutableMessageContent (
-        messageContentMutable: MessageContentMutable)
+export function convertToMessage (data: MessageData): Message
 {
-        return MessageContent({
-                from: messageContentMutable.from,
-                to: Immutable.List.of<string>(...messageContentMutable.to),
-                body: Immutable.List.of<string>(...messageContentMutable.body),
-        });
+        const selected = false;
+        const valid = false;
+        return {
+                name: data.name,
+                threadSubject: data.threadSubject,
+                position: data.position,
+                endGame: data.endGame,
+                message: data.message,
+                encrypted: data.encrypted,
+                script: data.script,
+                receiver: data.receiver,
+                replyOptions: data.replyOptions,
+                children: data.children,
+                fallback: data.fallback,
+                selected,
+                valid,
+        };
 }
 
-export function convertToImmutableMessage (messageMutable: MessageMutable)
+export function convertToMessageData (message: Message): MessageData
 {
-        const messageContentMutable = messageMutable.message;
-        const messageContent = messageContentMutable ?
-                convertToImmutableMessageContent(messageContentMutable)
-                : null;
-
-        const fallbackMutable = messageMutable.fallback;
-        const fallback = fallbackMutable ?
-                MessageDelay.convertToImmutableMessageDelay(fallbackMutable) : null;
-
-        const children = Helpers.listFromArray(
-                messageMutable.children,
-                MessageDelay.convertToImmutableMessageDelay);
-
-        const positionMutable = messageMutable.position;
-        const position = positionMutable ?
-                MathUtils.convertToImmutableCoord(positionMutable) :
-                MathUtils.Coord();
-
-        const replyOptionsMutable = messageMutable.replyOptions;
-        const replyOptions = ReplyOption.convertToImmutableReplyOptions(
-                replyOptionsMutable);
-
-        return Message({
-                name: messageMutable.name,
-                threadSubject: messageMutable.threadSubject,
-                endGame: messageMutable.endGame,
-                encrypted: messageMutable.encrypted,
-                script: messageMutable.script,
-                receiver: messageMutable.receiver,
-                replyOptions: replyOptions,
-                position: position,
-                message: messageContent,
-                children: children,
-                fallback: fallback,
-                selected: false,
-                valid: false,
-        });
-}
-
-export function convertToMutableMessage(
-        message: Message): MessageMutable
-{
-        let messageMutable = message.toJS();
-        delete messageMutable.selected;
-        delete messageMutable.valid;
-        return messageMutable;
+        let data = Helpers.assign(message, {});
+        delete data.selected;
+        delete data.valid;
+        return data;
 }
 
 export function getSelectedMessages (messages: Messages)
 {
-        return <Messages>messages.filter(
-                message => message.selected);
+        return Map.filter(messages, message => message.selected);
 }
 
 export function getSingleSelectedMessage (messages: Messages)
 {
         const selected = getSelectedMessages(messages);
-        const selectedList = <Immutable.List<Message>>(selected.toList());
-        return selectedList.count() === 1 ?
-                selectedList.get(0).name : null;
+        const selectedList = Helpers.arrayFromMap(selected, Func.identity);
+        return selectedList.length === 1 ?
+                selectedList[0].name : null;
 }
 
 export function markMessagesValid (
@@ -152,12 +82,8 @@ export function markMessagesValid (
         strings: Strings,
         profiles: Profile.Profiles)
 {
-        return <Messages>messages.map(message =>
-                markMessageValid(
-                        message,
-                        messages,
-                        strings,
-                        profiles));
+        return Map.map(messages, message =>
+                markMessageValid(message, messages, strings, profiles));
 }
 
 export function markMessageValid (
@@ -166,9 +92,8 @@ export function markMessageValid (
         strings: Strings,
         profiles: Profile.Profiles)
 {
-        const valid = isValidMessage(
-                message, messages, strings, profiles);
-        return message.set('valid', valid);
+        const valid = isValidMessage(message, messages, strings, profiles);
+        return Helpers.assign(message, { valid });
 }
 
 export function isValidMessage (
@@ -205,13 +130,13 @@ function validChildren (message: Message, messages: Messages)
 export function validMessageDelay (
         delay: MessageDelay.MessageDelay, messages: Messages)
 {
-        return messages.has(delay.name);
+        return Map.exists(messages, delay.name);
 }
 
 function validSubject (message: Message, strings: Strings)
 {
         const subject = message.threadSubject;
-        return !subject || strings.get(subject);
+        return !subject || strings[subject];
 }
 
 function validContent (
@@ -220,10 +145,9 @@ function validContent (
         profiles: Profile.Profiles)
 {
         const content = message.message;
-        const validFrom = profiles.has(content.from);
-        const validTo = content.to.every(name => profiles.has(name));
-        const validBody = content.body.every(name =>
-                strings.get(name) !== undefined);
+        const validFrom = Map.exists(profiles, content.from);
+        const validTo = content.to.every(name => Map.exists(profiles, name));
+        const validBody = content.body.every(name => Map.exists(strings, name));
 
         return validFrom && validTo && validBody;
 }
@@ -237,7 +161,7 @@ export function createUniqueMessageName(messages: Messages)
         while (true) {
                 i += 1;
                 name = `${stem}_${i}`;
-                if (!messages.has(name))
+                if (!Map.exists(messages, name))
                 {
                         return name;
                 }

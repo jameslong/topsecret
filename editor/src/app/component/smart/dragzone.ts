@@ -2,46 +2,58 @@ import ActionCreators = require('../../action/actioncreators');
 import Core = require('../core');
 import Draggable = require('./draggable');
 import Div = Core.Div;
-import MathUtils = require('../../math');
-import ReactUtils = require('../../redux/react');
+import React = require('react');
 import Redux = require('../../redux/redux');
 
-type DragzoneProps = ReactUtils.Props<string>;
+interface DragzoneProps extends React.Props<any> {
+        className: string,
+        narrativeId: string;
+};
 
-function render (props: DragzoneProps)
+function renderDragzone (props: DragzoneProps)
 {
-        const className = props.data;
+        const narrativeId = props.narrativeId;
+        const className = props.className;
         const children = props.children;
 
         return Div({
-                className: className,
+                className,
                 onDragEnter: (e: Event) => e.preventDefault(),
                 onDragOver: (e: Event) => e.preventDefault(),
-                onDrop: onDrop,
+                onDrop: (e: DragEvent) => onDrop(narrativeId, e),
         }, children);
 }
 
-export const Dragzone = ReactUtils.createFactory(render, 'Dragzone');
+const Dragzone = React.createFactory(renderDragzone);
 
-function onDrop (e: DragEvent)
+interface DragData {
+        id: string;
+        x: number;
+        y: number;
+}
+
+function onDrop (narrativeId: string, e: DragEvent)
 {
         e.preventDefault();
 
         const data =  e.dataTransfer.getData('text/plain');
-        const dragData: Draggable.DragData = JSON.parse(data);
+        const dragData: DragData = JSON.parse(data);
 
         const deltaX = e.screenX - dragData.x;
         const deltaY = e.screenY - dragData.y;
 
-        const delta = MathUtils.Coord({
+        const delta = {
                 x: deltaX,
                 y: deltaY,
-        });
+        };
 
         const action = ActionCreators.endDrag({
                 id: dragData.id,
+                narrativeId,
                 delta: delta,
         });
 
         Redux.handleAction(action);
 }
+
+export = Dragzone;

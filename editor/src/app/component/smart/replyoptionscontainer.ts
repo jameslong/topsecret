@@ -1,50 +1,47 @@
 import ActionCreators = require('../../action/actioncreators');
-import Immutable = require('immutable');
 import Message = require('../../message');
 import Narrative = require('../../narrative');
-import ReactUtils = require('../../redux/react');
+import React = require('react');
 import Redux = require('../../redux/redux');
 import ReplyOption = require('../../replyoption');
 
 import ReplyOptions = require('../dumb/replyoptions');
 
-interface ReplyOptionsContainerInt {
+interface ReplyOptionsContainerProps extends React.Props<any> {
         name: string;
+        narrativeId: string;
         replyOptions: ReplyOption.ReplyOptions;
         messages: Message.Messages;
 };
-export type ReplyOptionsContainerData = Immutable.Record.IRecord<ReplyOptionsContainerInt>;
-export const ReplyOptionsContainerData = Immutable.Record<ReplyOptionsContainerInt>({
-        name: '',
-        replyOptions: Immutable.List<ReplyOption.ReplyOption>(),
-        messages: Immutable.Map<string, Message.Message>(),
-}, 'ReplyOptionsContainer');
 
-type ReplyOptionsContainerProps = ReactUtils.Props<ReplyOptionsContainerData>;
-
-function render (props: ReplyOptionsContainerProps)
+function renderReplyOptionsContainer (props: ReplyOptionsContainerProps)
 {
-        const data = props.data;
-        const name = data.name;
+        const name = props.name;
+        const narrativeId = props.narrativeId;
 
-        const replyOptionsData = ReplyOptions.ReplyOptionsData({
+        const replyOptionsProps = {
                 name: name,
-                replyOptions: data.replyOptions,
-                messages: data.messages,
+                replyOptions: props.replyOptions,
+                messages: props.messages,
                 onSet: (options: ReplyOption.ReplyOptions) =>
-                        setReplyOptions(name, options),
-        });
-        return ReplyOptions.ReplyOptions(replyOptionsData);
+                        setReplyOptions(narrativeId, name, options),
+        };
+        return ReplyOptions(replyOptionsProps);
 }
 
-export const ReplyOptionsContainer =
-        ReactUtils.createFactory(render, 'ReplyOptionsContainer');
+const ReplyOptionsContainer = React.createFactory(renderReplyOptionsContainer);
 
-function setReplyOptions (name: string, replyOptions: ReplyOption.ReplyOptions)
+function setReplyOptions (
+        narrativeId: string,
+        name: string,
+        replyOptions: ReplyOption.ReplyOptions)
 {
         const action = ActionCreators.setMessageReplyOptions({
+                narrativeId,
                 name: name,
                 value: replyOptions,
         });
         Redux.handleAction(action);
 }
+
+export = ReplyOptionsContainer;

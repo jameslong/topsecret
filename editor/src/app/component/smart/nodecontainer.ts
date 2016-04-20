@@ -1,67 +1,71 @@
 import ActionCreators = require('../../action/actioncreators');
 import Message = require('../../message');
-import ReactUtils = require('../../redux/react');
+import React = require('react');
 import Redux = require('../../redux/redux');
 
 import NodeComponent = require('../dumb/node');
 
-type NodeContainerProps = ReactUtils.Props<Message.Message>;
+interface NodeContainerProps extends React.Props<any> {
+        message: Message.Message;
+        narrativeId: string;
+};
 
-function render (props: NodeContainerProps)
+function renderNodeContainer (props: NodeContainerProps)
 {
-        const message = props.data;
+        const narrativeId = props.narrativeId;
+        const message = props.message;
         const name = message.name;
         const selected = message.selected;
 
         const onClickLocal = (event: MouseEvent) =>
-                onClick(name, selected, event);
-        const data = NodeComponent.NodeData({
+                onClick(narrativeId, name, selected, event);
+        const nodeProps = {
                 message: message,
                 onClick: onClickLocal,
-        });
+        };
 
-        return NodeComponent.Node(data);
+        return NodeComponent(nodeProps);
 }
 
-export const NodeContainer = ReactUtils.createFactory(render, 'NodeContainer');
+const NodeContainer = React.createFactory(renderNodeContainer);
 
 function onClick (
-        name: string, selected: boolean, event: MouseEvent)
+        narrativeId: string, name: string, selected: boolean, e: MouseEvent)
 {
-        event.stopPropagation();
+        e.stopPropagation();
 
-        const groupSelect = event.ctrlKey;
+        const groupSelect = e.ctrlKey;
 
         if (groupSelect) {
                 if (selected) {
-                        onDeselect(name);
+                        onDeselect(narrativeId, name);
                 } else {
-                        onSelect(name);
+                        onSelect(narrativeId, name);
                 }
         } else {
                 if (selected) {
                         onDoubleClick(name);
                 } else {
-                        onUniqueSelect(name);
+                        onUniqueSelect(narrativeId, name);
                 }
         }
 }
 
-function onSelect (name: string)
+function onSelect (narrativeId: string, name: string)
 {
-        const action = ActionCreators.selectMessage(name);
+        const action = ActionCreators.selectMessage({ name, narrativeId });
         Redux.handleAction(action);
 }
 
-function onDeselect (name: string)
+function onDeselect (narrativeId: string, name: string)
 {
-        const action = ActionCreators.deselectMessage(name);
+        const action = ActionCreators.deselectMessage({ name, narrativeId });
         Redux.handleAction(action);
 }
 
-function onUniqueSelect (name: string)
+function onUniqueSelect (narrativeId: string, name: string)
 {
-        const action = ActionCreators.uniqueSelectMessage(name);
+        const action = ActionCreators.uniqueSelectMessage({ name, narrativeId });
         Redux.handleAction(action);
 }
 
@@ -70,3 +74,5 @@ function onDoubleClick (name: string)
         const action = ActionCreators.openMessage(name);
         Redux.handleAction(action);
 }
+
+export = NodeContainer;

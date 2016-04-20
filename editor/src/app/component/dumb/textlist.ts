@@ -1,22 +1,14 @@
-import Immutable = require('immutable');
-import ReactUtils = require('../../redux/react');
+import React = require('react');
 
 import Core = require('../core');
 import Input = Core.Input;
 
-interface TextListInt {
+interface TextListProps {
         placeholder: string;
-        values: Immutable.List<string>;
-        onChange: (values: Immutable.List<string>) => void;
+        values: string[];
+        onChange: (values: string[]) => void;
         className?: string;
 };
-export type TextListData = Immutable.Record.IRecord<TextListInt>;
-export const TextListData = Immutable.Record<TextListInt>({
-        placeholder: '',
-        values: Immutable.List<string>(),
-        onChange: () => {},
-        className: undefined,
-}, 'TextList');
 
 interface InputEvent {
         target: {
@@ -24,34 +16,32 @@ interface InputEvent {
         }
 }
 
-export type TextListProps = ReactUtils.Props<TextListData>;
-
-function render (props: TextListProps)
+function renderTextList (props: TextListProps)
 {
-        const data = props.data;
         const onChange = (event: InputEvent) => {
                 const value = event.target.value;
                 const values = splitToString(value);
-                data.onChange(values);
+                props.onChange(values);
         };
-        const value = data.values.join();
+        const value = props.values.join();
 
         return Input({
-                placeholder: data.placeholder,
+                placeholder: props.placeholder,
                 value: value,
                 onChange: onChange,
-                className: data.className,
+                className: props.className,
         });
 }
 
-export const TextList = ReactUtils.createFactory(render, 'TextList');
+const TextList = React.createFactory(renderTextList);
 
 function splitToString (newValue: string)
 {
         if (newValue) {
-                const values = newValue.split(',');
-                return Immutable.List.of<string>(...values);
+                return newValue.split(',');
         } else {
-                return Immutable.List<string>();
+                return [];
         }
 }
+
+export = TextList;

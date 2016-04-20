@@ -1,34 +1,55 @@
-import Immutable = require('immutable');
-import ReactUtils = require('../redux/react');
+/// <reference path="../../../../typings/react/react.d.ts"/>
+import React = require('react');
 import TextComponent = require('./dumb/text');
 import TextAreaInput = require('./dumb/textareainput');
 import TextList = require('./dumb/textlist');
 
-export function createValidatedText (props: TextComponent.TextProps, valid: boolean)
+interface TextProps extends React.Props<any> {
+        placeholder: string;
+        value: string;
+        onChange: (value: string) => void;
+        list?: string;
+        className?: string;
+};
+
+interface TextAreaProps extends React.Props<any> {
+        placeholder: string;
+        value: string;
+        onChange: (value: string) => void;
+        className?: string;
+};
+
+interface TextListProps {
+        placeholder: string;
+        values: string[];
+        onChange: (values: string[]) => void;
+        className?: string;
+};
+
+export function createValidatedText (props: TextProps, valid: boolean)
 {
-        return createValidatedComponent(props, TextComponent.Text, valid);
+        return createValidatedComponent(props, TextComponent, valid);
 }
 
 export function createValidatedTextList (
-        props: TextList.TextListProps, valid: boolean)
+        props: TextListProps, valid: boolean)
 {
-        return createValidatedComponent(props, TextList.TextList, valid);
+        return createValidatedComponent(props, TextList, valid);
 }
 
 export function createValidatedTextArea (
-        props: TextAreaInput.TextAreaProps, valid: boolean)
+        props: TextAreaProps, valid: boolean)
 {
-        return createValidatedComponent(props, TextAreaInput.TextAreaInput, valid);
+        return createValidatedComponent(props, TextAreaInput, valid);
 }
 
-type Props = Immutable.Record.IRecord<{ className?: string }>;
-export function createValidatedComponent<U extends ReactUtils.Props<Props>> (
+export function createValidatedComponent<U extends { className?: string; }> (
         props: U,
         createComponent: React.Factory<U>,
         valid: boolean)
 {
         if (!valid) {
-                props.data = props.data.set('className', 'invalid');
+                props.className = 'invalid';
         }
         return createComponent(props);
 }

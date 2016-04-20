@@ -1,6 +1,6 @@
-import Immutable = require('immutable');
+import Map = require('./../../../core/src/app/utils/map');
 
-export interface ProfileMutable {
+export interface Profile {
         name: string;
         emailLocal: string;
         firstName: string;
@@ -10,21 +10,4 @@ export interface ProfileMutable {
         passphrase: string;
 }
 
-interface ProfileInt extends ProfileMutable {}
-export type Profile = Immutable.Record.IRecord<ProfileInt>;
-export const Profile = Immutable.Record<ProfileInt>({
-        name: '',
-        emailLocal: '',
-        firstName: '',
-        lastName: '',
-        publicKey: '',
-        privateKey: '',
-        passphrase: '',
-}, 'Profile');
-
-export type Profiles = Immutable.Map<string, Profile>;
-
-export function convertToImmutableProfile (profileMutable: ProfileMutable)
-{
-        return Profile(profileMutable);
-}
+export type Profiles = Map.Map<Profile>;

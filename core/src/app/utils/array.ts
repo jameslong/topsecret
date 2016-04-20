@@ -27,7 +27,19 @@ export function unshift<T>(array: T[], value: T)
         return [value].concat(array);
 }
 
-export function remove<T>(array: T[], value: T)
+export function set<T>(array: T[], index: number, value: T)
+{
+        const copy = array.slice(0);
+        copy[index] = value;
+        return copy;
+}
+
+export function deleteIndex<T>(array: T[], index: number)
+{
+        return array.filter((value, ind) => ind !== index);
+}
+
+export function removeValue<T>(array: T[], value: T)
 {
         return array.filter(element => element !== value);
 }

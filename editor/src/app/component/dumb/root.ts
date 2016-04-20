@@ -1,7 +1,6 @@
-import Helpers = require('../../helpers');
 import Message = require('../../message');
 import Narrative = require('../../narrative');
-import ReactUtils = require('../../redux/react');
+import React = require('react');
 import State = require('../../state');
 
 import Core = require('../core');
@@ -10,19 +9,20 @@ import EditAreaContainer = require('../smart/editareacontainer');
 import EditPanelContainer = require('../smart/editpanelcontainer');
 import MenuBarContainer = require('../smart/menubarcontainer');
 
-type RootProps = ReactUtils.Props<State.State>;
+interface RootProps extends React.Props<any> {
+        state: State.State;
+}
 
-function render (props: RootProps)
+function renderRoot (props: RootProps)
 {
-        const state = props.data;
+        const state = props.state;
         const store = State.getActiveStore(state);
-        const narrativeNames = Helpers.keys(store.narratives);
+        const narrativeNames = Object.keys(store.data.narrativesById);
 
-        const activeNarrative = store.activeNarrative;
-        const activeMessage = store.activeMessage;
+        const activeNarrativeId = store.ui.activeNarrativeId;
+        const activeMessage = store.ui.activeMessageId;
 
-        const message = activeMessage ?
-                EditPanelContainer.EditPanelContainer(store) : null;
+        const message = activeMessage ? EditPanelContainer({ store }) : null;
 
         if (activeMessage) {
                 window.document.body.classList.add('open-modal');
@@ -31,20 +31,22 @@ function render (props: RootProps)
         }
 
         const narrative = Narrative.getActiveNarrative(store);
-        const messages = narrative.messages;
+        const messages = narrative.messagesById;
         const singleSelected = Message.getSingleSelectedMessage(messages);
 
-        const menuBarData = MenuBarContainer.MenuBarContainerData({
+        const menuBarProps = {
                 narrativeNames,
-                activeNarrative,
-                activeMessage: singleSelected,
-        });
+                activeNarrativeId,
+                activeMessageId: singleSelected,
+        };
 
         return Div({ className: 'root' },
-                EditAreaContainer.EditAreaContainer(store),
-                MenuBarContainer.MenuBarContainer(menuBarData),
+                EditAreaContainer({ store }),
+                MenuBarContainer(menuBarProps),
                 message
         );
 }
 
-export const Root = ReactUtils.createFactory(render, 'Root');
+const Root = React.createFactory(renderRoot);
+
+export = Root;

@@ -1,41 +1,33 @@
 import Config = require('./config');
-import Immutable = require('immutable');
 import Edge = require('./edge');
 import Narrative = require('./narrative');
 
-interface StoreInt {
-        activeNarrative: string;
-        activeMessage: string;
-        narratives: Narrative.Narratives;
+export interface UI {
+        activeNarrativeId: string;
+        activeMessageId: string;
+};
+
+export interface Data {
+        narrativesById: Narrative.Narratives;
         edges: Edge.Edges;
         nameScratchpad: Narrative.Strings;
 };
-export type Store = Immutable.Record.IRecord<StoreInt>;
-export const Store = Immutable.Record<StoreInt>({
-        activeNarrative: '',
-        activeMessage: '',
-        narratives: Immutable.Map<string, Narrative.Narrative>(),
-        edges: Immutable.List<Edge.Edge>(),
-        nameScratchpad: Immutable.Map<string, string>(),
-}, 'Store');
 
-interface StateInt {
+export interface Store {
+        ui: UI;
+        data: Data;
+};
+
+export interface State {
         config: Config.Config;
-        stores: Immutable.List<Store>;
-        activeStoreIndex: number;
-        lastSavedStore: Store;
+        past: Store[];
+        present: Store;
+        future: Store[];
+        lastSaved: Store;
         dirty: boolean;
 };
-export type State = Immutable.Record.IRecord<StateInt>;
-export const State = Immutable.Record<StateInt>({
-        config: Config.Config(),
-        stores: Immutable.List<Store>(),
-        activeStoreIndex: 0,
-        lastSavedStore: null,
-        dirty: false,
-}, 'State');
 
 export function getActiveStore (state: State)
 {
-        return state.stores.get(state.activeStoreIndex);
+        return state.present;
 }

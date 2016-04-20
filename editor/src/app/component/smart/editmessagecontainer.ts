@@ -1,52 +1,47 @@
 import ActionCreators = require('../../action/actioncreators');
-import Immutable = require('immutable');
+import Arr = require('../../../../../core/src/app/utils/array');
 import Message = require('../../message');
 import MessageDelay = require('../../messagedelay');
-import ReactUtils = require('../../redux/react');
+import React = require('react');
 import Redux = require('../../redux/redux');
 import State = require('../../state');
 
 import EditMessage = require('../dumb/editmessage');
 
-interface EditMessageContainerInt {
-        name: string,
+interface EditMessageContainerProps extends React.Props<any> {
+        name: string;
+        narrativeId: string;
         store: State.Store;
 };
-export type EditMessageContainerData = Immutable.Record.IRecord<EditMessageContainerInt>;
-export const EditMessageContainerData = Immutable.Record<EditMessageContainerInt>({
-        name: '',
-        store: State.Store(),
-}, 'EditMessageContainer');
 
-type EditMessageContainerProps = ReactUtils.Props<EditMessageContainerData>;
-
-function render (props: EditMessageContainerProps)
+function renderEditMessageContainer (props: EditMessageContainerProps)
 {
-        const data = props.data;
-        const name = data.name;
+        const name = props.name;
+        const newName = props.store.data.nameScratchpad[name];
+        const narrativeId = props.narrativeId;
 
-        const onDeleteLocal = () => onDelete(name);
+        const onDeleteLocal = () => onDelete(narrativeId, name);
         const onSetNameScratchpadLocal = (newName: string) =>
-                onSetNameScratchpad(name, newName);
-        const onSetNameLocal = () => onSetName(name);
+                onSetNameScratchpad(narrativeId, name, newName);
+        const onSetNameLocal = () => onSetName(narrativeId, name, newName);
         const onSetSubjectNameLocal = (subjectName: string) =>
-                onSetSubjectName(name, subjectName);
+                onSetSubjectName(narrativeId, name, subjectName);
         const onSetStringLocal = (name: string, value: string) =>
-                onSetString(name, value);
+                onSetString(narrativeId, name, value);
         const onSetEndGameLocal = (endGame: boolean) =>
-                onSetEndGame(name, endGame);
+                onSetEndGame(narrativeId, name, endGame);
         const onSetEncryptedLocal = (encrypted: boolean) =>
-                onSetEncrypted(name, encrypted);
+                onSetEncrypted(narrativeId, name, encrypted);
         const onSetScriptLocal = (script: string) =>
-                onSetScript(name, script);
+                onSetScript(narrativeId, name, script);
         const onSetChildrenLocal = (delays: MessageDelay.MessageDelays) =>
-                onSetChildren(name, delays);
+                onSetChildren(narrativeId, name, delays);
         const onSetFallbackLocal = (delay: MessageDelay.MessageDelay) =>
-                onSetFallback(name, delay);
+                onSetFallback(narrativeId, name, delay);
 
-        const editMessageData = EditMessage.EditMessageData({
-                name: data.name,
-                store: data.store,
+        const editMessageProps = {
+                name,
+                store: props.store,
                 onDelete: onDeleteLocal,
                 onSetNameScratchpad: onSetNameScratchpadLocal,
                 onSetName: onSetNameLocal,
@@ -57,77 +52,88 @@ function render (props: EditMessageContainerProps)
                 onSetScript: onSetScriptLocal,
                 onSetChildren: onSetChildrenLocal,
                 onSetFallback: onSetFallbackLocal,
-        });
-        return EditMessage.EditMessage(editMessageData);
+        };
+        return EditMessage(editMessageProps);
 }
 
-export const EditMessageContainer = ReactUtils.createFactory(render, 'EditMessageContainer');
+const EditMessageContainer = React.createFactory(renderEditMessageContainer);
 
-function onDelete (name: string)
+function onDelete (narrativeId: string, name: string)
 {
-        const action = ActionCreators.deleteMessage(name);
+        const action = ActionCreators.deleteMessage({ name, narrativeId });
         Redux.handleAction(action);
 }
 
 function onSetNameScratchpad (
-        messageName: string, newName: string)
+        narrativeId: string, messageName: string, newName: string)
 {
         const action = ActionCreators.setEditedMessageName({
+                narrativeId,
                 name: messageName,
                 value: newName,
         });
         Redux.handleAction(action);
 }
 
-function onSetName (messageName: string)
+function onSetName (narrativeId: string, name: string, newName: string)
 {
         const action = ActionCreators.setMessageName({
-                name: messageName,
-                value: null,
+                narrativeId,
+                name,
+                value: newName,
         });
         Redux.handleAction(action);
 }
 
-function onSetSubjectName (messageName: string, newSubject: string)
+function onSetSubjectName (
+        narrativeId: string, messageName: string, newSubject: string)
 {
         const action = ActionCreators.setMessageSubject({
+                narrativeId,
                 name: messageName,
                 value: newSubject,
         });
         Redux.handleAction(action);
 }
 
-export function onSetString (
-        stringName: string, value: string)
+function onSetString (
+        narrativeId: string, stringName: string, value: string)
 {
         const action = ActionCreators.setString({
+                narrativeId,
                 name: stringName,
                 value: value,
         });
         Redux.handleAction(action);
 }
 
-function onSetEndGame (messageName: string, newEndGame: boolean)
+function onSetEndGame (
+        narrativeId: string, messageName: string, newEndGame: boolean)
 {
         const action = ActionCreators.setMessageEndGame({
+                narrativeId,
                 name: messageName,
                 value: newEndGame,
         });
         Redux.handleAction(action);
 }
 
-function onSetEncrypted (messageName: string, newEncrypted: boolean)
+function onSetEncrypted (
+        narrativeId: string, messageName: string, newEncrypted: boolean)
 {
         const action = ActionCreators.setMessageEncrypted({
+                narrativeId,
                 name: messageName,
                 value: newEncrypted,
         });
         Redux.handleAction(action);
 }
 
-function onSetScript (messageName: string, newScript: string)
+function onSetScript (
+        narrativeId: string, messageName: string, newScript: string)
 {
         const action = ActionCreators.setMessageScript({
+                narrativeId,
                 name: messageName,
                 value: newScript,
         });
@@ -135,57 +141,67 @@ function onSetScript (messageName: string, newScript: string)
 }
 
 function onSetChild (
+        narrativeId: string,
         message: Message.Message,
         delay: MessageDelay.MessageDelay,
         index: number)
 {
         const children = message.children;
-        const newChildren = children.set(index, delay);
-        onSetChildren(message.name, newChildren);
+        const newChildren = Arr.set(children, index, delay);
+        onSetChildren(narrativeId, message.name, newChildren);
 }
 
 function onSetChildren (
+        narrativeId: string,
         messageName: string,
-        delays: Immutable.List<MessageDelay.MessageDelay>)
+        delays: MessageDelay.MessageDelay[])
 {
         const action = ActionCreators.setMessageChildren({
+                narrativeId,
                 name: messageName,
                 value: delays,
         });
         Redux.handleAction(action);
 }
 
-function onAddChild (message: Message.Message)
+function onAddChild (narrativeId: string, message: Message.Message)
 {
-        const newChild = MessageDelay.MessageDelay();
+        const newChild = MessageDelay.createMessageDelay();
         const children = message.children;
-        const newChildren = children.push(newChild);
-        onSetChildren(message.name, newChildren);
+        const newChildren = Arr.push(children, newChild);
+        onSetChildren(narrativeId, message.name, newChildren);
 }
 
-function onRemoveChild (message: Message.Message, index: number)
+function onRemoveChild (
+        narrativeId: string, message: Message.Message, index: number)
 {
         const children = message.children;
-        const newChildren = children.delete(index);
-        onSetChildren(message.name, newChildren);
+        const newChildren = Arr.deleteIndex(children, index);
+        onSetChildren(narrativeId, message.name, newChildren);
 }
 
-function onSetFallback (messageName: string, newDelay: MessageDelay.MessageDelay)
+function onSetFallback (
+        narrativeId: string,
+        messageName: string,
+        newDelay: MessageDelay.MessageDelay)
 {
         const action = ActionCreators.setMessageFallback({
+                narrativeId,
                 name: messageName,
                 value: newDelay,
         });
         Redux.handleAction(action);
 }
 
-function onAddFallback (messageName: string)
+function onAddFallback (narrativeId: string, messageName: string)
 {
-        const newDelay = MessageDelay.MessageDelay();
-        onSetFallback(messageName, newDelay);
+        const newDelay = MessageDelay.createMessageDelay();
+        onSetFallback(narrativeId, messageName, newDelay);
 }
 
-function onRemoveFallback (messageName: string)
+function onRemoveFallback (narrativeId: string, messageName: string)
 {
-        onSetFallback(messageName, null);
+        onSetFallback(narrativeId, messageName, null);
 }
+
+export = EditMessageContainer;

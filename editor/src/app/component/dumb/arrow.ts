@@ -1,17 +1,18 @@
 import Edge = require('../../edge');
-import Immutable = require('immutable');
 import MathUtils = require('../../math');
-import ReactUtils = require('../../redux/react');
+import React = require('react');
 
 import Core = require('../core');
 import G = Core.G;
 
-type ArrowClassProps = ReactUtils.Props<Edge.Edge>;
+interface ArrowClassProps extends React.Props<any> {
+        edge: Edge.Edge;
+}
 
-function render (props: ArrowClassProps) {
-        const data = props.data;
-        const start = data.line.start;
-        const end = data.line.end;
+function renderArrow (props: ArrowClassProps) {
+        const edge = props.edge;
+        const start = edge.line.start;
+        const end = edge.line.end;
 
         const arrowhead = createArrowhead(start, end);
 
@@ -23,24 +24,24 @@ function render (props: ArrowClassProps) {
                 className: 'line',
         });
 
-        const className = getClassName(data.type);
+        const className = getClassName(edge.type);
 
         return G({ className: className }, line, arrowhead);
 }
 
-export const Arrow = ReactUtils.createFactory(render, 'Arrow');
+const Arrow = React.createFactory(renderArrow);
 
 function createArrowhead (start: MathUtils.Coord, end: MathUtils.Coord)
 {
         const width = 10;
         const height = 10;
 
-        const points = Immutable.List.of<MathUtils.Coord>(
-                MathUtils.Coord({ x: 0, y: 0 }),
-                MathUtils.Coord({ x: width/2, y: 0 }),
-                MathUtils.Coord({ x: 0, y: height }),
-                MathUtils.Coord({ x: -width/2, y: 0 })
-        );
+        const points: MathUtils.Coord[] = [
+                { x: 0, y: 0 },
+                { x: width/2, y: 0 },
+                { x: 0, y: height },,
+                { x: -width/2, y: 0 },
+        ];
 
         const pointString = points.reduce(
                 (result, point) =>
@@ -52,12 +53,11 @@ function createArrowhead (start: MathUtils.Coord, end: MathUtils.Coord)
         const angle = Math.atan2(dy, dx);
         const angleDegrees = angle * 180 / Math.PI;
 
-        const position = MathUtils.Coord({
+        const position = {
                 x: end.x - (Math.cos(angle) * height),
                 y: end.y - (Math.sin(angle) * height),
-        });
-        const translation =
-                `translate(${position.x},${position.y})`;
+        };
+        const translation = `translate(${position.x},${position.y})`;
         const rotation = `rotate(${angleDegrees - 90})`;
 
         return Core.Polygon({
@@ -79,3 +79,5 @@ function getClassName (type: Edge.Type)
                 return '';
         }
 }
+
+export = Arrow;
