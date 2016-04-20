@@ -15,7 +15,7 @@ export const Types = {
         OPEN_MESSAGE: 'OPEN_MESSAGE',
         CLOSE_MESSAGE: 'CLOSE_MESSAGE',
         CREATE_MESSAGE: 'CREATE_MESSAGE',
-        DELETE_MESSAGE: 'DELETE_MESSAGE',
+        DELETE_MESSAGES: 'DELETE_MESSAGES',
         SELECT_MESSAGE: 'SELECT_MESSAGE',
         UNIQUE_SELECT_MESSAGE: 'UNIQUE_SELECT_MESSAGE',
         DESELECT_MESSAGE: 'DESELECT_MESSAGE',
@@ -65,8 +65,8 @@ export interface CloseMessage extends Redux.Action<CloseMessageParams> {}
 export type CreateMessageParams = string;
 export interface CreateMessage extends Redux.Action<CreateMessageParams> {}
 
-export type DeleteMessageParams = { name: string; narrativeId: string };
-export interface DeleteMessage extends Redux.Action<DeleteMessageParams> {}
+export type DeleteMessagesParams = { names: string[]; narrativeId: string };
+export interface DeleteMessages extends Redux.Action<DeleteMessagesParams> {}
 
 export type SelectMessageParams = { name: string; narrativeId: string };
 export interface SelectMessage extends Redux.Action<SelectMessageParams> {}

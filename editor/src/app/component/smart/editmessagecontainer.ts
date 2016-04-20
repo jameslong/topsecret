@@ -60,7 +60,8 @@ const EditMessageContainer = React.createFactory(renderEditMessageContainer);
 
 function onDelete (narrativeId: string, name: string)
 {
-        const action = ActionCreators.deleteMessage({ name, narrativeId });
+        const names = [name];
+        const action = ActionCreators.deleteMessages({ names, narrativeId });
         Redux.handleAction(action);
 }
 

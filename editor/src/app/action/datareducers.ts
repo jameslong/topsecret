@@ -29,9 +29,9 @@ export function data (
                 const create = <Actions.CreateMessage><any>action;
                 return handleCreateMessage(state, config, create);
 
-        case Actions.Types.DELETE_MESSAGE:
-                const deleteMessage = <Actions.DeleteMessage><any>action;
-                return handleDeleteMessage(state, config, deleteMessage);
+        case Actions.Types.DELETE_MESSAGES:
+                const deleteMessages = <Actions.DeleteMessages><any>action;
+                return handleDeleteMessages(state, config, deleteMessages);
 
         case Actions.Types.SELECT_MESSAGE:
                 const select = <Actions.SelectMessage><any>action;
@@ -260,18 +260,18 @@ function getCentrePosition (): MathUtils.Coord
         };
 }
 
-function handleDeleteMessage (
+function handleDeleteMessages (
         state: State.Data,
         config: Config.Config,
-        action: Actions.DeleteMessage)
+        action: Actions.DeleteMessages)
 {
         const parameters = action.parameters;
-        const name = parameters.name;
+        const names = parameters.names;
         const narrativeId = parameters.narrativeId;
         const narratives = state.narrativesById;
         const narrative = narratives[narrativeId];
 
-        const newMessages = Map.remove(narrative.messagesById, name);
+        const newMessages = Map.omit(narrative.messagesById, names);
         const newNarrative = Helpers.assign(narrative,
                 { messagesById: newMessages });
         const newNarratives = Helpers.assign(narratives,

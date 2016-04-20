@@ -143,6 +143,24 @@ export function mergeMaps<T> (maps: Map<T>[]): Map<T>
         return result;
 }
 
+export function pick<T> (map: Map<T>, keys: string[]): Map<T>
+{
+        var result: Map<T> = {};
+        keys.forEach(key => {
+                result[key] = map[key];
+        });
+
+        return result;
+}
+
+export function omit<T> (map: Map<T>, keys: string[]): Map<T>
+{
+        const omittedKeys = create(
+                keys.map(key => <[string, boolean]>[key, true]));
+        const hasKey = (value: T, key: string) => !omittedKeys[key];
+        return filter<T>(map, hasKey);
+}
+
 export function reduce<T, U>(
         map: Map<T>, reducer: Reducer<T, U>, result: U)
 {

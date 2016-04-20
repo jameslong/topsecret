@@ -20,9 +20,9 @@ export function ui (
                 const close = <Actions.CloseMessage><any>action;
                 return handleCloseMessage(state, config, close);
 
-        case Actions.Types.DELETE_MESSAGE:
-                const deleteMessage = <Actions.DeleteMessage><any>action;
-                return handleDeleteMessage(state, config, deleteMessage);
+        case Actions.Types.DELETE_MESSAGES:
+                const deleteMessages = <Actions.DeleteMessages><any>action;
+                return handleDeleteMessages(state, config, deleteMessages);
 
         case Actions.Types.SET_MESSAGE_NAME:
                 const setName = <Actions.SetMessageName><any>action;
@@ -59,15 +59,12 @@ function handleCloseMessage (
         return Helpers.assign(state, { activeMessageId: null });
 }
 
-function handleDeleteMessage (
+function handleDeleteMessages (
         state: State.UI,
         config: Config.Config,
-        action: Actions.DeleteMessage)
+        action: Actions.DeleteMessages)
 {
-        const name = action.parameters.name;
-        return (state.activeMessageId === name) ?
-                Helpers.assign(state, { activeMessageId: null }) :
-                state;
+        return Helpers.assign(state, { activeMessageId: null });
 }
 
 function handleSetMessageName (
