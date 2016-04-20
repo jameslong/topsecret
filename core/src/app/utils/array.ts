@@ -126,3 +126,8 @@ export function zip<T, U>(left: T[], right: U[])
 {
         return left.map((value, index) => <[T, U]>[value, right[index]]);
 }
+
+export function last<T>(list: T[])
+{
+        return list.length ? list[list.length - 1] : null;
+}
