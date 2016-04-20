@@ -20,7 +20,6 @@ function renderEditMessageContainer (props: EditMessageContainerProps)
         const newName = props.store.data.nameScratchpad[name];
         const narrativeId = props.narrativeId;
 
-        const onDeleteLocal = () => onDelete(narrativeId, name);
         const onSetNameScratchpadLocal = (newName: string) =>
                 onSetNameScratchpad(narrativeId, name, newName);
         const onSetNameLocal = () => onSetName(narrativeId, name, newName);
@@ -42,7 +41,6 @@ function renderEditMessageContainer (props: EditMessageContainerProps)
         const editMessageProps = {
                 name,
                 store: props.store,
-                onDelete: onDeleteLocal,
                 onSetNameScratchpad: onSetNameScratchpadLocal,
                 onSetName: onSetNameLocal,
                 onSetSubjectName: onSetSubjectNameLocal,

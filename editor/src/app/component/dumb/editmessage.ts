@@ -26,7 +26,6 @@ import TextComponent = require('./text');
 interface EditMessageProps extends React.Props<any> {
         name: string,
         store: State.Store;
-        onDelete: () => void;
         onSetNameScratchpad: (newName: string) => void;
         onSetName: () => void;
         onSetSubjectName: (subjectName: string) => void;
@@ -80,25 +79,19 @@ function renderEditMessage (props: EditMessageProps)
         const encrypted = createEncrypted(message, props.onSetEncrypted);
         const script = createScript(message, props.onSetScript);
 
-        const deleteButton = createDeleteButton(
-                messageName, props.onDelete);
-        const header = Div({ className: 'edit-mesage-header' },
-                deleteButton);
-
         const dataLists = createDataLists(narrative);
         return Div({ className: 'edit-message'},
                 dataLists,
                 ComponentHelpers.wrapInGroup(
-                        ComponentHelpers.wrapInSubgroup(header),
                         ComponentHelpers.wrapInSubgroup(name),
                         ComponentHelpers.wrapInSubgroup(subject),
                         ComponentHelpers.wrapInSubgroup(endGame, encrypted)
                 ),
                 ComponentHelpers.wrapInTitleGroup('Message', messageContent),
+                ComponentHelpers.wrapInTitleGroup('Children', children),
+                ComponentHelpers.wrapInTitleGroup('Reply options', replyOptions),
                 ComponentHelpers.wrapInTitleGroup('Fallback',
                         ComponentHelpers.wrapInSubgroup(fallback)),
-                ComponentHelpers.wrapInTitleGroup('Reply options', replyOptions),
-                ComponentHelpers.wrapInTitleGroup('Children', children),
                 ComponentHelpers.wrapInTitleGroup('Script', script)
         );
 }
