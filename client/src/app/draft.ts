@@ -45,7 +45,7 @@ function isReplySubject (subject: string)
 
 function createReplyBody (body: string)
 {
-        return Str.prependToLines('> ', body);
+        return '\n\n' + Str.prependToLines('> ', body);
 }
 
 export function setBody (draft: Draft, body: string)
