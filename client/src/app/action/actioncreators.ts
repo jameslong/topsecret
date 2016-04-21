@@ -34,6 +34,7 @@ export const displayMessage = createActionCreator<string>(Actions.Types.DIPLAY_M
 export const tick = createEmptyActionCreator(Actions.Types.TICK);
 export const tickFaster = createEmptyActionCreator(Actions.Types.TICK_FASTER);
 export const tickSlower = createEmptyActionCreator(Actions.Types.TICK_SLOWER);
+export const addTimeOffset = createActionCreator<number>(Actions.Types.ADD_TIME_OFFSET);
 
 export const startGenerateKey = createEmptyActionCreator(Actions.Types.START_GENERATE_KEY);
 export const generatedKey = createActionCreator<Actions.GeneratedKeyParams>(Actions.Types.GENERATED_KEY);

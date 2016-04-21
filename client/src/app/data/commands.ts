@@ -14,6 +14,7 @@ const KeyCodes = {
         K: 75,
         L: 76,
         M: 77,
+        O: 79,
         R: 82,
         S: 83,
         T: 84,
@@ -84,19 +85,26 @@ const commonCommands: Command.Command[] = [{
         shortDesc: 'Help',
         desc: 'display available commands',
 }, {
-        id: 'fastforward',
+        id: 'tick-faster',
         key: '+',
         keyCodes: [KeyCodes.PLUS],
         actionCreator: KeyHandlers.tickFaster,
         shortDesc: '',
-        desc: 'fastforward time',
+        desc: 'speed up time',
 }, {
-        id: 'rewind',
+        id: 'tick-slower',
         key: '-',
         keyCodes: [KeyCodes.MINUS],
         actionCreator: KeyHandlers.tickSlower,
         shortDesc: '',
-        desc: 'rewind time',
+        desc: 'slow down time',
+}, {
+        id: 'add-time-offset',
+        key: 'o',
+        keyCodes: [KeyCodes.O],
+        actionCreator: KeyHandlers.addTimeOffset,
+        shortDesc: '',
+        desc: 'move 6 hours ahead of present',
 }];
 
 const composeCommands = [, {
@@ -287,8 +295,9 @@ export const commandIdsByMode: Data.IdsById = {
                 'change',
                 'encryption',
                 'open-help',
-                'fastforward',
-                'rewind'
+                'tick-faster',
+                'tick-slower',
+                'add-time-offset'
         ],
         [UI.Modes.INDEX_SENT]: [
                 'next-message',

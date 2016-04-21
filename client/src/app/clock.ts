@@ -50,3 +50,9 @@ export function tickSlower (clock: Clock)
         const timeFactor = MathUtil.inRange(1, 3600, temp);
         return Helpers.assign(clock, { timeFactor });
 }
+
+export function addOffset (clock: Clock, offsetMs: number)
+{
+        const lastTickGameMs = clock.lastTickGameMs + offsetMs;
+        return Helpers.assign(clock, { lastTickGameMs });
+}

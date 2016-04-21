@@ -260,3 +260,9 @@ export function tickSlower (client: Client.Client)
 {
         return ActionCreators.tickSlower();
 }
+
+export function addTimeOffset (client: Client.Client)
+{
+        const offsetMs = 6 * 3600 * 1000;
+        return ActionCreators.addTimeOffset(offsetMs);
+}

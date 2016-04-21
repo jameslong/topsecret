@@ -49,6 +49,10 @@ export function data (data: Data.Data, action: Redux.Action<any>)
                         const tickSlower = <Actions.TickSlower><any>action;
                         return handleTickSlower(data, tickSlower);
 
+                case Actions.Types.ADD_TIME_OFFSET:
+                        const addOffset = <Actions.AddTimeOffset><any>action;
+                        return handleAddTimeOffset(data, addOffset);
+
                 default:
                         return data;
         }
@@ -141,5 +145,11 @@ function handleTickFaster (data: Data.Data, action: Actions.TickFaster)
 function handleTickSlower (data: Data.Data, action: Actions.TickSlower)
 {
         const clock = Clock.tickSlower(data.clock);
+        return Helpers.assign(data, { clock });
+}
+
+function handleAddTimeOffset (data: Data.Data, action: Actions.AddTimeOffset)
+{
+        const clock = Clock.addOffset(data.clock, action.parameters);
         return Helpers.assign(data, { clock });
 }

@@ -17,6 +17,7 @@ export const Types = {
         TICK: 'TICK',
         TICK_FASTER: 'TICK_FASTER',
         TICK_SLOWER: 'TICK_SLOWER',
+        ADD_TIME_OFFSET: 'ADD_TIME_OFFSET',
 
         START_GENERATE_KEY: 'START_GENERATE_KEY',
         GENERATED_KEY: 'GENERATED_KEY',
@@ -54,6 +55,7 @@ export interface DisplayMessage extends Redux.Action<string> {}
 export interface Tick extends Redux.Action<void> {}
 export interface TickFaster extends Redux.Action<void> {}
 export interface TickSlower extends Redux.Action<void> {}
+export interface AddTimeOffset extends Redux.Action<number> {}
 
 export interface StartGenerateKey extends Redux.Action<void> {}
 export interface GeneratedKeyParams {
