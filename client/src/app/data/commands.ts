@@ -87,14 +87,14 @@ const commonCommands: Command.Command[] = [{
         id: 'fastforward',
         key: '+',
         keyCodes: [KeyCodes.PLUS],
-        actionCreator: KeyHandlers.fastforward,
+        actionCreator: KeyHandlers.tickFaster,
         shortDesc: '',
         desc: 'fastforward time',
 }, {
         id: 'rewind',
         key: '-',
         keyCodes: [KeyCodes.MINUS],
-        actionCreator: KeyHandlers.rewind,
+        actionCreator: KeyHandlers.tickSlower,
         shortDesc: '',
         desc: 'rewind time',
 }];

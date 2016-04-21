@@ -37,14 +37,14 @@ export function displayGameTime (clock: Clock)
         return date.toUTCString();
 }
 
-export function fastforward (clock: Clock)
+export function tickFaster (clock: Clock)
 {
         const temp = Math.round(clock.timeFactor * 60);
         const timeFactor = MathUtil.inRange(1, 3600, temp);
         return Helpers.assign(clock, { timeFactor });
 }
 
-export function rewind (clock: Clock)
+export function tickSlower (clock: Clock)
 {
         const temp = Math.round(clock.timeFactor / 60);
         const timeFactor = MathUtil.inRange(1, 3600, temp);

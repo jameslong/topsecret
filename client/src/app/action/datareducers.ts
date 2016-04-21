@@ -41,13 +41,13 @@ export function data (data: Data.Data, action: Redux.Action<any>)
                         const tick = <Actions.Tick><any>action;
                         return handleTick(data, tick);
 
-                case Actions.Types.FASTFORWARD:
-                        const fastforward = <Actions.Fastforward><any>action;
-                        return handleFastforward(data, fastforward);
+                case Actions.Types.TICK_FASTER:
+                        const tickFaster = <Actions.TickFaster><any>action;
+                        return handleTickFaster(data, tickFaster);
 
-                case Actions.Types.REWIND:
-                        const rewind = <Actions.Rewind><any>action;
-                        return handleRewind(data, rewind);
+                case Actions.Types.TICK_SLOWER:
+                        const tickSlower = <Actions.TickSlower><any>action;
+                        return handleTickSlower(data, tickSlower);
 
                 default:
                         return data;
@@ -132,14 +132,14 @@ function handleTick (data: Data.Data, action: Actions.Tick)
         return Helpers.assign(data, { clock });
 }
 
-function handleFastforward (data: Data.Data, action: Actions.Fastforward)
+function handleTickFaster (data: Data.Data, action: Actions.TickFaster)
 {
-        const clock = Clock.fastforward(data.clock);
+        const clock = Clock.tickFaster(data.clock);
         return Helpers.assign(data, { clock });
 }
 
-function handleRewind (data: Data.Data, action: Actions.Rewind)
+function handleTickSlower (data: Data.Data, action: Actions.TickSlower)
 {
-        const clock = Clock.rewind(data.clock);
+        const clock = Clock.tickSlower(data.clock);
         return Helpers.assign(data, { clock });
 }

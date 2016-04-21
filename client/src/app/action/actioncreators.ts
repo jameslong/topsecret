@@ -32,8 +32,8 @@ export const setDraftTo = createActionCreator<string>(Actions.Types.SET_DRAFT_TO
 export const displayMessage = createActionCreator<string>(Actions.Types.DIPLAY_MESSAGE);
 
 export const tick = createEmptyActionCreator(Actions.Types.TICK);
-export const fastforward = createEmptyActionCreator(Actions.Types.FASTFORWARD);
-export const rewind = createEmptyActionCreator(Actions.Types.REWIND);
+export const tickFaster = createEmptyActionCreator(Actions.Types.TICK_FASTER);
+export const tickSlower = createEmptyActionCreator(Actions.Types.TICK_SLOWER);
 
 export const startGenerateKey = createEmptyActionCreator(Actions.Types.START_GENERATE_KEY);
 export const generatedKey = createActionCreator<Actions.GeneratedKeyParams>(Actions.Types.GENERATED_KEY);

@@ -251,12 +251,12 @@ export function importKeys (client: Client.Client): Redux.Action<any>
         return null;
 }
 
-export function fastforward (client: Client.Client)
+export function tickFaster (client: Client.Client)
 {
-        return ActionCreators.fastforward();
+        return ActionCreators.tickFaster();
 }
 
-export function rewind (client: Client.Client)
+export function tickSlower (client: Client.Client)
 {
-        return ActionCreators.rewind();
+        return ActionCreators.tickSlower();
 }
