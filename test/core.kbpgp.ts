@@ -42,11 +42,12 @@ const encryptDecryptTo1 = function (text: string) {
 };
 
 describe('Kbpgp', function () {
-        describe('generateKeyPair (may take a few mins)', function () {
-                it('should generate key pair without error', function () {
-                        return Kbpgp.generateKeyPair('john@smith.com');
-                })
-        });
+        // Slow test, only enable if necessary
+        // describe('generateKeyPair (may take a few mins)', function () {
+        //         it('should generate key pair without error', function () {
+        //                 return Kbpgp.generateKeyPair('john@smith.com');
+        //         })
+        // });
 
         describe('loadKey', function () {
                 it('should load key without error', function () {
