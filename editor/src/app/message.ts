@@ -10,7 +10,7 @@ type Strings = Map.Map<string>;
 
 export interface MessageContent {
         from: string;
-        body: string[];
+        body: string;
 };
 
 export interface MessageData {
@@ -145,7 +145,7 @@ function validContent (
 {
         const content = message.message;
         const validFrom = Map.exists(profiles, content.from);
-        const validBody = content.body.every(name => Map.exists(strings, name));
+        const validBody = Map.exists(strings, content.body);
 
         return validFrom && validBody;
 }

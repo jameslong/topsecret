@@ -23,6 +23,7 @@ export const Types = {
         SET_EDITED_MESSAGE_NAME: 'SET_EDITED_MESSAGE_NAME',
         SET_MESSAGE_NAME: 'SET_MESSAGE_NAME',
         SET_MESSAGE_SUBJECT: 'SET_MESSAGE_SUBJECT',
+        SET_MESSAGE_BODY: 'SET_MESSAGE_BODY',
         SET_MESSAGE_END_GAME: 'SET_MESSAGE_END_GAME',
         SET_MESSAGE_ENCRYPTED: 'SET_MESSAGE_ENCRYPTED',
         SET_MESSAGE_POSITION: 'SET_MESSAGE_POSITION',
@@ -88,6 +89,9 @@ export interface SetMessageName extends Redux.Action<SetMessageNameParams> {}
 
 export type SetMessageSubjectParams = NameValueParameters<string>;
 export interface SetMessageSubject extends Redux.Action<SetMessageSubjectParams> {}
+
+export type SetMessageBodyParams = NameValueParameters<string>;
+export interface SetMessageBody extends Redux.Action<SetMessageBodyParams> {}
 
 export type SetMessageEndGameParams = NameValueParameters<boolean>;
 export interface SetMessageEndGame extends Redux.Action<SetMessageEndGameParams> {}

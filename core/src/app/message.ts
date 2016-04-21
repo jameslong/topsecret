@@ -60,7 +60,7 @@ export interface NamedThreadDelay {
 
 export interface Message {
         from: string;
-        body: string[];
+        body: string;
 }
 
 export interface MessageData {

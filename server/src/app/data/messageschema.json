@@ -87,12 +87,7 @@
                         "type": "object",
                         "properties": {
                                 "from": { "type": "string" },
-                                "body": {
-                                        "type": "array",
-                                        "items": { "type": "string" },
-                                        "minItems": 1,
-                                        "uniqueItems": true
-                                }
+                                "body": { "type": "string" }
                         },
                         "required": ["from", "body"]
                 },

@@ -9,9 +9,7 @@
         "message": {
                 "from": "james",
                 "to": [],
-                "body": [
-                        "script_0_body"
-                ]
+                "body": "script_0_body"
         },
         "encrypted": true,
         "script": "",

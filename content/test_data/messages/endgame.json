@@ -11,9 +11,7 @@
                 "to": [
                         "zoe"
                 ],
-                "body": [
-                        "endgame_body"
-                ]
+                "body": "endgame_body"
         },
         "encrypted": true,
         "script": "",

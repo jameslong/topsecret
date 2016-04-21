@@ -11,9 +11,7 @@
                 "to": [
                         "zoe"
                 ],
-                "body": [
-                        "resign_body"
-                ]
+                "body": "resign_body"
         },
         "encrypted": true,
         "script": "",

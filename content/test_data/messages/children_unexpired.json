@@ -11,9 +11,7 @@
                 "to": [
                         "zoe"
                 ],
-                "body": [
-                        "children_unexpired_body"
-                ]
+                "body": "children_unexpired_body"
         },
         "encrypted": true,
         "script": "",

@@ -22,15 +22,15 @@ function renderMessageContentContainer (props: MessageContentContainerProps)
         const narrativeId = props.narrativeId;
         const onSet = (content: Message.MessageContent) =>
                 onSetMessageContent(narrativeId, name, content);
-        const onSetStringLocal = (name: string, value: string) =>
-                onSetString(narrativeId, name, value);
+        const onSetBodyLocal = (value: string) =>
+                onSetBody(narrativeId, name, value);
         const contentProps = {
                 message: props.message,
                 profiles: props.profiles,
                 strings: props.strings,
                 name: props.name,
                 onSet,
-                onSetString: onSetStringLocal,
+                onSetBody: onSetBodyLocal,
         };
         return MessageContent(contentProps);
 }
@@ -51,9 +51,9 @@ function onSetMessageContent (
         Redux.handleAction(action);
 }
 
-function onSetString (narrativeId: string, name: string, value: string)
+function onSetBody (narrativeId: string, name: string, value: string)
 {
-        const action = ActionCreators.setString({
+        const action = ActionCreators.setMessageBody({
                 narrativeId,
                 name,
                 value,

@@ -11,9 +11,7 @@
                 "to": [
                         "zoe"
                 ],
-                "body": [
-                        "fallback_expired_body"
-                ]
+                "body": "fallback_expired_body"
         },
         "encrypted": true,
         "script": "",

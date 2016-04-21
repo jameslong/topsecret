@@ -11,9 +11,7 @@
                 "to": [
                         "zoe"
                 ],
-                "body": [
-                        "fallback_0_body"
-                ]
+                "body": "fallback_0_body"
         },
         "encrypted": true,
         "script": "",

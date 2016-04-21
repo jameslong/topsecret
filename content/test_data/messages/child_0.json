@@ -11,9 +11,7 @@
                 "to": [
                         "zoe"
                 ],
-                "body": [
-                        "child_0_body"
-                ]
+                "body": "child_0_body"
         },
         "encrypted": true,
         "script": "",

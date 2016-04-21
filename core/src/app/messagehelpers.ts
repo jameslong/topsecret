@@ -55,9 +55,8 @@ export function createMessageData (
         const fromProfile = profiles[message.from];
         const from = generateFriendlyEmail(fromProfile, domain);
 
-        const passages = message.body.map(text => strings[text]);
-        const joined = passages.join('\n\n');
-        const body = (vars ? insertMessageVars(joined, vars) : joined);
+        const passage = strings[message.body];
+        const body = (vars ? insertMessageVars(passage, vars) : passage);
 
         return { from, to, subject, body, inReplyToId };
 }

@@ -11,9 +11,7 @@
                 "to": [
                         "zoe"
                 ],
-                "body": [
-                        "reply_0_body"
-                ]
+                "body": "reply_0_body"
         },
         "encrypted": true,
         "script": "",

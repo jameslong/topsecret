@@ -11,13 +11,11 @@ import ComponentHelpers = require('../helpers');
 import Core = require('../core');
 import Div = Core.Div;
 import EditMessage = require('./editmessage');
-import Multiple = require('./multiple');
-import Passage = require('./passage');
 import TextComponent = require('./text');
 import TextList = require('./textlist');
 
 type OnSet = (content: Message.MessageContent) => void;
-type OnSetString = (name: string, value: string) => void;
+type OnSetBody = (value: string) => void;
 
 interface MessageContentProps extends React.Props<any> {
         message: Message.MessageContent;
@@ -25,19 +23,19 @@ interface MessageContentProps extends React.Props<any> {
         strings: Narrative.Strings;
         name: string;
         onSet: OnSet;
-        onSetString: OnSetString;
+        onSetBody: OnSetBody;
 };
 
 function renderMessageContent (props: MessageContentProps)
 {
         const onSet = props.onSet;
-        const onSetString = props.onSetString;
+        const onSetBody = props.onSetBody;
         const message = props.message;
         const profiles = props.profiles;
         const strings = props.strings;
 
         const from = createFrom(onSet, message, profiles)
-        const body = createBody(onSet, onSetString, message, strings);
+        const body = createBody(onSetBody, message, strings);
 
         return Div({},
                 ComponentHelpers.wrapInSubgroup(from),
@@ -56,66 +54,23 @@ function onSetFrom (
         onSet(newContent);
 }
 
-function onSetPassage (
-        onSet: OnSet,
-        content: Message.MessageContent,
-        text: string,
-        index: number)
-{
-        const body = Arr.set(content.body, index, text);
-        const newContent = Helpers.assign(content, { body });
-        onSet(newContent);
-}
-
-function onAddPassage (onSet: OnSet, content: Message.MessageContent)
-{
-        const body = Arr.push(content.body, '');
-        const newContent = Helpers.assign(content, { body });
-        onSet(newContent);
-}
-
-function onRemovePassage (
-        onSet: OnSet,
-        content: Message.MessageContent,
-        index: number)
-{
-        const body = Arr.deleteIndex(content.body, index);
-        const newContent = Helpers.assign(content, { body });
-        onSet(newContent);
-}
-
 function createBody (
-        onSet: OnSet,
-        onSetString: OnSetString,
+        onSetBody: OnSetBody,
         content: Message.MessageContent,
         strings: Narrative.Strings)
 {
-        const body = content.body;
+        const stringName = content.body;
+        const value = strings[stringName];
+        const onChange = (value: string) => onSetBody(value);
 
-        const passages = body.map((name, index) => {
-                const onSetName = (newName: string) =>
-                        onSetPassage(onSet, content, newName, index);
-
-                const onSetBody = (value: string) => onSetString(name, value);
-
-                const props = {
-                        onSetName: onSetName,
-                        onSetBody: onSetBody,
-                        name: name,
-                        strings: strings
-                };
-                return Passage(props);
-        });
-
-        const onAdd = () => onAddPassage(onSet, content);
-        const onRemove = (index: number) =>
-                onRemovePassage(onSet, content, index);
+        const valid = Map.exists(strings, stringName);
         const props = {
-                onAdd: onAdd,
-                onRemove: onRemove,
-                children: passages,
+                placeholder: 'Message body',
+                value,
+                onChange,
         };
-        return Multiple(props);
+        const textArea = TextInputValidated.createValidatedTextArea(props, valid);
+        return Div({ className: 'message-body' }, textArea);
 }
 
 function createFrom (

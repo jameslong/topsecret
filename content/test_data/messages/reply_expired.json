@@ -11,9 +11,7 @@
                 "to": [
                         "zoe"
                 ],
-                "body": [
-                        "reply_expired_body"
-                ]
+                "body": "reply_expired_body"
         },
         "encrypted": true,
         "script": "",

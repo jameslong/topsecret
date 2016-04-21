@@ -43,6 +43,7 @@ export const deselectAllMessages = createActionCreator<Actions.DeselectAllMessag
 export const setEditedMessageName = createActionCreator<Actions.SetEditedMessageNameParams>(Actions.Types.SET_EDITED_MESSAGE_NAME);
 export const setMessageName = createActionCreator<Actions.SetMessageNameParams>(Actions.Types.SET_MESSAGE_NAME);
 export const setMessageSubject = createActionCreator<Actions.SetMessageSubjectParams>(Actions.Types.SET_MESSAGE_SUBJECT);
+export const setMessageBody = createActionCreator<Actions.SetMessageBodyParams>(Actions.Types.SET_MESSAGE_BODY);
 export const setMessageEndGame = createActionCreator<Actions.SetMessageEndGameParams>(Actions.Types.SET_MESSAGE_END_GAME);
 export const setMessageEncrypted = createActionCreator<Actions.SetMessageEncryptedParams>(Actions.Types.SET_MESSAGE_ENCRYPTED);
 export const setMessageScript = createActionCreator<Actions.SetMessageScriptParams>(Actions.Types.SET_MESSAGE_SCRIPT);

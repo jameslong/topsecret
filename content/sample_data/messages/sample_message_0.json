@@ -8,9 +8,7 @@
         "endGame": false,
         "message": {
                 "from": "james",
-                "body": [
-                        "sample_messag_0_body"
-                ]
+                "body": "sample_message_0_body"
         },
         "encrypted": true,
         "script": "",

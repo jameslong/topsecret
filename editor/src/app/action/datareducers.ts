@@ -61,6 +61,10 @@ export function data (
                 const setSubject = <Actions.SetMessageSubject><any>action;
                 return handleSetMessageSubject(state, config, setSubject);
 
+        case Actions.Types.SET_MESSAGE_BODY:
+                const setBody = <Actions.SetMessageBody><any>action;
+                return handleSetMessageBody(state, config, setBody);
+
         case Actions.Types.SET_MESSAGE_END_GAME:
                 const setEndGame = <Actions.SetMessageEndGame><any>action;
                 return handleSetMessageEndGame(state, config, setEndGame);
@@ -225,7 +229,7 @@ function handleCreateMessage (
                 endGame: false,
                 message: {
                         from: '',
-                        body: [''],
+                        body: '',
                 },
                 encrypted: true,
                 script: '',
@@ -468,6 +472,33 @@ function handleSetMessageSubject (
         const newNarrative = Helpers.assign(narrative, { stringsById: newStrings });
         const newNarratives = Map.set(narratives, newNarrative.name, newNarrative);
         return Helpers.assign(tempState, { narrativesById: newNarratives });
+}
+
+function handleSetMessageBody (
+        state: State.Data,
+        config: Config.Config,
+        action: Actions.SetMessageBody)
+{
+        const { name, narrativeId, value } = action.parameters;
+        const stringName = `${name}_body`;
+        const body = value ? stringName : '';
+        const narratives = state.narrativesById;
+        const narrative = narratives[narrativeId];
+        const messages = narrative.messagesById;
+        const message = messages[name];
+        const content = message.message;
+        const newContent = Helpers.assign(content, { body });
+        const newMessage = Helpers.assign(message, { message: newContent });
+        const newMessages = Map.set(messages, name, newMessage);
+        const strings = narrative.stringsById;
+        const newStrings = value ?
+                Map.set(strings, stringName, value) :
+                Map.remove(strings, stringName);
+
+        const newNarrative = Helpers.assign(narrative, {
+                stringsById: newStrings, messagesById: newMessages });
+        const newNarratives = Map.set(narratives, newNarrative.name, newNarrative);
+        return Helpers.assign(state, { narrativesById: newNarratives });
 }
 
 function handleSetMessageEndGame (
