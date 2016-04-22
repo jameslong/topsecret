@@ -1,8 +1,8 @@
 /// <reference path="../typings/es6-polyfill/es6-polyfill.d.ts" />
 
-import Data = require('../server/src/app/data/data');
+import Data = require('../core/src/app/data');
 import DBTypes = require('../core/src/app/dbtypes');
-import FileSystem = require('../server/src/app/data/filesystem');
+import FileSystem = require('../core/src/app/filesystem');
 import KBPGP = require('../core/src/app/kbpgp');
 import LocalDB = require('../core/src/app/localdb');
 import Main = require('../core/src/app/main');
