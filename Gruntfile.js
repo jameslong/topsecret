@@ -4,15 +4,15 @@ module.exports = function (grunt)
 
         grunt.initConfig({
                 clean: {
-                        client: ['client/build'],
+                        browser: ['browser/build'],
                         desktop: ['desktop/build'],
                         editor: ['editor/build'],
                         server: ['server/build'],
                         test: ['test/build']
                 },
                 ts: {
-                        client: {
-                                tsconfig: './client/tsconfig.json',
+                        browser: {
+                                tsconfig: './browser/tsconfig.json',
                                 options: {
                                         compiler: compilerPath
                                 }
@@ -56,10 +56,10 @@ module.exports = function (grunt)
         grunt.loadNpmTasks('grunt-mocha-test');
         grunt.loadNpmTasks('grunt-ts');
 
-        grunt.registerTask('client', ['clean:client', 'ts:client']);
+        grunt.registerTask('browser', ['clean:browser', 'ts:browser']);
         grunt.registerTask('desktop', ['clean:desktop', 'ts:desktop']);
         grunt.registerTask('editor', ['clean:editor', 'ts:editor']);
         grunt.registerTask('server', ['clean:server', 'ts:server']);
         grunt.registerTask('test', ['clean:test', 'ts:test', 'mochaTest:test']);
-        grunt.registerTask('default', ['client', 'desktop', 'editor', 'server']);
+        grunt.registerTask('default', ['browser', 'desktop', 'editor', 'server']);
 }
