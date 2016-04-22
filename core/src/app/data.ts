@@ -1,15 +1,9 @@
-import Arr = require('../../../../core/src/app/utils/array');
-import DataValidation = require('./datavalidation');
 import FileSystem = require('./filesystem');
-import Helpers = require('../../../../core/src/app/utils/helpers');
-import Kbpgp = require('../../../../core/src/app/kbpgp');
-import Log = require('../../../../core/src/app/log');
-import Map = require('../../../../core/src/app/utils/map');
-import Message = require('../../../../core/src/app/message');
-import Profile = require('../../../../core/src/app/profile');
-import Prom = require('../../../../core/src/app/utils/promise');
-import Request = require('../../../../core/src/app/requesttypes');
-import State = require('../../../../core/src/app/state');
+import Helpers = require('./utils/helpers');
+import Map = require('./utils/map');
+import Message = require('./message');
+import Profile = require('./profile');
+import State = require('./state');
 
 export interface Path {
         basename: (path: string, ext?: string) => string;

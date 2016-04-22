@@ -1,5 +1,5 @@
-import Data = require('./data/data');
-import FileSystem = require('./data/filesystem');
+import Data = require('../../../core/src/app/data');
+import FileSystem = require('../../../core/src/app/filesystem');
 
 export enum AppMode {
         Local,

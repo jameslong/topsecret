@@ -16,12 +16,13 @@ import Root = require('./component/smart/root');
 import Server = require('./server');
 import State = require('../../../../core/src/app/state');
 
-const wrapper = document.getElementById('wrapper');
-
-const player = PlayerData.player;
-const config = ConfigData.createConfig();
-
 export function init (data: State.Data) {
+        const wrapper = document.getElementById('wrapper');
+        console.log('wrapper' + wrapper);
+
+        const player = PlayerData.player;
+        const config = ConfigData.createConfig();
+
         const server = Server.createServer(config, data);
         return Client.createClient(
                 config,

@@ -48,7 +48,7 @@ function onSelectNarrative (name: string)
 
 function onTest (version: string, messageName: string)
 {
-        const clientURL = '../client/index.html';
+        const clientURL = '../browser/index.html';
         const querystring = `?version=${version}&messageName=${messageName}`;
         const url = `${clientURL}${querystring}`;
         window.open(url);

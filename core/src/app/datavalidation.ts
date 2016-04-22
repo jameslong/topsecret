@@ -1,12 +1,10 @@
-/// <reference path='../../../../typings/is-my-json-valid/is-my-json-valid.d.ts'/>
+/// <reference path='../../../typings/is-my-json-valid/is-my-json-valid.d.ts'/>
 
 import Data = require('./data');
-import FileSystem = require('./filesystem');
-import Func = require('../../../../core/src/app/utils/function');
-import Helpers = require('../../../../core/src/app/utils/helpers');
-import Message = require('../../../../core/src/app/message');
-import Profile = require('../../../../core/src/app/profile');
-import Script = require('../../../../core/src/app/script');
+import Helpers = require('./utils/helpers');
+import Message = require('./message');
+import Profile = require('./profile');
+import Script = require('./script');
 
 import validator = require('is-my-json-valid');
 
