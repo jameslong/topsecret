@@ -1,20 +1,20 @@
 /// <reference path="../../../typings/es6-polyfill/es6-polyfill.d.ts" />
 
-import ConfigData = require('./data/config');
-import MessageData = require('./data/messages');
-import CommandData = require('./data/commands');
-import PlayerData = require('./data/player');
+import ConfigData = require('./core/data/config');
+import MessageData = require('./core/data/messages');
+import CommandData = require('./core/data/commands');
+import PlayerData = require('./core/data/player');
 
-import AsyncRequest = require('./asyncrequest');
-import Client = require('./client');
-import Clock = require('./clock');
-import EventHandler = require('./eventhandler');
+import AsyncRequest = require('./core/asyncrequest');
+import Client = require('./core/client');
+import Clock = require('./core/clock');
+import EventHandler = require('./core/eventhandler');
 import KbpgpHelpers = require('../../../core/src/app/kbpgp');
 import Prom = require('../../../core/src/app/utils/promise');
-import Reducers = require('./action/reducers');
-import Redux = require('./redux/redux');
-import Root = require('./component/smart/root');
-import Server = require('./server');
+import Reducers = require('./core/action/reducers');
+import Redux = require('./core/redux/redux');
+import Root = require('./core/component/smart/root');
+import Server = require('./core/server');
 
 const wrapper = document.getElementById('wrapper');
 

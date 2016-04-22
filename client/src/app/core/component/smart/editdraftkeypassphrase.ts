@@ -1,6 +1,6 @@
 import ActionCreators = require('../../action/actioncreators');
 import EditBar = require('../dumb/editbar');
-import Kbpgp = require('../../../../../core/src/app/kbpgp');
+import Kbpgp = require('../../../../../../core/src/app/kbpgp');
 import React = require('react');
 import Redux = require('../../redux/redux');
 

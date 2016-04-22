@@ -1,7 +1,7 @@
 import Actions = require('./actions');
-import Arr = require('../../../../core/src/app/utils/array');
+import Arr = require('../../../../../core/src/app/utils/array');
 import Folder = require('../folder');
-import Message = require('../../../../core/src/app/message');
+import Message = require('../../../../../core/src/app/message');
 import Redux = require('../redux/redux');
 import UI = require('../ui');
 

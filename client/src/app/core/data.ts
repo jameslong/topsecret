@@ -1,14 +1,14 @@
-import Arr = require('../../../core/src/app/utils/array');
+import Arr = require('../../../../core/src/app/utils/array');
 import Clock = require('./clock');
 import Command = require('./command');
 import Folder = require('./folder');
-import Func = require('../../../core/src/app/utils/function');
-import Helpers = require('../../../core/src/app/utils/helpers');
+import Func = require('../../../../core/src/app/utils/function');
+import Helpers = require('../../../../core/src/app/utils/helpers');
 import Message = require('./message');
-import MessageCore = require('../../../core/src/app/message');
+import MessageCore = require('../../../../core/src/app/message');
 import Kbpgp = require('kbpgp');
-import KbpgpHelpers = require('../../../core/src/app/kbpgp');
-import Map = require('../../../core/src/app/utils/map');
+import KbpgpHelpers = require('../../../../core/src/app/kbpgp');
+import Map = require('../../../../core/src/app/utils/map');
 import Player = require('./player');
 
 export type IdsById = Map.Map<string[]>;

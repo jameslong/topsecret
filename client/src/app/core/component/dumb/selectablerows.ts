@@ -1,7 +1,7 @@
-import Helpers = require('../../../../../core/src/app/utils/helpers');
-import Map = require('../../../../../core/src/app/utils/map');
+import Helpers = require('../../../../../../core/src/app/utils/helpers');
+import Map = require('../../../../../../core/src/app/utils/map');
 import React = require('react');
-import Str = require('../../../../../core/src/app/utils/string');
+import Str = require('../../../../../../core/src/app/utils/string');
 
 import Core = require('../core');
 import Table = Core.Table;

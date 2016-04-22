@@ -4,18 +4,18 @@ import ConfigData = require('./data/config');
 import Data = require('./data');
 import Draft = require('./draft');
 import Folder = require('./folder');
-import Func = require('../../../core/src/app/utils/function');
-import Helpers = require('../../../core/src/app/utils/helpers');
+import Func = require('../../../../core/src/app/utils/function');
+import Helpers = require('../../../../core/src/app/utils/helpers');
 import Kbpgp = require('kbpgp');
-import KbpgpHelpers = require('../../../core/src/app/kbpgp');
-import Map = require('../../../core/src/app/utils/map');
+import KbpgpHelpers = require('../../../../core/src/app/kbpgp');
+import Map = require('../../../../core/src/app/utils/map');
 import Message = require('./message');
-import MessageHelpers = require('../../../core/src/app/messagehelpers');
+import MessageHelpers = require('../../../../core/src/app/messagehelpers');
 import Player = require('./player');
 import PlayerData = require('./data/player');
 import Redux = require('./redux/redux');
 import Server = require('./server');
-import State = require('../../../core/src/app/state');
+import State = require('../../../../core/src/app/state');
 import UI = require('./ui');
 
 export interface Client {

@@ -1,16 +1,16 @@
 import ActionCreators = require('./action/actioncreators');
 import ConfigData = require('./data/config');
-import DBTypes = require('../../../core/src/app/dbtypes');
-import Helpers = require('../../../core/src/app/utils/helpers');
-import LocalDB = require('../../../core/src/app/localdb');
-import Main = require('../../../core/src/app/main');
-import Message = require('../../../core/src/app/message');
-import MessageHelpers = require('../../../core/src/app/messagehelpers');
-import Player = require('../../../core/src/app/player');
+import DBTypes = require('../../../../core/src/app/dbtypes');
+import Helpers = require('../../../../core/src/app/utils/helpers');
+import LocalDB = require('../../../../core/src/app/localdb');
+import Main = require('../../../../core/src/app/main');
+import Message = require('../../../../core/src/app/message');
+import MessageHelpers = require('../../../../core/src/app/messagehelpers');
+import Player = require('../../../../core/src/app/player');
 import PlayerData = require('./data/player');
-import Promises = require('../../../core/src/app/promises');
+import Promises = require('../../../../core/src/app/promises');
 import Redux = require('./redux/redux');
-import State = require('../../../core/src/app/state');
+import State = require('../../../../core/src/app/state');
 
 interface Id {
         uid: number;

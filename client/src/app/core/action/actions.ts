@@ -1,7 +1,7 @@
-/// <reference path="../../../../typings/kbpgp/kbpgp.d.ts"/>
+/// <reference path="../../../../../typings/kbpgp/kbpgp.d.ts"/>
 
-import Map = require('../../../../core/src/app/utils/map');
-import MessageCore = require('../../../../core/src/app/message');
+import Map = require('../../../../../core/src/app/utils/map');
+import MessageCore = require('../../../../../core/src/app/message');
 import Message = require('../message');
 import Redux = require('../redux/redux');
 
