@@ -5,7 +5,7 @@ module.exports = function (grunt)
         grunt.initConfig({
                 clean: {
                         browser: ['browser/build'],
-                        desktop: ['desktop/build'],
+                        app: ['app/build'],
                         editor: ['editor/build'],
                         server: ['server/build'],
                         test: ['test/build']
@@ -17,8 +17,8 @@ module.exports = function (grunt)
                                         compiler: compilerPath
                                 }
                         },
-                        desktop: {
-                                tsconfig: './desktop/tsconfig.json',
+                        app: {
+                                tsconfig: './app/tsconfig.json',
                                 options: {
                                         compiler: compilerPath
                                 }
@@ -57,9 +57,9 @@ module.exports = function (grunt)
         grunt.loadNpmTasks('grunt-ts');
 
         grunt.registerTask('browser', ['clean:browser', 'ts:browser']);
-        grunt.registerTask('desktop', ['clean:desktop', 'ts:desktop']);
+        grunt.registerTask('app', ['clean:app', 'ts:app']);
         grunt.registerTask('editor', ['clean:editor', 'ts:editor']);
         grunt.registerTask('server', ['clean:server', 'ts:server']);
         grunt.registerTask('test', ['clean:test', 'ts:test', 'mochaTest:test']);
-        grunt.registerTask('default', ['browser', 'desktop', 'editor', 'server']);
+        grunt.registerTask('default', ['browser', 'app', 'editor', 'server']);
 }
