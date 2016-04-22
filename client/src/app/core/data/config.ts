@@ -7,7 +7,6 @@ export interface ConfigData {
         emailDomain: string;
         immediateReplies: boolean;
         timeFactor: number;
-        serverURL: string;
         version: string;
         beginGameMessage: string;
 }
@@ -39,7 +38,6 @@ export function createConfig (): ConfigData
                 emailDomain: 'nsa.gov',
                 immediateReplies: false,
                 timeFactor: 1,
-                serverURL: 'http://127.0.0.1:3000',
                 version: params.version,
                 beginGameMessage: params.messageName,
         };

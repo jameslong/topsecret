@@ -25,7 +25,7 @@ export interface Server {
 
 export function createServer (config: ConfigData.ConfigData, data: State.Data)
 {
-        const { emailDomain, immediateReplies, timeFactor, serverURL } = config;
+        const { emailDomain, immediateReplies, timeFactor } = config;
         const lastEvaluatedKey: string = null;
         const db = LocalDB.createDB();
         const id = { uid: 0 };
