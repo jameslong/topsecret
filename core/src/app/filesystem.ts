@@ -1,9 +1,9 @@
-/// <reference path="../../../../typings/node/node.d.ts"/>
+/// <reference path="../../../typings/node/node.d.ts"/>
 
 import Data = require('./data');
-import Helpers = require('../../../../core/src/app/utils/helpers');
-import Map = require('../../../../core/src/app/utils/map');
-import Str = require('../../../../core/src/app/utils/string');
+import Helpers = require('./utils/helpers');
+import Map = require('./utils/map');
+import Str = require('./utils/string');
 
 import fs = require('fs');
 
