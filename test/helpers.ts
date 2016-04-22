@@ -83,7 +83,7 @@ export function testGameData ()
         return Data.loadGameData(contentPath, groupName);
 }
 
-const delayMs = 100;
+const delayMs = 10;
 export const createDB = () => LocalDB.createLocalDBCalls(
         LocalDB.createDB(), delayMs);
 

@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/jameslong/topsecret.svg?branch=master)](https://travis-ci.org/jameslong/topsecret)
+
 # topsecret
 
 [Top Secret](https://playtopsecret.com) is a video game about the Snowden leaks played by email. This repo contains the open-source server, client-side, and editor code for the game. Stay up to date about the game via the [blog](https://playtopsecret.com/blog.html), [forum](http://forum.playtopsecret.com), and [Twitter account](https://twitter.com/jamestyro).
