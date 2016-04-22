@@ -1,7 +1,7 @@
-import Data = require('../../../core/src/app/data');
-import Helpers = require('../../../core/src/app/utils/helpers');
-import Main = require('./core/main');
-import State = require('../../../core/src/app/state');
+import Data = require('../core/src/app/data');
+import Helpers = require('../core/src/app/utils/helpers');
+import Main = require('../client/src/app/core/main');
+import State = require('../core/src/app/state');
 
 window.onload = () => {
         const path = '../content';
