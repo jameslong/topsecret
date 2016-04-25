@@ -4,13 +4,35 @@ module.exports = function (grunt)
 
         grunt.initConfig({
                 clean: {
-                        browser: ['browser/build'],
                         app: ['app/build'],
+                        browser: ['browser/build'],
                         editor: ['editor/build'],
                         server: ['server/build'],
                         test: ['test/build']
                 },
                 copy: {
+                        app_css: {
+                                expand: true,
+                                flatten: true,
+                                cwd: './browser/src',
+                                src: ['**/*.css'],
+                                dest: './app/build/css',
+                                filter: 'isFile'
+                        },
+                        app_assets: {
+                                expand: true,
+                                cwd: './browser/assets',
+                                src: ['**.*'],
+                                dest: './app/build/assets',
+                                filter: 'isFile'
+                        },
+                        app_files: {
+                                expand: true,
+                                cwd: './app',
+                                src: ['main.js', 'index.html'],
+                                dest: './app/build',
+                                filter: 'isFile'
+                        },
                         browser_css: {
                                 expand: true,
                                 flatten: true,
@@ -40,38 +62,45 @@ module.exports = function (grunt)
                                 dest: './browser/build',
                                 filter: 'isFile'
                         },
-                        app_css: {
+                        editor_css: {
                                 expand: true,
                                 flatten: true,
-                                cwd: './browser/src',
+                                cwd: './editor/src',
                                 src: ['**/*.css'],
-                                dest: './app/build/css',
+                                dest: './editor/build/css',
                                 filter: 'isFile'
                         },
-                        app_assets: {
+                        editor_lib: {
                                 expand: true,
-                                cwd: './browser/assets',
+                                cwd: './editor/src/lib',
+                                src: ['**/*.js'],
+                                dest: './editor/build/lib',
+                                filter: 'isFile'
+                        },
+                        editor_assets: {
+                                expand: true,
+                                cwd: './editor/assets',
                                 src: ['**.*'],
-                                dest: './app/build/assets',
+                                dest: './editor/build/assets',
                                 filter: 'isFile'
                         },
-                        app_files: {
+                        editor_files: {
                                 expand: true,
-                                cwd: './app',
-                                src: ['main.js', 'index.html'],
-                                dest: './app/build',
+                                cwd: './editor',
+                                src: ['requireconfig.js', 'index.html'],
+                                dest: './editor/build',
                                 filter: 'isFile'
                         }
                 },
                 ts: {
-                        browser: {
-                                tsconfig: './browser/tsconfig.json',
+                        app: {
+                                tsconfig: './app/tsconfig.json',
                                 options: {
                                         compiler: compilerPath
                                 }
                         },
-                        app: {
-                                tsconfig: './app/tsconfig.json',
+                        browser: {
+                                tsconfig: './browser/tsconfig.json',
                                 options: {
                                         compiler: compilerPath
                                 }
@@ -110,6 +139,13 @@ module.exports = function (grunt)
         grunt.loadNpmTasks('grunt-mocha-test');
         grunt.loadNpmTasks('grunt-ts');
 
+        grunt.registerTask('app', [
+                'clean:app',
+                'ts:app',
+                'copy:app_css',
+                'copy:app_assets',
+                'copy:app_files'
+        ]);
         grunt.registerTask('browser', [
                 'clean:browser',
                 'ts:browser',
@@ -118,15 +154,15 @@ module.exports = function (grunt)
                 'copy:browser_assets',
                 'copy:browser_files'
         ]);
-        grunt.registerTask('app', [
-                'clean:app',
-                'ts:app',
-                'copy:app_css',
-                'copy:app_assets',
-                'copy:app_files'
+        grunt.registerTask('editor', [
+                'clean:editor',
+                'ts:editor',
+                'copy:editor_css',
+                'copy:editor_lib',
+                'copy:editor_assets',
+                'copy:editor_files'
         ]);
-        grunt.registerTask('editor', ['clean:editor', 'ts:editor']);
         grunt.registerTask('server', ['clean:server', 'ts:server']);
         grunt.registerTask('test', ['clean:test', 'ts:test', 'mochaTest:test']);
-        grunt.registerTask('default', ['browser', 'app', 'editor', 'server']);
+        grunt.registerTask('default', ['app', 'browser', 'editor', 'server']);
 }

@@ -2,7 +2,7 @@
 
 # topsecret
 
-[Top Secret](https://playtopsecret.com) is a video game about the Snowden leaks played by email. This repo contains the open-source server, client-side, and editor code for the game. Stay up to date about the game via the [blog](https://playtopsecret.com/blog.html), [forum](http://forum.playtopsecret.com), and [Twitter account](https://twitter.com/jamestyro).
+[Top Secret](https://playtopsecret.com) is a video game about the Snowden leaks played by email. This repo contains the game server, content editor, and browser/desktop clients. Stay up to date about the game via the [blog](https://playtopsecret.com/blog.html), [forum](http://forum.playtopsecret.com), and [Twitter account](https://twitter.com/jamestyro).
 
 ## Dependencies
 
@@ -31,12 +31,12 @@ grunt
 ### Editor
 
 1. Run the server (see above)
-2. Open *editor/index.html*
+2. Open *editor/build/index.html*
 
-### Client
+### Browser
 
 1. Run the server (see above)
-2. Open *client/index.html*
+2. Open *browser/build/index.html*
 
 ##Contact
 
