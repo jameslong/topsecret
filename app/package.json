@@ -4,7 +4,7 @@
   "description": "Desktop version of Top Secret",
   "main": "main.js",
   "scripts": {
-    "start": "electron main.js"
+    "start": "electron build/main.js"
   },
   "dependencies": {
     "electron-prebuilt": "^0.37.6",

@@ -26,6 +26,13 @@ module.exports = function (grunt)
                                 dest: './browser/build/lib',
                                 filter: 'isFile'
                         },
+                        browser_assets: {
+                                expand: true,
+                                cwd: './browser/assets',
+                                src: ['**.*'],
+                                dest: './browser/build/assets',
+                                filter: 'isFile'
+                        },
                         browser_files: {
                                 expand: true,
                                 cwd: './browser',
@@ -33,6 +40,28 @@ module.exports = function (grunt)
                                 dest: './browser/build',
                                 filter: 'isFile'
                         },
+                        app_css: {
+                                expand: true,
+                                flatten: true,
+                                cwd: './browser/src',
+                                src: ['**/*.css'],
+                                dest: './app/build/css',
+                                filter: 'isFile'
+                        },
+                        app_assets: {
+                                expand: true,
+                                cwd: './browser/assets',
+                                src: ['**.*'],
+                                dest: './app/build/assets',
+                                filter: 'isFile'
+                        },
+                        app_files: {
+                                expand: true,
+                                cwd: './app',
+                                src: ['main.js', 'index.html'],
+                                dest: './app/build',
+                                filter: 'isFile'
+                        }
                 },
                 ts: {
                         browser: {
@@ -86,9 +115,16 @@ module.exports = function (grunt)
                 'ts:browser',
                 'copy:browser_css',
                 'copy:browser_lib',
+                'copy:browser_assets',
                 'copy:browser_files'
         ]);
-        grunt.registerTask('app', ['clean:app', 'ts:app']);
+        grunt.registerTask('app', [
+                'clean:app',
+                'ts:app',
+                'copy:app_css',
+                'copy:app_assets',
+                'copy:app_files'
+        ]);
         grunt.registerTask('editor', ['clean:editor', 'ts:editor']);
         grunt.registerTask('server', ['clean:server', 'ts:server']);
         grunt.registerTask('test', ['clean:test', 'ts:test', 'mochaTest:test']);
