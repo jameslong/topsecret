@@ -12,7 +12,7 @@
 ## Installing
 
 ```
-grunt install
+npm install
 ```
 
 ##Building

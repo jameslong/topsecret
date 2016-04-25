@@ -95,11 +95,7 @@ module.exports = function (grunt)
                 shell: {
                         app: {
                                 command: './app/node_modules/.bin/electron-packager ./app "top-secret" --all --out="./app/packaged_apps"'
-                        },
-                        install: {
-                                command: 'npm install && cd app && npm install'
                         }
-
                 },
                 ts: {
                         app: {
