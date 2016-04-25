@@ -10,6 +10,30 @@ module.exports = function (grunt)
                         server: ['server/build'],
                         test: ['test/build']
                 },
+                copy: {
+                        browser_css: {
+                                expand: true,
+                                flatten: true,
+                                cwd: './browser/src',
+                                src: ['**/*.css'],
+                                dest: './browser/build/css',
+                                filter: 'isFile'
+                        },
+                        browser_lib: {
+                                expand: true,
+                                cwd: './browser/src/lib',
+                                src: ['**/*.js'],
+                                dest: './browser/build/lib',
+                                filter: 'isFile'
+                        },
+                        browser_files: {
+                                expand: true,
+                                cwd: './browser',
+                                src: ['requireconfig.js', 'index.html'],
+                                dest: './browser/build',
+                                filter: 'isFile'
+                        },
+                },
                 ts: {
                         browser: {
                                 tsconfig: './browser/tsconfig.json',
@@ -53,10 +77,17 @@ module.exports = function (grunt)
         });
 
         grunt.loadNpmTasks('grunt-contrib-clean');
+        grunt.loadNpmTasks('grunt-contrib-copy');
         grunt.loadNpmTasks('grunt-mocha-test');
         grunt.loadNpmTasks('grunt-ts');
 
-        grunt.registerTask('browser', ['clean:browser', 'ts:browser']);
+        grunt.registerTask('browser', [
+                'clean:browser',
+                'ts:browser',
+                'copy:browser_css',
+                'copy:browser_lib',
+                'copy:browser_files'
+        ]);
         grunt.registerTask('app', ['clean:app', 'ts:app']);
         grunt.registerTask('editor', ['clean:editor', 'ts:editor']);
         grunt.registerTask('server', ['clean:server', 'ts:server']);
