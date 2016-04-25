@@ -4,7 +4,7 @@ module.exports = function (grunt)
 
         grunt.initConfig({
                 clean: {
-                        app: ['app/build'],
+                        app: ['app/build', 'app/packaged_apps'],
                         browser: ['browser/build'],
                         editor: ['editor/build'],
                         server: ['server/build'],
@@ -22,15 +22,15 @@ module.exports = function (grunt)
                         app_assets: {
                                 expand: true,
                                 cwd: './browser/assets',
-                                src: ['**.*'],
+                                src: ['**'],
                                 dest: './app/build/assets',
                                 filter: 'isFile'
                         },
-                        app_files: {
+                        app_content: {
                                 expand: true,
-                                cwd: './app',
-                                src: ['main.js', 'index.html'],
-                                dest: './app/build',
+                                cwd: './content',
+                                src: ['**'],
+                                dest: './app/build/content',
                                 filter: 'isFile'
                         },
                         browser_css: {
@@ -92,6 +92,11 @@ module.exports = function (grunt)
                                 filter: 'isFile'
                         }
                 },
+                shell: {
+                        app: {
+                                command: './app/node_modules/.bin/electron-packager ./app "top-secret" --all --out="./app/packaged_apps"'
+                        }
+                },
                 ts: {
                         app: {
                                 tsconfig: './app/tsconfig.json',
@@ -137,6 +142,7 @@ module.exports = function (grunt)
         grunt.loadNpmTasks('grunt-contrib-clean');
         grunt.loadNpmTasks('grunt-contrib-copy');
         grunt.loadNpmTasks('grunt-mocha-test');
+        grunt.loadNpmTasks('grunt-shell');
         grunt.loadNpmTasks('grunt-ts');
 
         grunt.registerTask('app', [
@@ -144,7 +150,8 @@ module.exports = function (grunt)
                 'ts:app',
                 'copy:app_css',
                 'copy:app_assets',
-                'copy:app_files'
+                'copy:app_content',
+                'shell:app'
         ]);
         grunt.registerTask('browser', [
                 'clean:browser',
