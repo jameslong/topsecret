@@ -1,5 +1,6 @@
 import App = require('../app');
 import Careers = require('./careers');
+import Clock = require('../../../../core/src/app/clock');
 import Log = require('../../../../core/src/app/log');
 import Main = require('../../../../core/src/app/main');
 import Player = require('../../../../core/src/app/player');
@@ -25,11 +26,13 @@ export function beginDemo (
         const timezoneOffset = 0;
         const player = Player.createPlayerState(
                 email, publicKey, version, firstName, lastName, timezoneOffset);
+        const timestampMs = Clock.gameTimeMs(app.clock);
 
         return Promises.beginGame(
                 threadMessageName,
                 player,
                 domain,
+                timestampMs,
                 groupData,
                 promises);
 }

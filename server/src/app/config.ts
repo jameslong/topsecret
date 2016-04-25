@@ -55,7 +55,6 @@ export interface ConfigState {
                 profileSchemaPath: string;
         },
         timeFactor: number;
-        immediateReplies: boolean;
 }
 
 export function loadPrivateConfig(config: ConfigState)

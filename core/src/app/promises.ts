@@ -12,6 +12,7 @@ import State = require('./state');
 export interface UpdateInfo {
         message: Message.MessageState;
         player: Player.PlayerState;
+        timestampMs: number;
 }
 
 export function child (
@@ -21,7 +22,7 @@ export function child (
         groupData: State.GameData,
         promises: DBTypes.PromiseFactories)
 {
-        const { message, player } = state;
+        const { message, player, timestampMs } = state;
         const threadStartName = message.threadStartName;
         const inReplyToId = message.id;
 
@@ -37,6 +38,7 @@ export function child (
                         inReplyToId,
                         player,
                         domain,
+                        timestampMs,
                         groupData,
                         promises) :
                 Promise.resolve(message);
@@ -54,7 +56,7 @@ export function reply (
         groupData: State.GameData,
         promises: DBTypes.PromiseFactories)
 {
-        const { message, player } = state;
+        const { message, player, timestampMs } = state;
         const threadStartName = message.threadStartName;
         const inReplyToId = message.id;
 
@@ -70,6 +72,7 @@ export function reply (
                         inReplyToId,
                         player,
                         domain,
+                        timestampMs,
                         groupData,
                         promises) :
                 Promise.resolve(message);
@@ -86,7 +89,7 @@ export function fallback (
         groupData: State.GameData,
         promises: DBTypes.PromiseFactories)
 {
-        const { message, player } = state;
+        const { message, player, timestampMs } = state;
         const threadStartName = message.threadStartName;
         const inReplyToId = message.id;
 
@@ -102,6 +105,7 @@ export function fallback (
                         inReplyToId,
                         player,
                         domain,
+                        timestampMs,
                         groupData,
                         promises) :
                 Promise.resolve(message);
@@ -118,6 +122,7 @@ export function encryptSendStoreChild (
         inReplyToId: string,
         player: Player.PlayerState,
         domain: string,
+        timestampMs: number,
         groupData: State.GameData,
         promises: DBTypes.PromiseFactories)
 {
@@ -139,13 +144,12 @@ export function encryptSendStoreChild (
                         data.body = body;
                         return promises.send(data);
         }).then(id => {
-                const sentTimestampMs = Date.now();
                 const messageState = createMessageState(
                         groupData,
                         player.email,
                         id,
                         name,
-                        sentTimestampMs,
+                        timestampMs,
                         threadStartName);
                 return promises.addMessage(messageState);
         }).then(result => {
@@ -194,6 +198,7 @@ export function beginGame (
         name: string,
         player: Player.PlayerState,
         domain: string,
+        timestampMs: number,
         groupData: State.GameData,
         promises: DBTypes.PromiseFactories)
 {
@@ -207,6 +212,7 @@ export function beginGame (
                         inReplyToId,
                         player,
                         domain,
+                        timestampMs,
                         groupData,
                         promises));
 }

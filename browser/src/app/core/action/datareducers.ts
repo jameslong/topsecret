@@ -1,5 +1,5 @@
 import Actions = require('./actions');
-import Clock = require('../clock');
+import Clock = require('../../../../../core/src/app/clock');
 import Data = require('../data');
 import Helpers = require('../../../../../core/src/app/utils/helpers');
 import Map = require('../../../../../core/src/app/utils/map');
@@ -69,7 +69,8 @@ function handleDisplayMessage (data: Data.Data, action: Actions.DisplayMessage)
 function handleReceiveReply (data: Data.Data, action: Actions.ReceiveReply)
 {
         const reply = action.parameters;
-        const message = Message.createMessage(reply, reply.id);
+        const timestampMs = Clock.gameTimeMs(data.clock);
+        const message = Message.createMessage(reply, reply.id, timestampMs);
         return Data.storeMessage(data, message, 'inbox');
 }
 

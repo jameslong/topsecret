@@ -1,4 +1,5 @@
 import Arr = require('./utils/array');
+import Clock = require('./clock');
 import DBTypes = require('./dbtypes');
 import Fun = require('./utils/function');
 import Message = require('./message');
@@ -9,10 +10,7 @@ import Promises = require('./promises');
 import Request = require('./requesttypes');
 import State = require('./state');
 
-export function tick (
-        app: State.State,
-        exclusiveStartKey: string,
-        timestampMs: number)
+export function tick (app: State.State, exclusiveStartKey: string)
 {
         const maxResults = 1;
         const params = { exclusiveStartKey, maxResults };
@@ -24,7 +22,7 @@ export function tick (
 
                 return (message ?
                         promises.getPlayer(message.email).then(player =>
-                                update(app, timestampMs, message, player)
+                                update(app, message, player)
                         ) :
                         Promise.resolve(null)
                 ).then(result => Promise.resolve(lastEvaluatedKey));
@@ -33,14 +31,14 @@ export function tick (
 
 export function update (
         app: State.State,
-        timestampMs: number,
         message: Message.MessageState,
         player: Player.PlayerState)
 {
         const promises = app.promises;
         const groupData = app.data[player.version];
         const messageData = groupData.messages[message.name];
-        const state = { message, player };
+        const timestampMs = Clock.gameTimeMs(app.clock);
+        const state = { message, player, timestampMs };
 
         const children = pendingChildren(
                 app, groupData, state, timestampMs, promises);
@@ -104,6 +102,13 @@ function pendingResponse (
         const replyOptions = hasReplyOptions(messageData);
 
         if (!hasSentReply(message)) {
+                const readyReply = replyOptions &&
+                        hasExpiredReply(
+                                message,
+                                messageData,
+                                offsetHours,
+                                sentMs,
+                                currentMs);
                 if (replyOptions && hasExpiredReply(message, messageData, offsetHours, sentMs, currentMs)) {
                         return [pendingReply(
                                 groupData,
@@ -112,7 +117,15 @@ function pendingResponse (
                                 app.emailDomain)];
                 }
 
-                if (fallback && hasExpiredFallback(message, messageData, offsetHours, sentMs, currentMs)) {
+                const readyFallback = !message.reply &&
+                        fallback &&
+                        hasExpiredFallback(
+                                message,
+                                messageData,
+                                offsetHours,
+                                sentMs,
+                                currentMs);
+                if (readyFallback) {
                         return [pendingFallback(
                                 groupData,
                                 state,

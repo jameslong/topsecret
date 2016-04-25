@@ -1,4 +1,4 @@
-import Profile = require('./../../../core/src/app/profile');
+import Clock = require('./../../../core/src/app/clock');
 import Config = require('./config');
 import Data = require('../../../core/src/app/data');
 import DataValidation = require('../../../core/src/app/datavalidation');
@@ -12,6 +12,7 @@ import Main = require('./../../../core/src/app/main');
 import Map = require('./../../../core/src/app/utils/map');
 import Message = require('./../../../core/src/app/message');
 import PostHandler = require('./posthandler/posthandler');
+import Profile = require('./../../../core/src/app/profile');
 import Prom = require('./../../../core/src/app/utils/promise');
 import Request = require('./../../../core/src/app/requesttypes');
 import Sender = require('./sender');
@@ -86,12 +87,13 @@ export function onGameData (
                 config.emailDomain);
         const promises = DBSetup.createPromiseFactories(config, send);
 
+        const clock = Clock.createClock(config.timeFactor);
+
         const gameState: State.State = {
                 emailDomain: config.emailDomain,
-                timeFactor: config.timeFactor,
-                immediateReplies: config.immediateReplies,
                 data: null,
                 promises,
+                clock,
         };
 
         if (gameData) {
@@ -138,11 +140,11 @@ export function update (state: State)
 {
         const gameState = state.app;
         const exclusiveStartKey = state.lastEvaluatedKey;
-        const timestampMs = Date.now();
+        gameState.clock = Clock.tick(gameState.clock);
 
         Log.debug(`Update - exclusiveStartKey = ${exclusiveStartKey}`);
 
-        return Main.tick(gameState, exclusiveStartKey, timestampMs);
+        return Main.tick(gameState, exclusiveStartKey);
 }
 
 export function onUpdateEnd (state: State, lastEvaluatedKey: string)

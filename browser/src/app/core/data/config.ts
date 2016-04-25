@@ -5,7 +5,6 @@ export interface QueryStringParams {
 
 export interface ConfigData {
         emailDomain: string;
-        immediateReplies: boolean;
         timeFactor: number;
         version: string;
         beginGameMessage: string;
@@ -36,7 +35,6 @@ export function createConfig (): ConfigData
         const params = getQueryStringParams();
         return {
                 emailDomain: 'nsa.gov',
-                immediateReplies: false,
                 timeFactor: 1,
                 version: params.version,
                 beginGameMessage: params.messageName,

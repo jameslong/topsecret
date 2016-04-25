@@ -78,7 +78,8 @@ export function createReplyFromDraft (
         return { from, to, subject, body, id, inReplyToId };
 }
 
-export function createMessageFromReply (reply: MessageCore.Reply)
+export function createMessageFromReply (
+        reply: MessageCore.Reply, timestampMs: number)
 {
-        return Message.createMessage(reply, reply.id);
+        return Message.createMessage(reply, reply.id, timestampMs);
 }

@@ -1,4 +1,5 @@
 import ActionCreators = require('./action/actioncreators');
+import Clock = require('../../../../core/src/app/clock');
 import Command = require('./command');
 import ConfigData = require('./data/config');
 import Data = require('./data');
@@ -32,6 +33,7 @@ export function createClient (
         playerData: PlayerData.PlayerData,
         data: State.Data,
         server: Server.Server,
+        clock: Clock.Clock,
         commands: Command.Command[],
         commandIdsByMode: Data.IdsById,
         folders: Folder.FolderData[])
@@ -43,6 +45,7 @@ export function createClient (
         return loadGameKeys(data, config, playerData).then(keyManagersById => {
                 return createClientFromData(
                         server,
+                        clock,
                         player,
                         commands,
                         commandIdsByMode,
@@ -77,6 +80,7 @@ function loadGameKeys (
 
 export function createClientFromData (
         server: Server.Server,
+        clock: Clock.Clock,
         player: Player.Player,
         commands: Command.Command[],
         commandIdsByMode: Data.IdsById,
@@ -88,7 +92,8 @@ export function createClientFromData (
                 commands,
                 commandIdsByMode,
                 player,
-                keyManagersById);
+                keyManagersById,
+                clock);
 
         const folderId = data.folders[0];
         const keyId = player.activeKeyId;

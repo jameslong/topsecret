@@ -1,5 +1,5 @@
 import Arr = require('../../../../core/src/app/utils/array');
-import Clock = require('./clock');
+import Clock = require('../../../../core/src/app/clock');
 import Command = require('./command');
 import Folder = require('./folder');
 import Func = require('../../../../core/src/app/utils/function');
@@ -71,7 +71,8 @@ export function createData(
         commands: Command.Command[],
         commandIdsByMode: IdsById,
         player: Player.Player,
-        keyManagersById: Map.Map<Kbpgp.KeyManagerInstance>): Data
+        keyManagersById: Map.Map<Kbpgp.KeyManagerInstance>,
+        clock: Clock.Clock): Data
 {
         const getMessages = (folder: Folder.FolderData) => folder.messages;
 
@@ -84,8 +85,6 @@ export function createData(
 
         const keyManagers = Helpers.arrayFromMap(keyManagersById,
                 (instance, id) => id);
-
-        const clock = Clock.createClock(1.0);
 
         return {
                 player,

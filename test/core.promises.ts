@@ -15,11 +15,13 @@ describe('Promises', function () {
                         return TestHelpers.testGameData().then(groupData => {
                                 const player = TestHelpers.createPlayer0();
                                 const promises = TestHelpers.createPromises();
+                                const timestampMs = Date.now();
 
                                 return Promises.beginGame(
                                         'begingame',
                                         player,
                                         'testmail.playtopsecret.com',
+                                        timestampMs,
                                         groupData,
                                         promises);
                         });
@@ -59,13 +61,14 @@ describe('Promises', function () {
                         const promises = TestHelpers.createPromises();
                         const childIndex = 0;
                         const domain = 'testmail.playtopsecret.com';
+                        const timestampMs = Date.now();
 
                         return TestHelpers.testGameData().then(groupData => {
                                 const message = TestHelpers.createMessage(
                                         'children_expired',
                                         player.email,
                                         groupData);
-                                const state = { player, message };
+                                const state = { player, message, timestampMs };
                                 return Promises.child(
                                         state,
                                         childIndex,
@@ -82,13 +85,14 @@ describe('Promises', function () {
                         const promises = TestHelpers.createPromises();
                         const domain = 'testmail.playtopsecret.com';
                         const replyIndex = 0;
+                        const timestampMs = Date.now();
 
                         return TestHelpers.testGameData().then(groupData => {
                                 const message = TestHelpers.createMessage(
                                         'reply_expired',
                                         player.email,
                                         groupData);
-                                const state = { player, message };
+                                const state = { player, message, timestampMs };
 
                                 return Promises.reply(
                                         state,

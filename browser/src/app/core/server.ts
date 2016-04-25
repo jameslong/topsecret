@@ -1,4 +1,5 @@
 import ActionCreators = require('./action/actioncreators');
+import Clock = require('../../../../core/src/app/clock');
 import ConfigData = require('./data/config');
 import DBTypes = require('../../../../core/src/app/dbtypes');
 import Helpers = require('../../../../core/src/app/utils/helpers');
@@ -23,9 +24,12 @@ export interface Server {
         id: Id;
 }
 
-export function createServer (config: ConfigData.ConfigData, data: State.Data)
+export function createServer (
+        config: ConfigData.ConfigData,
+        data: State.Data,
+        clock: Clock.Clock)
 {
-        const { emailDomain, immediateReplies, timeFactor } = config;
+        const emailDomain = config.emailDomain;
         const lastEvaluatedKey: string = null;
         const db = LocalDB.createDB();
         const id = { uid: 0 };
@@ -33,10 +37,9 @@ export function createServer (config: ConfigData.ConfigData, data: State.Data)
 
         const app = {
                 emailDomain,
-                timeFactor,
-                immediateReplies,
                 data,
                 promises,
+                clock,
         };
         return { app, lastEvaluatedKey, db, id };
 }
@@ -81,20 +84,22 @@ export function beginGame (
 
         const groupData = server.app.data[version];
         const promises = server.app.promises;
+        const timestampMs = Clock.gameTimeMs(server.app.clock);
 
         return Promises.beginGame(
                 beginGameMessage,
                 player,
                 emailDomain,
+                timestampMs,
                 groupData,
                 promises);
 }
 
-export function tickServer (server: Server, timestampMs: number)
+export function tickServer (server: Server)
 {
         const { app, lastEvaluatedKey } = server;
 
-        return Main.tick(app, lastEvaluatedKey, timestampMs).then(lastEvaluatedKey => {
+        return Main.tick(app, lastEvaluatedKey).then(lastEvaluatedKey => {
                 console.log(`tick, lastEvaluatedKey = ${lastEvaluatedKey}`);
                 server.lastEvaluatedKey = lastEvaluatedKey;
         });

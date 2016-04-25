@@ -1,5 +1,5 @@
-import Helpers = require('../../../../core/src/app/utils/helpers');
-import MathUtil = require('../../../../core/src/app/utils/math');
+import Helpers = require('./utils/helpers');
+import MathUtil = require('./utils/math');
 
 export interface Clock {
         lastTickMs: number;

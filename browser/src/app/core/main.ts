@@ -6,7 +6,7 @@ import CommandData = require('./data/commands');
 import PlayerData = require('./data/player');
 
 import Client = require('./client');
-import Clock = require('./clock');
+import Clock = require('../../../../core/src/app/clock');
 import EventHandler = require('./eventhandler');
 import KbpgpHelpers = require('../../../../core/src/app/kbpgp');
 import Prom = require('../../../../core/src/app/utils/promise');
@@ -22,13 +22,15 @@ export function init (data: State.Data) {
 
         const player = PlayerData.player;
         const config = ConfigData.createConfig();
+        const clock = Clock.createClock(config.timeFactor);
 
-        const server = Server.createServer(config, data);
+        const server = Server.createServer(config, data, clock);
         return Client.createClient(
                 config,
                 player,
                 data,
                 server,
+                clock,
                 CommandData.commands,
                 CommandData.commandIdsByMode,
                 MessageData.folders)
@@ -50,8 +52,8 @@ export function init (data: State.Data) {
 function tick (getClient: () => Client.Client, server: Server.Server)
 {
         Client.tickClient();
-        const timestampMs = Clock.gameTimeMs(getClient().data.clock);
-        return Server.tickServer(server, timestampMs);
+        server.app.clock = getClient().data.clock;
+        return Server.tickServer(server);
 }
 
 export function startTick (getClient: () => Client.Client, server: Server.Server)

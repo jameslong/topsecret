@@ -1,5 +1,5 @@
 import Client = require('../../client');
-import Clock = require('../../clock');
+import Clock = require('../../../../../../core/src/app/clock');
 import EditDraftKeyName = require('../smart/editdraftkeyname');
 import EditDraftKeyPassphrase = require('../smart/editdraftkeypassphrase');
 import EditSubject = require('../smart/editsubject');
