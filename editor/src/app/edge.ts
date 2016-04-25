@@ -40,11 +40,10 @@ function createMessageEdges (
         message: Message.Message,
         vertexSize: MathUtils.Coord)
 {
-        const fallback = message.fallback ?
-                createFallbackEdge(messages, message, vertexSize) : [];
-        const replyOptions =
-                createReplyOptionEdges(messages, message, vertexSize);
-        const children = createChildrenEdges(messages, message, vertexSize);
+        const fallback = createFallbackEdge(messages, message, vertexSize);
+        const replyOptions = createReplyOptionEdges(
+                messages, message, vertexSize);
+        const children = createChildEdges(messages, message, vertexSize);
         return fallback.concat(children, replyOptions);
 }
 
@@ -59,71 +58,73 @@ function createFallbackEdge (
         vertexSize: MathUtils.Coord)
 {
         const fallback = source.fallback;
-        const type = Type.Fallback;
-        const name = createEdgeName(source.name, type, 0);
-        return [createMessageDelayEdge(
-                messages,
-                source,
-                fallback,
-                type,
-                name,
-                vertexSize)];
+        if (fallback && Map.exists(messages, fallback.name)) {
+                const type = Type.Fallback;
+                const name = createEdgeName(source.name, type, 0);
+                const target = messages[fallback.name];
+                return [createEdge(source, target, type, name, vertexSize)];
+        } else {
+                return [];
+        }
 }
+
 
 function createReplyOptionEdges (
         messages: Message.Messages,
         source: Message.Message,
         vertexSize: MathUtils.Coord)
 {
-        return source.replyOptions.map((option, index) => {
-                const type = Type.ReplyOption;
-                const name = createEdgeName(source.name, type, index);
-
-                return createMessageDelayEdge(
-                        messages,
-                        source,
-                        option.messageDelay,
-                        type,
-                        name,
-                        vertexSize);
-        });
+        const result: Edge[] = [];
+        return source.replyOptions.reduce((result, option, index) => {
+                Map.exists(messages, option.messageDelay.name) ?
+                        result.push(createReplyOptionEdge(
+                                messages, source, index, vertexSize)) :
+                        result;
+                return result;
+        }, result);
 }
 
-function createChildrenEdges (
+function createReplyOptionEdge (
         messages: Message.Messages,
         source: Message.Message,
-        vertexSize: MathUtils.Coord): Edge[]
-{
-        return source.children.map((child, index) => {
-                const type = Type.Child;
-                const name = createEdgeName(source.name, type, index);
-                return createMessageDelayEdge(
-                        messages,
-                        source,
-                        child,
-                        type,
-                        name,
-                        vertexSize);
-        });
-}
-
-function createMessageDelayEdge (
-        messages: Message.Messages,
-        source: Message.Message,
-        messageDelay: MessageDelay.MessageDelay,
-        type: Type,
-        name: string,
+        index: number,
         vertexSize: MathUtils.Coord)
 {
-        const target = messages[messageDelay.name];
-        return target ?
-                createEdge(
-                        source,
-                        target,
-                        type,
-                        name,
-                        vertexSize) :
-                null;
+        const type = Type.ReplyOption;
+        const name = createEdgeName(source.name, type, index);
+        const option = source.replyOptions[index];
+        const target = messages[option.messageDelay.name];
+
+        return createEdge(source, target, type, name, vertexSize);
+}
+
+function createChildEdges (
+        messages: Message.Messages,
+        source: Message.Message,
+        vertexSize: MathUtils.Coord)
+{
+        const result: Edge[] = [];
+        return source.children.reduce((result, option, index) => {
+                Map.exists(messages, option.name) ?
+                        result.push(createChildEdge(
+                                messages, source, index, vertexSize)) :
+                        result;
+                return result;
+        }, result);
+}
+
+function createChildEdge (
+        messages: Message.Messages,
+        source: Message.Message,
+        index: number,
+        vertexSize: MathUtils.Coord)
+{
+        const type = Type.Child
+        const name = createEdgeName(source.name, type, index);
+        const child = source.children[index];
+        const target = messages[child.name];
+
+        return createEdge(source, target, type, name, vertexSize);
 }
 
 function createEdge (
