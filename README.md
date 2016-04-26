@@ -38,6 +38,10 @@ grunt
 1. Run the server (see above)
 2. Open *browser/build/index.html*
 
+### Desktop app
+
+1. See *app/packaged_apps* for for the platform specific packages
+
 ##Contact
 
 If you have any queries about the game or the tech, please email <james@playtopsecret.com>.
