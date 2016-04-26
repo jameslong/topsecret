@@ -15,7 +15,7 @@ const wrapper = document.getElementById('wrapper');
 const config: Config.Config = {
         serverURL: 'http://127.0.0.1:3000',
         autosaveDelayms: 3000,
-        maxUndos: 30,
+        maxUndos: 50,
         gridSize: 11,
         vertexSize: { x: 66, y: 66 },
 };
