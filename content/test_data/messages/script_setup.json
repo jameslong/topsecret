@@ -12,13 +12,17 @@
                 "body": "script_setup_body"
         },
         "encrypted": true,
-        "script": "(define x false)",
+        "script": "(define x true)",
         "receiver": null,
         "replyOptions": [],
         "children": [],
         "fallback": {
                 "name": "script_0",
                 "condition": "",
-                "delay": [0, 0, 0]
+                "delay": [
+                        0,
+                        0,
+                        0
+                ]
         }
 }
