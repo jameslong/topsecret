@@ -24,8 +24,11 @@
         height: 20rem;
 }
 
+.edit-message-group {
+        border-top: 1px solid #444;
+}
+
 .edit-message-group-title {
-        background-color: hsl(0, 0%, 10%);
         padding: 1rem;
 }
 
@@ -48,11 +51,12 @@
 }
 
 .edit-message .label-name {
-        min-width: 80px;
+        min-width: 100px;
 }
 
 .edit-message .label-value {
         width: 100%;
+        vertical-align: middle;
 }
 
 .edit-message .message-delay .label-value {
@@ -75,4 +79,12 @@
 
 .edit-message .button-remove {
         float: right;
+}
+
+.edit-message-name input {
+        color: white;
+        background: none;
+        border: none;
+        font-size: 2rem;
+        width: 450px;
 }

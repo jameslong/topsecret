@@ -79,16 +79,19 @@ function renderEditMessage (props: EditMessageProps)
         return Div({ className: 'edit-message'},
                 dataLists,
                 ComponentHelpers.wrapInGroup(
-                        ComponentHelpers.wrapInSubgroup(name),
-                        ComponentHelpers.wrapInSubgroup(subject),
-                        ComponentHelpers.wrapInSubgroup(endGame, encrypted)
+                        ComponentHelpers.wrapInSubgroup(name)
                 ),
-                ComponentHelpers.wrapInTitleGroup('Message', messageContent),
+                ComponentHelpers.wrapInGroup(
+                        ComponentHelpers.wrapInSubgroup(subject),
+                        messageContent),
                 ComponentHelpers.wrapInTitleGroup('Children', children),
                 ComponentHelpers.wrapInTitleGroup('Reply options', replyOptions),
                 ComponentHelpers.wrapInTitleGroup('Fallback',
                         ComponentHelpers.wrapInSubgroup(fallback)),
-                ComponentHelpers.wrapInTitleGroup('Script', script)
+                ComponentHelpers.wrapInTitleGroup('Script', script),
+                ComponentHelpers.wrapInGroup(
+                        ComponentHelpers.wrapInSubgroup(endGame, encrypted)
+                )
         );
 }
 
@@ -121,7 +124,7 @@ function createName (
         };
         const setButton = ButtonInput(buttonProps);
 
-        return Div({}, name, setButton);
+        return Div({ className: 'edit-message-name' }, name, setButton);
 }
 
 function createMessageContent (

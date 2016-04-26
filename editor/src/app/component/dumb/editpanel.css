@@ -8,9 +8,11 @@
 }
 
 .edit-panel-content {
-        background-color: white;
+        background-color: #333;
         margin: auto;
         width: 600px;
         height: 90%;
         overflow-y: auto;
+        text-transform: uppercase;
+        font-size: 0.8rem;
 }
