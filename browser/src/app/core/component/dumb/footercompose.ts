@@ -14,10 +14,11 @@ function renderFooterCompose(props: FooterComposeProps)
         const body = props.draftBody;
         const bodySize = Message.getDisplaySize(body);
         return Div({},
-                Div({ className: 'infobar-major' }, `-- NSA Mail: Compose`),
                 Div({ className: 'infobar-major' },
-                        `[Approx. msg size ${bodySize}`,
-                        `Atts: 0]`
+                        Span({}, `-- NSA Mail: Compose`)),
+                Div({ className: 'infobar-major' },
+                        Span({}, `[Approx. msg size ${bodySize}`),
+                        Span({}, `Atts: 0]`)
                 )
         );
 }

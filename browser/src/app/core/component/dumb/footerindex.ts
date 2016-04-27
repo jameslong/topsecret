@@ -3,6 +3,7 @@ import React = require('react');
 
 import Core = require('../core');
 import Div = Core.Div;
+import Span = Core.Span;
 
 interface FooterIndexProps extends React.Props<any> {
         folderName: string;
@@ -20,11 +21,11 @@ function renderFooterIndex(props: FooterIndexProps)
 
         return Div({},
                 Div({ className: 'infobar-major' },
-                        `-*-NSA Mail: =${folderName}`),
+                        Span({}, `-*-NSA Mail: =${folderName}`)),
                 Div({ className: 'infobar-major' },
-                        `[Msgs: ${numMessages}`,
-                        `New: ${numNewMessages}`,
-                        `Old: ${numOldMessages}]`
+                        Span({}, `[Msgs: ${numMessages}`),
+                        Span({}, `New: ${numNewMessages}`),
+                        Span({}, `Old: ${numOldMessages}]`)
                 )
         );
 }
