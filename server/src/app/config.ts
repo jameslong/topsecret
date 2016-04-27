@@ -2,16 +2,6 @@ import Data = require('../../../core/src/app/data');
 import FileSystem = require('../../../core/src/app/filesystem');
 import Helpers = require('../../../core/src/app/utils/helpers');
 
-export enum AppMode {
-        Local,
-        DynamoDB,
-};
-
-export var ClientPost = {
-        Local: 'Local',
-        ELB: 'ELB',
-};
-
 export interface AWSConfig {
         accessKeyId: string;
         secretAccessKey: string;
@@ -25,26 +15,14 @@ export interface MailgunConfig {
 }
 
 export interface ConfigState {
-        mode: AppMode;
         port: string;
-        client: {
-                localURL: string;
-                elbURL: string;
-                postDest: string;
-        };
+        useDynamoDB: boolean;
         useEmail: boolean;
         debugDBTimeoutMs: number;
         aws: AWSConfig;
         mailgun: MailgunConfig;
         emailDomain: string;
-        logging: {
-                console: boolean;
-        },
-        update: {
-                maxMessagesRequestedPerUpdate: number;
-                updateIntervalMs: number;
-                minMessageUpdateIntervalMs: number;
-        },
+        updateIntervalMs: number;
         content: {
                 narrativeFolder: string;
                 defaultNarrativeGroup: string;

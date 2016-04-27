@@ -153,7 +153,7 @@ export function onUpdateEnd (state: State, lastEvaluatedKey: string)
 
         state.lastEvaluatedKey = lastEvaluatedKey;
         const config = state.config;
-        const updateIntervalMs = config.update.updateIntervalMs;
+        const updateIntervalMs = config.updateIntervalMs;
         return Prom.delay(updateIntervalMs).then(result =>
                 updateWrapper(state)
         );

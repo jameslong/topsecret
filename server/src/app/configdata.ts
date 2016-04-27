@@ -1,13 +1,10 @@
 import Config = require('./config');
 
 var debugConfig: Config.ConfigState = {
-        mode: Config.AppMode.Local,
         port: '3000',
+        useDynamoDB: false,
         useEmail: false,
         debugDBTimeoutMs: 1000,
-        logging: {
-                console: true,
-        },
         aws: {
                 accessKeyId: '',
                 secretAccessKey: '',
@@ -19,16 +16,7 @@ var debugConfig: Config.ConfigState = {
                 apiKey: '',
         },
         emailDomain: 'testmail.playtopsecret.com',
-        client: {
-                localURL: 'http://localhost',
-                elbURL: null,
-                postDest: Config.ClientPost.Local,
-        },
-        update: {
-                maxMessagesRequestedPerUpdate: 2,
-                updateIntervalMs: 1000,
-                minMessageUpdateIntervalMs: 10000,
-        },
+        updateIntervalMs: 1000,
         content: {
                 validApplicationThread: 'transferRequest_valid',
                 validApplicationThreadPGP: 'transferRequest_valid_pgp',
@@ -43,13 +31,10 @@ var debugConfig: Config.ConfigState = {
 };
 
 var releaseConfig: Config.ConfigState = {
-        mode: Config.AppMode.DynamoDB,
         port: '3000',
+        useDynamoDB: false,
         useEmail: true,
         debugDBTimeoutMs: 1000,
-        logging: {
-                console: false,
-        },
         aws: {
                 accessKeyId: '',
                 secretAccessKey: '',
@@ -61,16 +46,7 @@ var releaseConfig: Config.ConfigState = {
                 apiKey: '',
         },
         emailDomain: 'testmail.playtopsecret.com',
-        client: {
-                localURL: 'http://localhost',
-                elbURL: null,
-                postDest: Config.ClientPost.Local,
-        },
-        update: {
-                maxMessagesRequestedPerUpdate: 2,
-                updateIntervalMs: 1000,
-                minMessageUpdateIntervalMs: 120000,
-        },
+        updateIntervalMs: 1000,
         content: {
                 validApplicationThread: 'transferRequest_valid',
                 validApplicationThreadPGP: 'transferRequest_valid_pgp',

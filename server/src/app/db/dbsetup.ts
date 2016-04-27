@@ -12,14 +12,9 @@ export function createPromiseFactories (
         config: Config.ConfigState,
         send: Prom.Factory<Message.MessageData, string>)
 {
-        const mode = config.mode;
-
-        let calls: DBTypes.DBCalls = null;
-        if (mode === Config.AppMode.Local) {
-                const db = LocalDB.createDB();
-                calls = LocalDB.createLocalDBCalls(db, config.debugDBTimeoutMs);
-        } else {
-                calls = DynamoDB.createDynamoDBCalls(config.aws);
-        }
+        const calls = config.useDynamoDB ?
+                DynamoDB.createDynamoDBCalls(config.aws) :
+                LocalDB.createLocalDBCalls(
+                        LocalDB.createDB(), config.debugDBTimeoutMs);
         return DBTypes.createPromiseFactories(calls, send);
 }
