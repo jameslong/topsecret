@@ -81,6 +81,14 @@
         float: right;
 }
 
+.edit-message-name {
+        display: flex;
+}
+
+.edit-message-name button {
+        margin-left: auto;
+}
+
 .edit-message-name input {
         color: white;
         background: none;
