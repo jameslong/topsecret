@@ -83,7 +83,7 @@ export function onGameData (
         const send = Sender.createSendFn(
                 server.io,
                 config.useEmail,
-                config.emailAPIKey,
+                config.aws.accessKeyId,
                 config.emailDomain);
         const promises = DBSetup.createPromiseFactories(config, send);
 

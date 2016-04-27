@@ -1,5 +1,6 @@
 import Data = require('../../../core/src/app/data');
 import FileSystem = require('../../../core/src/app/filesystem');
+import Helpers = require('../../../core/src/app/utils/helpers');
 
 export enum AppMode {
         Local,
@@ -11,21 +12,21 @@ export var ClientPost = {
         ELB: 'ELB',
 };
 
-export interface DynamoDBConfig {
-        configFilepath: string;
+export interface AWSConfig {
+        accessKeyId: string;
+        secretAccessKey: string;
+        region: string;
         messagesTableName: string;
         playersTableName: string;
 }
 
-export interface PrivateConfigState {
-        emailAPIKey: string;
-        elbURL: string;
+export interface MailgunConfig {
+        apiKey: string;
 }
 
 export interface ConfigState {
         mode: AppMode;
         port: string;
-        privateConfigPath: string;
         client: {
                 localURL: string;
                 elbURL: string;
@@ -33,9 +34,9 @@ export interface ConfigState {
         };
         useEmail: boolean;
         debugDBTimeoutMs: number;
-        dynamoDBConfig: DynamoDBConfig;
+        aws: AWSConfig;
+        mailgun: MailgunConfig;
         emailDomain: string;
-        emailAPIKey: string;
         logging: {
                 console: boolean;
         },
@@ -57,12 +58,21 @@ export interface ConfigState {
         timeFactor: number;
 }
 
-export function loadPrivateConfig(config: ConfigState)
+export function loadCredentials(config: ConfigState)
 {
-        const configPath = Data.join('credentials', config.privateConfigPath);
-        const privateConfig =
-                <PrivateConfigState>FileSystem.loadJSONSync(configPath);
-
-        config.emailAPIKey = privateConfig.emailAPIKey;
-        config.client.elbURL = privateConfig.elbURL;
+        let awsConfig: AWSConfig = null;
+        let mailgunConfig: MailgunConfig = null;
+        try {
+                awsConfig = <AWSConfig>FileSystem.loadJSONSync(
+                        'credentials/aws.json');
+                mailgunConfig = <MailgunConfig>FileSystem.loadJSONSync(
+                        'credentials/mailgun.json');
+        } catch (e) {
+                console.log('Using example credentials');
+                awsConfig = <AWSConfig>FileSystem.loadJSONSync(
+                        'example_credentials/aws.json');
+                mailgunConfig = <MailgunConfig>FileSystem.loadJSONSync(
+                        'example_credentials/mailgun.json');
+        }
+        Helpers.assign(config.aws, awsConfig);
 }

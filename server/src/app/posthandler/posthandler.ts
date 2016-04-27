@@ -96,7 +96,7 @@ export function createCreatePlayerTableCallback (state: App.State)
                         var app = state.app;
                         var promises = app.promises;
                         var config = state.config;
-                        var tableName = config.dynamoDBConfig.playersTableName;
+                        var tableName = config.aws.playersTableName;
 
                         promises.createPlayerTable(tableName).then(result =>
                                 res.sendStatus(200)
@@ -111,7 +111,7 @@ export function createDeletePlayerTableCallback (state: App.State)
                         var app = state.app;
                         var promises = app.promises;
                         var config = state.config;
-                        var tableName = config.dynamoDBConfig.playersTableName;
+                        var tableName = config.aws.playersTableName;
 
                         promises.deleteTable(tableName).then(result =>
                                 res.sendStatus(200)
@@ -126,7 +126,7 @@ export function createCreateMessageTableCallback (state: App.State)
                         var app = state.app;
                         var promises = app.promises;
                         var config = state.config;
-                        var tableName = config.dynamoDBConfig.messagesTableName;
+                        var tableName = config.aws.messagesTableName;
 
                         const promise = promises.createMessageTable(tableName);
                         return createRequestCallback(res, promise);
@@ -140,7 +140,7 @@ export function createDeleteMessageTableCallback (state: App.State)
                         var app = state.app;
                         var promises = app.promises;
                         var config = state.config;
-                        var tableName = config.dynamoDBConfig.messagesTableName;
+                        var tableName = config.aws.messagesTableName;
 
                         const promise = promises.deleteTable(tableName);
                         return createRequestCallback(res, promise);

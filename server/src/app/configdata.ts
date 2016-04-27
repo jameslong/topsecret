@@ -3,19 +3,22 @@ import Config = require('./config');
 var debugConfig: Config.ConfigState = {
         mode: Config.AppMode.Local,
         port: '3000',
-        privateConfigPath: 'privateconfig.json',
         useEmail: false,
         debugDBTimeoutMs: 1000,
         logging: {
                 console: true,
         },
-        dynamoDBConfig: {
-                configFilepath: 'credentials/awsconfig.json',
+        aws: {
+                accessKeyId: '',
+                secretAccessKey: '',
+                region: '',
                 messagesTableName: 'messages-dev',
                 playersTableName: 'players-dev',
         },
+        mailgun: {
+                apiKey: '',
+        },
         emailDomain: 'testmail.playtopsecret.com',
-        emailAPIKey: null,
         client: {
                 localURL: 'http://localhost',
                 elbURL: null,
@@ -42,19 +45,22 @@ var debugConfig: Config.ConfigState = {
 var releaseConfig: Config.ConfigState = {
         mode: Config.AppMode.DynamoDB,
         port: '3000',
-        privateConfigPath: 'privateconfig.json',
         useEmail: true,
         debugDBTimeoutMs: 1000,
         logging: {
                 console: false,
         },
-        dynamoDBConfig: {
-                configFilepath: 'credentials/awsconfig.json',
+        aws: {
+                accessKeyId: '',
+                secretAccessKey: '',
+                region: '',
                 messagesTableName: 'messages',
                 playersTableName: 'players',
         },
+        mailgun: {
+                apiKey: '',
+        },
         emailDomain: 'testmail.playtopsecret.com',
-        emailAPIKey: null,
         client: {
                 localURL: 'http://localhost',
                 elbURL: null,

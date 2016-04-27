@@ -12,7 +12,7 @@ ConfigData.releaseMode ?
         Log.debug('RELEASE MODE') :
         Log.debug('DEBUG MODE');
 
-Config.loadPrivateConfig(config);
+Config.loadCredentials(config);
 
 App.createState(config).then(state =>
         App.init(state)

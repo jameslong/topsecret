@@ -19,7 +19,7 @@ export function createPromiseFactories (
                 const db = LocalDB.createDB();
                 calls = LocalDB.createLocalDBCalls(db, config.debugDBTimeoutMs);
         } else {
-                calls = DynamoDB.createDynamoDBCalls(config.dynamoDBConfig);
+                calls = DynamoDB.createDynamoDBCalls(config.aws);
         }
         return DBTypes.createPromiseFactories(calls, send);
 }
