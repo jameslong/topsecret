@@ -3,7 +3,7 @@ import React = require('react');
 import Str = require('../../../../../../core/src/app/utils/string');
 
 import Core = require('../core');
-import Span = Core.Span;
+import Div = Core.Div;
 
 interface FooterEncryptionProps extends React.Props<any> {
         activeKey: Kbpgp.KeyManagerInstance;
@@ -18,7 +18,8 @@ function renderFooterEncryption(props: FooterEncryptionProps)
         const splitFingerprint = fingerprint ?
                 Str.splitIntoEqualGroups(fingerprint, 4) :
                 '';
-        return Span({}, `Fingerprint: ${splitFingerprint}`);
+        return Div({ className: 'infobar-major' },
+                `Fingerprint: ${splitFingerprint}`);
 }
 
 const FooterEncryption = React.createFactory(renderFooterEncryption);

@@ -2,7 +2,7 @@ import Message = require('../../message');
 import React = require('react');
 
 import Core = require('../core');
-import Span = Core.Span;
+import Div = Core.Div;
 
 interface FooterPagerProps extends React.Props<any> {
         activeMessage: Message.Message;
@@ -17,12 +17,12 @@ function renderFooterPager(props: FooterPagerProps)
         const activeIndex = messages.indexOf(activeMessage.id) + 1;
         const from = activeMessage.from;
         const subject = activeMessage.subject;
-        return Span({},
-                `${activeIndex}/${numMessages}`,
-                Span({ className: 'infobar-major' }),
-                from,
-                Span({ className: 'infobar-major' }),
-                subject);
+        return Div({},
+                Div({ className: 'infobar-major' },
+                        `${activeIndex}/${numMessages}`),
+                Div({ className: 'infobar-major' }, from),
+                Div({ className: 'infobar-major' }, subject)
+        );
 }
 
 const FooterPager = React.createFactory(renderFooterPager);

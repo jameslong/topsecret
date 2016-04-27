@@ -4,14 +4,11 @@
 }
 
 .footer-infobar-content {
-        display: table;
+        display: flex;
         width: 100%;
 }
 
-.footer-infobar-content span {
-        display: table-cell;
-}
-
 .footer-infobar-time {
-        text-align: right;
+        display: inline-block;
+        margin-left: auto;
 }

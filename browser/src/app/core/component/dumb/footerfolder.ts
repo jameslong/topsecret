@@ -3,7 +3,7 @@ import Message = require('../../message');
 import React = require('react');
 
 import Core = require('../core');
-import Span = Core.Span;
+import Div = Core.Div;
 
 interface FooterFolderProps extends React.Props<any> {
         activeFolder: Folder.Folder;
@@ -17,10 +17,11 @@ function renderFooterFolder(props: FooterFolderProps)
         const numFolders = folders.length;
         const activeIndex = folders.indexOf(activeFolder.id) + 1;
         const folderName = activeFolder.displayName;
-        return Span({},
-                `${activeIndex}/${numFolders}`,
-                Span({ className: 'infobar-major' }),
-                folderName);
+        return Div({},
+                Div({ className: 'infobar-major' },
+                        `${activeIndex}/${numFolders}`),
+                Div({ className: 'infobar-major' }, folderName)
+        );
 }
 
 const FooterFolder = React.createFactory(renderFooterFolder);

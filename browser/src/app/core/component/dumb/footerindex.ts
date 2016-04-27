@@ -2,7 +2,7 @@ import Message = require('../../message');
 import React = require('react');
 
 import Core = require('../core');
-import Span = Core.Span;
+import Div = Core.Div;
 
 interface FooterIndexProps extends React.Props<any> {
         folderName: string;
@@ -18,14 +18,15 @@ function renderFooterIndex(props: FooterIndexProps)
         const numOldMessages = messages.filter(Message.isRead).length;
         const numNewMessages = numMessages - numOldMessages;
 
-        return Span({},
-                `-*-NSA Mail: =${folderName}`,
-                Span({ className: 'infobar-major' }),
-                `[Msgs: ${numMessages}`,
-                Span({ className: 'infobar-minor' }),
-                `New: ${numNewMessages}`,
-                Span({ className: 'infobar-minor' }),
-                `Old: ${numOldMessages}]`);
+        return Div({},
+                Div({ className: 'infobar-major' },
+                        `-*-NSA Mail: =${folderName}`),
+                Div({ className: 'infobar-major' },
+                        `[Msgs: ${numMessages}`,
+                        `New: ${numNewMessages}`,
+                        `Old: ${numOldMessages}]`
+                )
+        );
 }
 
 const FooterIndex = React.createFactory(renderFooterIndex);

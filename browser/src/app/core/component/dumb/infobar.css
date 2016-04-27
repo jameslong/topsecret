@@ -11,17 +11,18 @@
 }
 
 .infobar ul li {
-        display: inline;
+        display: inline-block;
         text-decoration: none;
         padding-right: 1rem;
 }
 
-.infobar-minor {
-        padding-right: 2em;
-}
-
 .infobar-major {
         padding-right: 4em;
+        display: inline-block;
+}
+
+.infobar-major span:not(:last-child) {
+        padding-right: 2em;
 }
 
 .infobar-content {
