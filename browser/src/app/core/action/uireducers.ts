@@ -103,6 +103,10 @@ export function ui (ui: UI.UI, action: Redux.Action<any>)
                         const receiveAction = <Actions.ReceiveReply><any>action;
                         return handleReceiveReply(ui, receiveAction);
 
+                case Actions.Types.SET_ACTIVE_MENU_INDEX:
+                        const setMenuIndex = <Actions.SetActiveMenuIndex><any>action;
+                        return handleSetActiveMenuIndex(ui, setMenuIndex);
+
                 default:
                         return ui;
         }
@@ -271,4 +275,11 @@ function handleReceiveReply (ui: UI.UI, action: Actions.ReceiveReply)
         return activeMessageId === null ?
                 Helpers.assign(ui, { activeMessageId: replyId }) :
                 ui;
+}
+
+function handleSetActiveMenuIndex (
+        ui: UI.UI, action: Actions.SetActiveMenuIndex)
+{
+        const activeMainMenuIndex = action.parameters;
+        return Helpers.assign(ui, { activeMainMenuIndex });
 }

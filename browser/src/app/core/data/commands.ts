@@ -36,6 +36,13 @@ const commonCommands: Command.Command[] = [{
         shortDesc: 'Exit',
         desc: 'return to index',
 }, {
+        id: 'open-main-menu',
+        key: 'esc',
+        keyCodes: [KeyCodes.ESCAPE],
+        actionCreator: KeyHandlers.openMainMenu,
+        shortDesc: '',
+        desc: 'view main menu',
+}, {
         id: 'next-message',
         key: 'j',
         keyCodes: [KeyCodes.J, KeyCodes.DOWN],
@@ -222,6 +229,29 @@ const indexCommands: Command.Command[] = [{
         desc: 'view and generate encryption keys',
 }];
 
+const menuCommands = [{
+        id: 'exit-main-menu',
+        key: 'i',
+        keyCodes: [KeyCodes.I],
+        actionCreator: KeyHandlers.exitMainMenu,
+        shortDesc: 'Exit',
+        desc: 'exit main menu',
+}, {
+        id: 'next-menu-option',
+        key: 'j',
+        keyCodes: [KeyCodes.J, KeyCodes.DOWN],
+        actionCreator: KeyHandlers.nextMenuOption,
+        shortDesc: 'Next',
+        desc: 'select next option',
+}, {
+        id: 'previous-menu-option',
+        key: 'k',
+        keyCodes: [KeyCodes.K, KeyCodes.UP],
+        actionCreator: KeyHandlers.previousMenuOption,
+        shortDesc: 'Previous',
+        desc: 'select previous option',
+}];
+
 const pagerCommands = [{
         id: 'exit-pager',
         key: 'i',
@@ -259,6 +289,7 @@ export const commands = [].concat(
         folderCommands,
         helpCommands,
         indexCommands,
+        menuCommands,
         pagerCommands);
 
 export const commandIdsByMode: Data.IdsById = {
@@ -268,6 +299,7 @@ export const commandIdsByMode: Data.IdsById = {
                 'edit-subject',
                 'edit-to',
                 'edit-body',
+                'open-main-menu',
                 'open-help'
         ],
         [UI.Modes.ENCRYPTION]: [
@@ -277,12 +309,14 @@ export const commandIdsByMode: Data.IdsById = {
                 'previous-key',
                 'start-generate-key',
                 'delete-key',
+                'open-main-menu',
                 'open-help'
         ],
         [UI.Modes.FOLDER]: [
                 'next-mailbox',
                 'previous-mailbox',
                 'display-mailbox',
+                'open-main-menu',
                 'open-help'
         ],
         [UI.Modes.HELP]: ['exit-help'],
@@ -297,7 +331,8 @@ export const commandIdsByMode: Data.IdsById = {
                 'open-help',
                 'tick-faster',
                 'tick-slower',
-                'add-time-offset'
+                'add-time-offset',
+                'open-main-menu'
         ],
         [UI.Modes.INDEX_SENT]: [
                 'next-message',
@@ -306,7 +341,13 @@ export const commandIdsByMode: Data.IdsById = {
                 'mail',
                 'change',
                 'encryption',
+                'open-main-menu',
                 'open-help'
+        ],
+        [UI.Modes.MAIN_MENU]: [
+                'exit-main-menu',
+                'next-menu-option',
+                'previous-menu-option'
         ],
         [UI.Modes.PAGER]: [
                 'exit-pager',
@@ -317,6 +358,7 @@ export const commandIdsByMode: Data.IdsById = {
                 'decrypt',
                 'import-keys',
                 'change',
+                'open-main-menu',
                 'open-help'
         ],
 }

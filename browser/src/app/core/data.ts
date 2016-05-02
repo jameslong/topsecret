@@ -19,6 +19,7 @@ export interface Data {
         foldersById: Map.Map<Folder.Folder>;
         commandsById: Map.Map<Command.Command>;
         commandIdsByMode: IdsById;
+        menuItems: string[];
         messagesById: Map.Map<Message.Message>;
         messageIdsByFolderId: IdsById;
         keyManagers: string[];
@@ -70,6 +71,7 @@ export function createData(
         folderData: Folder.FolderData[],
         commands: Command.Command[],
         commandIdsByMode: IdsById,
+        menuItems: string[],
         player: Player.Player,
         keyManagersById: Map.Map<Kbpgp.KeyManagerInstance>,
         clock: Clock.Clock): Data
@@ -92,6 +94,7 @@ export function createData(
                 foldersById,
                 commandsById,
                 commandIdsByMode,
+                menuItems,
                 messagesById,
                 messageIdsByFolderId,
                 keyManagers,

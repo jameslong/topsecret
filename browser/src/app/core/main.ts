@@ -4,6 +4,7 @@ import ConfigData = require('./data/config');
 import MessageData = require('./data/messages');
 import CommandData = require('./data/commands');
 import PlayerData = require('./data/player');
+import MenuData = require('./data/menuitems');
 
 import Client = require('./client');
 import Clock = require('../../../../core/src/app/clock');
@@ -33,6 +34,7 @@ export function init (data: State.Data) {
                 clock,
                 CommandData.commands,
                 CommandData.commandIdsByMode,
+                MenuData.items,
                 MessageData.folders)
         .then(client => {
                 const server = client.server;

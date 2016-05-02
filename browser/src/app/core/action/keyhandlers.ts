@@ -8,6 +8,7 @@ import Func = require('../../../../../core/src/app/utils/function');
 import Helpers = require('../../../../../core/src/app/utils/helpers');
 import Kbpgp = require('kbpgp');
 import KbpgpHelpers = require('../../../../../core/src/app/kbpgp');
+import MathUtils = require('../../../../../core/src/app/utils/math');
 import Map = require('../../../../../core/src/app/utils/map');
 import MessageCore = require('../../../../../core/src/app/message');
 import MessageHelpers = require('../../../../../core/src/app/messagehelpers');
@@ -20,6 +21,33 @@ import UI = require('../ui');
 export function exit (client: Client.Client)
 {
         return ActionCreators.setMode(UI.Modes.INDEX_INBOX);
+}
+
+export function openMainMenu (client: Client.Client)
+{
+        return ActionCreators.setMode(UI.Modes.MAIN_MENU);
+}
+
+export function exitMainMenu (client: Client.Client)
+{
+        const mode = client.ui.previousMode;
+        return ActionCreators.setMode(mode);
+}
+
+export function nextMenuOption (client: Client.Client)
+{
+        const currentIndex = client.ui.activeMainMenuIndex;
+        const max = client.data.menuItems.length - 1;
+        const index = MathUtils.inRange(0, max, currentIndex + 1);
+        return ActionCreators.SetActiveMenuIndex(index);
+}
+
+export function previousMenuOption (client: Client.Client)
+{
+        const currentIndex = client.ui.activeMainMenuIndex;
+        const max = client.data.menuItems.length - 1;
+        const index = MathUtils.inRange(0, max, currentIndex - 1);
+        return ActionCreators.SetActiveMenuIndex(index);
 }
 
 export function help (client: Client.Client)

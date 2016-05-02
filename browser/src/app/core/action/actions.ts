@@ -42,6 +42,8 @@ export const Types = {
         SET_PLAYER_KEY: 'SET_PLAYER_KEY',
         SET_ACTIVE_KEY: 'SET_ACTIVE_KEY',
         IMPORT_KEYS: 'IMPORT_KEYS',
+
+        SET_ACTIVE_MENU_INDEX: 'SET_ACTIVE_MENU_INDEX',
 };
 
 export interface Blur extends Redux.Action<void> {}
@@ -111,3 +113,5 @@ export interface SetPlayerKey extends Redux.Action<string> {}
 export interface SetActiveKey extends Redux.Action<string> {}
 export type ImportKeysParams = Map.Map<Kbpgp.KeyManagerInstance>;
 export interface ImportKeys extends Redux.Action<ImportKeysParams> {}
+
+export interface SetActiveMenuIndex extends Redux.Action<number> {}

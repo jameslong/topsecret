@@ -36,6 +36,7 @@ export function createClient (
         clock: Clock.Clock,
         commands: Command.Command[],
         commandIdsByMode: Data.IdsById,
+        menuItems: string[],
         folders: Folder.FolderData[])
 {
         const player = {
@@ -49,6 +50,7 @@ export function createClient (
                         player,
                         commands,
                         commandIdsByMode,
+                        menuItems,
                         folders,
                         keyManagersById);
         });
@@ -84,6 +86,7 @@ export function createClientFromData (
         player: Player.Player,
         commands: Command.Command[],
         commandIdsByMode: Data.IdsById,
+        menuItems: string[],
         folders: Folder.FolderData[],
         keyManagersById: Map.Map<Kbpgp.KeyManagerInstance>): Client
 {
@@ -91,6 +94,7 @@ export function createClientFromData (
                 folders,
                 commands,
                 commandIdsByMode,
+                menuItems,
                 player,
                 keyManagersById,
                 clock);

@@ -5,6 +5,7 @@ import Folder = require('./folder');
 import Help = require('./help');
 import Index = require('./index');
 import Pager = require('./pager');
+import MainMenu = require('./mainmenu');
 import React = require('react');
 import UI = require('../../ui');
 
@@ -39,6 +40,9 @@ function renderContent(props: ContentProps)
                 break;
         case UI.Modes.ENCRYPTION:
                 content = createEncryption(state);
+                break;
+        case UI.Modes.MAIN_MENU:
+                content = createMainMenu(state);
                 break;
         default:
                 break;
@@ -89,6 +93,13 @@ function createEncryption (state: Client.Client)
         const activeId = state.data.player.activeKeyId;
         const selectedId = state.ui.activeKeyId;
         return Encryption({ keyManagersById, activeId, selectedId });
+}
+
+function createMainMenu (state: Client.Client)
+{
+        const activeMainMenuIndex = state.ui.activeMainMenuIndex;
+        const menuItems = state.data.menuItems;
+        return MainMenu({ activeMainMenuIndex, menuItems });
 }
 
 export = Content;

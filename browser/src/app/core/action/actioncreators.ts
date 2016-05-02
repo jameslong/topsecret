@@ -59,3 +59,5 @@ export const editTo = createActionCreator<boolean>(Actions.Types.EDIT_TO);
 export const setPlayerKey = createActionCreator<string>(Actions.Types.SET_PLAYER_KEY);
 export const setActiveKey = createActionCreator<string>(Actions.Types.SET_ACTIVE_KEY);
 export const importKeys = createActionCreator<Actions.ImportKeysParams>(Actions.Types.IMPORT_KEYS);
+
+export const SetActiveMenuIndex = createActionCreator<number>(Actions.Types.SET_ACTIVE_MENU_INDEX);
