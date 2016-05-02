@@ -10,19 +10,19 @@ import TD = Core.TD;
 import TR = Core.TR;
 
 interface SelectableRowsProps extends React.Props<any> {
-        rowDataById: Map.Map<string[]>;
-        selectedId: string;
-        highlightedIds: string[];
+        rowData: string[][];
+        selectedIndex: number;
+        highlightedIndices: number[];
 }
 
 function renderSelectableRows(props: SelectableRowsProps)
 {
-        const selectedId = props.selectedId;
-        const highlightedIds = props.highlightedIds;
-        const rowDataById = props.rowDataById;
+        const selectedIndex = props.selectedIndex;
+        const highlighted = props.highlightedIndices;
+        const rowData = props.rowData;
 
-        const rows = Helpers.arrayFromMap(rowDataById, (cells, id) =>
-                createRow(cells, id, selectedId, highlightedIds));
+        const rows = rowData.map((cells, index) =>
+                createRow(cells, index, selectedIndex, highlighted));
 
         return Table({ className: 'selectable-rows' }, TBody({}, rows));
 }
@@ -31,19 +31,19 @@ const SelectableRows = React.createFactory(renderSelectableRows);
 
 function createRow (
         cells: string[],
-        id: string,
-        selectedId: string,
-        highlightedIds: string[])
+        index: number,
+        selectedIndex: number,
+        highlightedIndices: number[])
 {
-        const selected = id === selectedId;
-        const highlighted = highlightedIds.indexOf(id) !== -1;
+        const selected = index === selectedIndex;
+        const highlighted = highlightedIndices.indexOf(index) !== -1;
         const className = Str.concatClassNames({
                 ['selectable-rows-selected']: selected,
                 ['selectable-rows-highlighted']: highlighted,
         });
 
         const tds = cells.map((cellData, index) => TD({ key: index }, cellData));
-        return TR({ className, key: id }, tds);
+        return TR({ className, key: index }, tds);
 }
 
 export = SelectableRows;

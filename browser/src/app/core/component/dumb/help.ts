@@ -10,14 +10,12 @@ interface HelpProps extends React.Props<any> {
 
 function renderHelp(props: HelpProps)
 {
-        const selectedId: string = null;
+        const selectedIndex: number = null;
         const commands = props.commands;
-        const highlightedIds: string[] = [];
+        const highlightedIndices: number[] = [];
 
-        const rowDataById = Helpers.mapFromArray(
-                commands, Data.getId, createRowData);
-
-        return SelectableRows({ rowDataById, selectedId, highlightedIds });
+        const rowData = commands.map(createRowData);
+        return SelectableRows({ rowData, selectedIndex, highlightedIndices });
 }
 
 const Help = React.createFactory(renderHelp);

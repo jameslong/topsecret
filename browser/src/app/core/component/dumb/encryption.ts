@@ -1,6 +1,7 @@
 import EncryptionType = require('../../folder');
 import Kbpgp = require('kbpgp');
 import KbpgpHelpers = require('../../../../../../core/src/app/kbpgp');
+import Helpers = require('../../../../../../core/src/app/utils/helpers');
 import Map = require('../../../../../../core/src/app/utils/map');
 import React = require('react');
 import SelectableRows = require('./selectablerows');
@@ -13,13 +14,16 @@ interface EncryptionProps extends React.Props<any> {
 
 function renderEncryption(props: EncryptionProps)
 {
-        const selectedId = props.selectedId;
-        const activeId = props.activeId;
-        const highlightedIds = [activeId];
         const keyManagersById = props.keyManagersById;
-        const rowDataById = Map.map(keyManagersById,
-                (instance, id) => createRowData(instance, id, activeId));
-        return SelectableRows({ rowDataById, selectedId, highlightedIds });
+        const keyManagerIds = Object.keys(keyManagersById);
+        const activeId = props.activeId;
+        const activeIndex = keyManagerIds.indexOf(activeId);
+        const selectedId = props.selectedId;
+        const selectedIndex = keyManagerIds.indexOf(selectedId);
+        const highlightedIndices = [activeIndex];
+        const rowData = keyManagerIds.map(
+                id => createRowData(keyManagersById[id], id, activeId));
+        return SelectableRows({ rowData, selectedIndex, highlightedIndices });
 }
 
 const Encryption = React.createFactory(renderEncryption);

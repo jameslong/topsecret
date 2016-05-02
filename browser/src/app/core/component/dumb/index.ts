@@ -1,3 +1,4 @@
+import Arr = require('../../../../../../core/src/app/utils/array');
 import Data = require('../../data');
 import Helpers = require('../../../../../../core/src/app/utils/helpers');
 import Func = require('../../../../../../core/src/app/utils/function');
@@ -13,16 +14,16 @@ interface IndexProps extends React.Props<any> {
 
 function renderIndex(props: IndexProps)
 {
+        const { activeMessageId, messages } = props;
+        const messageIds = Object.keys(messages);
         const selectedId = props.activeMessageId;
-        const messages = props.messages;
-        const unreadMessages = messages.filter(Func.not(Message.isRead));
-        const highlightedIds = unreadMessages.map(Data.getId);
+        const selectedIndex = Arr.find(messages,
+                message => message.id === selectedId);
+        const unread = messages.filter(Func.not(Message.isRead));
+        const highlightedIndices = unread.map((message, index) => index);
 
-        const rowDataById = Helpers.mapFromArray(messages,
-                Data.getId,
-                (message, index) => createRowData(message, index));
-
-        return SelectableRows({ rowDataById, selectedId, highlightedIds });
+        const rowData = messages.map(createRowData);
+        return SelectableRows({ rowData, selectedIndex, highlightedIndices });
 }
 
 const Index = React.createFactory(renderIndex);

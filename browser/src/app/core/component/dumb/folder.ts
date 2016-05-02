@@ -10,12 +10,12 @@ interface FolderProps extends React.Props<any> {
 
 function renderFolder(props: FolderProps)
 {
-        const selectedId = props.activeFolderId;
-        const highlightedIds: string[] = [];
-        const foldersById = props.foldersById;
-        const rowDataById = Map.map(foldersById,
-                folder => [folder.displayName]);
-        return SelectableRows({ rowDataById, selectedId, highlightedIds });
+        const { foldersById, activeFolderId } = props;
+        const folderIds = Object.keys(foldersById);
+        const selectedIndex = folderIds.indexOf(activeFolderId);
+        const highlightedIndices: number[] = [];
+        const rowData = folderIds.map(id => [foldersById[id].displayName]);
+        return SelectableRows({ rowData, selectedIndex, highlightedIndices });
 }
 
 const Folder = React.createFactory(renderFolder);
