@@ -8,7 +8,9 @@ export const Modes = {
         COMPOSE: 'COMPOSE',
         ENCRYPTION: 'ENCRYPTION',
         FOLDER: 'FOLDER',
+        LOAD_MENU: 'LOAD_MENU',
         MAIN_MENU: 'MAIN_MENU',
+        SAVE_MENU: 'SAVE_MENU',
 }
 
 export interface UI {
@@ -18,6 +20,8 @@ export interface UI {
         activeFolderId: string;
         activeKeyId: string;
         activeMainMenuIndex: number;
+        activeSaveIndex: number;
+        activeLoadIndex: number;
         editingDraftBody: boolean;
         editingDraftSubject: boolean;
         editingDraftTo: boolean;
@@ -41,6 +45,8 @@ export function createUI (
                 activeFolderId,
                 activeKeyId,
                 activeMainMenuIndex: 0,
+                activeSaveIndex: 0,
+                activeLoadIndex: 0,
                 editingDraftBody: false,
                 editingDraftSubject: false,
                 editingDraftTo: false,

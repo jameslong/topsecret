@@ -5,8 +5,10 @@ import Folder = require('./folder');
 import Help = require('./help');
 import Index = require('./index');
 import Pager = require('./pager');
+import LoadMenu = require('./loadmenu');
 import MainMenu = require('./mainmenu');
 import React = require('react');
+import SaveMenu = require('./savemenu');
 import UI = require('../../ui');
 
 import Core = require('../core');
@@ -43,6 +45,12 @@ function renderContent(props: ContentProps)
                 break;
         case UI.Modes.MAIN_MENU:
                 content = createMainMenu(state);
+                break;
+        case UI.Modes.SAVE_MENU:
+                content = createSaveMenu(state);
+                break;
+        case UI.Modes.LOAD_MENU:
+                content = createLoadMenu(state);
                 break;
         default:
                 break;
@@ -100,6 +108,20 @@ function createMainMenu (state: Client.Client)
         const activeMainMenuIndex = state.ui.activeMainMenuIndex;
         const menuItems = state.data.menuItems;
         return MainMenu({ activeMainMenuIndex, menuItems });
+}
+
+function createLoadMenu (state: Client.Client)
+{
+        const activeIndex = state.ui.activeLoadIndex;
+        const saves = state.data.saves;
+        return LoadMenu({ activeIndex, saves });
+}
+
+function createSaveMenu (state: Client.Client)
+{
+        const activeIndex = state.ui.activeSaveIndex;
+        const saves = state.data.saves;
+        return SaveMenu({ activeIndex, saves });
 }
 
 export = Content;

@@ -229,6 +229,36 @@ const indexCommands: Command.Command[] = [{
         desc: 'view and generate encryption keys',
 }];
 
+const loadCommands = [{
+        id: 'exit-load',
+        key: 'i',
+        keyCodes: [KeyCodes.I],
+        actionCreator: KeyHandlers.exitLoad,
+        shortDesc: 'Exit',
+        desc: 'return to main menu',
+}, {
+        id: 'load',
+        key: '<Return>',
+        keyCodes: [KeyCodes.RETURN],
+        actionCreator: KeyHandlers.load,
+        shortDesc: 'Load',
+        desc: 'load selected save',
+}, {
+        id: 'next-load',
+        key: 'j',
+        keyCodes: [KeyCodes.J, KeyCodes.DOWN],
+        actionCreator: KeyHandlers.nextLoad,
+        shortDesc: 'Next',
+        desc: 'select next load file',
+}, {
+        id: 'previous-load',
+        key: 'k',
+        keyCodes: [KeyCodes.K, KeyCodes.UP],
+        actionCreator: KeyHandlers.previousLoad,
+        shortDesc: 'Previous',
+        desc: 'select previous load file',
+}];
+
 const menuCommands = [{
         id: 'exit-main-menu',
         key: 'i',
@@ -250,6 +280,13 @@ const menuCommands = [{
         actionCreator: KeyHandlers.previousMenuOption,
         shortDesc: 'Previous',
         desc: 'select previous option',
+}, {
+        id: 'select-menu-option',
+        key: '<Return>',
+        keyCodes: [KeyCodes.RETURN],
+        actionCreator: KeyHandlers.selectMenuOption,
+        shortDesc: 'Select',
+        desc: 'select menu option',
 }];
 
 const pagerCommands = [{
@@ -282,6 +319,36 @@ const pagerCommands = [{
         desc: 'import PGP keys from message',
 }];
 
+const saveCommands = [{
+        id: 'exit-save',
+        key: 'i',
+        keyCodes: [KeyCodes.I],
+        actionCreator: KeyHandlers.exitSave,
+        shortDesc: 'Exit',
+        desc: 'return to main menu',
+}, {
+        id: 'save',
+        key: '<Return>',
+        keyCodes: [KeyCodes.RETURN],
+        actionCreator: KeyHandlers.save,
+        shortDesc: 'Save',
+        desc: 'save as',
+}, {
+        id: 'next-save',
+        key: 'j',
+        keyCodes: [KeyCodes.J, KeyCodes.DOWN],
+        actionCreator: KeyHandlers.nextSave,
+        shortDesc: 'Next',
+        desc: 'select next save',
+}, {
+        id: 'previous-save',
+        key: 'k',
+        keyCodes: [KeyCodes.K, KeyCodes.UP],
+        actionCreator: KeyHandlers.previousSave,
+        shortDesc: 'Previous',
+        desc: 'select previous save',
+}];
+
 export const commands = [].concat(
         commonCommands,
         composeCommands,
@@ -289,8 +356,10 @@ export const commands = [].concat(
         folderCommands,
         helpCommands,
         indexCommands,
+        loadCommands,
         menuCommands,
-        pagerCommands);
+        pagerCommands,
+        saveCommands);
 
 export const commandIdsByMode: Data.IdsById = {
         [UI.Modes.COMPOSE]: [
@@ -344,8 +413,15 @@ export const commandIdsByMode: Data.IdsById = {
                 'open-main-menu',
                 'open-help'
         ],
+        [UI.Modes.LOAD_MENU]: [
+                'exit-load',
+                'load',
+                'next-load',
+                'previous-load'
+        ],
         [UI.Modes.MAIN_MENU]: [
                 'exit-main-menu',
+                'select-menu-option',
                 'next-menu-option',
                 'previous-menu-option'
         ],
@@ -360,5 +436,11 @@ export const commandIdsByMode: Data.IdsById = {
                 'change',
                 'open-main-menu',
                 'open-help'
+        ],
+        [UI.Modes.SAVE_MENU]: [
+                'exit-save',
+                'save',
+                'next-save',
+                'previous-save'
         ],
 }

@@ -50,6 +50,73 @@ export function previousMenuOption (client: Client.Client)
         return ActionCreators.SetActiveMenuIndex(index);
 }
 
+export function selectMenuOption (client: Client.Client)
+{
+        const currentIndex = client.ui.activeMainMenuIndex;
+        switch (currentIndex) {
+        case 0: // SAVE_MENU
+                return ActionCreators.setMode(UI.Modes.SAVE_MENU);
+
+        case 1: // LOAD_MENU
+                return ActionCreators.setMode(UI.Modes.LOAD_MENU);
+
+        default:
+                return null;
+        }
+}
+
+export function exitSave (client: Client.Client)
+{
+        return ActionCreators.setMode(UI.Modes.MAIN_MENU);
+}
+
+export function save (client: Client.Client)
+{
+        return;
+}
+
+export function nextSave (client: Client.Client)
+{
+        const currentIndex = client.ui.activeSaveIndex;
+        const max = client.data.saves.length;
+        const index = MathUtils.inRange(0, max, currentIndex + 1);
+        return ActionCreators.SetActiveSaveIndex(index);
+}
+
+export function previousSave (client: Client.Client)
+{
+        const currentIndex = client.ui.activeSaveIndex;
+        const max = client.data.saves.length;
+        const index = MathUtils.inRange(0, max, currentIndex - 1);
+        return ActionCreators.SetActiveSaveIndex(index);
+}
+
+export function exitLoad (client: Client.Client)
+{
+        return ActionCreators.setMode(UI.Modes.MAIN_MENU);
+}
+
+export function load (client: Client.Client)
+{
+        return;
+}
+
+export function nextLoad (client: Client.Client)
+{
+        const currentIndex = client.ui.activeLoadIndex;
+        const max = client.data.saves.length - 1;
+        const index = MathUtils.inRange(0, max, currentIndex + 1);
+        return ActionCreators.SetActiveLoadIndex(index);
+}
+
+export function previousLoad (client: Client.Client)
+{
+        const currentIndex = client.ui.activeLoadIndex;
+        const max = client.data.saves.length - 1;
+        const index = MathUtils.inRange(0, max, currentIndex - 1);
+        return ActionCreators.SetActiveLoadIndex(index);
+}
+
 export function help (client: Client.Client)
 {
         return ActionCreators.setMode(UI.Modes.HELP);

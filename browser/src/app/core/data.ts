@@ -25,6 +25,7 @@ export interface Data {
         keyManagers: string[];
         keyManagersById: Map.Map<Kbpgp.KeyManagerInstance>;
         clock: Clock.Clock;
+        saves: string[];
 };
 
 type Id = { id: string; }
@@ -88,6 +89,8 @@ export function createData(
         const keyManagers = Helpers.arrayFromMap(keyManagersById,
                 (instance, id) => id);
 
+        const saves: string[] = [];
+
         return {
                 player,
                 folders,
@@ -100,6 +103,7 @@ export function createData(
                 keyManagers,
                 keyManagersById,
                 clock,
+                saves,
         };
 }
 

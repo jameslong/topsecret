@@ -107,6 +107,14 @@ export function ui (ui: UI.UI, action: Redux.Action<any>)
                         const setMenuIndex = <Actions.SetActiveMenuIndex><any>action;
                         return handleSetActiveMenuIndex(ui, setMenuIndex);
 
+                case Actions.Types.SET_ACTIVE_LOAD_MENU_INDEX:
+                        const setLoadIndex = <Actions.SetActiveLoadIndex><any>action;
+                        return handleSetActiveLoadIndex(ui, setLoadIndex);
+
+                case Actions.Types.SET_ACTIVE_SAVE_MENU_INDEX:
+                        const setSaveIndex = <Actions.SetActiveSaveIndex><any>action;
+                        return handleSetActiveSaveIndex(ui, setSaveIndex);
+
                 default:
                         return ui;
         }
@@ -282,4 +290,18 @@ function handleSetActiveMenuIndex (
 {
         const activeMainMenuIndex = action.parameters;
         return Helpers.assign(ui, { activeMainMenuIndex });
+}
+
+function handleSetActiveLoadIndex (
+        ui: UI.UI, action: Actions.SetActiveLoadIndex)
+{
+        const activeLoadIndex = action.parameters;
+        return Helpers.assign(ui, { activeLoadIndex });
+}
+
+function handleSetActiveSaveIndex (
+        ui: UI.UI, action: Actions.SetActiveSaveIndex)
+{
+        const activeSaveIndex = action.parameters;
+        return Helpers.assign(ui, { activeSaveIndex });
 }

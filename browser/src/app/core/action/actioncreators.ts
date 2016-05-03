@@ -60,4 +60,6 @@ export const setPlayerKey = createActionCreator<string>(Actions.Types.SET_PLAYER
 export const setActiveKey = createActionCreator<string>(Actions.Types.SET_ACTIVE_KEY);
 export const importKeys = createActionCreator<Actions.ImportKeysParams>(Actions.Types.IMPORT_KEYS);
 
+export const SetActiveLoadIndex = createActionCreator<number>(Actions.Types.SET_ACTIVE_LOAD_MENU_INDEX);
 export const SetActiveMenuIndex = createActionCreator<number>(Actions.Types.SET_ACTIVE_MENU_INDEX);
+export const SetActiveSaveIndex = createActionCreator<number>(Actions.Types.SET_ACTIVE_SAVE_MENU_INDEX);
