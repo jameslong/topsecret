@@ -1,5 +1,6 @@
 import Actions = require('./actions');
 import Arr = require('../../../../../core/src/app/utils/array');
+import Client = require('../client');
 import Folder = require('../folder');
 import Message = require('../../../../../core/src/app/message');
 import Redux = require('../redux/redux');
@@ -63,3 +64,5 @@ export const importKeys = createActionCreator<Actions.ImportKeysParams>(Actions.
 export const SetActiveLoadIndex = createActionCreator<number>(Actions.Types.SET_ACTIVE_LOAD_MENU_INDEX);
 export const SetActiveMenuIndex = createActionCreator<number>(Actions.Types.SET_ACTIVE_MENU_INDEX);
 export const SetActiveSaveIndex = createActionCreator<number>(Actions.Types.SET_ACTIVE_SAVE_MENU_INDEX);
+
+export const ImportSaveData = createActionCreator<Client.SaveData>(Actions.Types.IMPORT_SAVE_DATA);

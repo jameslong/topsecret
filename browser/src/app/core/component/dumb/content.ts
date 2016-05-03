@@ -4,8 +4,9 @@ import Encryption = require('./encryption');
 import Folder = require('./folder');
 import Help = require('./help');
 import Index = require('./index');
-import Pager = require('./pager');
 import LoadMenu = require('./loadmenu');
+import LocalStorage = require('../../localstorage');
+import Pager = require('./pager');
 import MainMenu = require('./mainmenu');
 import React = require('react');
 import SaveMenu = require('./savemenu');
@@ -113,14 +114,14 @@ function createMainMenu (state: Client.Client)
 function createLoadMenu (state: Client.Client)
 {
         const activeIndex = state.ui.activeLoadIndex;
-        const saves = state.data.saves;
+        const saves = LocalStorage.getSaveNames();
         return LoadMenu({ activeIndex, saves });
 }
 
 function createSaveMenu (state: Client.Client)
 {
         const activeIndex = state.ui.activeSaveIndex;
-        const saves = state.data.saves;
+        const saves = LocalStorage.getSaveNames();
         return SaveMenu({ activeIndex, saves });
 }
 

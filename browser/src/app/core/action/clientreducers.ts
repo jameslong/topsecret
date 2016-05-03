@@ -19,6 +19,11 @@ export function client (client: Client.Client, action: Redux.Action<any>)
                         temp = handleDeleteKey(temp, deleteKey);
                         break;
 
+                case Actions.Types.IMPORT_SAVE_DATA:
+                        const saveData = <Actions.ImportSaveData><any>action;
+                        temp = handleImportSaveData(temp, saveData);
+                        break;
+
                 default:
                         break;
         }
@@ -58,4 +63,11 @@ function handleDeleteKey (client: Client.Client, action: Actions.DeleteKey)
         const ui = Helpers.assign(client.ui, { activeKeyId });
 
         return Helpers.assign(client, { data, ui });
+}
+
+function handleImportSaveData (
+        client: Client.Client, action: Actions.ImportSaveData)
+{
+        const saveData = action.parameters;
+        return Client.importSaveData(client, saveData);
 }

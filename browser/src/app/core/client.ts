@@ -20,13 +20,22 @@ import State = require('../../../../core/src/app/state');
 import UI = require('./ui');
 
 export interface Client {
-        server: Server.Server
+        server: Server.Server;
         data: Data.Data;
         ui: UI.UI;
         draftKey: KbpgpHelpers.KeyData;
         draftMessage: Draft.Draft;
         messageId: number;
 };
+
+export interface SaveData {
+        name: string;
+        saveData: {
+                server: Server.RuntimeServer;
+                data: Data.RuntimeData;
+                messageId: number;
+        };
+}
 
 export function createClient (
         config: ConfigData.ConfigData,
@@ -159,4 +168,34 @@ export function getMessages (data: Data.Data, folderId: string)
 {
         const messageIds = data.messageIdsByFolderId[folderId];
         return messageIds.map(id => data.messagesById[id]);
+}
+
+export function getSaveData (client: Client, name: string): SaveData
+{
+        const data = client.data;
+        const server = client.server;
+        const saveData = {
+                server: {
+                        lastEvaluatedKey: server.lastEvaluatedKey,
+                        db: server.db,
+                        id: server.id,
+                },
+                messageId: client.messageId,
+                data: {
+                        player: data.player,
+                        messagesById: data.messagesById,
+                        messageIdsByFolderId: data.messageIdsByFolderId,
+                        clock: data.clock,
+                }
+        };
+        return { name, saveData };
+}
+
+export function importSaveData (client: Client, importedData: SaveData)
+{
+        const saveData = importedData.saveData;
+        const server = Helpers.assign(client.server, saveData.server);
+        const data = Helpers.assign(client.data, saveData.data);
+        const messageId = saveData.messageId;
+        return Helpers.assign(client, { server, data, messageId });
 }

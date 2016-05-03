@@ -17,11 +17,13 @@ interface Id {
         uid: number;
 }
 
-export interface Server {
-        app: State.State;
+export interface RuntimeServer {
         lastEvaluatedKey: string;
         db: LocalDB.DBState;
         id: Id;
+}
+export interface Server extends RuntimeServer {
+        app: State.State;
 }
 
 export function createServer (

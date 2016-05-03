@@ -46,21 +46,24 @@ export function init (data: State.Data) {
                 EventHandler.addKeyHandlers();
 
                 return Server.beginGame(player, config, server).then(result =>
-                        startTick(getClient, server)
+                        startTick(getClient)
                 );
         });
 }
 
-function tick (getClient: () => Client.Client, server: Server.Server)
+function tick (getClient: () => Client.Client)
 {
         Client.tickClient();
-        server.app.clock = getClient().data.clock;
+
+        const client = getClient();
+        const server = client.server;
+        server.app.clock = client.data.clock;
         return Server.tickServer(server);
 }
 
-export function startTick (getClient: () => Client.Client, server: Server.Server)
+export function startTick (getClient: () => Client.Client)
 {
-        const update = () => tick(getClient, server);
+        const update = () => tick(getClient);
         const intervalMs = 1000;
         Prom.loop(intervalMs, update);
 }

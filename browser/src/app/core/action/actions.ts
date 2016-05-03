@@ -1,5 +1,6 @@
 /// <reference path="../../../../../typings/kbpgp/kbpgp.d.ts"/>
 
+import Client = require('../client');
 import Map = require('../../../../../core/src/app/utils/map');
 import MessageCore = require('../../../../../core/src/app/message');
 import Message = require('../message');
@@ -46,6 +47,8 @@ export const Types = {
         SET_ACTIVE_LOAD_MENU_INDEX: 'SET_ACTIVE_LOAD_MENU_INDEX',
         SET_ACTIVE_MENU_INDEX: 'SET_ACTIVE_MENU_INDEX',
         SET_ACTIVE_SAVE_MENU_INDEX: 'SET_ACTIVE_SAVE_MENU_INDEX',
+
+        IMPORT_SAVE_DATA: 'IMPORT_SAVE_DATA',
 };
 
 export interface Blur extends Redux.Action<void> {}
@@ -119,3 +122,5 @@ export interface ImportKeys extends Redux.Action<ImportKeysParams> {}
 export interface SetActiveLoadIndex extends Redux.Action<number> {}
 export interface SetActiveMenuIndex extends Redux.Action<number> {}
 export interface SetActiveSaveIndex extends Redux.Action<number> {}
+
+export interface ImportSaveData extends Redux.Action<Client.SaveData> {}

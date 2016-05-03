@@ -13,20 +13,22 @@ import Player = require('./player');
 
 export type IdsById = Map.Map<string[]>;
 
-export interface Data {
+export interface RuntimeData {
         player: Player.Player;
+        messagesById: Map.Map<Message.Message>;
+        messageIdsByFolderId: IdsById;
+        clock: Clock.Clock;
+}
+
+export interface Data extends RuntimeData {
         folders: string[];
         foldersById: Map.Map<Folder.Folder>;
         commandsById: Map.Map<Command.Command>;
         commandIdsByMode: IdsById;
         menuItems: string[];
-        messagesById: Map.Map<Message.Message>;
-        messageIdsByFolderId: IdsById;
         keyManagers: string[];
         keyManagersById: Map.Map<Kbpgp.KeyManagerInstance>;
-        clock: Clock.Clock;
-        saves: string[];
-};
+}
 
 type Id = { id: string; }
 export function getId<T extends Id>(value: T)
@@ -89,8 +91,6 @@ export function createData(
         const keyManagers = Helpers.arrayFromMap(keyManagersById,
                 (instance, id) => id);
 
-        const saves: string[] = [];
-
         return {
                 player,
                 folders,
@@ -103,7 +103,6 @@ export function createData(
                 keyManagers,
                 keyManagersById,
                 clock,
-                saves,
         };
 }
 

@@ -8,6 +8,7 @@ import Func = require('../../../../../core/src/app/utils/function');
 import Helpers = require('../../../../../core/src/app/utils/helpers');
 import Kbpgp = require('kbpgp');
 import KbpgpHelpers = require('../../../../../core/src/app/kbpgp');
+import LocalStorage = require('../localstorage');
 import MathUtils = require('../../../../../core/src/app/utils/math');
 import Map = require('../../../../../core/src/app/utils/map');
 import MessageCore = require('../../../../../core/src/app/message');
@@ -30,8 +31,7 @@ export function openMainMenu (client: Client.Client)
 
 export function exitMainMenu (client: Client.Client)
 {
-        const mode = client.ui.previousMode;
-        return ActionCreators.setMode(mode);
+        return ActionCreators.setMode(UI.Modes.INDEX_INBOX);
 }
 
 export function nextMenuOption (client: Client.Client)
@@ -72,13 +72,20 @@ export function exitSave (client: Client.Client)
 
 export function save (client: Client.Client)
 {
-        return;
+        const index = client.ui.activeSaveIndex;
+        const saves = LocalStorage.getSaveNames();
+        const saveName = index < saves.length ?
+                saves[index] : Date.now().toString();
+        const saveData = Client.getSaveData(client, saveName);
+        console.log('Saving', saveData);
+        return LocalStorage.save(saveData);
 }
 
 export function nextSave (client: Client.Client)
 {
         const currentIndex = client.ui.activeSaveIndex;
-        const max = client.data.saves.length;
+        const saves = LocalStorage.getSaveNames();
+        const max = saves.length;
         const index = MathUtils.inRange(0, max, currentIndex + 1);
         return ActionCreators.SetActiveSaveIndex(index);
 }
@@ -86,7 +93,8 @@ export function nextSave (client: Client.Client)
 export function previousSave (client: Client.Client)
 {
         const currentIndex = client.ui.activeSaveIndex;
-        const max = client.data.saves.length;
+        const saves = LocalStorage.getSaveNames();
+        const max = saves.length;
         const index = MathUtils.inRange(0, max, currentIndex - 1);
         return ActionCreators.SetActiveSaveIndex(index);
 }
@@ -98,13 +106,19 @@ export function exitLoad (client: Client.Client)
 
 export function load (client: Client.Client)
 {
-        return;
+        const activeIndex = client.ui.activeLoadIndex;
+        const saves = LocalStorage.getSaveNames();
+        const saveName = saves[activeIndex];
+        console.log('Loading', saveName);
+        const saveData = LocalStorage.load<Client.SaveData>(saveName);
+        return ActionCreators.ImportSaveData(saveData);
 }
 
 export function nextLoad (client: Client.Client)
 {
         const currentIndex = client.ui.activeLoadIndex;
-        const max = client.data.saves.length - 1;
+        const saves = LocalStorage.getSaveNames();
+        const max = saves.length - 1;
         const index = MathUtils.inRange(0, max, currentIndex + 1);
         return ActionCreators.SetActiveLoadIndex(index);
 }
@@ -112,7 +126,8 @@ export function nextLoad (client: Client.Client)
 export function previousLoad (client: Client.Client)
 {
         const currentIndex = client.ui.activeLoadIndex;
-        const max = client.data.saves.length - 1;
+        const saves = LocalStorage.getSaveNames();
+        const max = saves.length - 1;
         const index = MathUtils.inRange(0, max, currentIndex - 1);
         return ActionCreators.SetActiveLoadIndex(index);
 }
