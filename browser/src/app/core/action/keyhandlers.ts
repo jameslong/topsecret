@@ -132,6 +132,18 @@ export function previousLoad (client: Client.Client)
         return ActionCreators.SetActiveLoadIndex(index);
 }
 
+export function deleteSave (client: Client.Client)
+{
+        const ui = client.ui;
+        const index = ui.mode === UI.Modes.SAVE_MENU ?
+                ui.activeSaveIndex : ui.activeLoadIndex;
+        const saves = LocalStorage.getSaveNames();
+        const saveName = saves[index];
+        if (saveName) {
+                LocalStorage.deleteSave(saveName);
+        }
+}
+
 export function help (client: Client.Client)
 {
         return ActionCreators.setMode(UI.Modes.HELP);

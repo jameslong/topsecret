@@ -20,6 +20,16 @@ export function load<T extends SaveData> (name: string): T
         return Arr.valueOf(saves, save => save.name === name);
 }
 
+export function deleteSave (name: string)
+{
+        const localStorage = window.localStorage;
+        const existingData = localStorage.getItem('saves');
+        const saves: SaveData[] = existingData ? JSON.parse(existingData) : [];
+        const newSaves = saves.filter(data => data.name !== name);
+        localStorage.setItem('saves', JSON.stringify(newSaves));
+
+}
+
 export function getSaveNames ()
 {
         const localStorage = window.localStorage;

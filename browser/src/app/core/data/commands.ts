@@ -257,6 +257,13 @@ const loadCommands = [{
         actionCreator: KeyHandlers.previousLoad,
         shortDesc: 'Previous',
         desc: 'select previous load file',
+}, {
+        id: 'delete-save',
+        key: 'd',
+        keyCodes: [KeyCodes.D],
+        actionCreator: KeyHandlers.deleteSave,
+        shortDesc: 'Delete',
+        desc: 'delete save data',
 }];
 
 const menuCommands = [{
@@ -347,6 +354,13 @@ const saveCommands = [{
         actionCreator: KeyHandlers.previousSave,
         shortDesc: 'Previous',
         desc: 'select previous save',
+}, {
+        id: 'delete-save',
+        key: 'd',
+        keyCodes: [KeyCodes.D],
+        actionCreator: KeyHandlers.deleteSave,
+        shortDesc: 'Delete',
+        desc: 'delete save data',
 }];
 
 export const commands = [].concat(
@@ -417,7 +431,8 @@ export const commandIdsByMode: Data.IdsById = {
                 'exit-load',
                 'load',
                 'next-load',
-                'previous-load'
+                'previous-load',
+                'delete-save'
         ],
         [UI.Modes.MAIN_MENU]: [
                 'exit-main-menu',
@@ -441,6 +456,7 @@ export const commandIdsByMode: Data.IdsById = {
                 'exit-save',
                 'save',
                 'next-save',
-                'previous-save'
+                'previous-save',
+                'delete-save'
         ],
 }
