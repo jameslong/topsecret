@@ -87,18 +87,30 @@
                         }
                 },
 
-                "EC2Instance": {
-                        "Type" : "AWS::EC2::Instance",
+                "AutoScalingGroupLaunchConfiguration": {
+                        "Type" : "AWS::AutoScaling::LaunchConfiguration",
                         "Properties" : {
                                 "ImageId" : "ami-840910ee",
+                                "InstanceMonitoring" : false,
                                 "InstanceType" : "t2.micro",
                                 "KeyName" : "cloudformation",
-                                "Monitoring" : false,
                                 "SecurityGroups" : [
                                         {
                                                 "Ref": "EC2SecurityGroup"
                                         }
                                 ]
+                        }
+                },
+
+                "AutoScalingGroup": {
+                        "Type" : "AWS::AutoScaling::AutoScalingGroup",
+                        "Properties" : {
+                                "AvailabilityZones" :{ "Fn::GetAZs" : "" },
+                                "DesiredCapacity" : "1",
+                                "HealthCheckType" : "EC2",
+                                "LaunchConfigurationName" : { "Ref" : "AutoScalingGroupLaunchConfiguration" },
+                                "MaxSize" : "1",
+                                "MinSize" : "1"
                         }
                 }
         }
