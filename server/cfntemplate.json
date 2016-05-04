@@ -40,7 +40,6 @@
                                                 "KeyType": "HASH"
                                         }
                                 ],
-                                "LocalSecondaryIndexes" : [],
                                 "ProvisionedThroughput" : {
                                         "ReadCapacityUnits": 5,
                                         "WriteCapacityUnits": 5
@@ -65,12 +64,41 @@
                                                 "KeyType": "HASH"
                                         }
                                 ],
-                                "LocalSecondaryIndexes" : [],
                                 "ProvisionedThroughput" : {
                                         "ReadCapacityUnits": 5,
                                         "WriteCapacityUnits": 5
                                 },
                                 "TableName" : "player-dev"
+                        }
+                },
+
+                "EC2SecurityGroup" : {
+                        "Type" : "AWS::EC2::SecurityGroup",
+                        "Properties" : {
+                                "GroupDescription" : "Enable SSH access via port 22",
+                                "SecurityGroupIngress" : [
+                                        {
+                                                "IpProtocol" : "tcp",
+                                                "FromPort" : "3000",
+                                                "ToPort" : "3000",
+                                                "CidrIp" : "0.0.0.0/0"
+                                        }
+                                ]
+                        }
+                },
+
+                "EC2Instance": {
+                        "Type" : "AWS::EC2::Instance",
+                        "Properties" : {
+                                "ImageId" : "ami-840910ee",
+                                "InstanceType" : "t2.micro",
+                                "KeyName" : "cloudformation",
+                                "Monitoring" : false,
+                                "SecurityGroups" : [
+                                        {
+                                                "Ref": "EC2SecurityGroup"
+                                        }
+                                ]
                         }
                 }
         }
