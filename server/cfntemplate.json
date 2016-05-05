@@ -75,13 +75,15 @@
                 "EC2SecurityGroup" : {
                         "Type" : "AWS::EC2::SecurityGroup",
                         "Properties" : {
-                                "GroupDescription" : "Enable SSH access via port 22",
+                                "GroupDescription" : "Allow access over http from elastic load balancer",
                                 "SecurityGroupIngress" : [
                                         {
                                                 "IpProtocol" : "tcp",
                                                 "FromPort" : "3000",
                                                 "ToPort" : "3000",
-                                                "CidrIp" : "0.0.0.0/0"
+                                                "SourceSecurityGroupId": {
+                                                        "Fn::GetAtt" : [ "ElasticLoadBalancerSecurityGroup", "GroupId" ]
+                                                }
                                         }
                                 ]
                         }
@@ -107,10 +109,57 @@
                         "Properties" : {
                                 "AvailabilityZones" :{ "Fn::GetAZs" : "" },
                                 "DesiredCapacity" : "1",
-                                "HealthCheckType" : "EC2",
+                                "HealthCheckType" : "ELB",
+                                "HealthCheckGracePeriod" : "300",
                                 "LaunchConfigurationName" : { "Ref" : "AutoScalingGroupLaunchConfiguration" },
+                                "LoadBalancerNames": [
+                                        {
+                                                "Ref": "ElasticLoadBalancer"
+                                        }
+                                ],
                                 "MaxSize" : "1",
                                 "MinSize" : "1"
+                        }
+                },
+
+                "ElasticLoadBalancerSecurityGroup" : {
+                        "Type" : "AWS::EC2::SecurityGroup",
+                        "Properties" : {
+                                "GroupDescription" : "Allow public access over HTTP",
+                                "SecurityGroupIngress" : [
+                                        {
+                                                "IpProtocol" : "tcp",
+                                                "FromPort" : "80",
+                                                "ToPort" : "3000",
+                                                "CidrIp" : "0.0.0.0/0"
+                                        }
+                                ]
+                        }
+                },
+
+                "ElasticLoadBalancer": {
+                        "Type": "AWS::ElasticLoadBalancing::LoadBalancer",
+                        "Properties": {
+                                "AvailabilityZones" :{ "Fn::GetAZs" : "" },
+                                "HealthCheck" : {
+                                        "HealthyThreshold" : "2",
+                                        "Interval" : "20",
+                                        "Target" : "HTTP:3000/healthcheck",
+                                        "Timeout" : "10",
+                                        "UnhealthyThreshold" : "10"
+                                },
+                                "Listeners": [
+                                        {
+                                                "InstancePort" : "3000",
+                                                "LoadBalancerPort" : "80",
+                                                "Protocol" : "HTTP"
+                                        }
+                                ],
+                                "SecurityGroups" : [
+                                        {
+                                                "Fn::GetAtt" : [ "ElasticLoadBalancerSecurityGroup", "GroupId" ]
+                                        }
+                                ]
                         }
                 }
         }
