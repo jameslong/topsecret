@@ -1,0 +1,12 @@
+{
+        "Description": "Top Secret s3 bucket for github ssh key",
+
+        "Resources": {
+                "S3Bucket": {
+                        "Type" : "AWS::S3::Bucket",
+                        "Properties" : {
+                                "BucketName" : "topsecret-deploy"
+                        }
+                }
+        }
+}
