@@ -4,8 +4,7 @@
   "description": "A game about the Snowden leaks",
   "main": "client/index.js",
   "scripts": {
-    "test": "grunt test",
-    "postinstall": "cd app && npm install && cd .."
+    "test": "grunt test"
   },
   "repository": {
     "type": "git",
