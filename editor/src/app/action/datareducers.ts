@@ -413,11 +413,39 @@ function handleSetMessageName (
 
         const messages = narrative.messagesById;
         const message = messages[name];
-        const newMessage = Helpers.assign(message, { name: newName });
+        const messageContent = message.message;
+
+        const subjectName = message.threadSubject;
+        const newSubjectName = subjectName ? `${newName}_subject` : '';
+        const bodyName = message.message.body;
+        const newBodyName = bodyName ? `${newName}_body` : '';
+
+        const newContent = Helpers.assign(messageContent,
+                { body: newBodyName });
+        const newMessage = Helpers.assign(message, {
+                name: newName,
+                message: newContent,
+                threadSubject: newSubjectName
+        });
+
         const tempMessages = Map.set(messages, newName, newMessage);
         const newMessages = Map.remove(tempMessages, name);
+
+        let stringsById = narrative.stringsById;
+        if (subjectName) {
+                const subject = stringsById[subjectName];
+                stringsById = Map.set(stringsById, newSubjectName, subject);
+                stringsById = Map.remove(stringsById, subjectName);
+        }
+        if (bodyName) {
+                const body = stringsById[bodyName];
+                stringsById = Map.set(stringsById, newBodyName, body);
+                stringsById = Map.remove(stringsById, bodyName);
+
+        }
+
         const newNarrative = Helpers.assign(narrative,
-                { messagesById: newMessages });
+                { messagesById: newMessages, stringsById });
         const newNarratives = Map.set(
                 narratives, newNarrative.name, newNarrative);
 
@@ -426,6 +454,7 @@ function handleSetMessageName (
 
         return Helpers.assign(state, {
                 narrativesById: newNarratives, nameScratchpad: newScratchpad });
+
 }
 
 function setMessageProperty (
