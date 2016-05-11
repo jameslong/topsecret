@@ -45,6 +45,7 @@ export function addKeyManagers (data: NarrativeData): Promise<GameData>
                         name: data.name,
                         profiles: data.profiles,
                         messages: data.messages,
+                        replyOptions: data.replyOptions,
                         strings: data.strings,
                         keyManagers: instances,
                 };
