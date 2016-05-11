@@ -1,6 +1,6 @@
 import ActionCreators = require('../../action/actioncreators');
 import Arr = require('../../../../../core/src/app/utils/array');
-import Message = require('../../message');
+import EditorMessage = require('../../editormessage');
 import MessageDelay = require('../../messagedelay');
 import React = require('react');
 import Redux = require('../../redux/redux');
@@ -140,7 +140,7 @@ function onSetScript (
 
 function onSetChild (
         narrativeId: string,
-        message: Message.Message,
+        message: EditorMessage.EditorMessage,
         delay: MessageDelay.MessageDelay,
         index: number)
 {
@@ -162,7 +162,7 @@ function onSetChildren (
         Redux.handleAction(action);
 }
 
-function onAddChild (narrativeId: string, message: Message.Message)
+function onAddChild (narrativeId: string, message: EditorMessage.EditorMessage)
 {
         const newChild = MessageDelay.createMessageDelay();
         const children = message.children;
@@ -171,7 +171,7 @@ function onAddChild (narrativeId: string, message: Message.Message)
 }
 
 function onRemoveChild (
-        narrativeId: string, message: Message.Message, index: number)
+        narrativeId: string, message: EditorMessage.EditorMessage, index: number)
 {
         const children = message.children;
         const newChildren = Arr.deleteIndex(children, index);

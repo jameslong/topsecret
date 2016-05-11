@@ -1,12 +1,12 @@
 import ActionCreators = require('../../action/actioncreators');
-import Message = require('../../message');
+import EditorMessage = require('../../editormessage');
 import React = require('react');
 import Redux = require('../../redux/redux');
 
 import NodeComponent = require('../dumb/node');
 
 interface NodeContainerProps extends React.Props<any> {
-        message: Message.Message;
+        message: EditorMessage.EditorMessage;
         narrativeId: string;
 };
 

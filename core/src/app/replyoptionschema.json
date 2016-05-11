@@ -1,0 +1,60 @@
+{
+        "schema": "http://json-schema.org/draft-04/schema#",
+        "title": "Reply options",
+        "description": "Describes a list of reply options",
+        "definitions": {
+                "threadDelay": {
+                        "type": "object",
+                        "properties": {
+                                "name": { "type": "string" },
+                                "condition": { "type": "string" },
+                                "delay": {
+                                        "type": "array",
+                                        "items": { "type": "number" },
+                                        "minItems": 3,
+                                        "maxItems": 3,
+                                        "uniqueItems": false
+                                }
+                        },
+                        "required": ["name", "condition", "delay"]
+                },
+                "keywordReplyOption": {
+                        "type": "object",
+                        "properties": {
+                                "type": { "enum": ["keyword"] },
+                                "parameters": {
+                                        "type": "object",
+                                        "properties": {
+                                                "matches": {
+                                                        "type": "array",
+                                                        "items": {
+                                                                "type": "string"
+                                                        },
+                                                        "minItems": 1,
+                                                        "uniqueItems": true
+                                                }
+                                        },
+                                        "required": ["matches"]
+                                },
+                                "messageDelay": { "$ref": "#/definitions/threadDelay" }
+                        },
+                        "required": ["type", "parameters", "messageDelay"]
+                },
+                "defaultReplyOption": {
+                        "type": "object",
+                        "properties": {
+                                "type": { "enum": ["default", "validPGPKey"] },
+                                "parameters": { "type": "object" },
+                                "messageDelay": { "$ref": "#/definitions/threadDelay" }
+                        },
+                        "required": ["type", "parameters", "messageDelay"]
+                }
+        },
+        "type": "array",
+        "items": {
+                "anyOf": [
+                        { "$ref": "#/definitions/keywordReplyOption" },
+                        { "$ref": "#/definitions/defaultReplyOption" }
+                ]
+        }
+}

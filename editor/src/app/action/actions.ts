@@ -1,9 +1,10 @@
 import MathUtils = require('../math');
-import Message = require('../message');
+import EditorMessage = require('../editormessage');
+import Message = require('../../../../core/src/app/message');
 import MessageDelay = require('../messagedelay');
 import Narrative = require('../narrative');
 import Redux = require('../redux/redux');
-import ReplyOption = require('../replyoption');
+import ReplyOption = require('../../../../core/src/app/replyoption');
 
 export const Types = {
         UNDO: 'UNDO',
@@ -105,7 +106,7 @@ export interface SetMessageScript extends Redux.Action<SetMessageScriptParams> {
 export type SetMessagePositionParams = NameValueParameters<MathUtils.Coord>;
 export interface SetMessagePosition extends Redux.Action<SetMessagePositionParams> {}
 
-export type SetMessageContentParams = NameValueParameters<Message.MessageContent>;
+export type SetMessageContentParams = NameValueParameters<Message.Message>;
 export interface SetMessageContent extends Redux.Action<SetMessageContentParams> {}
 
 export type SetMessageFallbackParams = NameValueParameters<MessageDelay.MessageDelay>;

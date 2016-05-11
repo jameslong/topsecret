@@ -2,6 +2,7 @@
 
 import Data = require('./data');
 import Helpers = require('./utils/helpers');
+import Map = require('./utils/map');
 import Message = require('./message');
 import Profile = require('./profile');
 import Script = require('./script');
@@ -11,19 +12,21 @@ import validator = require('is-my-json-valid');
 export function getDataErrors (
         data: Data.NarrativeData,
         profileSchema: JSON,
-        messageSchema: JSON): Object[]
+        messageSchema: JSON,
+        replyOptionSchema: JSON): Object[]
 {
-        const profiles = <Profile.Profile[]>Helpers.arrayFromMap(data.profiles);
-        const profileErrors = getJSONDirErrors(profileSchema, profiles);
+        const profileErrors = getJSONDirErrors(profileSchema, data.profiles);
+        const messageErrors = getJSONDirErrors(messageSchema, data.messages);
+        const replyOptionErrors = getJSONDirErrors(
+                replyOptionSchema, data.replyOptions);
 
-        const messages = <Message.ThreadMessage[]>Helpers.arrayFromMap(
+        const messageList = <Message.ThreadMessage[]>Helpers.arrayFromMap(
                 data.messages);
-        const messageErrors = getJSONDirErrors(messageSchema, messages);
-
-        const scriptErrors = getListErrors(messages,
+        const scriptErrors = getListErrors(messageList,
                 message => Script.getScriptErrors(message.script));
 
-        return profileErrors.concat(messageErrors, scriptErrors);
+        return profileErrors.concat(
+                messageErrors, replyOptionErrors, scriptErrors);
 }
 
 interface SchemaValidateFn<T> {
@@ -31,15 +34,13 @@ interface SchemaValidateFn<T> {
         errors: Object[];
 }
 
-export function getJSONDirErrors<T extends { name: string }> (
-        schema: Object, data: T[]): Object[]
+export function getJSONDirErrors<T> (
+        schema: Object, data: Map.Map<T>): Object[]
 {
         const validate = validator(schema);
 
-        const invalidElements = data.filter(
-                element => !validate(element));
-        return invalidElements.reduce((result, element) => {
-                const error = getError(validate, element);
+        return Map.reduce(data, (result, element, key) => {
+                const error = getError(validate, element, key);
                 if (error) {
                         result.push(error);
                 }
@@ -47,10 +48,10 @@ export function getJSONDirErrors<T extends { name: string }> (
         }, []);
 }
 
-export function getError<T extends { name: string }> (
-        validateFn: SchemaValidateFn<T>, object: T): Object
+export function getError<T> (
+        validateFn: SchemaValidateFn<T>, object: T, name: string): Object
 {
-        return validateFn(object) ? '' : { [object.name]: validateFn.errors };
+        return validateFn(object) ? '' : { [name]: validateFn.errors };
 }
 
 function getListErrors<T extends { name: string }> (

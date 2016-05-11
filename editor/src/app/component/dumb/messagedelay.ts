@@ -1,7 +1,7 @@
 import Arr = require('../../../../../core/src/app/utils/array');
 import Helpers = require('../../../../../core/src/app/utils/helpers');
 import Map = require('../../../../../core/src/app/utils/map');
-import Message = require('../../message');
+import EditorMessage = require('../../editormessage');
 import MessageDelay = require('../../messagedelay');
 import Narrative = require('../../narrative');
 import React = require('react');
@@ -17,7 +17,7 @@ import TextComponent = require('./text');
 interface MessageDelayProps extends React.Props<any> {
         delay: MessageDelay.MessageDelay;
         onChange: (delay: MessageDelay.MessageDelay) => void;
-        messages: Message.Messages;
+        messages: EditorMessage.EditorMessages;
 };
 
 function renderMessageDelay (props: MessageDelayProps)

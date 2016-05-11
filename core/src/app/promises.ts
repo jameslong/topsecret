@@ -61,7 +61,9 @@ export function reply (
         const inReplyToId = message.id;
 
         const messageData = groupData.messages[message.name];
-        const replyDelay = messageData.replyOptions[replyIndex].messageDelay;
+        const replyOptions = groupData.replyOptions;
+        const replyDelay = MessageHelpers.getReplyDelay(
+                replyIndex, messageData, replyOptions);
         const name = replyDelay.name;
         const condition = replyDelay.condition;
 

@@ -1,5 +1,5 @@
 import ActionCreators = require('./action/actioncreators');
-import Message = require('./message');
+import EditorMessage = require('./editormessage');
 import Redux = require('./redux/redux');
 import State = require('./state');
 
@@ -43,7 +43,7 @@ function onDelete (state: State.State)
         const present = state.present;
         const narrativeId = present.ui.activeNarrativeId;
         const messages = present.data.narrativesById[narrativeId].messagesById;
-        const namesMap = Message.getSelectedMessages(messages);
+        const namesMap = EditorMessage.getSelectedMessages(messages);
         const names = Object.keys(namesMap);
         const params = { names, narrativeId };
         const action = ActionCreators.deleteMessages(params);

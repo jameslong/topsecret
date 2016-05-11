@@ -1,10 +1,11 @@
 import ActionCreators = require('./action/actioncreators');
 import Map = require('./../../../core/src/app/utils/map');
 import MathUtils = require('./math');
-import Message = require('./message');
+import EditorMessage = require('./editormessage');
 import MessageDelay = require('./messagedelay');
 import Narrative = require('./narrative');
 import Redux = require('./redux/redux');
+import ReplyOption = require('./../../../core/src/app/replyoption');
 
 export enum Type {
         Fallback,
@@ -23,12 +24,15 @@ export interface Edge {
 export type Edges = Edge[];
 
 export function createEdges (
-        messages: Message.Messages, vertexSize: MathUtils.Coord)
+        messages: EditorMessage.EditorMessages,
+        replyOptions: Map.Map<ReplyOption.ReplyOptions>,
+        vertexSize: MathUtils.Coord)
 {
         let result: Edge[] = [];
 
         Map.forEach(messages, source => {
-                const edges = createMessageEdges(messages, source, vertexSize);
+                const edges = createMessageEdges(
+                        messages, replyOptions, source, vertexSize);
                 result.push(...edges);
         });
 
@@ -36,15 +40,16 @@ export function createEdges (
 }
 
 function createMessageEdges (
-        messages: Message.Messages,
-        message: Message.Message,
+        messages: EditorMessage.EditorMessages,
+        replyOptions: Map.Map<ReplyOption.ReplyOptions>,
+        message: EditorMessage.EditorMessage,
         vertexSize: MathUtils.Coord)
 {
         const fallback = createFallbackEdge(messages, message, vertexSize);
-        const replyOptions = createReplyOptionEdges(
-                messages, message, vertexSize);
+        const replyOptionEdges = createReplyOptionEdges(
+                messages, replyOptions, message, vertexSize);
         const children = createChildEdges(messages, message, vertexSize);
-        return fallback.concat(children, replyOptions);
+        return fallback.concat(children, replyOptionEdges);
 }
 
 function createEdgeName (sourceName: string, type: Type, index: number)
@@ -53,8 +58,8 @@ function createEdgeName (sourceName: string, type: Type, index: number)
 }
 
 function createFallbackEdge (
-        messages: Message.Messages,
-        source: Message.Message,
+        messages: EditorMessage.EditorMessages,
+        source: EditorMessage.EditorMessage,
         vertexSize: MathUtils.Coord)
 {
         const fallback = source.fallback;
@@ -70,37 +75,39 @@ function createFallbackEdge (
 
 
 function createReplyOptionEdges (
-        messages: Message.Messages,
-        source: Message.Message,
+        messages: EditorMessage.EditorMessages,
+        replyOptions: Map.Map<ReplyOption.ReplyOptions>,
+        source: EditorMessage.EditorMessage,
         vertexSize: MathUtils.Coord)
 {
         const result: Edge[] = [];
-        return source.replyOptions.reduce((result, option, index) => {
+        const sourceOptions = replyOptions[source.replyOptions] || [];
+        return sourceOptions.reduce((result, option, index) => {
                 Map.exists(messages, option.messageDelay.name) ?
                         result.push(createReplyOptionEdge(
-                                messages, source, index, vertexSize)) :
+                                messages, source, option, index, vertexSize)) :
                         result;
                 return result;
         }, result);
 }
 
 function createReplyOptionEdge (
-        messages: Message.Messages,
-        source: Message.Message,
+        messages: EditorMessage.EditorMessages,
+        source: EditorMessage.EditorMessage,
+        option: ReplyOption.ReplyOption,
         index: number,
         vertexSize: MathUtils.Coord)
 {
         const type = Type.ReplyOption;
         const name = createEdgeName(source.name, type, index);
-        const option = source.replyOptions[index];
         const target = messages[option.messageDelay.name];
 
         return createEdge(source, target, type, name, vertexSize);
 }
 
 function createChildEdges (
-        messages: Message.Messages,
-        source: Message.Message,
+        messages: EditorMessage.EditorMessages,
+        source: EditorMessage.EditorMessage,
         vertexSize: MathUtils.Coord)
 {
         const result: Edge[] = [];
@@ -114,8 +121,8 @@ function createChildEdges (
 }
 
 function createChildEdge (
-        messages: Message.Messages,
-        source: Message.Message,
+        messages: EditorMessage.EditorMessages,
+        source: EditorMessage.EditorMessage,
         index: number,
         vertexSize: MathUtils.Coord)
 {
@@ -128,8 +135,8 @@ function createChildEdge (
 }
 
 function createEdge (
-        source: Message.Message,
-        target: Message.Message,
+        source: EditorMessage.EditorMessage,
+        target: EditorMessage.EditorMessage,
         type: Type,
         name: string,
         vertexSize: MathUtils.Coord): Edge

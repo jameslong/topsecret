@@ -16,38 +16,7 @@
         "encrypted": true,
         "script": "",
         "receiver": null,
-        "replyOptions": [
-                {
-                        "type": "keyword",
-                        "parameters": {
-                                "matches": [
-                                        "reply"
-                                ]
-                        },
-                        "messageDelay": {
-                                "name": "reply_0",
-                                "condition": "",
-                                "delay": [
-                                        0,
-                                        0,
-                                        0
-                                ]
-                        }
-                },
-                {
-                        "type": "default",
-                        "parameters": {},
-                        "messageDelay": {
-                                "name": "reply_default",
-                                "condition": "",
-                                "delay": [
-                                        0,
-                                        0,
-                                        0
-                                ]
-                        }
-                }
-        ],
+        "replyOptions": "reply_expired_ro",
         "children": [],
         "fallback": null
 }

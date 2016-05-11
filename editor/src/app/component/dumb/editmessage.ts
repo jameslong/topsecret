@@ -1,11 +1,11 @@
 import Arr = require('../../../../../core/src/app/utils/array');
 import Map = require('../../../../../core/src/app/utils/map');
-import Message = require('../../message');
+import EditorMessage = require('../../editormessage');
 import MessageDelay = require('../../messagedelay');
 import Misc = require('../../misc');
 import Narrative = require('../../narrative');
 import React = require('react');
-import ReplyOption = require('../../replyoption');
+import ReplyOption = require('../../../../../core/src/app/replyoption');
 import Profile = require('../../profile');
 import State = require('../../state');
 
@@ -49,6 +49,7 @@ function renderEditMessage (props: EditMessageProps)
         const messages = narrative.messagesById;
         const message = messages[messageName];
         const profiles = narrative.profilesById;
+        const replyOptions = narrative.replyOptionsById;
         const strings = narrative.stringsById;
 
         const name = createName(
@@ -69,7 +70,8 @@ function renderEditMessage (props: EditMessageProps)
         const children = createChildren(
                 props.onSetChildren, message, messages);
 
-        const replyOptions = createReplyOptions(narrativeId, message, messages);
+        const options = createReplyOptions(
+                narrativeId, message, replyOptions, messages);
 
         const endGame = createEndGame(message, props.onSetEndGame);
         const encrypted = createEncrypted(message, props.onSetEncrypted);
@@ -85,7 +87,7 @@ function renderEditMessage (props: EditMessageProps)
                         ComponentHelpers.wrapInSubgroup(subject),
                         messageContent),
                 ComponentHelpers.wrapInTitleGroup('Children', children),
-                ComponentHelpers.wrapInTitleGroup('Reply options', replyOptions),
+                ComponentHelpers.wrapInTitleGroup('Reply options', options),
                 ComponentHelpers.wrapInTitleGroup('Fallback',
                         ComponentHelpers.wrapInSubgroup(fallback)),
                 ComponentHelpers.wrapInTitleGroup('Script', script),
@@ -100,7 +102,7 @@ const EditMessage = React.createFactory(renderEditMessage);
 function createName (
         messageName: string,
         scratchpadName: string,
-        messages: Message.Messages,
+        messages: EditorMessage.EditorMessages,
         onSetNameScratchpad: (newName: string) => void,
         onSetName: () => void)
 {
@@ -129,7 +131,7 @@ function createName (
 
 function createMessageContent (
         narrativeId: string,
-        message: Message.Message,
+        message: EditorMessage.EditorMessage,
         strings: Narrative.Strings,
         profiles: Profile.Profiles)
 {
@@ -145,20 +147,22 @@ function createMessageContent (
 
 function createReplyOptions (
         narrativeId: string,
-        message: Message.Message,
-        messages: Message.Messages)
+        message: EditorMessage.EditorMessage,
+        replyOptions: Map.Map<ReplyOption.ReplyOptions>,
+        messages: EditorMessage.EditorMessages)
 {
+        const messageOptions = replyOptions[message.replyOptions] || [];
         const replyOptionsProps = {
                 name: message.name,
                 narrativeId,
-                replyOptions: message.replyOptions,
+                replyOptions: messageOptions,
                 messages,
         };
         return ReplyOptionsContainer(replyOptionsProps);
 }
 
 function createEndGame (
-        message: Message.Message,
+        message: EditorMessage.EditorMessage,
         onSetEndGame: (endGame: boolean) => void)
 {
         const newEndGameProps = {
@@ -170,7 +174,7 @@ function createEndGame (
 }
 
 function createEncrypted (
-        message: Message.Message,
+        message: EditorMessage.EditorMessage,
         onSetEncrypted: (encrypted: boolean) => void)
 {
         const newEncryptedProps = {
@@ -182,7 +186,7 @@ function createEncrypted (
 }
 
 function createScript (
-        message: Message.Message,
+        message: EditorMessage.EditorMessage,
         onSetScript: (script: string) => void)
 {
         const script = message.script;
@@ -211,7 +215,7 @@ function createDeleteButton (
 }
 
 function createSubject (
-        message: Message.Message,
+        message: EditorMessage.EditorMessage,
         strings: Narrative.Strings,
         onSetSubject: (value: string) => void)
 {
@@ -229,7 +233,7 @@ function createSubject (
 
 function onSetChild (
         onSetChildren: (delays: MessageDelay.MessageDelays) => void,
-        message: Message.Message,
+        message: EditorMessage.EditorMessage,
         delay: MessageDelay.MessageDelay,
         index: number)
 {
@@ -240,7 +244,7 @@ function onSetChild (
 
 function onAddChild (
         onSetChildren: (delays: MessageDelay.MessageDelays) => void,
-        message: Message.Message)
+        message: EditorMessage.EditorMessage)
 {
         const newChild = MessageDelay.createMessageDelay();
         const children = message.children;
@@ -250,7 +254,7 @@ function onAddChild (
 
 function onRemoveChild (
         onSetChildren: (delays: MessageDelay.MessageDelays) => void,
-        message: Message.Message, index: number)
+        message: EditorMessage.EditorMessage, index: number)
 {
         const children = message.children;
         const newChildren = Arr.deleteIndex(children, index);
@@ -259,8 +263,8 @@ function onRemoveChild (
 
 function createChildren (
         onSetChildren: (delays: MessageDelay.MessageDelays) => void,
-        message: Message.Message,
-        messages: Message.Messages)
+        message: EditorMessage.EditorMessage,
+        messages: EditorMessage.EditorMessages)
 {
         const onAdd = () => onAddChild(onSetChildren, message);
         const onRemove = (index: number) =>
@@ -292,8 +296,8 @@ function onAddFallback (onSetFallback: (delay: MessageDelay.MessageDelay) => voi
 
 function createFallback (
         onSetFallback: (delay: MessageDelay.MessageDelay) => void,
-        message: Message.Message,
-        messages: Message.Messages)
+        message: EditorMessage.EditorMessage,
+        messages: EditorMessage.EditorMessages)
 {
         const delay = message.fallback;
         const messageName = message.name;

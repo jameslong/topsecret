@@ -51,9 +51,14 @@ export function createGameState (
                 content.profileSchemaPath);
         const messageSchema = FileSystem.loadJSONSync<JSON>(
                 content.messageSchemaPath);
+        const replyOptionSchema = FileSystem.loadJSONSync<JSON>(
+                content.replyOptionSchemaPath);
         const dataErrors = narrativeData.reduce((result, narrative) => {
                 const errors = DataValidation.getDataErrors(
-                        narrative, profileSchema, messageSchema);
+                        narrative,
+                        profileSchema,
+                        messageSchema,
+                        replyOptionSchema);
                 if (errors.length) {
                         result.push(errors);
                 }

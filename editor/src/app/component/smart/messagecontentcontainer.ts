@@ -1,6 +1,7 @@
 import ActionCreators = require('../../action/actioncreators');
 import EditMessageContainer = require('../smart/editmessagecontainer');
-import Message = require('../../message');
+import EditorMessage = require('../../editormessage');
+import Message = require('../../../../../core/src/app/message');
 import Narrative = require('../../narrative');
 import Profile = require('../../profile');
 import React = require('react');
@@ -9,7 +10,7 @@ import Redux = require('../../redux/redux');
 import MessageContent = require('../dumb/messagecontent');
 
 interface MessageContentContainerProps extends React.Props<any> {
-        message: Message.MessageContent;
+        message: Message.Message;
         profiles: Profile.Profiles;
         strings: Narrative.Strings;
         name: string;
@@ -20,7 +21,7 @@ function renderMessageContentContainer (props: MessageContentContainerProps)
 {
         const name = props.name;
         const narrativeId = props.narrativeId;
-        const onSet = (content: Message.MessageContent) =>
+        const onSet = (content: Message.Message) =>
                 onSetMessageContent(narrativeId, name, content);
         const onSetBodyLocal = (value: string) =>
                 onSetBody(narrativeId, name, value);
@@ -41,7 +42,7 @@ const MessageContentContainer =
 function onSetMessageContent (
         narrativeId: string,
         messageName: string,
-        newContent: Message.MessageContent)
+        newContent: Message.Message)
 {
         const action = ActionCreators.setMessageContent({
                 narrativeId,

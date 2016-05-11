@@ -2,11 +2,13 @@ import Arr = require('./utils/array');
 import Clock = require('./clock');
 import DBTypes = require('./dbtypes');
 import Fun = require('./utils/function');
+import Map = require('./utils/map');
 import Message = require('./message');
 import MessageHelpers = require('./messagehelpers');
 import Player = require('./player');
 import Prom = require('./utils/promise');
 import Promises = require('./promises');
+import ReplyOption = require('./replyoption');
 import Request = require('./requesttypes');
 import State = require('./state');
 
@@ -99,17 +101,19 @@ function pendingResponse (
         const messageData = groupData.messages[message.name];
         const sentMs = message.sentTimestampMs;
         const fallback = hasFallback(messageData);
-        const replyOptions = hasReplyOptions(messageData);
+        const replyOptionsExist = hasReplyOptions(messageData);
+        const replyOptions = groupData.replyOptions;
 
         if (!hasSentReply(message)) {
-                const readyReply = replyOptions &&
+                const readyReply = replyOptionsExist &&
                         hasExpiredReply(
                                 message,
                                 messageData,
+                                replyOptions,
                                 offsetHours,
                                 sentMs,
                                 currentMs);
-                if (replyOptions && hasExpiredReply(message, messageData, offsetHours, sentMs, currentMs)) {
+                if (replyOptionsExist && hasExpiredReply(message, messageData, replyOptions, offsetHours, sentMs, currentMs)) {
                         return [pendingReply(
                                 groupData,
                                 state,
@@ -188,6 +192,7 @@ function hasPendingReply (
 function hasExpiredReply (
         message: Message.MessageState,
         messageData: Message.ThreadMessage,
+        replyOptions: Map.Map<ReplyOption.ReplyOption[]>,
         offsetHours: number,
         sentMs: number,
         currentMs: number)
@@ -196,7 +201,7 @@ function hasExpiredReply (
         if (reply) {
                 const replyIndex = reply.replyIndex;
                 const replyDelay = MessageHelpers.getReplyDelay(
-                        replyIndex, messageData);
+                        replyIndex, messageData, replyOptions);
                 return isExpiredThreadDelay(
                         replyDelay, offsetHours, sentMs, currentMs);
         } else {
@@ -290,16 +295,6 @@ export function isExpiredThreadDelayAbsolute (
         const requiredMs = required.getTime() - (offsetHours * 3600 * 1000);
 
         return (currentMs > requiredMs);
-}
-
-function getReplyDelay (
-        message: Message.MessageState,
-        threadMessage: Message.ThreadMessage)
-{
-        const replyState = message.reply;
-        const replyIndex = replyState.replyIndex;
-        return MessageHelpers.getReplyDelay(
-                replyIndex, threadMessage);
 }
 
 export function createPlayerlessMessageData (

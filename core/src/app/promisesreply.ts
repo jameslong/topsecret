@@ -79,14 +79,16 @@ export function handleDecryptedReplyMessage (
         promises: DBTypes.PromiseFactories)
 {
         const threadMessage = groupData.messages[messageState.name];
-        const replyOptions = threadMessage.replyOptions;
-        const replyIndex = ReplyOption.getReplyIndex(body, replyOptions);
+        const replyOptions = groupData.replyOptions;
+        const messageReplyOptions = replyOptions[threadMessage.replyOptions];
+        const replyIndex = ReplyOption.getReplyIndex(body, messageReplyOptions);
 
         handleSelectedReply(
                 body,
                 timestampMs,
                 replyIndex,
                 threadMessage,
+                replyOptions,
                 player,
                 messageState,
                 promises);
@@ -97,11 +99,12 @@ export function handleSelectedReply (
         timestampMs: number,
         replyIndex: number,
         threadMessage: Message.ThreadMessage,
+        replyOptions: Map.Map<ReplyOption.ReplyOption[]>,
         player: Player.PlayerState,
         messageState: Message.MessageState,
         promises: DBTypes.PromiseFactories)
 {
-        const selectedOption = threadMessage.replyOptions[replyIndex];
+        const selectedOption = replyOptions[threadMessage.replyOptions][replyIndex];
         const id = messageState.id;
 
         switch (selectedOption.type) {

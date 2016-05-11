@@ -14,7 +14,7 @@
         "encrypted": true,
         "script": "(define x true)",
         "receiver": null,
-        "replyOptions": [],
+        "replyOptions": "",
         "children": [],
         "fallback": {
                 "name": "script_0",

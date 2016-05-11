@@ -4,6 +4,7 @@ import Map = require('./utils/map');
 import Message = require('./message');
 import Player = require('./player');
 import Profile = require('./profile');
+import ReplyOption = require('./replyoption');
 import State = require('./state');
 import Str = require('./utils/string');
 
@@ -90,9 +91,11 @@ export function getSelectedReply (
 }
 
 export function getReplyDelay (
-        replyIndex: number, threadMessage: Message.ThreadMessage): Message.ThreadDelay
+        replyIndex: number,
+        message: Message.ThreadMessage,
+        replyOptions: Map.Map<ReplyOption.ReplyOption[]>): Message.ThreadDelay
 {
-        return threadMessage.replyOptions[replyIndex].messageDelay;
+        return replyOptions[message.replyOptions][replyIndex].messageDelay;
 }
 
 export function createMessageId (email: string, uid: number): string
@@ -119,4 +122,13 @@ export function hasReplyOptions (
 export function stripBody (body: string)
 {
         return Str.filterByLines(body, line => !Str.beginsWith(line, '> '));
+}
+
+export function createThreadDelay (): Message.ThreadDelay
+{
+        return {
+                name: '',
+                condition: '',
+                delay: [0, 0, 0],
+        };
 }

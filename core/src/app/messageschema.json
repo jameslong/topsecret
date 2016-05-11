@@ -25,37 +25,6 @@
                                 "y": { "type": "number" }
                         },
                         "required": ["x", "y"]
-                },
-                "keywordReplyOption": {
-                        "type": "object",
-                        "properties": {
-                                "type": { "enum": ["keyword"] },
-                                "parameters": {
-                                        "type": "object",
-                                        "properties": {
-                                                "matches": {
-                                                        "type": "array",
-                                                        "items": {
-                                                                "type": "string"
-                                                        },
-                                                        "minItems": 1,
-                                                        "uniqueItems": true
-                                                }
-                                        },
-                                        "required": ["matches"]
-                                },
-                                "messageDelay": { "$ref": "#/definitions/threadDelay" }
-                        },
-                        "required": ["type", "parameters", "messageDelay"]
-                },
-                "defaultReplyOption": {
-                        "type": "object",
-                        "properties": {
-                                "type": { "enum": ["default", "validPGPKey"] },
-                                "parameters": { "type": "object" },
-                                "messageDelay": { "$ref": "#/definitions/threadDelay" }
-                        },
-                        "required": ["type", "parameters", "messageDelay"]
                 }
         },
         "type": "object",
@@ -91,15 +60,7 @@
                         },
                         "required": ["from", "body"]
                 },
-                "replyOptions": {
-                        "type": "array",
-                        "items": {
-                                "anyOf": [
-                                        { "$ref": "#/definitions/keywordReplyOption" },
-                                        { "$ref": "#/definitions/defaultReplyOption" }
-                                ]
-                        }
-                },
+                "replyOptions": { "type": "string" },
                 "children": {
                         "type": "array",
                         "items": { "$ref": "#/definitions/threadDelay" }

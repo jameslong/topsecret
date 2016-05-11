@@ -1,7 +1,8 @@
 import Arr = require('../../../../../core/src/app/utils/array');
 import Helpers = require('../../../../../core/src/app/utils/helpers');
 import Map = require('../../../../../core/src/app/utils/map');
-import Message = require('../../message');
+import Message = require('../../../../../core/src/app/message');
+import EditorMessage = require('../../editormessage');
 import Narrative = require('../../narrative');
 import Profile = require('../../profile');
 import React = require('react');
@@ -14,11 +15,11 @@ import EditMessage = require('./editmessage');
 import TextComponent = require('./text');
 import TextList = require('./textlist');
 
-type OnSet = (content: Message.MessageContent) => void;
+type OnSet = (content: Message.Message) => void;
 type OnSetBody = (value: string) => void;
 
 interface MessageContentProps extends React.Props<any> {
-        message: Message.MessageContent;
+        message: Message.Message;
         profiles: Profile.Profiles;
         strings: Narrative.Strings;
         name: string;
@@ -47,7 +48,7 @@ const MessageContent = React.createFactory(renderMessageContent);
 
 function onSetFrom (
         onSet: OnSet,
-        content: Message.MessageContent,
+        content: Message.Message,
         from: string)
 {
         const newContent = Helpers.assign(content, { from });
@@ -56,7 +57,7 @@ function onSetFrom (
 
 function createBody (
         onSetBody: OnSetBody,
-        content: Message.MessageContent,
+        content: Message.Message,
         strings: Narrative.Strings)
 {
         const stringName = content.body;
@@ -75,7 +76,7 @@ function createBody (
 
 function createFrom (
         onSet: OnSet,
-        content: Message.MessageContent,
+        content: Message.Message,
         profiles: Profile.Profiles)
 {
         const value = content.from;

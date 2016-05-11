@@ -14,7 +14,7 @@
         "encrypted": true,
         "script": "",
         "receiver": null,
-        "replyOptions": [],
+        "replyOptions": "",
         "children": [
                 {
                         "name": "delay_child_0",

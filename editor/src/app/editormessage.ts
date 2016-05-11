@@ -1,40 +1,20 @@
 import Func = require('./../../../core/src/app/utils/function');
 import Helpers = require('./../../../core/src/app/utils/helpers');
 import Map = require('./../../../core/src/app/utils/map');
-import MathUtils = require('./math');
-import MessageDelay = require('./messagedelay');
+import Message = require('../../../core/src/app/message');
 import Profile = require('./profile');
-import ReplyOption = require('./replyoption');
+import ReplyOption = require('./../../../core/src/app/replyoption');
 
 type Strings = Map.Map<string>;
 
-export interface MessageContent {
-        from: string;
-        body: string;
-};
-
-export interface MessageData {
-        name: string;
-        threadSubject: string;
-        position: MathUtils.Coord;
-        endGame: boolean;
-        message: MessageContent;
-        encrypted: boolean;
-        script: string;
-        receiver: string;
-        replyOptions: ReplyOption.ReplyOptions;
-        children: MessageDelay.MessageDelays;
-        fallback: MessageDelay.MessageDelay;
-}
-
-export interface Message extends MessageData {
+export interface EditorMessage extends Message.ThreadMessage {
         selected: boolean;
         valid: boolean;
 };
 
-export type Messages = Map.Map<Message>;
+export type EditorMessages = Map.Map<EditorMessage>;
 
-export function convertToMessage (data: MessageData): Message
+export function convertToMessage (data: Message.ThreadMessage): EditorMessage
 {
         const selected = false;
         const valid = false;
@@ -55,7 +35,7 @@ export function convertToMessage (data: MessageData): Message
         };
 }
 
-export function convertToMessageData (message: Message): MessageData
+export function convertToMessageData (message: EditorMessage): Message.ThreadMessage
 {
         let data = Helpers.assign(message, {});
         delete data.selected;
@@ -63,12 +43,12 @@ export function convertToMessageData (message: Message): MessageData
         return data;
 }
 
-export function getSelectedMessages (messages: Messages)
+export function getSelectedMessages (messages: EditorMessages)
 {
         return Map.filter(messages, message => message.selected);
 }
 
-export function getSingleSelectedMessage (messages: Messages)
+export function getSingleSelectedMessage (messages: EditorMessages)
 {
         const selected = getSelectedMessages(messages);
         const selectedList = Helpers.arrayFromMap(selected, Func.identity);
@@ -77,69 +57,78 @@ export function getSingleSelectedMessage (messages: Messages)
 }
 
 export function markMessagesValid (
-        messages: Messages,
+        messages: EditorMessages,
+        replyOptions: Map.Map<ReplyOption.ReplyOptions>,
         strings: Strings,
         profiles: Profile.Profiles)
 {
         return Map.map(messages, message =>
-                markMessageValid(message, messages, strings, profiles));
+                markMessageValid(
+                        message, messages, replyOptions, strings, profiles));
 }
 
 export function markMessageValid (
-        message: Message,
-        messages: Messages,
+        message: EditorMessage,
+        messages: EditorMessages,
+        replyOptions: Map.Map<ReplyOption.ReplyOptions>,
         strings: Strings,
         profiles: Profile.Profiles)
 {
-        const valid = isValidMessage(message, messages, strings, profiles);
+        const valid = isValidMessage(
+                message, messages, replyOptions, strings, profiles);
         return Helpers.assign(message, { valid });
 }
 
 export function isValidMessage (
-        message: Message,
-        messages: Messages,
+        message: EditorMessage,
+        messages: EditorMessages,
+        replyOptions: Map.Map<ReplyOption.ReplyOptions>,
         strings: Strings,
         profiles: Profile.Profiles)
 {
         return validSubject(message, strings) &&
                 validContent(message, strings, profiles) &&
                 validFallback(message, messages) &&
-                validReplyOptions(message, messages) &&
+                validReplyOptions(message, messages, replyOptions) &&
                 validChildren(message, messages);
 }
 
-function validFallback (message: Message, messages: Messages)
+function validFallback (message: EditorMessage, messages: EditorMessages)
 {
         return !message.fallback ||
                 validMessageDelay(message.fallback, messages);
 }
 
-function validReplyOptions (message: Message, messages: Messages)
+function validReplyOptions (
+        message: EditorMessage,
+        messages: EditorMessages,
+        replyOptions: Map.Map<ReplyOption.ReplyOptions>)
 {
-        return message.replyOptions.every(option =>
+        const messageOptions = replyOptions[message.replyOptions] || [];
+        return messageOptions.every(option =>
                 validMessageDelay(option.messageDelay, messages));
 }
 
-function validChildren (message: Message, messages: Messages)
+function validChildren (message: EditorMessage, messages: EditorMessages)
 {
         return message.children.every(child =>
                 validMessageDelay(child, messages));
 }
 
 export function validMessageDelay (
-        delay: MessageDelay.MessageDelay, messages: Messages)
+        delay: Message.ThreadDelay, messages: EditorMessages)
 {
         return Map.exists(messages, delay.name);
 }
 
-function validSubject (message: Message, strings: Strings)
+function validSubject (message: EditorMessage, strings: Strings)
 {
         const subject = message.threadSubject;
         return !subject || strings[subject];
 }
 
 function validContent (
-        message: Message,
+        message: EditorMessage,
         strings: Strings,
         profiles: Profile.Profiles)
 {
@@ -150,7 +139,7 @@ function validContent (
         return validFrom && validBody;
 }
 
-export function createUniqueMessageName(messages: Messages)
+export function createUniqueMessageName(messages: EditorMessages)
 {
         let stem = 'untitled';
         let name = '';

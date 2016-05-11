@@ -35,13 +35,12 @@ export interface ThreadMessage {
         name: string;
         threadSubject: string;
         position: Coord;
-        newConversation: boolean;
         endGame: boolean;
         message: Message;
         encrypted: boolean;
         script: string;
         receiver?: string; // For unsolicited player-to-character emails (where message is null)
-        replyOptions: ReplyOption.ReplyOption[];
+        replyOptions: string;
         children: ThreadDelay[];
         fallback: ThreadDelay;
 }

@@ -1,9 +1,9 @@
 import Helpers = require('../../../../../core/src/app/utils/helpers');
-import Message = require('../../message');
+import EditorMessage = require('../../editormessage');
 import MessageDelay = require('../../messagedelay');
 import Narrative = require('../../narrative');
 import React = require('react');
-import ReplyOption = require('../../replyoption');
+import ReplyOption = require('../../../../../core/src/app/replyoption');
 import TextInputValidated = require('../textinputvalidated');
 
 import ComponentHelpers = require('../helpers');
@@ -17,7 +17,7 @@ import TextList = require('./textlist');
 interface ReplyOptionProps extends React.Props<any> {
         onSet: (option: ReplyOption.ReplyOption) => void;
         replyOption: ReplyOption.ReplyOption;
-        messages: Message.Messages;
+        messages: EditorMessage.EditorMessages;
 };
 
 function renderReplyOption (props: ReplyOptionProps)
