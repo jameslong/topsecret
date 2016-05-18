@@ -142,6 +142,13 @@ const composeCommands = [, {
         actionCreator: KeyHandlers.editBody,
         shortDesc: 'Body',
         desc: 'edit message body',
+}, {
+        id: 'end-edit-body',
+        key: 'ESC',
+        keyCodes: [],
+        actionCreator: null,
+        shortDesc: 'Stop Body',
+        desc: 'finish editing message body',
 }];
 
 const encryptionCommands = [{
@@ -382,6 +389,7 @@ export const commandIdsByMode: Data.IdsById = {
                 'edit-subject',
                 'edit-to',
                 'edit-body',
+                'end-edit-body',
                 'open-main-menu',
                 'open-help'
         ],
