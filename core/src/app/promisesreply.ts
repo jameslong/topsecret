@@ -47,27 +47,35 @@ export function handleTimelyReply (
         const profile = Profile.getProfileByEmail(reply.to, profiles);
         const keyManager = groupData.keyManagers[profile.name];
 
-        return player.publicKey ?
-                KBPGP.loadKey(player.publicKey).then(from => {
-                        const keyManagers = [keyManager, from];
-                        const keyRing = KBPGP.createKeyRing(keyManagers);
-                        return KBPGP.decryptVerify(keyRing, ciphertext).then(plaintext =>
-                                handleDecryptedReplyMessage(
-                                        plaintext,
-                                        timestampMs,
-                                        player,
-                                        message,
-                                        groupData,
-                                        promises)
-                        );
-                }) :
-                handleDecryptedReplyMessage(
-                        ciphertext,
-                        timestampMs,
-                        player,
-                        message,
-                        groupData,
-                        promises);
+        const messageName = message.name;
+        const messageState = groupData.messages[messageName];
+        const hasReplyOptions = messageState.replyOptions.length > 0;
+
+        if (hasReplyOptions) {
+                return player.publicKey ?
+                        KBPGP.loadKey(player.publicKey).then(from => {
+                                const keyManagers = [keyManager, from];
+                                const keyRing = KBPGP.createKeyRing(keyManagers);
+                                return KBPGP.decryptVerify(keyRing, ciphertext).then(plaintext =>
+                                        handleDecryptedReplyMessage(
+                                                plaintext,
+                                                timestampMs,
+                                                player,
+                                                message,
+                                                groupData,
+                                                promises)
+                                );
+                        }) :
+                        handleDecryptedReplyMessage(
+                                ciphertext,
+                                timestampMs,
+                                player,
+                                message,
+                                groupData,
+                                promises);
+        } else {
+                return null;
+        }
 }
 
 export function handleDecryptedReplyMessage (

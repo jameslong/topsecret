@@ -113,7 +113,7 @@ function pendingResponse (
                                 offsetHours,
                                 sentMs,
                                 currentMs);
-                if (replyOptionsExist && hasExpiredReply(message, messageData, replyOptions, offsetHours, sentMs, currentMs)) {
+                if (readyReply) {
                         return [pendingReply(
                                 groupData,
                                 state,
