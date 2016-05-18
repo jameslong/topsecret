@@ -4,7 +4,7 @@ import Main = require('../browser/src/app/core/main');
 import State = require('../core/src/app/state');
 
 window.onload = () => {
-        const path = './build/content';
+        const path = './resources/app/build/content';
         const data = Data.loadNarrativeData(path);
         const tasks = data.map(narrative => State.addKeyManagers(narrative));
 

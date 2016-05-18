@@ -31,7 +31,10 @@ module.exports = function (grunt)
                                 cwd: './content',
                                 src: ['**'],
                                 dest: './app/build/content',
-                                filter: 'isFile'
+                                filter: function (filepath) {
+                                        return grunt.file.isFile(filepath) ||
+                                                grunt.file.isDir(filepath);
+                                }
                         },
                         browser_css: {
                                 expand: true,
