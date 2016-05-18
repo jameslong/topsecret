@@ -24,7 +24,7 @@ function renderCompose(props: ComposeProps)
         const meta = createMeta(message);
         const editBody = ui.editingDraftBody ?
                 EditBody({ value: message.body }) :
-                Helpers.createBody(body);
+                Div({ className: 'compose-body' }, Helpers.createBody(body));
 
         return Div({ className: 'compose' }, meta, editBody);
 }
