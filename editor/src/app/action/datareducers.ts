@@ -326,12 +326,15 @@ function handleUniqueSelectMessage (
         const narrativeId = parameters.narrativeId;
         const narratives = state.narrativesById;
         const narrative = narratives[narrativeId];
-        const messages = Map.map(narrative.messagesById, message =>
+        const messages = narrative.messagesById;
+        const selected = Map.filter(messages, message => message.selected);
+        const deselected = Map.map(selected, message =>
                 Helpers.assign(message, { selected: false }));
 
         const message = messages[name];
-        const newMessage = Helpers.assign(message, { selected: true });
-        const newMessages = Helpers.assign(messages, { [name]: newMessage });
+        const selectedMessage = Helpers.assign(message, { selected: true });
+        const newMessages = Helpers.assign(
+                messages, deselected, { [name]: selectedMessage });
         const newNarrative = Helpers.assign(narrative, { messagesById: newMessages });
         const newNarratives = Helpers.assign(narratives,
                 { [newNarrative.name]: newNarrative });
@@ -378,10 +381,13 @@ function handleDeselectAllMessages (
         const narratives = state.narrativesById;
         const narrative = narratives[narrativeId];
         const messages = narrative.messagesById;
-        const updatedMessages = Map.map(messages, message =>
+        const selected = Map.filter(messages,
+                message => message.selected);
+        const updatedMessages = Map.map(selected, message =>
                 Helpers.assign(message, { selected: false }));
+        const newMessages = Map.merge(messages, updatedMessages);
         const newNarrative = Helpers.assign(narrative,
-                { messagesById: updatedMessages });
+                { messagesById: newMessages });
         const newNarratives = Helpers.assign(narratives,
                 { [newNarrative.name]: newNarrative });
 
