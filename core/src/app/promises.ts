@@ -65,10 +65,8 @@ export function reply (
         const replyDelay = MessageHelpers.getReplyDelay(
                 replyIndex, messageData, replyOptions);
         const name = replyDelay.name;
-        const condition = replyDelay.condition;
 
-        const send = !condition || Script.executeScript(condition, player) ?
-                encryptSendStoreChild(
+        const send = encryptSendStoreChild(
                         name,
                         threadStartName,
                         inReplyToId,
@@ -76,8 +74,7 @@ export function reply (
                         domain,
                         timestampMs,
                         groupData,
-                        promises) :
-                Promise.resolve(message);
+                        promises);
 
         return send.then(result => {
                 message.reply.sent.push(replyIndex);

@@ -92,6 +92,11 @@ describe('Promises', function () {
                                         'reply_expired',
                                         player.email,
                                         groupData);
+                                message.reply = {
+                                        timestampMs: 0,
+                                        indices: [replyIndex],
+                                        sent: [],
+                                };
                                 const state = { player, message, timestampMs };
 
                                 return Promises.reply(

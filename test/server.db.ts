@@ -145,9 +145,9 @@ describe('DB', function () {
                 it('should return the updated message', function () {
                         const db = TestHelpers.createDB();
                         const message = TestHelpers.createMessage0();
-                        const replySent = true;
+                        const fallbackSent = true;
                         const modifiedMessage = Helpers.assign(
-                                message, { replySent });
+                                message, { fallbackSent });
 
                         const promise = db.addMessage(message).then(message =>
                                 db.updateMessage(modifiedMessage)
