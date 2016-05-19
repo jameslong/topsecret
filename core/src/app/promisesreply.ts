@@ -7,6 +7,7 @@ import MessageHelpers = require('./messagehelpers');
 import Player = require('./player');
 import Profile = require('./profile');
 import ReplyOption = require('./replyoption');
+import Script = require('./script');
 import State = require('./state');
 
 export function handleReplyMessage (
@@ -89,60 +90,22 @@ export function handleDecryptedReplyMessage (
         const threadMessage = groupData.messages[messageState.name];
         const replyOptions = groupData.replyOptions;
         const messageReplyOptions = replyOptions[threadMessage.replyOptions];
-        const replyIndex = ReplyOption.getReplyIndex(body, messageReplyOptions);
+        const indices = messageReplyOptions.map((option, index) => index);
+        const conditions = indices.filter(index => {
+                const option = messageReplyOptions[index];
+                const condition = option.messageDelay.condition;
+                return !condition ||
+                        <boolean><any>Script.executeScript(condition, player);
+        });
+        const matched = conditions.filter(index =>
+                ReplyOption.isValidReply(body, messageReplyOptions[index]));
 
-        handleSelectedReply(
-                body,
-                timestampMs,
-                replyIndex,
-                threadMessage,
-                replyOptions,
-                player,
-                messageState,
-                promises);
-}
-
-export function handleSelectedReply (
-        body: string,
-        timestampMs: number,
-        replyIndex: number,
-        threadMessage: Message.ThreadMessage,
-        replyOptions: Map.Map<ReplyOption.ReplyOption[]>,
-        player: Player.PlayerState,
-        messageState: Message.MessageState,
-        promises: DBTypes.PromiseFactories)
-{
-        const selectedOption = replyOptions[threadMessage.replyOptions][replyIndex];
-        const id = messageState.id;
-
-        switch (selectedOption.type) {
-        case ReplyOption.ReplyOptionType.ValidPGPKey:
-                const validOption = <ReplyOption.ReplyOptionValidPGPKey>selectedOption;
-                return handleReplyOptionValidPGPKey(
-                        body,
-                        timestampMs,
-                        replyIndex,
-                        player,
-                        messageState,
-                        promises);
-
-        default:
-                return handleReplyOptionDefault(
-                        timestampMs,
-                        replyIndex,
-                        messageState,
-                        promises);
+        if (matched.length) {
+                messageState.reply = { indices: matched, timestampMs, sent: [] };
+                return promises.addMessage(messageState);
+        } else {
+                return null;
         }
-}
-
-export function handleReplyOptionDefault (
-        timestampMs: number,
-        replyIndex: number,
-        message: Message.MessageState,
-        promises: DBTypes.PromiseFactories)
-{
-        message.reply = { replyIndex, timestampMs };
-        return promises.addMessage(message);
 }
 
 export function handleReplyOptionValidPGPKey(
@@ -157,7 +120,9 @@ export function handleReplyOptionValidPGPKey(
         player.publicKey = publicKey;
 
         return promises.updatePlayer(player).then(player => {
-                message.reply = { replyIndex, timestampMs };
+                const indices = [replyIndex];
+                const sent: number[] = [];
+                message.reply = { indices, sent, timestampMs };
                 return promises.updateMessage(message)
         });
 }

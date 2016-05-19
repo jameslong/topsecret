@@ -25,12 +25,6 @@ export interface ReplyOptionKeyword extends ReplyOptionBase<KeywordParameters> {
 export interface ReplyOptionValidPGPKey extends ReplyOptionBase<{}> {}
 export interface ReplyOptionDefault extends ReplyOptionBase<{}>{}
 
-export function getReplyIndex(body: string, replyOptions: ReplyOption[]): number
-{
-        return Arr.find(replyOptions,
-                replyOption => isValidReply(body, replyOption));
-}
-
 export function isValidReply(
         body: string, replyOption: ReplyOption): boolean
 {

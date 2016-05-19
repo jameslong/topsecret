@@ -1,7 +1,8 @@
 import ReplyOption = require('./replyoption');
 
 export interface ReplyState {
-        replyIndex: number;
+        indices: number[];
+        sent: number[];
         timestampMs: number;
 }
 
@@ -12,7 +13,7 @@ export interface MessageState {
         reply: ReplyState;
         sentTimestampMs: number;
         childrenSent: boolean[];
-        replySent: boolean;
+        fallbackSent: boolean;
         threadStartName: string;
 }
 

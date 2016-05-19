@@ -80,7 +80,7 @@ export function reply (
                 Promise.resolve(message);
 
         return send.then(result => {
-                message.replySent = true;
+                message.reply.sent.push(replyIndex);
                 return state;
         });
 }
@@ -113,7 +113,7 @@ export function fallback (
                 Promise.resolve(message);
 
         return send.then(result => {
-                message.replySent = true;
+                message.fallbackSent = true;
                 return state;
         });
 }

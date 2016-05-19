@@ -28,7 +28,7 @@ export function createMessageState (
                 reply: null,
                 sentTimestampMs,
                 childrenSent,
-                replySent: false,
+                fallbackSent: false,
         };
 }
 
