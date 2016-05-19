@@ -156,6 +156,7 @@ export function encryptSendStoreChild (
                 return promises.addMessage(messageState);
         }).then(result => {
                 const script = messageData.script;
+                player.vars[result.name] = true;
                 Script.executeScript(script, player);
                 return result;
         });

@@ -5,6 +5,7 @@ import Message = require('./message');
 import Player = require('./player');
 import Profile = require('./profile');
 import ReplyOption = require('./replyoption');
+import Script = require('./script');
 import State = require('./state');
 import Str = require('./utils/string');
 
@@ -103,11 +104,11 @@ export function createMessageId (email: string, uid: number): string
         return '<' + uid.toString() + '.' + email + '>';
 }
 
-export function insertMessageVars (body: string, vars: Map.Map<string>)
+export function insertMessageVars (body: string, vars: Map.Map<Script.Atom>)
 {
         var replacer = function (match: string, $1: string): string
                 {
-                        return (vars[$1] || match);
+                        return (`${vars[$1]}` || match);
                 };
         return body.replace(/\$(\w+)/gi, replacer);
 }
