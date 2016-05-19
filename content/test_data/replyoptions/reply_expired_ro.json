@@ -25,6 +25,23 @@
                         "delay": [
                                 0,
                                 0,
+                                2
+                        ]
+                }
+        },
+        {
+                "type": "keyword",
+                "parameters": {
+                        "matches": [
+                                "reply"
+                        ]
+                },
+                "messageDelay": {
+                        "name": "reply_0",
+                        "condition": "(not reply_expired)",
+                        "delay": [
+                                0,
+                                0,
                                 0
                         ]
                 }

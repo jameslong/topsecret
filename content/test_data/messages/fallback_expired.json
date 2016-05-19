@@ -16,7 +16,7 @@
         "encrypted": true,
         "script": "",
         "receiver": null,
-        "replyOptions": "",
+        "replyOptions": "fallback_expired_ro",
         "children": [],
         "fallback": {
                 "name": "fallback_0",

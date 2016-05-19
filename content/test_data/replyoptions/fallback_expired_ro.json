@@ -1,0 +1,17 @@
+[
+        {
+                "type": "default",
+                "parameters": {
+                        "matches": []
+                },
+                "messageDelay": {
+                        "name": "fallback_0",
+                        "condition": "",
+                        "delay": [
+                                1,
+                                0,
+                                0
+                        ]
+                }
+        }
+]
