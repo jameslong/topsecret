@@ -39,6 +39,7 @@ export function update (
         const promises = app.promises;
         const groupData = app.data[player.version];
         const messageData = groupData.messages[message.name];
+        const replyOptions = groupData.replyOptions;
         const timestampMs = Clock.gameTimeMs(app.clock);
         const state = { message, player, timestampMs };
 
@@ -51,7 +52,7 @@ export function update (
         return Prom.executeSequentially(sequence, state).then(state =>
                 Promises.updatePlayer(state, promises)
         ).then(state =>
-                isExpired(state.message, messageData) ?
+                isExpired(state.message, messageData, replyOptions) ?
                         Promises.expired(groupData, state, promises) :
                         Promises.update(state, promises)
         );
@@ -100,7 +101,7 @@ function pendingResponse (
         const offsetHours = player.timezoneOffset;
         const messageData = groupData.messages[message.name];
         const sentMs = message.sentTimestampMs;
-        const hasReplyOptions = messageData.replyOptions.length > 0;
+        const hasReplyOptions = messageData.replyOptions;
         const replyOptions = groupData.replyOptions;
         const reply = message.reply;
 
@@ -111,18 +112,15 @@ function pendingResponse (
 
         if (reply) {
                 const replyTimestampMs = reply.timestampMs;
-                const indices = reply.indices;
+                const replyIndex = reply.index;
+                const messageReplyOptions = replyOptions[messageData.replyOptions];
+                const options = messageReplyOptions[replyIndex].messageDelays;
                 const sent = reply.sent;
-                const unsent = indices.filter(
-                        index => sent.indexOf(index) === -1);
-                const ready = unsent.filter(index => hasExpiredReply(
-                        messageData,
-                        replyOptions,
-                        index,
-                        offsetHours,
-                        replyTimestampMs,
-                        currentMs)
-                );
+                const indices = options.map((option, index) => index);
+                const unsent = indices.filter(index =>
+                        sent.indexOf(index) === -1);
+                const ready = unsent.filter(index => isExpiredThreadDelay(
+                        options[index], offsetHours, replyTimestampMs, currentMs));
 
                 return ready.map(index => pendingReply(
                         groupData, state, index, promises, app.emailDomain));
@@ -189,27 +187,15 @@ function hasPendingChildren (message: Message.MessageState)
 
 function hasUnsentReplies (
         message: Message.MessageState,
-        messageData: Message.ThreadMessage)
+        messageData: Message.ThreadMessage,
+        replyOptions: Map.Map<ReplyOption.ReplyOptions>)
 {
-        const hasReplyOptions = messageData.replyOptions.length > 0;
+        const options = replyOptions[messageData.replyOptions];
+        const hasReplyOptions = options && options.length > 0;
         const reply = message.reply;
         const unsentReplies = !reply ||
-                (reply.sent.length < reply.indices.length);
+                (reply.sent.length < options[reply.index].messageDelays.length);
         return hasReplyOptions && unsentReplies;
-}
-
-function hasExpiredReply (
-        messageData: Message.ThreadMessage,
-        replyOptions: Map.Map<ReplyOption.ReplyOption[]>,
-        index: number,
-        offsetHours: number,
-        sentMs: number,
-        currentMs: number)
-{
-        const replyDelay = MessageHelpers.getReplyDelay(
-                index, messageData, replyOptions);
-        return isExpiredThreadDelay(
-                replyDelay, offsetHours, sentMs, currentMs);
 }
 
 function hasUnsentFallback (
@@ -233,15 +219,17 @@ function hasExpiredFallback (
 
 function isExpired (
         message: Message.MessageState,
-        messageData: Message.ThreadMessage)
+        messageData: Message.ThreadMessage,
+        replyOptions: Map.Map<ReplyOption.ReplyOptions>)
 {
         return !hasPendingChildren(message) &&
                 !hasUnsentFallback(message, messageData) &&
-                (message.fallbackSent || !hasUnsentReplies(message, messageData));
+                (message.fallbackSent ||
+                        !hasUnsentReplies(message, messageData, replyOptions));
 }
 
 export function isExpiredThreadDelay (
-        threadDelay: Message.ThreadDelay,
+        threadDelay: Message.ReplyThreadDelay,
         offsetHours: number,
         sentMs: number,
         currentMs: number)
@@ -255,7 +243,7 @@ export function isExpiredThreadDelay (
 }
 
 export function isExpiredThreadDelayRelative (
-        threadDelay: Message.ThreadDelay, sentMs: number, currentMs: number)
+        threadDelay: Message.ReplyThreadDelay, sentMs: number, currentMs: number)
 {
         const [days, hours, mins] = threadDelay.delay;
         const requiredMs = (mins * 60 * 1000) + (hours * 3600 * 1000);
@@ -264,7 +252,7 @@ export function isExpiredThreadDelayRelative (
 }
 
 export function isExpiredThreadDelayAbsolute (
-        threadDelay: Message.ThreadDelay,
+        threadDelay: Message.ReplyThreadDelay,
         offsetHours: number,
         sentMs: number,
         currentMs: number)

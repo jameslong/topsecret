@@ -105,8 +105,11 @@ function validReplyOptions (
         replyOptions: Map.Map<ReplyOption.ReplyOptions>)
 {
         const messageOptions = replyOptions[message.replyOptions] || [];
-        return messageOptions.every(option =>
-                validMessageDelay(option.messageDelay, messages));
+        const delays = messageOptions.reduce<Message.ReplyThreadDelay[]>((result, option) => {
+                result.push(...option.messageDelays);
+                return result;
+        }, []);
+        return delays.every(option => validMessageDelay(option, messages));
 }
 
 function validChildren (message: EditorMessage, messages: EditorMessages)
@@ -116,7 +119,7 @@ function validChildren (message: EditorMessage, messages: EditorMessages)
 }
 
 export function validMessageDelay (
-        delay: Message.ThreadDelay, messages: EditorMessages)
+        delay: Message.ReplyThreadDelay, messages: EditorMessages)
 {
         return Map.exists(messages, delay.name);
 }

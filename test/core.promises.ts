@@ -94,7 +94,7 @@ describe('Promises', function () {
                                         groupData);
                                 message.reply = {
                                         timestampMs: 0,
-                                        indices: [replyIndex],
+                                        index: replyIndex,
                                         sent: [],
                                 };
                                 const state = { player, message, timestampMs };

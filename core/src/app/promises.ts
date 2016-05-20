@@ -51,7 +51,7 @@ export function child (
 
 export function reply (
         state: UpdateInfo,
-        replyIndex: number,
+        index: number,
         domain: string,
         groupData: State.GameData,
         promises: DBTypes.PromiseFactories)
@@ -61,23 +61,22 @@ export function reply (
         const inReplyToId = message.id;
 
         const messageData = groupData.messages[message.name];
-        const replyOptions = groupData.replyOptions;
-        const replyDelay = MessageHelpers.getReplyDelay(
-                replyIndex, messageData, replyOptions);
+        const replyOptions = groupData.replyOptions[messageData.replyOptions];
+        const replyDelay = replyOptions[message.reply.index].messageDelays[index];
         const name = replyDelay.name;
 
         const send = encryptSendStoreChild(
-                        name,
-                        threadStartName,
-                        inReplyToId,
-                        player,
-                        domain,
-                        timestampMs,
-                        groupData,
-                        promises);
+                name,
+                threadStartName,
+                inReplyToId,
+                player,
+                domain,
+                timestampMs,
+                groupData,
+                promises);
 
         return send.then(result => {
-                message.reply.sent.push(replyIndex);
+                message.reply.sent.push(index);
                 return state;
         });
 }

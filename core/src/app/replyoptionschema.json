@@ -7,7 +7,6 @@
                         "type": "object",
                         "properties": {
                                 "name": { "type": "string" },
-                                "condition": { "type": "string" },
                                 "delay": {
                                         "type": "array",
                                         "items": { "type": "number" },
@@ -16,7 +15,13 @@
                                         "uniqueItems": false
                                 }
                         },
-                        "required": ["name", "condition", "delay"]
+                        "required": ["name", "delay"]
+                },
+                "messageDelays": {
+                        "type": "array",
+                        "items": { "$ref": "#/definitions/threadDelay" },
+                        "minItems": 1,
+                        "uniqueItems": true
                 },
                 "keywordReplyOption": {
                         "type": "object",
@@ -32,22 +37,23 @@
                                                         },
                                                         "minItems": 1,
                                                         "uniqueItems": true
-                                                }
+                                                },
+                                                "condition": { "type": "string" }
                                         },
-                                        "required": ["matches"]
+                                        "required": ["matches", "condition"]
                                 },
-                                "messageDelay": { "$ref": "#/definitions/threadDelay" }
+                                "messageDelays": { "$ref": "#/definitions/messageDelays" }
                         },
-                        "required": ["type", "parameters", "messageDelay"]
+                        "required": ["type", "parameters", "messageDelays"]
                 },
                 "defaultReplyOption": {
                         "type": "object",
                         "properties": {
                                 "type": { "enum": ["default", "validPGPKey"] },
                                 "parameters": { "type": "object" },
-                                "messageDelay": { "$ref": "#/definitions/threadDelay" }
+                                "messageDelays": { "$ref": "#/definitions/messageDelays" }
                         },
-                        "required": ["type", "parameters", "messageDelay"]
+                        "required": ["type", "parameters", "messageDelays"]
                 }
         },
         "type": "array",

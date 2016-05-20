@@ -93,10 +93,12 @@ export function getSelectedReply (
 
 export function getReplyDelay (
         replyIndex: number,
+        delayIndex: number,
         message: Message.ThreadMessage,
-        replyOptions: Map.Map<ReplyOption.ReplyOption[]>): Message.ThreadDelay
+        replyOptions: Map.Map<ReplyOption.ReplyOption[]>)
 {
-        return replyOptions[message.replyOptions][replyIndex].messageDelay;
+        const options = replyOptions[message.replyOptions];
+        return options[replyIndex].messageDelays[delayIndex];
 }
 
 export function createMessageId (email: string, uid: number): string
@@ -130,6 +132,14 @@ export function createThreadDelay (): Message.ThreadDelay
         return {
                 name: '',
                 condition: '',
+                delay: [0, 0, 0],
+        };
+}
+
+export function createReplyThreadDelay (): Message.ReplyThreadDelay
+{
+        return {
+                name: '',
                 delay: [0, 0, 0],
         };
 }

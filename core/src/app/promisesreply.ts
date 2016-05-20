@@ -1,3 +1,4 @@
+import Arr = require('./utils/array');
 import DBTypes = require('./dbtypes');
 import KBPGP = require('./kbpgp');
 import Log = require('./log');
@@ -93,15 +94,15 @@ export function handleDecryptedReplyMessage (
         const indices = messageReplyOptions.map((option, index) => index);
         const conditions = indices.filter(index => {
                 const option = messageReplyOptions[index];
-                const condition = option.messageDelay.condition;
+                const condition = <string>((<any>option)['condition']);
                 return !condition ||
                         <boolean><any>Script.executeScript(condition, player);
         });
-        const matched = conditions.filter(index =>
+        const matched = Arr.find(conditions, index =>
                 ReplyOption.isValidReply(body, messageReplyOptions[index]));
 
-        if (matched.length) {
-                messageState.reply = { indices: matched, timestampMs, sent: [] };
+        if (matched !== -1) {
+                messageState.reply = { index: matched, timestampMs, sent: [] };
                 return promises.addMessage(messageState);
         } else {
                 return null;
@@ -120,9 +121,8 @@ export function handleReplyOptionValidPGPKey(
         player.publicKey = publicKey;
 
         return promises.updatePlayer(player).then(player => {
-                const indices = [replyIndex];
                 const sent: number[] = [];
-                message.reply = { indices, sent, timestampMs };
+                message.reply = { index: replyIndex, sent, timestampMs };
                 return promises.updateMessage(message)
         });
 }

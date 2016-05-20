@@ -2,48 +2,34 @@
         {
                 "type": "keyword",
                 "parameters": {
+                        "condition": "",
                         "matches": [
                                 "reply"
                         ]
                 },
-                "messageDelay": {
-                        "name": "reply_0",
-                        "condition": "",
-                        "delay": [
-                                0,
-                                0,
-                                0
-                        ]
-                }
+                "messageDelays": [
+                        {
+                                "name": "reply_0",
+                                "delay": [
+                                        0,
+                                        0,
+                                        0
+                                ]
+                        }
+                ]
         },
         {
                 "type": "default",
                 "parameters": {},
-                "messageDelay": {
-                        "name": "reply_default",
-                        "condition": "",
-                        "delay": [
-                                0,
-                                0,
-                                2
-                        ]
-                }
-        },
-        {
-                "type": "keyword",
-                "parameters": {
-                        "matches": [
-                                "reply"
-                        ]
-                },
-                "messageDelay": {
-                        "name": "reply_0",
-                        "condition": "(not reply_expired)",
-                        "delay": [
-                                0,
-                                0,
-                                0
-                        ]
-                }
+                "messageDelays": [
+                        {
+                                "name": "reply_default",
+                                "delay": [
+                                        0,
+                                        0,
+                                        0
+                                ]
+                        }
+                ]
         }
 ]

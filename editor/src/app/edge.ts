@@ -1,5 +1,6 @@
 import ActionCreators = require('./action/actioncreators');
 import Map = require('./../../../core/src/app/utils/map');
+import Message = require('./../../../core/src/app/message');
 import MathUtils = require('./math');
 import EditorMessage = require('./editormessage');
 import MessageDelay = require('./messagedelay');
@@ -82,8 +83,12 @@ function createReplyOptionEdges (
 {
         const result: Edge[] = [];
         const sourceOptions = replyOptions[source.replyOptions] || [];
-        return sourceOptions.reduce((result, option, index) => {
-                Map.exists(messages, option.messageDelay.name) ?
+        const options = sourceOptions.reduce<Message.ReplyThreadDelay[]>((result, option) => {
+                result.push(...option.messageDelays);
+                return result;
+        }, []);
+        return options.reduce((result, option, index) => {
+                Map.exists(messages, option.name) ?
                         result.push(createReplyOptionEdge(
                                 messages, source, option, index, vertexSize)) :
                         result;
@@ -94,13 +99,13 @@ function createReplyOptionEdges (
 function createReplyOptionEdge (
         messages: EditorMessage.EditorMessages,
         source: EditorMessage.EditorMessage,
-        option: ReplyOption.ReplyOption,
+        option: Message.ReplyThreadDelay,
         index: number,
         vertexSize: MathUtils.Coord)
 {
         const type = Type.ReplyOption;
         const name = createEdgeName(source.name, type, index);
-        const target = messages[option.messageDelay.name];
+        const target = messages[option.name];
 
         return createEdge(source, target, type, name, vertexSize);
 }

@@ -4,14 +4,15 @@
                 "parameters": {
                         "matches": []
                 },
-                "messageDelay": {
-                        "name": "fallback_0",
-                        "condition": "",
-                        "delay": [
-                                1,
-                                0,
-                                0
-                        ]
-                }
+                "messageDelays": [
+                        {
+                                "name": "fallback_0",
+                                "delay": [
+                                        1,
+                                        0,
+                                        0
+                                ]
+                        }
+                ]
         }
 ]

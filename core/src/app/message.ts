@@ -1,7 +1,7 @@
 import ReplyOption = require('./replyoption');
 
 export interface ReplyState {
-        indices: number[];
+        index: number;
         sent: number[];
         timestampMs: number;
 }
@@ -44,6 +44,11 @@ export interface ThreadMessage {
         replyOptions: string;
         children: ThreadDelay[];
         fallback: ThreadDelay;
+}
+
+export interface ReplyThreadDelay {
+        name: string;
+        delay: [number, number, number]; // days, hours, minutes
 }
 
 export interface ThreadDelay {

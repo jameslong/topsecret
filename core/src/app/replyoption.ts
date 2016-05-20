@@ -15,10 +15,11 @@ export const ReplyOptionType = {
 export interface ReplyOptionBase<T> {
         type: string;
         parameters: T;
-        messageDelay: Message.ThreadDelay;
+        messageDelays: Message.ReplyThreadDelay[];
 }
 
 interface KeywordParameters {
+        condition: string;
         matches: string[];
 }
 export interface ReplyOptionKeyword extends ReplyOptionBase<KeywordParameters> {}
@@ -68,9 +69,10 @@ export function createReplyOptionKeyword (): ReplyOptionKeyword
         return {
                 type: ReplyOptionType.Keyword,
                 parameters: {
+                        condition: '',
                         matches: []
                 },
-                messageDelay: MessageHelpers.createThreadDelay()
+                messageDelays: [MessageHelpers.createReplyThreadDelay()]
         };
 }
 
