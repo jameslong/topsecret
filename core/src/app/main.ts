@@ -104,11 +104,13 @@ function pendingResponse (
         const replyOptions = groupData.replyOptions;
         const reply = message.reply;
 
+
         if (!hasReplyOptions) {
                 return [];
         }
 
         if (reply) {
+                const replyTimestampMs = reply.timestampMs;
                 const indices = reply.indices;
                 const sent = reply.sent;
                 const unsent = indices.filter(
@@ -118,7 +120,7 @@ function pendingResponse (
                         replyOptions,
                         index,
                         offsetHours,
-                        sentMs,
+                        replyTimestampMs,
                         currentMs)
                 );
 
