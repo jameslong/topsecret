@@ -94,7 +94,7 @@ export function handleDecryptedReplyMessage (
         const indices = messageReplyOptions.map((option, index) => index);
         const conditions = indices.filter(index => {
                 const option = messageReplyOptions[index];
-                const condition = <string>((<any>option)['condition']);
+                const condition = <string>((<any>option.parameters)['condition']);
                 return !condition ||
                         <boolean><any>Script.executeScript(condition, player);
         });
@@ -102,7 +102,8 @@ export function handleDecryptedReplyMessage (
                 ReplyOption.isValidReply(body, messageReplyOptions[index]));
 
         if (matched !== -1) {
-                messageState.reply = { index: matched, timestampMs, sent: [] };
+                const index = conditions[matched];
+                messageState.reply = { index, timestampMs, sent: [] };
                 return promises.addMessage(messageState);
         } else {
                 return null;
