@@ -25,8 +25,8 @@ function getQueryVariable (variable: string): string
 
 function getQueryStringParams (): QueryStringParams
 {
-        const version = getQueryVariable('version') || 'test_data';
-        const messageName = getQueryVariable('messageName') || 'reply_expired';
+        const version = getQueryVariable('version') || '0';
+        const messageName = getQueryVariable('messageName') || 'welcome';
         return { version, messageName };
 }
 
