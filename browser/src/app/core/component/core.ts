@@ -1,5 +1,6 @@
 import React = require('react');
 
+export const A = React.createFactory('a');
 export const Div = React.createFactory('div');
 export const P = React.createFactory('p');
 export const Br = React.createFactory('br');
