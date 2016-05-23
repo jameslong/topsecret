@@ -62,13 +62,14 @@
 
 /* Solarized */
 :root {
-        --main-bg-colour: #002833;
-        --main-font-colour: #839496;
-        --highlighted-font-colour: #268BB4;
-        --unread-font-colour: #2AA198;
-        --infobar-bg-colour: #003541;
+        --main-bg-colour: #002b36;
+        --main-font-colour: #657b83;
+        --light-font-colour: #93a1a1;
+        --highlighted-font-colour: #2aa198;
+        --unread-font-colour: #2aa198;
+        --infobar-bg-colour: #073642;
         --infobar-font-colour: #839496;
-        --selected-row-bg-colour: #B58900;
+        --selected-row-bg-colour: #b58900;
 }
 
 body {

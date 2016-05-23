@@ -1,6 +1,7 @@
 .compose-body {
         border: 1px solid var(--main-bg-colour);
         box-sizing: border-box;
+        color: var(--light-font-colour);
 }
 
 .compose textarea {
