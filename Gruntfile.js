@@ -28,7 +28,7 @@ module.exports = function (grunt)
                         },
                         app_content: {
                                 expand: true,
-                                cwd: './content',
+                                cwd: '../topsecret-content/game',
                                 src: ['**'],
                                 dest: './app/build/content',
                                 filter: function (filepath) {
