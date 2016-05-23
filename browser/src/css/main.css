@@ -81,6 +81,7 @@ body {
         background-size: contain;
         background-repeat: no-repeat;
         background-position: center;
+        min-width: 800px;
 }
 
 #wrapper {
