@@ -53,7 +53,8 @@ export const decryptMessage = createActionCreator<Actions.DecryptMessageParams>(
 export const decryptingMessage = createActionCreator<boolean>(Actions.Types.DECRYPTING_MESSAGE);
 export const setActiveFolder = createActionCreator<string>(Actions.Types.SET_ACTIVE_FOLDER);
 export const displayFolder = createActionCreator<Actions.DisplayFolderParams>(Actions.Types.DISPLAY_FOLDER);
-export const editBody = createActionCreator<boolean>(Actions.Types.EDIT_BODY);
+export const editBody = createEmptyActionCreator(Actions.Types.EDIT_BODY);
+export const endEditBody = createEmptyActionCreator(Actions.Types.END_EDIT_BODY);
 export const editSubject = createActionCreator<boolean>(Actions.Types.EDIT_SUBJECT);
 export const editTo = createActionCreator<boolean>(Actions.Types.EDIT_TO);
 

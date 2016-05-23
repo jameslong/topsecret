@@ -37,6 +37,7 @@ export const Types = {
         SET_ACTIVE_FOLDER: 'SET_ACTIVE_FOLDER',
         DISPLAY_FOLDER: 'DISPLAY_FOLDER',
         EDIT_BODY: 'EDIT_BODY',
+        END_EDIT_BODY: 'END_EDIT_BODY',
         EDIT_SUBJECT: 'EDIT_SUBJECT',
         EDIT_TO: 'EDIT_TO',
 
@@ -76,7 +77,8 @@ export interface DeleteKey extends Redux.Action<string> {}
 
 export interface SetMode extends Redux.Action<string> {}
 export interface SetActiveFolder extends Redux.Action<string> {}
-export interface EditBody extends Redux.Action<boolean> {}
+export interface EditBody extends Redux.Action<void> {}
+export interface EndEditBody extends Redux.Action<void> {}
 export interface EditSubject extends Redux.Action<boolean> {}
 export interface EditTo extends Redux.Action<boolean> {}
 

@@ -1,5 +1,6 @@
 import Client = require('../../client');
 import Compose = require('./compose');
+import ComposeBodyContainer = require('../smart/composebodycontainer');
 import Encryption = require('./encryption');
 import Folder = require('./folder');
 import Help = require('./help');
@@ -37,6 +38,9 @@ function renderContent(props: ContentProps)
                 break;
         case UI.Modes.COMPOSE:
                 content = createCompose(state);
+                break;
+        case UI.Modes.COMPOSE_BODY:
+                content = createComposeBody(state);
                 break;
         case UI.Modes.FOLDER:
                 content = createFolder(state);
@@ -86,7 +90,14 @@ function createCompose (state: Client.Client)
 {
         const draft = state.draftMessage;
         const ui = state.ui;
-        return Compose({ draft, ui });
+        return Compose({ draft });
+}
+
+function createComposeBody (state: Client.Client)
+{
+        const draft = state.draftMessage;
+        const ui = state.ui;
+        return ComposeBodyContainer({ draft });
 }
 
 function createFolder (state: Client.Client)

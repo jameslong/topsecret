@@ -1,7 +1,6 @@
 .infobar {
         background-color: var(--infobar-bg-colour);
         color: var(--infobar-font-colour);
-        font-weight: bold;
         padding: 0 0.25rem;
 }
 
