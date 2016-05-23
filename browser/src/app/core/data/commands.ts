@@ -396,8 +396,7 @@ export const commandIdsByMode: Data.IdsById = {
                 'open-help'
         ],
         [UI.Modes.COMPOSE_BODY]: [
-                'end-edit-body',
-                'open-help'
+                'end-edit-body'
         ],
         [UI.Modes.ENCRYPTION]: [
                 'exit',
