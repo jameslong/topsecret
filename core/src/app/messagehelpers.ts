@@ -77,6 +77,12 @@ export function generateFriendlyEmail (
         return friendly + ' ' + email;
 }
 
+export function removeFriendlyFromEmail (email: string)
+{
+        const index = email.indexOf('<');
+        return (index !== -1) ? email.slice(index) : email;
+}
+
 export function getSelectedReply (
         options: Message.NamedThreadDelay[],
         reply: string): string
