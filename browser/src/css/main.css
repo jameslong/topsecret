@@ -1,3 +1,21 @@
+/* ubuntu-mono-regular - latin */
+@font-face {
+  font-family: 'Ubuntu Mono';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Ubuntu Mono'), local('UbuntuMono-Regular'),
+       url('../assets/fonts/ubuntu-mono-v6-latin/ubuntu-mono-v6-latin-regular.woff') format('woff'); /* Modern Browsers */
+}
+
+/* ubuntu-mono-700 - latin */
+@font-face {
+  font-family: 'Ubuntu Mono';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Ubuntu Mono Bold'), local('UbuntuMono-Bold'),
+       url('../assets/fonts/ubuntu-mono-v6-latin/ubuntu-mono-v6-latin-700.woff') format('woff'); /* Modern Browsers */
+}
+
 /* B&W */
 /*:root {
         --main-bg-colour: black;
@@ -56,9 +74,9 @@
 body {
         margin: 0;
         color: var(--main-font-colour);
-        font-family: "Lucida Console", Monaco, monospace;
+        font-family: "Ubuntu Mono", monospace;
         line-height: 1.25;
-        font-size: 16px;
+        font-size: 18px;
         background-image: url('../assets/nsa_logo.png');
         background-size: contain;
         background-repeat: no-repeat;
