@@ -55,7 +55,7 @@ export function createMessageData (
         Log.assert(subject !== null, 'No thread subject: ', threadStartName);
 
         const fromProfile = profiles[message.from];
-        const from = generateFriendlyEmail(fromProfile, domain);
+        const from = fromProfile.email;
 
         const passage = strings[message.body];
         const body = (vars ? insertMessageVars(passage, vars) : passage);
@@ -66,15 +66,6 @@ export function createMessageData (
 export function addDomain (local: string, domain: string): string
 {
         return (local + '@' + domain);
-}
-
-export function generateFriendlyEmail (
-        profile: Profile.Profile, domain: string)
-{
-        var friendly = (profile.firstName + ' ' + profile.lastName);
-        var email = '<' + addDomain(profile.emailLocal, domain) + '>';
-
-        return friendly + ' ' + email;
 }
 
 export function removeFriendlyFromEmail (email: string)

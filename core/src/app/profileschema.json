@@ -5,7 +5,7 @@
         "type": "object",
         "properties": {
                 "name": { "type": "string" },
-                "emailLocal": { "type": "string" },
+                "email": { "type": "string" },
                 "firstName": { "type": "string" },
                 "lastName": { "type": "string" },
                 "publicKey": { "type": "string" },
@@ -14,7 +14,7 @@
         },
         "required": [
                 "name",
-                "emailLocal",
+                "email",
                 "firstName",
                 "lastName",
                 "publicKey",

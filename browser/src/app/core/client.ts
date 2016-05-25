@@ -69,10 +69,8 @@ function loadGameKeys (
         const domain = config.emailDomain;
         const profiles = data[config.version].profiles;
         const profileKeyData = Helpers.arrayFromMap(profiles, profile => {
-                const friendlyEmail = MessageHelpers.generateFriendlyEmail(
-                        profile, domain);
                 return {
-                        id: friendlyEmail,
+                        id: profile.email,
                         key: profile.publicKey,
                 };
         });
