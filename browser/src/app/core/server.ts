@@ -1,4 +1,5 @@
 import ActionCreators = require('./action/actioncreators');
+import AppPlayer = require('./player');
 import Clock = require('../../../../core/src/app/clock');
 import ConfigData = require('./data/config');
 import DBTypes = require('../../../../core/src/app/dbtypes');
@@ -8,7 +9,6 @@ import Main = require('../../../../core/src/app/main');
 import Message = require('../../../../core/src/app/message');
 import MessageHelpers = require('../../../../core/src/app/messagehelpers');
 import Player = require('../../../../core/src/app/player');
-import PlayerData = require('./data/player');
 import Promises = require('../../../../core/src/app/promises');
 import Redux = require('./redux/redux');
 import State = require('../../../../core/src/app/state');
@@ -74,7 +74,7 @@ export function send (id: Id, data: Message.MessageData) {
 }
 
 export function beginGame (
-        playerData: PlayerData.PlayerData,
+        playerData: AppPlayer.Player,
         config: ConfigData.ConfigData,
         server: Server)
 {

@@ -1,4 +1,5 @@
 import Actions = require('./actions');
+import Arr = require('../../../../../core/src/app/utils/array');
 import Clock = require('../../../../../core/src/app/clock');
 import Data = require('../data');
 import Helpers = require('../../../../../core/src/app/utils/helpers');
@@ -96,11 +97,10 @@ function handleDecryptMessage (data: Data.Data, action: Actions.DecryptMessage)
 
 function handleImportKeys (data: Data.Data, action: Actions.ImportKeys)
 {
-        const newKeyManagersById = action.parameters;
-        const keyManagersById = Map.merge(
-                data.keyManagersById, newKeyManagersById);
-        const keyManagers = Map.keys(keyManagersById);
-        return Helpers.assign(data, { keyManagersById, keyManagers });
+        const newKeyIds = action.parameters;
+        const keyIds = data.knownKeyIds.concat(newKeyIds);
+        const knownKeyIds = Arr.unique(keyIds);
+        return Helpers.assign(data, { knownKeyIds });
 }
 
 function handleTick (data: Data.Data, action: Actions.Tick)

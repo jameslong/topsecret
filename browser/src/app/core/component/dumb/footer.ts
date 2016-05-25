@@ -3,7 +3,6 @@ import Clock = require('../../../../../../core/src/app/clock');
 import EditSubject = require('../smart/editsubject');
 import EditTo = require('../smart/editto');
 import FooterCompose = require('./footercompose');
-import FooterEncryption = require('./footerencryption');
 import FooterIndex = require('./footerindex');
 import FooterFolder = require('./footerfolder');
 import FooterPager = require('./footerpager');
@@ -55,8 +54,6 @@ function createInfoBarContent (state: Client.Client): React.ReactElement<any>
                 return createFooterPager(state);
         case UI.Modes.COMPOSE:
                 return createFooterCompose(state);
-        case UI.Modes.ENCRYPTION:
-                return createFooterEncryption(state);
         case UI.Modes.FOLDER:
                 return createFooterFolder(state);
         default:
@@ -69,13 +66,6 @@ function createFooterCompose (state: Client.Client)
         const draftMessage = state.draftMessage;
         const draftBody = draftMessage.content.body;
         return FooterCompose({ draftBody });
-}
-
-function createFooterEncryption (state: Client.Client)
-{
-        const activeKeyId = state.ui.activeKeyId;
-        const activeKey = state.data.keyManagersById[activeKeyId];
-        return FooterEncryption({ activeKey });
 }
 
 function createFooterFolder (state: Client.Client)

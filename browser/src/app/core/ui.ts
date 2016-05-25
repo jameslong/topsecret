@@ -19,7 +19,7 @@ export interface UI {
         previousMode: string;
         activeMessageId: string;
         activeFolderId: string;
-        activeKeyId: string;
+        activeKeyIndex: number;
         activeMainMenuIndex: number;
         activeSaveIndex: number;
         activeLoadIndex: number;
@@ -33,17 +33,14 @@ export interface UI {
 }
 
 export function createUI (
-        mode: string,
-        activeMessageId: string,
-        activeFolderId: string,
-        activeKeyId: string): UI
+        mode: string, activeMessageId: string, activeFolderId: string): UI
 {
         return {
                 mode,
                 previousMode: mode,
                 activeMessageId,
                 activeFolderId,
-                activeKeyId,
+                activeKeyIndex: 0,
                 activeMainMenuIndex: 0,
                 activeSaveIndex: 0,
                 activeLoadIndex: 0,

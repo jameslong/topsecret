@@ -15,6 +15,7 @@ import Message = require('./message');
 import MessageHelpers = require('../../../../core/src/app/messagehelpers');
 import Player = require('./player');
 import PlayerData = require('./data/player');
+import Profile = require('../../../../core/src/app/profile');
 import Redux = require('./redux/redux');
 import Server = require('./server');
 import State = require('../../../../core/src/app/state');
@@ -41,30 +42,22 @@ export interface SaveData {
 export function createClient (
         appConfig: ConfigData.ConfigData,
         appData: AppData.AppData,
-        playerData: PlayerData.PlayerData,
-        gameData: State.Data,
+        profiles: Map.Map<Profile.Profile>,
+        player: Player.Player,
         server: Server.Server,
         clock: Clock.Clock)
 {
-        const player = {
-                email: playerData.email,
-                activeKeyId: playerData.email,
-        };
-        return loadGameKeys(gameData, appConfig, playerData).then(keyManagersById => {
-                return createClientFromData(
-                        appConfig,
-                        appData,
-                        server,
-                        clock,
-                        player,
-                        keyManagersById);
-        });
+        return createClientFromData(
+                appConfig,
+                appData,
+                profiles,
+                server,
+                clock,
+                player);
 }
 
 function loadGameKeys (
-        data: State.Data,
-        config: ConfigData.ConfigData,
-        player: PlayerData.PlayerData)
+        data: State.Data, config: ConfigData.ConfigData, player: Player.Player)
 {
         const domain = config.emailDomain;
         const profiles = data[config.version].profiles;
@@ -86,17 +79,16 @@ function loadGameKeys (
 export function createClientFromData (
         appConfig: ConfigData.ConfigData,
         appData: AppData.AppData,
+        profiles: Map.Map<Profile.Profile>,
         server: Server.Server,
         clock: Clock.Clock,
-        player: Player.Player,
-        keyManagersById: Map.Map<Kbpgp.KeyManagerInstance>): Client
+        player: Player.Player): Client
 {
-        const data = Data.createData(appData, player, keyManagersById, clock);
+        const data = Data.createData(appData, profiles, player, clock);
         const folderId = data.folders[0];
-        const keyId = player.activeKeyId;
         const messageId: string = null;
         const uiMode = appConfig.initialUIMode;
-        const ui = UI.createUI(uiMode, messageId, folderId, keyId);
+        const ui = UI.createUI(uiMode, messageId, folderId);
 
         return {
                 server,

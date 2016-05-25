@@ -35,7 +35,7 @@ export const Types = {
         EDIT_SUBJECT: 'EDIT_SUBJECT',
         EDIT_TO: 'EDIT_TO',
 
-        SET_ACTIVE_KEY: 'SET_ACTIVE_KEY',
+        SET_ACTIVE_KEY_INDEX: 'SET_ACTIVE_KEY_INDEX',
         IMPORT_KEYS: 'IMPORT_KEYS',
 
         SET_ACTIVE_LOAD_MENU_INDEX: 'SET_ACTIVE_LOAD_MENU_INDEX',
@@ -100,8 +100,8 @@ export interface DisplayFolderParams {
 }
 export interface DisplayFolder extends Redux.Action<DisplayFolderParams> {}
 
-export interface SetActiveKey extends Redux.Action<string> {}
-export type ImportKeysParams = Map.Map<Kbpgp.KeyManagerInstance>;
+export interface SetActiveKeyIndex extends Redux.Action<number> {}
+export type ImportKeysParams = string[];
 export interface ImportKeys extends Redux.Action<ImportKeysParams> {}
 
 export interface SetActiveLoadIndex extends Redux.Action<number> {}

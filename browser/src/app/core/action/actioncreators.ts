@@ -52,7 +52,7 @@ export const endEditBody = createEmptyActionCreator(Actions.Types.END_EDIT_BODY)
 export const editSubject = createActionCreator<boolean>(Actions.Types.EDIT_SUBJECT);
 export const editTo = createActionCreator<boolean>(Actions.Types.EDIT_TO);
 
-export const setActiveKey = createActionCreator<string>(Actions.Types.SET_ACTIVE_KEY);
+export const setActiveKeyIndex = createActionCreator<number>(Actions.Types.SET_ACTIVE_KEY_INDEX);
 export const importKeys = createActionCreator<Actions.ImportKeysParams>(Actions.Types.IMPORT_KEYS);
 
 export const setActiveLoadIndex = createActionCreator<number>(Actions.Types.SET_ACTIVE_LOAD_MENU_INDEX);

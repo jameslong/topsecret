@@ -109,10 +109,10 @@ function createFolder (state: Client.Client)
 
 function createEncryption (state: Client.Client)
 {
-        const keyManagersById = state.data.keyManagersById;
-        const activeId = state.data.player.activeKeyId;
-        const selectedId = state.ui.activeKeyId;
-        return Encryption({ keyManagersById, activeId, selectedId });
+        const knownKeyIds = state.data.knownKeyIds;
+        const profilesById = state.data.profilesById;
+        const selectedIndex = state.ui.activeKeyIndex;
+        return Encryption({ knownKeyIds, profilesById, selectedIndex });
 }
 
 function createMainMenu (state: Client.Client)

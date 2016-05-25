@@ -131,3 +131,13 @@ export function last<T>(list: T[])
 {
         return list.length ? list[list.length - 1] : null;
 }
+
+export function unique<T>(list: T[])
+{
+        return list.reduce((result, item) => {
+                if (result.indexOf(item) === -1) {
+                        result.push(item);
+                }
+                return result;
+        }, []);
+}

@@ -79,9 +79,9 @@ export function ui (ui: UI.UI, action: Redux.Action<any>)
                         const editTo = <Actions.EditTo><any>action;
                         return handleEditTo(ui, editTo);
 
-                case Actions.Types.SET_ACTIVE_KEY:
-                        const setActiveKey = <Actions.SetActiveKey><any>action;
-                        return handleSetActiveKey(ui, setActiveKey);
+                case Actions.Types.SET_ACTIVE_KEY_INDEX:
+                        const setActiveKey = <Actions.SetActiveKeyIndex><any>action;
+                        return handleSetActiveKeyIndex(ui, setActiveKey);
 
                 case Actions.Types.RECEIVE_REPLY:
                         const receiveAction = <Actions.ReceiveReply><any>action;
@@ -222,10 +222,10 @@ function handleEditTo (ui: UI.UI, action: Actions.EditTo)
         return Helpers.assign(ui, { editingDraftTo });
 }
 
-function handleSetActiveKey (ui: UI.UI, action: Actions.SetActiveKey)
+function handleSetActiveKeyIndex (ui: UI.UI, action: Actions.SetActiveKeyIndex)
 {
-        const activeKeyId = action.parameters;
-        return Helpers.assign(ui, { activeKeyId });
+        const activeKeyIndex = action.parameters;
+        return Helpers.assign(ui, { activeKeyIndex });
 }
 
 function handleReceiveReply (ui: UI.UI, action: Actions.ReceiveReply)

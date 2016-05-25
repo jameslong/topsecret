@@ -42,27 +42,19 @@ export function appInit (
         const player = PlayerData.player;
         const clock = Clock.createClock(appConfig.timeFactor);
 
+        const profiles = gameData[appConfig.version].profiles;
         const server = Server.createServer(appConfig, gameData, clock);
-        return Client.createClient(
-                appConfig,
-                appData,
-                player,
-                gameData,
-                server,
-                clock)
-        .then(client => {
-                const server = client.server;
+        const client = Client.createClient(
+                appConfig, appData, profiles, player, server, clock);
 
-                const getClient = Redux.init(
-                        client, Reducers.reduce, Root, wrapper);
-                Redux.render(client, Root, wrapper);
+        const getClient = Redux.init(client, Reducers.reduce, Root, wrapper);
+        Redux.render(client, Root, wrapper);
 
-                EventHandler.addKeyHandlers();
+        EventHandler.addKeyHandlers();
 
-                return Server.beginGame(player, appConfig, server).then(result =>
-                        startTick(getClient)
-                );
-        });
+        return Server.beginGame(player, appConfig, server).then(result =>
+                startTick(getClient)
+        );
 }
 
 export function newGame (client: Client.Client)
@@ -80,12 +72,8 @@ export function newGame (client: Client.Client)
         const messageId = 0;
         const player = client.data.player;
         const playerData = PlayerData.player;
-        const data = Data.createData(
-                appData,
-                player,
-                client.data.keyManagersById,
-                clock);
-
+        const profiles = gameData[appConfig.version].profiles;
+        const data = Data.createData(appData, profiles, player, clock);
         Server.beginGame(playerData, appConfig, server);
 
         return Helpers.assign(client, { server, data, messageId });

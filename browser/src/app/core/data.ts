@@ -11,6 +11,7 @@ import Kbpgp = require('kbpgp');
 import KbpgpHelpers = require('../../../../core/src/app/kbpgp');
 import Map = require('../../../../core/src/app/utils/map');
 import Player = require('./player');
+import Profile = require('../../../../core/src/app/profile');
 
 export type IdsById = Map.Map<string[]>;
 
@@ -27,8 +28,9 @@ export interface Data extends RuntimeData {
         commandsById: Map.Map<Command.Command>;
         commandIdsByMode: IdsById;
         menuItems: string[];
-        keyManagers: string[];
-        keyManagersById: Map.Map<Kbpgp.KeyManagerInstance>;
+        profiles: string[];
+        profilesById: Map.Map<Profile.Profile>;
+        knownKeyIds: string[];
 }
 
 type Id = { id: string; }
@@ -73,8 +75,8 @@ function group<T, U>(
 
 export function createData(
         appData: AppData.AppData,
+        profilesById: Map.Map<Profile.Profile>,
         player: Player.Player,
-        keyManagersById: Map.Map<Kbpgp.KeyManagerInstance>,
         clock: Clock.Clock): Data
 {
         const { folders, commands, commandIdsByMode, menuItems } = appData;
@@ -86,8 +88,8 @@ export function createData(
         const messagesById = idMapFromParentArray(folders, getMessages);
         const messageIdsByFolderId = childIdsByParentIds(folders, getMessages);
 
-        const keyManagers = Helpers.arrayFromMap(keyManagersById,
-                (instance, id) => id);
+        const profiles = Map.keys(profilesById);
+        const knownKeyIds = Map.keys(profilesById);
 
         return {
                 player,
@@ -98,8 +100,9 @@ export function createData(
                 menuItems,
                 messagesById,
                 messageIdsByFolderId,
-                keyManagers,
-                keyManagersById,
+                profiles,
+                profilesById,
+                knownKeyIds,
                 clock,
         };
 }
@@ -127,43 +130,4 @@ export function updateMessage (data: Data, message: Message.Message)
 export function getMessage (data: Data, id: string)
 {
         return data.messagesById[id];
-}
-
-export function storeKeyManager (
-        data: Data, id: string, instance: Kbpgp.KeyManagerInstance)
-{
-        const keyManagers = Arr.push(data.keyManagers, id);
-        const keyManagersById = Map.set(data.keyManagersById, id, instance);
-        return Helpers.assign(data, { keyManagers, keyManagersById });
-}
-
-export function deleteKey (data: Data, id: string)
-{
-        const keyManagers = Arr.removeValue(data.keyManagers, id);
-        const keyManagersById = Map.remove(data.keyManagersById, id);
-
-        const activeKeyId = data.player.activeKeyId;
-        if (id === activeKeyId) {
-                const player = Helpers.assign(
-                        data.player, { activeKeyId: null });
-                return Helpers.assign(data, {
-                        player,
-                        keyManagers,
-                        keyManagersById,
-                });
-        } else {
-                return Helpers.assign(data, { keyManagers, keyManagersById });
-        }
-}
-
-export function createReplyEncryptData (
-        reply: MessageCore.Reply, data: Data): KbpgpHelpers.EncryptData
-{
-        const keyManagersById = data.keyManagersById;
-        const playerId = data.player.activeKeyId;
-        const from = keyManagersById[playerId];
-        const to = keyManagersById[reply.to];
-        const text = reply.body;
-
-        return { from, to, text };
 }
