@@ -1,6 +1,7 @@
 export interface QueryStringParams {
         version: string;
         messageName: string;
+        initialUIMode: string;
 }
 
 export interface ConfigData {
@@ -8,6 +9,7 @@ export interface ConfigData {
         timeFactor: number;
         version: string;
         beginGameMessage: string;
+        initialUIMode: string;
 }
 function getQueryVariable (variable: string): string
 {
@@ -27,7 +29,8 @@ function getQueryStringParams (): QueryStringParams
 {
         const version = getQueryVariable('version') || '0';
         const messageName = getQueryVariable('messageName') || 'welcome';
-        return { version, messageName };
+        const initialUIMode = getQueryVariable('uiMode') || 'MAIN_MENU';
+        return { version, messageName, initialUIMode };
 }
 
 export function createConfig (): ConfigData
@@ -38,5 +41,6 @@ export function createConfig (): ConfigData
                 timeFactor: 1,
                 version: params.version,
                 beginGameMessage: params.messageName,
+                initialUIMode: params.initialUIMode,
         };
 }

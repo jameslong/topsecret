@@ -54,6 +54,7 @@ export function createClient (
         };
         return loadGameKeys(data, config, playerData).then(keyManagersById => {
                 return createClientFromData(
+                        config,
                         server,
                         clock,
                         player,
@@ -90,6 +91,7 @@ function loadGameKeys (
 }
 
 export function createClientFromData (
+        config: ConfigData.ConfigData,
         server: Server.Server,
         clock: Clock.Clock,
         player: Player.Player,
@@ -111,8 +113,8 @@ export function createClientFromData (
         const folderId = data.folders[0];
         const keyId = player.activeKeyId;
         const messageId: string = null;
-        const ui = UI.createUI(
-                UI.Modes.INDEX_INBOX, messageId, folderId, keyId);
+        const uiMode = config.initialUIMode;
+        const ui = UI.createUI(uiMode, messageId, folderId, keyId);
 
         return {
                 server,

@@ -1,6 +1,6 @@
 export const items = [
+        'New Game',
         'Save',
         'Load',
-        'New Game',
         'Quit'
 ];

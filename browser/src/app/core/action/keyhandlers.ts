@@ -54,10 +54,13 @@ export function selectMenuOption (client: Client.Client)
 {
         const currentIndex = client.ui.activeMainMenuIndex;
         switch (currentIndex) {
-        case 0: // SAVE_MENU
+        // case 0: // NEW_GAME
+        //         return ActionCreators.setMode(UI.Modes.SAVE_MENU);
+        //
+        case 1: // SAVE_MENU
                 return ActionCreators.setMode(UI.Modes.SAVE_MENU);
 
-        case 1: // LOAD_MENU
+        case 2: // LOAD_MENU
                 return ActionCreators.setMode(UI.Modes.LOAD_MENU);
 
         default:

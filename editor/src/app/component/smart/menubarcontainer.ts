@@ -49,7 +49,8 @@ function onSelectNarrative (name: string)
 function onTest (version: string, messageName: string)
 {
         const clientURL = '../../browser/build/index.html';
-        const querystring = `?version=${version}&messageName=${messageName}`;
+        const uiMode = 'INDEX_INBOX';
+        const querystring = `?version=${version}&messageName=${messageName}&uiMode=${uiMode}`;
         const url = `${clientURL}${querystring}`;
         window.open(url);
 }
