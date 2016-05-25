@@ -55,10 +55,6 @@ export function ui (ui: UI.UI, action: Redux.Action<any>)
                         const displayFolder = <Actions.DisplayFolder><any>action;
                         return handleDisplayFolder(ui, displayFolder);
 
-                case Actions.Types.SET_DRAFT_BODY:
-                        const setDraftBody = <Actions.SetDraftBody><any>action;
-                        return handleSetDraftBody(ui, setDraftBody);
-
                 case Actions.Types.SET_DRAFT_SUBJECT:
                         const setDraftSubject = <Actions.SetDraftSubject><any>action;
                         return handleSetDraftSubject(ui, setDraftSubject);
@@ -70,6 +66,10 @@ export function ui (ui: UI.UI, action: Redux.Action<any>)
                 case Actions.Types.EDIT_BODY:
                         const editBody = <Actions.EditBody><any>action;
                         return handleEditBody(ui, editBody);
+
+                case Actions.Types.END_EDIT_BODY:
+                        const endEditBody = <Actions.EndEditBody><any>action;
+                        return handleEndEditBody(ui, endEditBody);
 
                 case Actions.Types.EDIT_SUBJECT:
                         const editSubject = <Actions.EditSubject><any>action;
@@ -122,11 +122,9 @@ export function ui (ui: UI.UI, action: Redux.Action<any>)
 
 function handleBlur (ui: UI.UI, action: Actions.Blur)
 {
-        const editingDraftBody = false;
         const editingDraftSubject = false;
         const editingDraftTo = false;
         return Helpers.assign(ui, {
-                editingDraftBody,
                 editingDraftSubject,
                 editingDraftTo
         });
@@ -202,12 +200,6 @@ function handleDisplayFolder (ui: UI.UI, action: Actions.DisplayFolder)
         return UI.setMode(temp, mode);
 }
 
-function handleSetDraftBody (ui: UI.UI, action: Actions.SetDraftBody)
-{
-        const editingDraftBody = false;
-        return Helpers.assign(ui, { editingDraftBody });
-}
-
 function handleSetDraftSubject (ui: UI.UI, action: Actions.SetDraftSubject)
 {
         const editingDraftSubject = false;
@@ -222,8 +214,12 @@ function handleSetDraftTo (ui: UI.UI, action: Actions.SetDraftTo)
 
 function handleEditBody (ui: UI.UI, action: Actions.EditBody)
 {
-        const editingDraftBody = action.parameters;
-        return Helpers.assign(ui, { editingDraftBody });
+        return UI.setMode(ui, UI.Modes.COMPOSE_BODY);
+}
+
+function handleEndEditBody (ui: UI.UI, action: Actions.EditBody)
+{
+        return UI.setMode(ui, UI.Modes.COMPOSE);
 }
 
 function handleEditSubject (ui: UI.UI, action: Actions.EditSubject)

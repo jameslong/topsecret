@@ -7,26 +7,20 @@ import UI = require('../../ui');
 import Core = require('../core');
 import Div = Core.Div;
 
-import EditBody = require('../smart/editbody');
-
 interface ComposeProps extends React.Props<any> {
         draft: Draft.Draft;
-        ui: UI.UI;
 }
 
 function renderCompose(props: ComposeProps)
 {
         const draft = props.draft;
-        const ui = props.ui;
         const message = draft.content;
-        const body = message.body;
 
         const meta = createMeta(message);
-        const editBody = ui.editingDraftBody ?
-                EditBody({ value: message.body }) :
-                Div({ className: 'compose-body' }, Helpers.createBody(body));
+        const body = Div({ className: 'compose-draft-body' },
+                Helpers.createBody(draft.content.body));
 
-        return Div({ className: 'compose' }, meta, editBody);
+        return Div({ className: 'compose' }, meta, body);
 }
 
 const Compose = React.createFactory(renderCompose);

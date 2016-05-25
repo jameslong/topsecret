@@ -312,7 +312,12 @@ export function displayPreviousMessage (client: Client.Client)
 
 export function editBody (client: Client.Client)
 {
-        return ActionCreators.editBody(true);
+        return ActionCreators.editBody();
+}
+
+export function endEditBody (client: Client.Client)
+{
+        return ActionCreators.endEditBody();
 }
 
 export function editSubject (client: Client.Client)

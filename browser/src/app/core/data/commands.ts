@@ -142,12 +142,14 @@ const composeCommands = [, {
         actionCreator: KeyHandlers.editBody,
         shortDesc: 'Body',
         desc: 'edit message body',
-}, {
+}];
+
+const composeBodyCommands = [{
         id: 'end-edit-body',
         key: 'ESC',
-        keyCodes: [],
-        actionCreator: null,
-        shortDesc: 'Stop Body',
+        keyCodes: [KeyCodes.ESCAPE],
+        actionCreator: KeyHandlers.endEditBody,
+        shortDesc: 'Finish Editing',
         desc: 'finish editing message body',
 }];
 
@@ -373,6 +375,7 @@ const saveCommands = [{
 export const commands = [].concat(
         commonCommands,
         composeCommands,
+        composeBodyCommands,
         encryptionCommands,
         folderCommands,
         helpCommands,
@@ -389,9 +392,11 @@ export const commandIdsByMode: Data.IdsById = {
                 'edit-subject',
                 'edit-to',
                 'edit-body',
-                'end-edit-body',
                 'open-main-menu',
                 'open-help'
+        ],
+        [UI.Modes.COMPOSE_BODY]: [
+                'end-edit-body'
         ],
         [UI.Modes.ENCRYPTION]: [
                 'exit',

@@ -1,21 +1,4 @@
-.compose-body {
-        border: 1px solid var(--main-bg-colour);
-        box-sizing: border-box;
-}
-
-.compose textarea {
-        border: none;
-        background-color: inherit;
-        color: inherit;
-        width: 100%;
-        font-size: inherit;
-        padding: 0;
-        min-height: 25em;
-        line-height: inherit;
-        border: 1px solid var(--infobar-bg-colour);
-        box-sizing: border-box;
-}
-
-.compose textarea:focus {
-        outline: none;
+.compose-draft-body {
+        color: var(--light-font-colour);
+        max-width: 700px;
 }
