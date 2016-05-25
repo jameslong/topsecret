@@ -50,6 +50,7 @@ export const Types = {
         SET_ACTIVE_SAVE_MENU_INDEX: 'SET_ACTIVE_SAVE_MENU_INDEX',
 
         IMPORT_SAVE_DATA: 'IMPORT_SAVE_DATA',
+        NEW_GAME: 'NEW_GAME',
 };
 
 export interface Blur extends Redux.Action<void> {}
@@ -126,3 +127,4 @@ export interface SetActiveMenuIndex extends Redux.Action<number> {}
 export interface SetActiveSaveIndex extends Redux.Action<number> {}
 
 export interface ImportSaveData extends Redux.Action<Client.SaveData> {}
+export interface NewGame extends Redux.Action<void> {}

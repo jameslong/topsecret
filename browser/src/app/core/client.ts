@@ -1,4 +1,5 @@
 import ActionCreators = require('./action/actioncreators');
+import AppData = require('./data/appdata');
 import Clock = require('../../../../core/src/app/clock');
 import Command = require('./command');
 import ConfigData = require('./data/config');
@@ -38,30 +39,24 @@ export interface SaveData {
 }
 
 export function createClient (
-        config: ConfigData.ConfigData,
+        appConfig: ConfigData.ConfigData,
+        appData: AppData.AppData,
         playerData: PlayerData.PlayerData,
-        data: State.Data,
+        gameData: State.Data,
         server: Server.Server,
-        clock: Clock.Clock,
-        commands: Command.Command[],
-        commandIdsByMode: Data.IdsById,
-        menuItems: string[],
-        folders: Folder.FolderData[])
+        clock: Clock.Clock)
 {
         const player = {
                 email: playerData.email,
                 activeKeyId: playerData.email,
         };
-        return loadGameKeys(data, config, playerData).then(keyManagersById => {
+        return loadGameKeys(gameData, appConfig, playerData).then(keyManagersById => {
                 return createClientFromData(
-                        config,
+                        appConfig,
+                        appData,
                         server,
                         clock,
                         player,
-                        commands,
-                        commandIdsByMode,
-                        menuItems,
-                        folders,
                         keyManagersById);
         });
 }
@@ -91,29 +86,18 @@ function loadGameKeys (
 }
 
 export function createClientFromData (
-        config: ConfigData.ConfigData,
+        appConfig: ConfigData.ConfigData,
+        appData: AppData.AppData,
         server: Server.Server,
         clock: Clock.Clock,
         player: Player.Player,
-        commands: Command.Command[],
-        commandIdsByMode: Data.IdsById,
-        menuItems: string[],
-        folders: Folder.FolderData[],
         keyManagersById: Map.Map<Kbpgp.KeyManagerInstance>): Client
 {
-        const data = Data.createData(
-                folders,
-                commands,
-                commandIdsByMode,
-                menuItems,
-                player,
-                keyManagersById,
-                clock);
-
+        const data = Data.createData(appData, player, keyManagersById, clock);
         const folderId = data.folders[0];
         const keyId = player.activeKeyId;
         const messageId: string = null;
-        const uiMode = config.initialUIMode;
+        const uiMode = appConfig.initialUIMode;
         const ui = UI.createUI(uiMode, messageId, folderId, keyId);
 
         return {

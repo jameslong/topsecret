@@ -4,6 +4,7 @@ import DataReducers = require('./datareducers');
 import DraftReducers = require('./draftreducers');
 import DraftKeyReducers = require('./draftkeyreducers');
 import Helpers = require('../../../../../core/src/app/utils/helpers');
+import Main = require('./../main');
 import Redux = require('../redux/redux');
 import Client = require('../client');
 import UIReducers = require('./uireducers');
@@ -22,6 +23,11 @@ export function client (client: Client.Client, action: Redux.Action<any>)
                 case Actions.Types.IMPORT_SAVE_DATA:
                         const saveData = <Actions.ImportSaveData><any>action;
                         temp = handleImportSaveData(temp, saveData);
+                        break;
+
+                case Actions.Types.NEW_GAME:
+                        const newGame = <Actions.NewGame><any>action;
+                        temp = handleNewGame(temp, newGame);
                         break;
 
                 default:
@@ -70,4 +76,9 @@ function handleImportSaveData (
 {
         const saveData = action.parameters;
         return Client.importSaveData(client, saveData);
+}
+
+function handleNewGame (client: Client.Client, action: Actions.NewGame)
+{
+        return Main.newGame(client);
 }

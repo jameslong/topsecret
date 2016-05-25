@@ -115,6 +115,10 @@ export function ui (ui: UI.UI, action: Redux.Action<any>)
                         const setSaveIndex = <Actions.SetActiveSaveIndex><any>action;
                         return handleSetActiveSaveIndex(ui, setSaveIndex);
 
+                case Actions.Types.NEW_GAME:
+                        const newGame = <Actions.NewGame><any>action;
+                        return handleNewGame(ui, newGame);
+
                 default:
                         return ui;
         }
@@ -300,4 +304,9 @@ function handleSetActiveSaveIndex (
 {
         const activeSaveIndex = action.parameters;
         return Helpers.assign(ui, { activeSaveIndex });
+}
+
+function handleNewGame (ui: UI.UI, action: Actions.NewGame)
+{
+        return UI.setMode(ui, UI.Modes.INDEX_INBOX);
 }

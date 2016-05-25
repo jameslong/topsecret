@@ -39,7 +39,7 @@ export function nextMenuOption (client: Client.Client)
         const currentIndex = client.ui.activeMainMenuIndex;
         const max = client.data.menuItems.length - 1;
         const index = MathUtils.inRange(0, max, currentIndex + 1);
-        return ActionCreators.SetActiveMenuIndex(index);
+        return ActionCreators.setActiveMenuIndex(index);
 }
 
 export function previousMenuOption (client: Client.Client)
@@ -47,16 +47,16 @@ export function previousMenuOption (client: Client.Client)
         const currentIndex = client.ui.activeMainMenuIndex;
         const max = client.data.menuItems.length - 1;
         const index = MathUtils.inRange(0, max, currentIndex - 1);
-        return ActionCreators.SetActiveMenuIndex(index);
+        return ActionCreators.setActiveMenuIndex(index);
 }
 
 export function selectMenuOption (client: Client.Client)
 {
         const currentIndex = client.ui.activeMainMenuIndex;
         switch (currentIndex) {
-        // case 0: // NEW_GAME
-        //         return ActionCreators.setMode(UI.Modes.SAVE_MENU);
-        //
+        case 0: // NEW_GAME
+                return ActionCreators.newGame();
+
         case 1: // SAVE_MENU
                 return ActionCreators.setMode(UI.Modes.SAVE_MENU);
 
@@ -90,7 +90,7 @@ export function nextSave (client: Client.Client)
         const saves = LocalStorage.getSaveNames();
         const max = saves.length;
         const index = MathUtils.inRange(0, max, currentIndex + 1);
-        return ActionCreators.SetActiveSaveIndex(index);
+        return ActionCreators.setActiveSaveIndex(index);
 }
 
 export function previousSave (client: Client.Client)
@@ -99,7 +99,7 @@ export function previousSave (client: Client.Client)
         const saves = LocalStorage.getSaveNames();
         const max = saves.length;
         const index = MathUtils.inRange(0, max, currentIndex - 1);
-        return ActionCreators.SetActiveSaveIndex(index);
+        return ActionCreators.setActiveSaveIndex(index);
 }
 
 export function exitLoad (client: Client.Client)
@@ -114,7 +114,7 @@ export function load (client: Client.Client)
         const saveName = saves[activeIndex];
         console.log('Loading', saveName);
         const saveData = LocalStorage.load<Client.SaveData>(saveName);
-        return ActionCreators.ImportSaveData(saveData);
+        return ActionCreators.importSaveData(saveData);
 }
 
 export function nextLoad (client: Client.Client)
@@ -123,7 +123,7 @@ export function nextLoad (client: Client.Client)
         const saves = LocalStorage.getSaveNames();
         const max = saves.length - 1;
         const index = MathUtils.inRange(0, max, currentIndex + 1);
-        return ActionCreators.SetActiveLoadIndex(index);
+        return ActionCreators.setActiveLoadIndex(index);
 }
 
 export function previousLoad (client: Client.Client)
@@ -132,7 +132,7 @@ export function previousLoad (client: Client.Client)
         const saves = LocalStorage.getSaveNames();
         const max = saves.length - 1;
         const index = MathUtils.inRange(0, max, currentIndex - 1);
-        return ActionCreators.SetActiveLoadIndex(index);
+        return ActionCreators.setActiveLoadIndex(index);
 }
 
 export function deleteSave (client: Client.Client)

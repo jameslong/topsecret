@@ -1,3 +1,4 @@
+import AppData = require('./data/appdata');
 import Arr = require('../../../../core/src/app/utils/array');
 import Clock = require('../../../../core/src/app/clock');
 import Command = require('./command');
@@ -71,29 +72,26 @@ function group<T, U>(
 }
 
 export function createData(
-        folderData: Folder.FolderData[],
-        commands: Command.Command[],
-        commandIdsByMode: IdsById,
-        menuItems: string[],
+        appData: AppData.AppData,
         player: Player.Player,
         keyManagersById: Map.Map<Kbpgp.KeyManagerInstance>,
         clock: Clock.Clock): Data
 {
+        const { folders, commands, commandIdsByMode, menuItems } = appData;
         const getMessages = (folder: Folder.FolderData) => folder.messages;
 
-        const foldersById = idMapFromArray(folderData);
-        const folders = folderData.map(getId);
+        const foldersById = idMapFromArray(folders);
+        const folderIds = folders.map(getId);
         const commandsById = idMapFromArray(commands);
-        const messagesById = idMapFromParentArray(folderData, getMessages);
-        const messageIdsByFolderId =
-                childIdsByParentIds(folderData, getMessages);
+        const messagesById = idMapFromParentArray(folders, getMessages);
+        const messageIdsByFolderId = childIdsByParentIds(folders, getMessages);
 
         const keyManagers = Helpers.arrayFromMap(keyManagersById,
                 (instance, id) => id);
 
         return {
                 player,
-                folders,
+                folders: folderIds,
                 foldersById,
                 commandsById,
                 commandIdsByMode,

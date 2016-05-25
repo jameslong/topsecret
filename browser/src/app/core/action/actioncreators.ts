@@ -62,8 +62,9 @@ export const setPlayerKey = createActionCreator<string>(Actions.Types.SET_PLAYER
 export const setActiveKey = createActionCreator<string>(Actions.Types.SET_ACTIVE_KEY);
 export const importKeys = createActionCreator<Actions.ImportKeysParams>(Actions.Types.IMPORT_KEYS);
 
-export const SetActiveLoadIndex = createActionCreator<number>(Actions.Types.SET_ACTIVE_LOAD_MENU_INDEX);
-export const SetActiveMenuIndex = createActionCreator<number>(Actions.Types.SET_ACTIVE_MENU_INDEX);
-export const SetActiveSaveIndex = createActionCreator<number>(Actions.Types.SET_ACTIVE_SAVE_MENU_INDEX);
+export const setActiveLoadIndex = createActionCreator<number>(Actions.Types.SET_ACTIVE_LOAD_MENU_INDEX);
+export const setActiveMenuIndex = createActionCreator<number>(Actions.Types.SET_ACTIVE_MENU_INDEX);
+export const setActiveSaveIndex = createActionCreator<number>(Actions.Types.SET_ACTIVE_SAVE_MENU_INDEX);
 
-export const ImportSaveData = createActionCreator<Client.SaveData>(Actions.Types.IMPORT_SAVE_DATA);
+export const importSaveData = createActionCreator<Client.SaveData>(Actions.Types.IMPORT_SAVE_DATA);
+export const newGame = createEmptyActionCreator(Actions.Types.NEW_GAME);
