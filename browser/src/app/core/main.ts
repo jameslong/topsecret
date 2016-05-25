@@ -19,6 +19,7 @@ import Redux = require('./redux/redux');
 import Root = require('./component/smart/root');
 import Server = require('./server');
 import State = require('../../../../core/src/app/state');
+import UI = require('./ui');
 
 export function init (gameData: State.Data)
 {
@@ -37,29 +38,24 @@ export function appInit (
         gameData: State.Data)
 {
         const wrapper = document.getElementById('wrapper');
-        console.log('wrapper' + wrapper);
 
-        const player = PlayerData.player;
-        const clock = Clock.createClock(appConfig.timeFactor);
-
-        const profiles = gameData[appConfig.version].profiles;
-        const server = Server.createServer(appConfig, gameData, clock);
-        const client = Client.createClient(
-                appConfig, appData, profiles, player, server, clock);
+        const client = Client.createClient(appConfig, appData, gameData);
 
         const getClient = Redux.init(client, Reducers.reduce, Root, wrapper);
         Redux.render(client, Root, wrapper);
 
         EventHandler.addKeyHandlers();
 
-        return Server.beginGame(player, appConfig, server).then(result =>
+        const clock = client.data.clock;
+        const player = client.data.player;
+        const server = client.server;
+        return Server.beginGame(player, appConfig, server, clock).then(result =>
                 startTick(getClient)
         );
 }
 
 export function newGame (client: Client.Client)
 {
-        const gameData = client.server.app.data;
         const appConfig = ConfigData.createConfig();
         const appData = {
                 commands: CommandData.commands,
@@ -67,17 +63,34 @@ export function newGame (client: Client.Client)
                 menuItems: MenuData.items,
                 folders: MessageData.folders,
         };
-        const clock = Clock.createClock(appConfig.timeFactor);
-        const server = Server.createServer(appConfig, gameData, clock);
-        const messageId = 0;
-        const player = client.data.player;
-        const playerData = PlayerData.player;
-        const profiles = gameData[appConfig.version].profiles;
-        const data = Data.createData(appData, profiles, player, clock);
-        Server.beginGame(playerData, appConfig, server);
+        const newClient = Client.createClient(
+                appConfig, appData, client.server.app.data);
+        const player = newClient.data.player;
 
-        return Helpers.assign(client, { server, data, messageId });
+        const server = newClient.server;
+        const clock = newClient.data.clock;
+        Server.beginGame(player, appConfig, server, clock);
 
+        return newClient;
+}
+
+export function newGameFromSave (
+        client: Client.Client, saveData: Client.SaveData)
+{
+        const appConfig = ConfigData.createConfig();
+        const appData = {
+                commands: CommandData.commands,
+                commandIdsByMode: CommandData.commandIdsByMode,
+                menuItems: MenuData.items,
+                folders: MessageData.folders,
+        };
+        const gameData = client.server.app.data;
+
+        const newClient = Client.createClientFromSaveData(
+                appConfig, appData, gameData, saveData.saveData);
+        const newUI = Helpers.assign(newClient.ui,
+                { mode: UI.Modes.INDEX_INBOX });
+        return Helpers.assign(newClient, { ui: newUI });
 }
 
 function tick (getClient: () => Client.Client)
@@ -86,8 +99,8 @@ function tick (getClient: () => Client.Client)
 
         const client = getClient();
         const server = client.server;
-        server.app.clock = client.data.clock;
-        return Server.tickServer(server);
+        const clock = client.data.clock;
+        return Server.tickServer(server, clock);
 }
 
 export function startTick (getClient: () => Client.Client)

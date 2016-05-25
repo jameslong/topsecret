@@ -20,6 +20,7 @@ export interface RuntimeData {
         messagesById: Map.Map<Message.Message>;
         messageIdsByFolderId: IdsById;
         clock: Clock.Clock;
+        knownKeyIds: string[];
 }
 
 export interface Data extends RuntimeData {
@@ -30,7 +31,6 @@ export interface Data extends RuntimeData {
         menuItems: string[];
         profiles: string[];
         profilesById: Map.Map<Profile.Profile>;
-        knownKeyIds: string[];
 }
 
 type Id = { id: string; }
@@ -73,38 +73,63 @@ function group<T, U>(
         }, result);
 }
 
-export function createData(
+export function createDataFromSaveData(
         appData: AppData.AppData,
         profilesById: Map.Map<Profile.Profile>,
-        player: Player.Player,
-        clock: Clock.Clock): Data
+        runtimeData: RuntimeData)
 {
         const { folders, commands, commandIdsByMode, menuItems } = appData;
-        const getMessages = (folder: Folder.FolderData) => folder.messages;
 
         const foldersById = idMapFromArray(folders);
         const folderIds = folders.map(getId);
         const commandsById = idMapFromArray(commands);
-        const messagesById = idMapFromParentArray(folders, getMessages);
-        const messageIdsByFolderId = childIdsByParentIds(folders, getMessages);
-
         const profiles = Map.keys(profilesById);
-        const knownKeyIds = Map.keys(profilesById);
 
         return {
-                player,
+                player: runtimeData.player,
                 folders: folderIds,
                 foldersById,
                 commandsById,
                 commandIdsByMode,
                 menuItems,
-                messagesById,
-                messageIdsByFolderId,
+                messagesById: runtimeData.messagesById,
+                messageIdsByFolderId: runtimeData.messageIdsByFolderId,
                 profiles,
                 profilesById,
-                knownKeyIds,
-                clock,
+                knownKeyIds: runtimeData.knownKeyIds,
+                clock: runtimeData.clock,
         };
+}
+
+export function createRuntimeData (
+        player: Player.Player,
+        profilesById: Map.Map<Profile.Profile>,
+        folders: Folder.FolderData[],
+        clock: Clock.Clock): RuntimeData
+{
+        const getMessages = (folder: Folder.FolderData) => folder.messages;
+        const messagesById = idMapFromParentArray(folders, getMessages);
+        const messageIdsByFolderId = childIdsByParentIds(folders, getMessages);
+
+        return {
+                player,
+                messagesById,
+                messageIdsByFolderId,
+                clock,
+                knownKeyIds: Map.keys(profilesById),
+        };
+}
+
+export function createData (
+        appData: AppData.AppData,
+        profilesById: Map.Map<Profile.Profile>,
+        folders: Folder.FolderData[],
+        player: Player.Player,
+        clock: Clock.Clock): Data
+{
+        const runtimeData = createRuntimeData(
+                player, profilesById, folders, clock);
+        return createDataFromSaveData(appData, profilesById, runtimeData);
 }
 
 export function storeMessage (

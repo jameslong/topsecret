@@ -1,4 +1,3 @@
-import Clock = require('./clock');
 import DBTypes = require('./dbtypes');
 import Kbpgp = require('./kbpgp');
 import Helpers = require('./utils/helpers');
@@ -27,7 +26,6 @@ export interface State {
         emailDomain: string;
         data: Data;
         promises: DBTypes.PromiseFactories;
-        clock: Clock.Clock;
 }
 
 export function addKeyManagers (data: NarrativeData): Promise<GameData>

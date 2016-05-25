@@ -26,30 +26,43 @@ export interface Server extends RuntimeServer {
         app: State.State;
 }
 
-export function createServer (
+export function createServerFromSaveData (
         config: ConfigData.ConfigData,
         data: State.Data,
-        clock: Clock.Clock)
+        saveData: RuntimeServer)
 {
         const emailDomain = config.emailDomain;
-        const lastEvaluatedKey: string = null;
-        const db = LocalDB.createDB();
-        const id = { uid: 0 };
-        const promises = createPromises(id);
+        const lastEvaluatedKey = saveData.lastEvaluatedKey;
+        const db = saveData.db;
+        const id = saveData.id;
+        const promises = createPromises(id, db);
 
         const app = {
                 emailDomain,
                 data,
                 promises,
-                clock,
         };
         return { app, lastEvaluatedKey, db, id };
 }
 
-function createPromises (id: Id)
+export function createRuntimeServer (): RuntimeServer
+{
+        return {
+                lastEvaluatedKey: null,
+                db: LocalDB.createDB(),
+                id: { uid: 0 },
+        };
+}
+
+export function createServer (config: ConfigData.ConfigData, data: State.Data)
+{
+        const runtimeServer = createRuntimeServer();
+        return createServerFromSaveData(config, data, runtimeServer);
+}
+
+function createPromises (id: Id, db: LocalDB.DBState)
 {
         const debugDBTimeoutMs = 0;
-        const db = LocalDB.createDB();
         const calls = LocalDB.createLocalDBCalls(db, debugDBTimeoutMs);
         const sendFn = (data: Message.MessageData) => send(id, data);
         return DBTypes.createPromiseFactories(calls, sendFn);
@@ -76,7 +89,8 @@ export function send (id: Id, data: Message.MessageData) {
 export function beginGame (
         playerData: AppPlayer.Player,
         config: ConfigData.ConfigData,
-        server: Server)
+        server: Server,
+        clock: Clock.Clock)
 {
         const { email, publicKey, firstName, lastName, timezoneOffset } = playerData;
         const { version, beginGameMessage, emailDomain } = config;
@@ -86,7 +100,7 @@ export function beginGame (
 
         const groupData = server.app.data[version];
         const promises = server.app.promises;
-        const timestampMs = Clock.gameTimeMs(server.app.clock);
+        const timestampMs = Clock.gameTimeMs(clock);
 
         return Promises.beginGame(
                 beginGameMessage,
@@ -97,11 +111,11 @@ export function beginGame (
                 promises);
 }
 
-export function tickServer (server: Server)
+export function tickServer (server: Server, clock: Clock.Clock)
 {
         const { app, lastEvaluatedKey } = server;
 
-        return Main.tick(app, lastEvaluatedKey).then(lastEvaluatedKey => {
+        return Main.tick(app, clock, lastEvaluatedKey).then(lastEvaluatedKey => {
                 console.log(`tick, lastEvaluatedKey = ${lastEvaluatedKey}`);
                 server.lastEvaluatedKey = lastEvaluatedKey;
         });

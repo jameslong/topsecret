@@ -12,7 +12,8 @@ import ReplyOption = require('./replyoption');
 import Request = require('./requesttypes');
 import State = require('./state');
 
-export function tick (app: State.State, exclusiveStartKey: string)
+export function tick (
+        app: State.State, clock: Clock.Clock, exclusiveStartKey: string)
 {
         const maxResults = 1;
         const params = { exclusiveStartKey, maxResults };
@@ -24,7 +25,7 @@ export function tick (app: State.State, exclusiveStartKey: string)
 
                 return (message ?
                         promises.getPlayer(message.email).then(player =>
-                                update(app, message, player)
+                                update(app, clock, message, player)
                         ) :
                         Promise.resolve(null)
                 ).then(result => Promise.resolve(lastEvaluatedKey));
@@ -33,6 +34,7 @@ export function tick (app: State.State, exclusiveStartKey: string)
 
 export function update (
         app: State.State,
+        clock: Clock.Clock,
         message: Message.MessageState,
         player: Player.PlayerState)
 {
@@ -40,7 +42,7 @@ export function update (
         const groupData = app.data[player.version];
         const messageData = groupData.messages[message.name];
         const replyOptions = groupData.replyOptions;
-        const timestampMs = Clock.gameTimeMs(app.clock);
+        const timestampMs = Clock.gameTimeMs(clock);
         const state = { message, player, timestampMs };
 
         const children = pendingChildren(

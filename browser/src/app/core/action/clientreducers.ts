@@ -2,7 +2,6 @@ import Actions = require('./actions');
 import Data = require('../data');
 import DataReducers = require('./datareducers');
 import DraftReducers = require('./draftreducers');
-import DraftKeyReducers = require('./draftkeyreducers');
 import Helpers = require('../../../../../core/src/app/utils/helpers');
 import Main = require('./../main');
 import Redux = require('../redux/redux');
@@ -38,7 +37,6 @@ export function clientReducer (client: Client.Client, action: Redux.Action<any>)
                 server: client.server,
                 data: DataReducers.data(client.data, action),
                 ui: UIReducers.ui(client.ui, action),
-                draftKey: DraftKeyReducers.draftKey(client.draftKey, action),
                 draftMessage: DraftReducers.draft(client.draftMessage, action),
                 messageId: messageId(client.messageId, action),
         };
