@@ -20,12 +20,6 @@ export const Types = {
         TICK_SLOWER: 'TICK_SLOWER',
         ADD_TIME_OFFSET: 'ADD_TIME_OFFSET',
 
-        START_GENERATE_KEY: 'START_GENERATE_KEY',
-        GENERATED_KEY: 'GENERATED_KEY',
-        SET_DRAFT_KEY_NAME: 'SET_DRAFT_KEY_NAME',
-        SET_DRAFT_KEY_PASSPHRASE: 'SET_DRAFT_KEY_PASSPHRASE',
-        DELETE_KEY: 'DELETE_KEY',
-
         SET_MODE: 'SET_MODE',
         COMPOSE_MESSAGE: 'COMPOSE_MESSAGE',
         COMPOSE_REPLY: 'COMPOSE_REPLY',
@@ -41,7 +35,6 @@ export const Types = {
         EDIT_SUBJECT: 'EDIT_SUBJECT',
         EDIT_TO: 'EDIT_TO',
 
-        SET_PLAYER_KEY: 'SET_PLAYER_KEY',
         SET_ACTIVE_KEY: 'SET_ACTIVE_KEY',
         IMPORT_KEYS: 'IMPORT_KEYS',
 
@@ -65,16 +58,6 @@ export interface Tick extends Redux.Action<void> {}
 export interface TickFaster extends Redux.Action<void> {}
 export interface TickSlower extends Redux.Action<void> {}
 export interface AddTimeOffset extends Redux.Action<number> {}
-
-export interface StartGenerateKey extends Redux.Action<void> {}
-export interface GeneratedKeyParams {
-        id: string;
-        keyManager: Kbpgp.KeyManagerInstance;
-}
-export interface GeneratedKey extends Redux.Action<GeneratedKeyParams> {}
-export interface SetDraftKeyName extends Redux.Action<string> {}
-export interface SetDraftKeyPassphrase extends Redux.Action<string> {}
-export interface DeleteKey extends Redux.Action<string> {}
 
 export interface SetMode extends Redux.Action<string> {}
 export interface SetActiveFolder extends Redux.Action<string> {}
@@ -117,7 +100,6 @@ export interface DisplayFolderParams {
 }
 export interface DisplayFolder extends Redux.Action<DisplayFolderParams> {}
 
-export interface SetPlayerKey extends Redux.Action<string> {}
 export interface SetActiveKey extends Redux.Action<string> {}
 export type ImportKeysParams = Map.Map<Kbpgp.KeyManagerInstance>;
 export interface ImportKeys extends Redux.Action<ImportKeysParams> {}

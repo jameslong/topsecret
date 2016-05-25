@@ -333,12 +333,6 @@ export function editTo (client: Client.Client)
         return ActionCreators.editTo(true);
 }
 
-export function setPlayerKey (client: Client.Client)
-{
-        const id = client.ui.activeKeyId;
-        return ActionCreators.setPlayerKey(id);
-}
-
 export function nextKey (client: Client.Client)
 {
         const id = client.ui.activeKeyId;
@@ -353,17 +347,6 @@ export function previousKey (client: Client.Client)
         const keyIds = client.data.keyManagers;
         const previousId = Arr.previousValue(keyIds, id);
         return ActionCreators.setActiveKey(previousId);
-}
-
-export function startGenerateKey (client: Client.Client)
-{
-        return ActionCreators.startGenerateKey();
-}
-
-export function deleteKey (client: Client.Client)
-{
-        const id = client.ui.activeKeyId;
-        return ActionCreators.deleteKey(id);
 }
 
 export function importKeys (client: Client.Client): Redux.Action<any>

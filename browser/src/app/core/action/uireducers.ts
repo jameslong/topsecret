@@ -79,22 +79,6 @@ export function ui (ui: UI.UI, action: Redux.Action<any>)
                         const editTo = <Actions.EditTo><any>action;
                         return handleEditTo(ui, editTo);
 
-                case Actions.Types.START_GENERATE_KEY:
-                        const startGenerateKey = <Actions.StartGenerateKey><any>action;
-                        return handleStartGenerateKey(ui, startGenerateKey);
-
-                case Actions.Types.GENERATED_KEY:
-                        const generatedKey = <Actions.GeneratedKey><any>action;
-                        return handleGeneratedKey(ui, generatedKey);
-
-                case Actions.Types.SET_DRAFT_KEY_NAME:
-                        const setDraftKeyName = <Actions.SetDraftKeyName><any>action;
-                        return handleSetDraftKeyName(ui, setDraftKeyName);
-
-                case Actions.Types.SET_DRAFT_KEY_PASSPHRASE:
-                        const setDraftKeyPassphrase = <Actions.SetDraftKeyPassphrase><any>action;
-                        return handleSetDraftKeyPassphrase(ui, setDraftKeyPassphrase);
-
                 case Actions.Types.SET_ACTIVE_KEY:
                         const setActiveKey = <Actions.SetActiveKey><any>action;
                         return handleSetActiveKey(ui, setActiveKey);
@@ -236,38 +220,6 @@ function handleEditTo (ui: UI.UI, action: Actions.EditTo)
 {
         const editingDraftTo = action.parameters;
         return Helpers.assign(ui, { editingDraftTo });
-}
-
-function handleStartGenerateKey (ui: UI.UI, action: Actions.StartGenerateKey)
-{
-        const editingDraftKeyName = true;
-        return Helpers.assign(ui, { editingDraftKeyName });
-}
-
-function handleGeneratedKey (ui: UI.UI, action: Actions.GeneratedKey)
-{
-        const generatingKey = false;
-        return Helpers.assign(ui, { generatingKey });
-}
-
-function handleSetDraftKeyName (ui: UI.UI, action: Actions.SetDraftKeyName)
-{
-        const editingDraftKeyName = false;
-        const editingDraftKeyPassphrase = true;
-        return Helpers.assign(ui, {
-                editingDraftKeyName,
-                editingDraftKeyPassphrase
-        });
-}
-
-function handleSetDraftKeyPassphrase (ui: UI.UI, action: Actions.SetDraftKeyPassphrase)
-{
-        const editingDraftKeyPassphrase = false;
-        const generatingKey = true;
-        return Helpers.assign(ui, {
-                editingDraftKeyPassphrase,
-                generatingKey,
-        });
 }
 
 function handleSetActiveKey (ui: UI.UI, action: Actions.SetActiveKey)

@@ -37,12 +37,6 @@ export const tickFaster = createEmptyActionCreator(Actions.Types.TICK_FASTER);
 export const tickSlower = createEmptyActionCreator(Actions.Types.TICK_SLOWER);
 export const addTimeOffset = createActionCreator<number>(Actions.Types.ADD_TIME_OFFSET);
 
-export const startGenerateKey = createEmptyActionCreator(Actions.Types.START_GENERATE_KEY);
-export const generatedKey = createActionCreator<Actions.GeneratedKeyParams>(Actions.Types.GENERATED_KEY);
-export const setDraftKeyName = createActionCreator<string>(Actions.Types.SET_DRAFT_KEY_NAME);
-export const setDraftKeyPassphrase = createActionCreator<string>(Actions.Types.SET_DRAFT_KEY_PASSPHRASE);
-export const deleteKey = createActionCreator<string>(Actions.Types.DELETE_KEY);
-
 export const setMode = createActionCreator<string>(Actions.Types.SET_MODE);
 export const composeMessage = createActionCreator<Actions.ComposeMessageParams>(Actions.Types.COMPOSE_MESSAGE);
 export const composeReply = createActionCreator<Actions.ComposeReplyParams>(Actions.Types.COMPOSE_REPLY);
@@ -58,7 +52,6 @@ export const endEditBody = createEmptyActionCreator(Actions.Types.END_EDIT_BODY)
 export const editSubject = createActionCreator<boolean>(Actions.Types.EDIT_SUBJECT);
 export const editTo = createActionCreator<boolean>(Actions.Types.EDIT_TO);
 
-export const setPlayerKey = createActionCreator<string>(Actions.Types.SET_PLAYER_KEY);
 export const setActiveKey = createActionCreator<string>(Actions.Types.SET_ACTIVE_KEY);
 export const importKeys = createActionCreator<Actions.ImportKeysParams>(Actions.Types.IMPORT_KEYS);
 

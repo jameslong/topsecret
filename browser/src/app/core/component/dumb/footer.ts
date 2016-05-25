@@ -1,7 +1,5 @@
 import Client = require('../../client');
 import Clock = require('../../../../../../core/src/app/clock');
-import EditDraftKeyName = require('../smart/editdraftkeyname');
-import EditDraftKeyPassphrase = require('../smart/editdraftkeypassphrase');
 import EditSubject = require('../smart/editsubject');
 import EditTo = require('../smart/editto');
 import FooterCompose = require('./footercompose');
@@ -111,14 +109,6 @@ function createStatusBarContent (state: Client.Client): React.ReactElement<any>
                 return EditSubject({ value: message.subject });
         } else if (state.ui.editingDraftTo) {
                 return EditTo({ value: message.to });
-        } else if (state.ui.editingDraftKeyName) {
-                return EditDraftKeyName({ value: '' });
-        } else if (state.ui.editingDraftKeyPassphrase) {
-                const userId = state.data.player.email;
-                const keyId = state.draftKey.id;
-                return EditDraftKeyPassphrase({ value: '', userId, keyId });
-        } else if (state.ui.generatingKey) {
-                return Span({ className: 'statusbar-ongoing' }, 'Generating key');
         } else if (state.ui.sending) {
                 return Span({ className: 'statusbar-ongoing' }, 'Sending');
         } else if (state.ui.decrypting) {

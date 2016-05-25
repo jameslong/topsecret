@@ -15,11 +15,6 @@ export function client (client: Client.Client, action: Redux.Action<any>)
         let temp = client;
 
         switch (action.type) {
-                case Actions.Types.DELETE_KEY:
-                        const deleteKey = <Actions.DeleteKey><any>action;
-                        temp = handleDeleteKey(temp, deleteKey);
-                        break;
-
                 case Actions.Types.IMPORT_SAVE_DATA:
                         const saveData = <Actions.ImportSaveData><any>action;
                         temp = handleImportSaveData(temp, saveData);
@@ -57,18 +52,6 @@ export function messageId (messageId: number, action: Redux.Action<any>)
                 default:
                         return messageId;
         }
-}
-
-function handleDeleteKey (client: Client.Client, action: Actions.DeleteKey)
-{
-        const id = action.parameters;
-        const data = Data.deleteKey(client.data, id);
-
-        const activeKeyId = id === client.ui.activeKeyId ?
-                data.keyManagers[0] : client.ui.activeKeyId;
-        const ui = Helpers.assign(client.ui, { activeKeyId });
-
-        return Helpers.assign(client, { data, ui });
 }
 
 function handleImportSaveData (
