@@ -26,7 +26,7 @@ export function beginDemo (
         const timezoneOffset = 0;
         const player = Player.createPlayerState(
                 email, publicKey, version, firstName, lastName, timezoneOffset);
-        const timestampMs = Clock.gameTimeMs(app.clock);
+        const timestampMs = Clock.gameTimeMs(state.clock);
 
         return Promises.beginGame(
                 threadMessageName,
