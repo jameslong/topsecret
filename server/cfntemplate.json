@@ -168,7 +168,45 @@
                                         {
                                                 "Ref": "EC2SecurityGroup"
                                         }
-                                ]
+                                ],
+                                "UserData" : {
+                                        "Fn::Base64" : {
+                                                "Fn::Join" : ["\n", [
+                                                        "#!/bin/bash -xe",
+
+                                                        "cd home/ubuntu",
+
+                                                        "# Update packages",
+                                                        "apt update",
+
+                                                        "# Install aws cli",
+                                                        "apt -y install awscli",
+
+                                                        "# Install nodejs",
+                                                        "apt -y install nodejs",
+
+                                                        "# Install npm",
+                                                        "apt -y install npm",
+
+                                                        "# Install unzip",
+                                                        "apt -y install unzip",
+
+                                                        "# Install grunt cli",
+                                                        "npm install -g grunt-cli",
+
+                                                        "# Download file from s3",
+                                                        "aws s3 cp s3://topsecret-deploy ./ --recursive",
+
+                                                        "# Unzip",
+                                                        "unzip topsecret.zip",
+
+                                                        "cd topsecret/server",
+
+                                                        "# Start server",
+                                                        "nodejs build/server/src/app/main.js"
+                                                ] ]
+                                        }
+                                }
                         }
                 },
 
