@@ -22,10 +22,11 @@ var debugConfig: Config.ConfigState = {
                 validApplicationThreadPGP: 'transferRequest_valid_pgp',
                 invalidApplicationThread: 'transferRequest_invalid',
                 resignationThread: 'resignation_0',
-                narrativeFolder: '../content',
-                defaultNarrativeGroup: 'sample_data',
+                narrativeFolder: '../../topsecret-content/game',
+                defaultNarrativeGroup: '0',
                 messageSchemaPath: '../core/src/app/messageschema.json',
                 profileSchemaPath: '../core/src/app/profileschema.json',
+                replyOptionSchemaPath: '../core/src/app/replyoptionschema.json',
         },
         timeFactor: (1/60) * 1000
 };
@@ -54,8 +55,9 @@ var releaseConfig: Config.ConfigState = {
                 resignationThread: 'resignation_0',
                 narrativeFolder: '../content',
                 defaultNarrativeGroup: 'sample_data',
-                messageSchemaPath: 'src/app/data/messageschema.json',
-                profileSchemaPath: 'src/app/data/profileschema.json',
+                messageSchemaPath: '../core/src/app/messageschema.json',
+                profileSchemaPath: '../core/src/app/profileschema.json',
+                replyOptionSchemaPath: '../core/src/app/replyoptionschema.json',
         },
         timeFactor: 1
 };

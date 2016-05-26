@@ -24,14 +24,17 @@ export interface State {
         server: Server.ServerState;
         lastEvaluatedKey: string;
         app: State.State;
+        clock: Clock.Clock;
 }
 
 export function createState (config: Config.ConfigState)
 {
         const server = Server.createServerState();
         const lastEvaluatedKey: string = null;
+        const clock = Clock.createClock(config.timeFactor);
+
         return createGameState(config, server).then(app => {
-                return { config, server, lastEvaluatedKey, app };
+                return { config, server, lastEvaluatedKey, app, clock };
         });
 }
 
@@ -51,9 +54,14 @@ export function createGameState (
                 content.profileSchemaPath);
         const messageSchema = FileSystem.loadJSONSync<JSON>(
                 content.messageSchemaPath);
+        const replyOptionSchema = FileSystem.loadJSONSync<JSON>(
+                content.replyOptionSchemaPath);
         const dataErrors = narrativeData.reduce((result, narrative) => {
                 const errors = DataValidation.getDataErrors(
-                        narrative, profileSchema, messageSchema);
+                        narrative,
+                        profileSchema,
+                        messageSchema,
+                        replyOptionSchema);
                 if (errors.length) {
                         result.push(errors);
                 }
@@ -87,13 +95,11 @@ export function onGameData (
                 config.emailDomain);
         const promises = DBSetup.createPromiseFactories(config, send);
 
-        const clock = Clock.createClock(config.timeFactor);
 
         const gameState: State.State = {
                 emailDomain: config.emailDomain,
                 data: null,
                 promises,
-                clock,
         };
 
         if (gameData) {
@@ -140,11 +146,11 @@ export function update (state: State)
 {
         const gameState = state.app;
         const exclusiveStartKey = state.lastEvaluatedKey;
-        gameState.clock = Clock.tick(gameState.clock);
+        state.clock = Clock.tick(state.clock);
 
         Log.debug(`Update - exclusiveStartKey = ${exclusiveStartKey}`);
 
-        return Main.tick(gameState, exclusiveStartKey);
+        return Main.tick(gameState, state.clock, exclusiveStartKey);
 }
 
 export function onUpdateEnd (state: State, lastEvaluatedKey: string)

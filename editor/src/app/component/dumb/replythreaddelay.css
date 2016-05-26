@@ -1,0 +1,16 @@
+.reply-delay {
+        display: table;
+}
+
+.reply-delay-name,
+.reply-delay-day,
+.reply-delay-hour,
+.reply-delay-min {
+        display: table-cell;
+}
+
+.reply-delay-day,
+.reply-delay-hour,
+.reply-delay-min {
+        width: 10%;
+}

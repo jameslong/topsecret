@@ -1,10 +1,10 @@
 import Actions = require('./actions');
 import MathUtils = require('../math');
-import Message = require('../message');
+import EditorMessage = require('../editormessage');
 import MessageDelay = require('../messagedelay');
 import Narrative = require('../narrative');
 import Redux = require('../redux/redux');
-import ReplyOption = require('../replyoption');
+import ReplyOption = require('../../../../core/src/app/replyoption');
 
 function createAction<T> (type: string, parameters: T): Redux.Action<T>
 {

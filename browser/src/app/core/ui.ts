@@ -6,6 +6,7 @@ export const Modes = {
         HELP: 'HELP',
         PAGER: 'PAGER',
         COMPOSE: 'COMPOSE',
+        COMPOSE_BODY: 'COMPOSE_BODY',
         ENCRYPTION: 'ENCRYPTION',
         FOLDER: 'FOLDER',
         LOAD_MENU: 'LOAD_MENU',
@@ -18,11 +19,10 @@ export interface UI {
         previousMode: string;
         activeMessageId: string;
         activeFolderId: string;
-        activeKeyId: string;
+        activeKeyIndex: number;
         activeMainMenuIndex: number;
         activeSaveIndex: number;
         activeLoadIndex: number;
-        editingDraftBody: boolean;
         editingDraftSubject: boolean;
         editingDraftTo: boolean;
         editingDraftKeyName: boolean;
@@ -33,21 +33,17 @@ export interface UI {
 }
 
 export function createUI (
-        mode: string,
-        activeMessageId: string,
-        activeFolderId: string,
-        activeKeyId: string): UI
+        mode: string, activeMessageId: string, activeFolderId: string): UI
 {
         return {
                 mode,
                 previousMode: mode,
                 activeMessageId,
                 activeFolderId,
-                activeKeyId,
+                activeKeyIndex: 0,
                 activeMainMenuIndex: 0,
                 activeSaveIndex: 0,
                 activeLoadIndex: 0,
-                editingDraftBody: false,
                 editingDraftSubject: false,
                 editingDraftTo: false,
                 editingDraftKeyName: false,
@@ -60,9 +56,9 @@ export function createUI (
 
 export function isEditing (ui: UI)
 {
-        return ui.editingDraftTo ||
+        return ui.mode === Modes.COMPOSE_BODY ||
+                ui.editingDraftTo ||
                 ui.editingDraftSubject ||
-                ui.editingDraftBody ||
                 ui.editingDraftKeyName ||
                 ui.editingDraftKeyPassphrase;
 }

@@ -1,14 +1,6 @@
-export interface PlayerData {
-        email: string;
-        firstName: string;
-        lastName: string;
-        timezoneOffset: number;
-        publicKey: string;
-        privateKey: string;
-        passphrase: string;
-}
+import Player = require('../player');
 
-export const player: PlayerData = {
+export const player: Player.Player = {
         email: 'Tom Smith <tom.smith@gmail.com>',
         firstName: 'Tom',
         lastName: 'Smith',

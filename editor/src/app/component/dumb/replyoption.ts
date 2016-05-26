@@ -1,23 +1,26 @@
+import Arr = require('../../../../../core/src/app/utils/array');
 import Helpers = require('../../../../../core/src/app/utils/helpers');
-import Message = require('../../message');
-import MessageDelay = require('../../messagedelay');
+import EditorMessage = require('../../editormessage');
+import Message = require('../../../../../core/src/app/message');
+import MessageHelpers = require('../../../../../core/src/app/messagehelpers');
 import Narrative = require('../../narrative');
 import React = require('react');
-import ReplyOption = require('../../replyoption');
+import ReplyOption = require('../../../../../core/src/app/replyoption');
 import TextInputValidated = require('../textinputvalidated');
 
 import ComponentHelpers = require('../helpers');
 import Core = require('../core');
 import Div = Core.Div;
 import EditMessage = require('./editmessage');
-import MessageDelayComponent = require('./messagedelay');
+import ReplyThreadDelay = require('./replythreaddelay');
+import Multiple = require('./multiple');
 import TextComponent = require('./text');
 import TextList = require('./textlist');
 
 interface ReplyOptionProps extends React.Props<any> {
         onSet: (option: ReplyOption.ReplyOption) => void;
         replyOption: ReplyOption.ReplyOption;
-        messages: Message.Messages;
+        messages: EditorMessage.EditorMessages;
 };
 
 function renderReplyOption (props: ReplyOptionProps)
@@ -41,17 +44,9 @@ function renderReplyOption (props: ReplyOptionProps)
 
         const parameters = renderParameters(onSet, option);
 
-        const onSetDelay = (delay: MessageDelay.MessageDelay) =>
-                setMessageDelay(onSet, option, delay);
-        const delayProps = {
-                delay: option.messageDelay,
-                onChange: onSetDelay,
-                messages: props.messages,
-        };
-        const delay = MessageDelayComponent(delayProps);
+        const delays = renderDelays(onSet, option, props.messages);
 
-        return Div({ className: 'reply-option' },
-                type, parameters, delay);
+        return Div({ className: 'reply-option' }, type, parameters, delays);
 }
 
 const ReplyOptionComponent = React.createFactory(renderReplyOption);
@@ -65,12 +60,13 @@ function setType (
         onSet(newOption);
 }
 
-function setMessageDelay (
+function setCondition (
         onSet: (option: ReplyOption.ReplyOption) => void,
-        option: ReplyOption.ReplyOption,
-        messageDelay: MessageDelay.MessageDelay)
+        option: ReplyOption.ReplyOptionKeyword,
+        condition: string)
 {
-        const newOption = Helpers.assign(option, { messageDelay });
+        const parameters = Helpers.assign(option.parameters, { condition });
+        const newOption = Helpers.assign(option, { parameters });
         onSet(newOption);
 }
 
@@ -79,12 +75,28 @@ function renderParameters  (
         option: ReplyOption.ReplyOption)
 {
         if (option.type === ReplyOption.ReplyOptionType.Keyword) {
-                const keyword =
-                        <ReplyOption.ReplyOptionKeyword><any>option;
-                return renderMatches(onSet, keyword);
+                const keyword = <ReplyOption.ReplyOptionKeyword><any>option;
+                const condition = renderCondition(onSet, keyword);
+                const matches = renderMatches(onSet, keyword);
+                return Div({}, condition, matches);
         } else {
                 return null;
         }
+}
+
+function renderCondition (
+        onSet: (option: ReplyOption.ReplyOption) => void,
+        option: ReplyOption.ReplyOptionKeyword)
+{
+        const onSetCondition = (value: string) =>
+                setCondition(onSet, option, value);
+        const props = {
+                placeholder: '',
+                value: option.parameters.condition,
+                onChange: onSetCondition,
+        };
+        const condition = TextComponent(props);
+        return ComponentHelpers.wrapInLabel('Condition', condition);
 }
 
 function renderMatches (
@@ -113,6 +125,70 @@ function setMatches (
         const parameters = Helpers.assign(option.parameters, { matches });
         const newOption = Helpers.assign(option, { parameters });
         onSet(newOption);
+}
+
+function setDelays (
+        onSet: (option: ReplyOption.ReplyOption) => void,
+        option: ReplyOption.ReplyOption,
+        messageDelays: Message.ReplyThreadDelay[])
+{
+        const newOption = Helpers.assign(option, { messageDelays });
+        onSet(newOption);
+}
+
+function onSetDelay (
+        onSet: (option: ReplyOption.ReplyOption) => void,
+        option: ReplyOption.ReplyOption,
+        index: number,
+        delay: Message.ReplyThreadDelay)
+{
+        const delays = Arr.set(option.messageDelays, index, delay);
+        setDelays(onSet, option, delays);
+}
+
+function onAddDelay (
+        onSet: (option: ReplyOption.ReplyOption) => void,
+        option: ReplyOption.ReplyOption)
+{
+        const delay = MessageHelpers.createReplyThreadDelay();
+        const delays = Arr.push(option.messageDelays, delay);
+        setDelays(onSet, option, delays);
+}
+
+function onRemoveDelay (
+        onSet: (option: ReplyOption.ReplyOption) => void,
+        option: ReplyOption.ReplyOption,
+        index: number)
+{
+        const delays = Arr.deleteIndex(option.messageDelays, index);
+        setDelays(onSet, option, delays);
+}
+
+function renderDelays (
+        onSet: (option: ReplyOption.ReplyOption) => void,
+        option: ReplyOption.ReplyOption,
+        messages: EditorMessage.EditorMessages)
+{
+        const delays = option.messageDelays;
+        const children = delays.map((delay, index) => {
+                const onSetDelayLocal = (delay: Message.ReplyThreadDelay) =>
+                        onSetDelay(onSet, option, index, delay);
+                const props = {
+                        delay,
+                        onChange: onSetDelayLocal,
+                        messages: messages,
+                };
+                return ReplyThreadDelay(props);
+        });
+        const onAdd = () => onAddDelay(onSet, option);
+        const onRemove = (index: number) => onRemoveDelay(onSet, option, index);
+        const multipleProps = {
+                children: children,
+                onAdd: onAdd,
+                onRemove: onRemove,
+        };
+        const multiple = Multiple(multipleProps);
+        return ComponentHelpers.wrapInLabel('Delays', multiple);
 }
 
 export = ReplyOptionComponent;

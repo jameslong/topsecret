@@ -55,10 +55,6 @@ export function ui (ui: UI.UI, action: Redux.Action<any>)
                         const displayFolder = <Actions.DisplayFolder><any>action;
                         return handleDisplayFolder(ui, displayFolder);
 
-                case Actions.Types.SET_DRAFT_BODY:
-                        const setDraftBody = <Actions.SetDraftBody><any>action;
-                        return handleSetDraftBody(ui, setDraftBody);
-
                 case Actions.Types.SET_DRAFT_SUBJECT:
                         const setDraftSubject = <Actions.SetDraftSubject><any>action;
                         return handleSetDraftSubject(ui, setDraftSubject);
@@ -71,6 +67,10 @@ export function ui (ui: UI.UI, action: Redux.Action<any>)
                         const editBody = <Actions.EditBody><any>action;
                         return handleEditBody(ui, editBody);
 
+                case Actions.Types.END_EDIT_BODY:
+                        const endEditBody = <Actions.EndEditBody><any>action;
+                        return handleEndEditBody(ui, endEditBody);
+
                 case Actions.Types.EDIT_SUBJECT:
                         const editSubject = <Actions.EditSubject><any>action;
                         return handleEditSubject(ui, editSubject);
@@ -79,25 +79,9 @@ export function ui (ui: UI.UI, action: Redux.Action<any>)
                         const editTo = <Actions.EditTo><any>action;
                         return handleEditTo(ui, editTo);
 
-                case Actions.Types.START_GENERATE_KEY:
-                        const startGenerateKey = <Actions.StartGenerateKey><any>action;
-                        return handleStartGenerateKey(ui, startGenerateKey);
-
-                case Actions.Types.GENERATED_KEY:
-                        const generatedKey = <Actions.GeneratedKey><any>action;
-                        return handleGeneratedKey(ui, generatedKey);
-
-                case Actions.Types.SET_DRAFT_KEY_NAME:
-                        const setDraftKeyName = <Actions.SetDraftKeyName><any>action;
-                        return handleSetDraftKeyName(ui, setDraftKeyName);
-
-                case Actions.Types.SET_DRAFT_KEY_PASSPHRASE:
-                        const setDraftKeyPassphrase = <Actions.SetDraftKeyPassphrase><any>action;
-                        return handleSetDraftKeyPassphrase(ui, setDraftKeyPassphrase);
-
-                case Actions.Types.SET_ACTIVE_KEY:
-                        const setActiveKey = <Actions.SetActiveKey><any>action;
-                        return handleSetActiveKey(ui, setActiveKey);
+                case Actions.Types.SET_ACTIVE_KEY_INDEX:
+                        const setActiveKey = <Actions.SetActiveKeyIndex><any>action;
+                        return handleSetActiveKeyIndex(ui, setActiveKey);
 
                 case Actions.Types.RECEIVE_REPLY:
                         const receiveAction = <Actions.ReceiveReply><any>action;
@@ -115,6 +99,10 @@ export function ui (ui: UI.UI, action: Redux.Action<any>)
                         const setSaveIndex = <Actions.SetActiveSaveIndex><any>action;
                         return handleSetActiveSaveIndex(ui, setSaveIndex);
 
+                case Actions.Types.NEW_GAME:
+                        const newGame = <Actions.NewGame><any>action;
+                        return handleNewGame(ui, newGame);
+
                 default:
                         return ui;
         }
@@ -122,11 +110,9 @@ export function ui (ui: UI.UI, action: Redux.Action<any>)
 
 function handleBlur (ui: UI.UI, action: Actions.Blur)
 {
-        const editingDraftBody = false;
         const editingDraftSubject = false;
         const editingDraftTo = false;
         return Helpers.assign(ui, {
-                editingDraftBody,
                 editingDraftSubject,
                 editingDraftTo
         });
@@ -202,12 +188,6 @@ function handleDisplayFolder (ui: UI.UI, action: Actions.DisplayFolder)
         return UI.setMode(temp, mode);
 }
 
-function handleSetDraftBody (ui: UI.UI, action: Actions.SetDraftBody)
-{
-        const editingDraftBody = false;
-        return Helpers.assign(ui, { editingDraftBody });
-}
-
 function handleSetDraftSubject (ui: UI.UI, action: Actions.SetDraftSubject)
 {
         const editingDraftSubject = false;
@@ -222,8 +202,12 @@ function handleSetDraftTo (ui: UI.UI, action: Actions.SetDraftTo)
 
 function handleEditBody (ui: UI.UI, action: Actions.EditBody)
 {
-        const editingDraftBody = action.parameters;
-        return Helpers.assign(ui, { editingDraftBody });
+        return UI.setMode(ui, UI.Modes.COMPOSE_BODY);
+}
+
+function handleEndEditBody (ui: UI.UI, action: Actions.EditBody)
+{
+        return UI.setMode(ui, UI.Modes.COMPOSE);
 }
 
 function handleEditSubject (ui: UI.UI, action: Actions.EditSubject)
@@ -238,42 +222,10 @@ function handleEditTo (ui: UI.UI, action: Actions.EditTo)
         return Helpers.assign(ui, { editingDraftTo });
 }
 
-function handleStartGenerateKey (ui: UI.UI, action: Actions.StartGenerateKey)
+function handleSetActiveKeyIndex (ui: UI.UI, action: Actions.SetActiveKeyIndex)
 {
-        const editingDraftKeyName = true;
-        return Helpers.assign(ui, { editingDraftKeyName });
-}
-
-function handleGeneratedKey (ui: UI.UI, action: Actions.GeneratedKey)
-{
-        const generatingKey = false;
-        return Helpers.assign(ui, { generatingKey });
-}
-
-function handleSetDraftKeyName (ui: UI.UI, action: Actions.SetDraftKeyName)
-{
-        const editingDraftKeyName = false;
-        const editingDraftKeyPassphrase = true;
-        return Helpers.assign(ui, {
-                editingDraftKeyName,
-                editingDraftKeyPassphrase
-        });
-}
-
-function handleSetDraftKeyPassphrase (ui: UI.UI, action: Actions.SetDraftKeyPassphrase)
-{
-        const editingDraftKeyPassphrase = false;
-        const generatingKey = true;
-        return Helpers.assign(ui, {
-                editingDraftKeyPassphrase,
-                generatingKey,
-        });
-}
-
-function handleSetActiveKey (ui: UI.UI, action: Actions.SetActiveKey)
-{
-        const activeKeyId = action.parameters;
-        return Helpers.assign(ui, { activeKeyId });
+        const activeKeyIndex = action.parameters;
+        return Helpers.assign(ui, { activeKeyIndex });
 }
 
 function handleReceiveReply (ui: UI.UI, action: Actions.ReceiveReply)
@@ -304,4 +256,9 @@ function handleSetActiveSaveIndex (
 {
         const activeSaveIndex = action.parameters;
         return Helpers.assign(ui, { activeSaveIndex });
+}
+
+function handleNewGame (ui: UI.UI, action: Actions.NewGame)
+{
+        return UI.setMode(ui, UI.Modes.INDEX_INBOX);
 }

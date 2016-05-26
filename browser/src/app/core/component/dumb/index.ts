@@ -19,8 +19,12 @@ function renderIndex(props: IndexProps)
         const selectedId = props.activeMessageId;
         const selectedIndex = Arr.find(messages,
                 message => message.id === selectedId);
-        const unread = messages.filter(Func.not(Message.isRead));
-        const highlightedIndices = unread.map((message, index) => index);
+        const highlightedIndices = messages.reduce((result, message, index) => {
+                if (!Message.isRead(message)) {
+                        result.push(index);
+                }
+                return result;
+        }, []);
 
         const rowData = messages.map(createRowData);
         return SelectableRows({ rowData, selectedIndex, highlightedIndices });

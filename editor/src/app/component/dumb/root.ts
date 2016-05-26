@@ -1,4 +1,4 @@
-import Message = require('../../message');
+import EditorMessage = require('../../editormessage');
 import Narrative = require('../../narrative');
 import React = require('react');
 import State = require('../../state');
@@ -32,7 +32,7 @@ function renderRoot (props: RootProps)
 
         const narrative = Narrative.getActiveNarrative(store);
         const messages = narrative.messagesById;
-        const singleSelected = Message.getSingleSelectedMessage(messages);
+        const singleSelected = EditorMessage.getSingleSelectedMessage(messages);
 
         const menuBarProps = {
                 narrativeNames,

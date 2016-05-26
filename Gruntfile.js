@@ -28,10 +28,13 @@ module.exports = function (grunt)
                         },
                         app_content: {
                                 expand: true,
-                                cwd: './content',
+                                cwd: '../topsecret-content/game',
                                 src: ['**'],
                                 dest: './app/build/content',
-                                filter: 'isFile'
+                                filter: function (filepath) {
+                                        return grunt.file.isFile(filepath) ||
+                                                grunt.file.isDir(filepath);
+                                }
                         },
                         browser_css: {
                                 expand: true,
@@ -51,9 +54,8 @@ module.exports = function (grunt)
                         browser_assets: {
                                 expand: true,
                                 cwd: './browser/assets',
-                                src: ['**.*'],
-                                dest: './browser/build/assets',
-                                filter: 'isFile'
+                                src: ['**'],
+                                dest: './browser/build/assets'
                         },
                         browser_files: {
                                 expand: true,
@@ -61,6 +63,12 @@ module.exports = function (grunt)
                                 src: ['requireconfig.js', 'index.html'],
                                 dest: './browser/build',
                                 filter: 'isFile'
+                        },
+                        browser_node_modules: {
+                                expand: true,
+                                cwd: './browser',
+                                src: ['./node_modules/**'],
+                                dest: './browser/build/'
                         },
                         editor_css: {
                                 expand: true,
@@ -159,7 +167,8 @@ module.exports = function (grunt)
                 'copy:browser_css',
                 'copy:browser_lib',
                 'copy:browser_assets',
-                'copy:browser_files'
+                'copy:browser_files',
+                'copy:browser_node_modules'
         ]);
         grunt.registerTask('editor', [
                 'clean:editor',

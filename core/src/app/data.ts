@@ -3,6 +3,7 @@ import Helpers = require('./utils/helpers');
 import Map = require('./utils/map');
 import Message = require('./message');
 import Profile = require('./profile');
+import ReplyOption = require('./replyoption');
 import State = require('./state');
 
 export interface Path {
@@ -17,6 +18,7 @@ export interface NarrativeData {
         name: string;
         profiles: Map.Map<Profile.Profile>;
         messages: Map.Map<Message.ThreadMessage>;
+        replyOptions: Map.Map<ReplyOption.ReplyOption[]>;
         strings: Map.Map<string>;
 }
 
@@ -48,17 +50,20 @@ export function loadNarrative (stem: string, name: string): NarrativeData
         const path = join(stem, name);
         const profilesPath = join(path, 'profiles');
         const messagesPath = join(path, 'messages');
+        const replyOptionsPath = join(path, 'replyoptions');
         const stringsPath = join(path, 'strings');
 
         const profiles = FileSystem.loadJSONDirSync<Profile.Profile>(profilesPath);
         const messages = FileSystem.loadJSONDirSync<Message.ThreadMessage>(messagesPath);
+        const replyOptions = FileSystem.loadJSONDirAsMap<ReplyOption.ReplyOption[]>(replyOptionsPath);
         const strings = FileSystem.loadJSONDirAsMap<string>(stringsPath);
 
         return {
-                name: name,
+                name,
                 profiles: Helpers.mapFromNameArray(profiles),
                 messages: Helpers.mapFromNameArray(messages),
-                strings: strings,
+                replyOptions,
+                strings,
         };
 }
 

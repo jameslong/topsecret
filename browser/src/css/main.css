@@ -1,3 +1,21 @@
+/* ubuntu-mono-regular - latin */
+@font-face {
+  font-family: 'Ubuntu Mono';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Ubuntu Mono'), local('UbuntuMono-Regular'),
+       url('../assets/fonts/ubuntu-mono-v6-latin/ubuntu-mono-v6-latin-regular.woff') format('woff'); /* Modern Browsers */
+}
+
+/* ubuntu-mono-700 - latin */
+@font-face {
+  font-family: 'Ubuntu Mono';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Ubuntu Mono Bold'), local('UbuntuMono-Bold'),
+       url('../assets/fonts/ubuntu-mono-v6-latin/ubuntu-mono-v6-latin-700.woff') format('woff'); /* Modern Browsers */
+}
+
 /* B&W */
 /*:root {
         --main-bg-colour: black;
@@ -44,25 +62,27 @@
 
 /* Solarized */
 :root {
-        --main-bg-colour: #002833;
-        --main-font-colour: #839496;
-        --highlighted-font-colour: #268BB4;
-        --unread-font-colour: #2AA198;
-        --infobar-bg-colour: #003541;
+        --main-bg-colour: #002b36;
+        --main-font-colour: #657b83;
+        --light-font-colour: #93a1a1;
+        --highlighted-font-colour: #2aa198;
+        --unread-font-colour: #2aa198;
+        --infobar-bg-colour: #073642;
         --infobar-font-colour: #839496;
-        --selected-row-bg-colour: #B58900;
+        --selected-row-bg-colour: #b58900;
 }
 
 body {
         margin: 0;
         color: var(--main-font-colour);
-        font-family: monospace;
+        font-family: "Ubuntu Mono", monospace;
         line-height: 1.25;
-        font-size: 110%;
+        font-size: 18px;
         background-image: url('../assets/nsa_logo.png');
         background-size: contain;
         background-repeat: no-repeat;
         background-position: center;
+        min-width: 800px;
 }
 
 #wrapper {

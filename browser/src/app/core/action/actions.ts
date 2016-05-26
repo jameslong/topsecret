@@ -20,12 +20,6 @@ export const Types = {
         TICK_SLOWER: 'TICK_SLOWER',
         ADD_TIME_OFFSET: 'ADD_TIME_OFFSET',
 
-        START_GENERATE_KEY: 'START_GENERATE_KEY',
-        GENERATED_KEY: 'GENERATED_KEY',
-        SET_DRAFT_KEY_NAME: 'SET_DRAFT_KEY_NAME',
-        SET_DRAFT_KEY_PASSPHRASE: 'SET_DRAFT_KEY_PASSPHRASE',
-        DELETE_KEY: 'DELETE_KEY',
-
         SET_MODE: 'SET_MODE',
         COMPOSE_MESSAGE: 'COMPOSE_MESSAGE',
         COMPOSE_REPLY: 'COMPOSE_REPLY',
@@ -37,11 +31,11 @@ export const Types = {
         SET_ACTIVE_FOLDER: 'SET_ACTIVE_FOLDER',
         DISPLAY_FOLDER: 'DISPLAY_FOLDER',
         EDIT_BODY: 'EDIT_BODY',
+        END_EDIT_BODY: 'END_EDIT_BODY',
         EDIT_SUBJECT: 'EDIT_SUBJECT',
         EDIT_TO: 'EDIT_TO',
 
-        SET_PLAYER_KEY: 'SET_PLAYER_KEY',
-        SET_ACTIVE_KEY: 'SET_ACTIVE_KEY',
+        SET_ACTIVE_KEY_INDEX: 'SET_ACTIVE_KEY_INDEX',
         IMPORT_KEYS: 'IMPORT_KEYS',
 
         SET_ACTIVE_LOAD_MENU_INDEX: 'SET_ACTIVE_LOAD_MENU_INDEX',
@@ -49,6 +43,7 @@ export const Types = {
         SET_ACTIVE_SAVE_MENU_INDEX: 'SET_ACTIVE_SAVE_MENU_INDEX',
 
         IMPORT_SAVE_DATA: 'IMPORT_SAVE_DATA',
+        NEW_GAME: 'NEW_GAME',
 };
 
 export interface Blur extends Redux.Action<void> {}
@@ -64,19 +59,10 @@ export interface TickFaster extends Redux.Action<void> {}
 export interface TickSlower extends Redux.Action<void> {}
 export interface AddTimeOffset extends Redux.Action<number> {}
 
-export interface StartGenerateKey extends Redux.Action<void> {}
-export interface GeneratedKeyParams {
-        id: string;
-        keyManager: Kbpgp.KeyManagerInstance;
-}
-export interface GeneratedKey extends Redux.Action<GeneratedKeyParams> {}
-export interface SetDraftKeyName extends Redux.Action<string> {}
-export interface SetDraftKeyPassphrase extends Redux.Action<string> {}
-export interface DeleteKey extends Redux.Action<string> {}
-
 export interface SetMode extends Redux.Action<string> {}
 export interface SetActiveFolder extends Redux.Action<string> {}
-export interface EditBody extends Redux.Action<boolean> {}
+export interface EditBody extends Redux.Action<void> {}
+export interface EndEditBody extends Redux.Action<void> {}
 export interface EditSubject extends Redux.Action<boolean> {}
 export interface EditTo extends Redux.Action<boolean> {}
 
@@ -114,9 +100,8 @@ export interface DisplayFolderParams {
 }
 export interface DisplayFolder extends Redux.Action<DisplayFolderParams> {}
 
-export interface SetPlayerKey extends Redux.Action<string> {}
-export interface SetActiveKey extends Redux.Action<string> {}
-export type ImportKeysParams = Map.Map<Kbpgp.KeyManagerInstance>;
+export interface SetActiveKeyIndex extends Redux.Action<number> {}
+export type ImportKeysParams = string[];
 export interface ImportKeys extends Redux.Action<ImportKeysParams> {}
 
 export interface SetActiveLoadIndex extends Redux.Action<number> {}
@@ -124,3 +109,4 @@ export interface SetActiveMenuIndex extends Redux.Action<number> {}
 export interface SetActiveSaveIndex extends Redux.Action<number> {}
 
 export interface ImportSaveData extends Redux.Action<Client.SaveData> {}
+export interface NewGame extends Redux.Action<void> {}

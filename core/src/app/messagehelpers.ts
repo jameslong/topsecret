@@ -4,6 +4,8 @@ import Map = require('./utils/map');
 import Message = require('./message');
 import Player = require('./player');
 import Profile = require('./profile');
+import ReplyOption = require('./replyoption');
+import Script = require('./script');
 import State = require('./state');
 import Str = require('./utils/string');
 
@@ -26,7 +28,7 @@ export function createMessageState (
                 reply: null,
                 sentTimestampMs,
                 childrenSent,
-                replySent: false,
+                fallbackSent: false,
         };
 }
 
@@ -53,7 +55,7 @@ export function createMessageData (
         Log.assert(subject !== null, 'No thread subject: ', threadStartName);
 
         const fromProfile = profiles[message.from];
-        const from = generateFriendlyEmail(fromProfile, domain);
+        const from = fromProfile.email;
 
         const passage = strings[message.body];
         const body = (vars ? insertMessageVars(passage, vars) : passage);
@@ -66,13 +68,10 @@ export function addDomain (local: string, domain: string): string
         return (local + '@' + domain);
 }
 
-export function generateFriendlyEmail (
-        profile: Profile.Profile, domain: string)
+export function removeFriendlyFromEmail (email: string)
 {
-        var friendly = (profile.firstName + ' ' + profile.lastName);
-        var email = '<' + addDomain(profile.emailLocal, domain) + '>';
-
-        return friendly + ' ' + email;
+        const index = email.indexOf('<');
+        return (index !== -1) ? email.slice(index) : email;
 }
 
 export function getSelectedReply (
@@ -90,9 +89,13 @@ export function getSelectedReply (
 }
 
 export function getReplyDelay (
-        replyIndex: number, threadMessage: Message.ThreadMessage): Message.ThreadDelay
+        replyIndex: number,
+        delayIndex: number,
+        message: Message.ThreadMessage,
+        replyOptions: Map.Map<ReplyOption.ReplyOption[]>)
 {
-        return threadMessage.replyOptions[replyIndex].messageDelay;
+        const options = replyOptions[message.replyOptions];
+        return options[replyIndex].messageDelays[delayIndex];
 }
 
 export function createMessageId (email: string, uid: number): string
@@ -100,11 +103,11 @@ export function createMessageId (email: string, uid: number): string
         return '<' + uid.toString() + '.' + email + '>';
 }
 
-export function insertMessageVars (body: string, vars: Map.Map<string>)
+export function insertMessageVars (body: string, vars: Map.Map<Script.Atom>)
 {
         var replacer = function (match: string, $1: string): string
                 {
-                        return (vars[$1] || match);
+                        return (`${vars[$1]}` || match);
                 };
         return body.replace(/\$(\w+)/gi, replacer);
 }
@@ -119,4 +122,21 @@ export function hasReplyOptions (
 export function stripBody (body: string)
 {
         return Str.filterByLines(body, line => !Str.beginsWith(line, '> '));
+}
+
+export function createThreadDelay (): Message.ThreadDelay
+{
+        return {
+                name: '',
+                condition: '',
+                delay: [0, 0, 0],
+        };
+}
+
+export function createReplyThreadDelay (): Message.ReplyThreadDelay
+{
+        return {
+                name: '',
+                delay: [0, 0, 0],
+        };
 }

@@ -164,7 +164,8 @@ export function evaluateExpression (expression: Expression, env: Env)
                 } else if (expression[0] === '"') {
                         return expression.replace(/"/g, '');
                 } else {
-                        throw(`Unrecognised literal ${expression}`);
+                        console.log(`Unrecognised literal ${expression}`);
+                        return false;
                 }
         } else if (Array.isArray(expression)) {
                 const [proc, ...exp] = expression;

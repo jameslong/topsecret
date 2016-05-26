@@ -1,11 +1,8 @@
 import Client = require('../../client');
 import Clock = require('../../../../../../core/src/app/clock');
-import EditDraftKeyName = require('../smart/editdraftkeyname');
-import EditDraftKeyPassphrase = require('../smart/editdraftkeypassphrase');
 import EditSubject = require('../smart/editsubject');
 import EditTo = require('../smart/editto');
 import FooterCompose = require('./footercompose');
-import FooterEncryption = require('./footerencryption');
 import FooterIndex = require('./footerindex');
 import FooterFolder = require('./footerfolder');
 import FooterPager = require('./footerpager');
@@ -57,8 +54,6 @@ function createInfoBarContent (state: Client.Client): React.ReactElement<any>
                 return createFooterPager(state);
         case UI.Modes.COMPOSE:
                 return createFooterCompose(state);
-        case UI.Modes.ENCRYPTION:
-                return createFooterEncryption(state);
         case UI.Modes.FOLDER:
                 return createFooterFolder(state);
         default:
@@ -71,13 +66,6 @@ function createFooterCompose (state: Client.Client)
         const draftMessage = state.draftMessage;
         const draftBody = draftMessage.content.body;
         return FooterCompose({ draftBody });
-}
-
-function createFooterEncryption (state: Client.Client)
-{
-        const activeKeyId = state.ui.activeKeyId;
-        const activeKey = state.data.keyManagersById[activeKeyId];
-        return FooterEncryption({ activeKey });
 }
 
 function createFooterFolder (state: Client.Client)
@@ -111,14 +99,6 @@ function createStatusBarContent (state: Client.Client): React.ReactElement<any>
                 return EditSubject({ value: message.subject });
         } else if (state.ui.editingDraftTo) {
                 return EditTo({ value: message.to });
-        } else if (state.ui.editingDraftKeyName) {
-                return EditDraftKeyName({ value: '' });
-        } else if (state.ui.editingDraftKeyPassphrase) {
-                const userId = state.data.player.email;
-                const keyId = state.draftKey.id;
-                return EditDraftKeyPassphrase({ value: '', userId, keyId });
-        } else if (state.ui.generatingKey) {
-                return Span({ className: 'statusbar-ongoing' }, 'Generating key');
         } else if (state.ui.sending) {
                 return Span({ className: 'statusbar-ongoing' }, 'Sending');
         } else if (state.ui.decrypting) {

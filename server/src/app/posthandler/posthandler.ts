@@ -9,6 +9,7 @@ import Log = require('../../../../core/src/app/log');
 import Message = require('../../../../core/src/app/message');
 import Player = require('../../../../core/src/app/player');
 import Reply = require('./reply');
+import ReplyOption = require('../../../../core/src/app/replyoption');
 import Request = require('../../../../core/src/app/requesttypes');
 import Server = require('../server');
 
@@ -42,6 +43,8 @@ export function addRequestEndpoints (
         addPost(app, '/loadmessage', createLoadMessageCallback, state);
         addPost(app, '/savemessage', createSaveMessageCallback, state);
         addPost(app, '/deletemessage', createDeleteMessageCallback, state);
+        addPost(app, '/savereplyoption', createSaveReplyOptionCallback, state);
+        addPost(app, '/deletereplyoption', createDeleteReplyOptionCallback, state);
         addPost(app, '/savestring', createSaveStringCallback, state);
         addPost(app, '/deletestring', createDeleteStringCallback, state);
         addGet(app, '/narratives', createNarrativesCallback, state);
@@ -383,6 +386,64 @@ export function createSaveMessageCallback (state: App.State)
                 };
 }
 
+export function createSaveReplyOptionCallback (state: App.State)
+{
+        return (req: any, res: any) =>
+                {
+                        var data: {
+                                        narrativeName: string;
+                                        name: string;
+                                        value: ReplyOption.ReplyOptions;
+                                } = req.body;
+
+                        var app = state.app;
+                        var config = state.config;
+
+                        const { name, narrativeName, value } = data;
+                        const path = config.content.narrativeFolder;
+                        const optionPath = Data.join(
+                                path,
+                                narrativeName,
+                                'replyoptions',
+                                name) + '.json';
+
+                        FileSystem.saveJSONSync(optionPath, value);
+
+                        Log.debug('Reply options saved');
+
+                        const promise = App.updateGameState(state);
+                        return createRequestCallback(res, promise);
+                };
+}
+
+export function createDeleteReplyOptionCallback (state: App.State)
+{
+        return (req: any, res: any) =>
+                {
+                        const data: {
+                                        narrativeName: string;
+                                        name: string;
+                                } = req.body;
+
+                        const app = state.app;
+                        const config = state.config;
+
+                        const { name, narrativeName } = data;
+
+                        const path = config.content.narrativeFolder;
+                        const optionPath = Data.join(
+                                path,
+                                narrativeName,
+                                'replyoptions',
+                                name) + '.json';
+
+                        FileSystem.deleteFile(optionPath);
+
+                        const promise = App.updateGameState(state);
+                        return createRequestCallback(res, promise);
+                };
+}
+
 export function createDeleteMessageCallback (state: App.State)
 {
         return (req: any, res: any) =>
@@ -507,8 +568,13 @@ export function createValidateDataCallback (state: App.State)
                                 content.profileSchemaPath);
                         const messageSchema = FileSystem.loadJSONSync<JSON>(
                                 content.messageSchemaPath);
+                        const replyOptionSchema = FileSystem.loadJSONSync<JSON>(
+                                content.replyOptionSchemaPath);
                         const dataErrors = DataValidation.getDataErrors(
-                                narrativeData, profileSchema, messageSchema);
+                                narrativeData,
+                                profileSchema,
+                                messageSchema,
+                                replyOptionSchema);
 
                         res.send(dataErrors);
                 };

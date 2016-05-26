@@ -39,7 +39,7 @@ export function nextMenuOption (client: Client.Client)
         const currentIndex = client.ui.activeMainMenuIndex;
         const max = client.data.menuItems.length - 1;
         const index = MathUtils.inRange(0, max, currentIndex + 1);
-        return ActionCreators.SetActiveMenuIndex(index);
+        return ActionCreators.setActiveMenuIndex(index);
 }
 
 export function previousMenuOption (client: Client.Client)
@@ -47,17 +47,20 @@ export function previousMenuOption (client: Client.Client)
         const currentIndex = client.ui.activeMainMenuIndex;
         const max = client.data.menuItems.length - 1;
         const index = MathUtils.inRange(0, max, currentIndex - 1);
-        return ActionCreators.SetActiveMenuIndex(index);
+        return ActionCreators.setActiveMenuIndex(index);
 }
 
 export function selectMenuOption (client: Client.Client)
 {
         const currentIndex = client.ui.activeMainMenuIndex;
         switch (currentIndex) {
-        case 0: // SAVE_MENU
+        case 0: // NEW_GAME
+                return ActionCreators.newGame();
+
+        case 1: // SAVE_MENU
                 return ActionCreators.setMode(UI.Modes.SAVE_MENU);
 
-        case 1: // LOAD_MENU
+        case 2: // LOAD_MENU
                 return ActionCreators.setMode(UI.Modes.LOAD_MENU);
 
         default:
@@ -87,7 +90,7 @@ export function nextSave (client: Client.Client)
         const saves = LocalStorage.getSaveNames();
         const max = saves.length;
         const index = MathUtils.inRange(0, max, currentIndex + 1);
-        return ActionCreators.SetActiveSaveIndex(index);
+        return ActionCreators.setActiveSaveIndex(index);
 }
 
 export function previousSave (client: Client.Client)
@@ -96,7 +99,7 @@ export function previousSave (client: Client.Client)
         const saves = LocalStorage.getSaveNames();
         const max = saves.length;
         const index = MathUtils.inRange(0, max, currentIndex - 1);
-        return ActionCreators.SetActiveSaveIndex(index);
+        return ActionCreators.setActiveSaveIndex(index);
 }
 
 export function exitLoad (client: Client.Client)
@@ -111,7 +114,7 @@ export function load (client: Client.Client)
         const saveName = saves[activeIndex];
         console.log('Loading', saveName);
         const saveData = LocalStorage.load<Client.SaveData>(saveName);
-        return ActionCreators.ImportSaveData(saveData);
+        return ActionCreators.importSaveData(saveData);
 }
 
 export function nextLoad (client: Client.Client)
@@ -120,7 +123,7 @@ export function nextLoad (client: Client.Client)
         const saves = LocalStorage.getSaveNames();
         const max = saves.length - 1;
         const index = MathUtils.inRange(0, max, currentIndex + 1);
-        return ActionCreators.SetActiveLoadIndex(index);
+        return ActionCreators.setActiveLoadIndex(index);
 }
 
 export function previousLoad (client: Client.Client)
@@ -129,7 +132,7 @@ export function previousLoad (client: Client.Client)
         const saves = LocalStorage.getSaveNames();
         const max = saves.length - 1;
         const index = MathUtils.inRange(0, max, currentIndex - 1);
-        return ActionCreators.SetActiveLoadIndex(index);
+        return ActionCreators.setActiveLoadIndex(index);
 }
 
 export function deleteSave (client: Client.Client)
@@ -207,10 +210,34 @@ export function encryptSend (client: Client.Client): Redux.Action<any>
         const strippedBody = MessageHelpers.stripBody(reply.body);
         const strippedReply = Helpers.assign(reply, { body: strippedBody });
         const data = client.data;
-        const encryptData = Data.createReplyEncryptData(strippedReply, data);
         const timestampMs = Clock.gameTimeMs(client.data.clock);
 
-        KbpgpHelpers.signEncrypt(encryptData).then(body => {
+        const player = data.player;
+        const playerKeyData = {
+                id: player.email,
+                key: player.privateKey,
+                passphrase: player.passphrase,
+        };
+
+        const to = reply.to;
+        const profilesById = data.profilesById;
+        const toProfile = Map.valueOf(profilesById, profile => {
+                return profile.email === to;
+        });
+        const toKeyData = {
+                id: toProfile.name,
+                key: toProfile.publicKey,
+        };
+        const keyData = [playerKeyData, toKeyData];
+
+        KbpgpHelpers.loadKeys(keyData).then(instances => {
+                const encryptData = {
+                        from: instances[0],
+                        to: instances[1],
+                        text: reply.body,
+                };
+                return KbpgpHelpers.signEncrypt(encryptData);
+        }).then(body => {
                 const encryptedReply = Helpers.assign(reply, { body });
                 const app = client.server.app;
                 return PromisesReply.handleReplyMessage(
@@ -233,12 +260,26 @@ export function decrypt (client: Client.Client): Redux.Action<any>
         const messageId = client.ui.activeMessageId;
         const message = client.data.messagesById[messageId];
         const body = message.body;
-        const keyManagersById = client.data.keyManagersById;
-        const keyManagers = <Kbpgp.KeyManagerInstance[]>Helpers.arrayFromMap(
-                keyManagersById);
-        const keyRing = KbpgpHelpers.createKeyRing(keyManagers);
+        const knownKeyIds = client.data.knownKeyIds;
+        const profilesById = client.data.profilesById;
+        const knownKeyData = knownKeyIds.map(id => {
+                return {
+                        id,
+                        key: profilesById[id].publicKey,
+                };
+        });
+        const player = client.data.player;
+        const playerKeyData = {
+                id: player.email,
+                key: player.privateKey,
+                passphrase: player.passphrase,
+        };
+        knownKeyData.push(playerKeyData);
 
-        KbpgpHelpers.decryptVerify(keyRing, body).then(decryptedBody => {
+        KbpgpHelpers.loadKeys(knownKeyData).then(instances => {
+                const keyRing = KbpgpHelpers.createKeyRing(instances);
+                return KbpgpHelpers.decryptVerify(keyRing, body);
+        }).then(decryptedBody => {
                 const action = ActionCreators.decryptMessage({
                         messageId, decryptedBody
                 });
@@ -312,7 +353,12 @@ export function displayPreviousMessage (client: Client.Client)
 
 export function editBody (client: Client.Client)
 {
-        return ActionCreators.editBody(true);
+        return ActionCreators.editBody();
+}
+
+export function endEditBody (client: Client.Client)
+{
+        return ActionCreators.endEditBody();
 }
 
 export function editSubject (client: Client.Client)
@@ -325,52 +371,33 @@ export function editTo (client: Client.Client)
         return ActionCreators.editTo(true);
 }
 
-export function setPlayerKey (client: Client.Client)
-{
-        const id = client.ui.activeKeyId;
-        return ActionCreators.setPlayerKey(id);
-}
-
 export function nextKey (client: Client.Client)
 {
-        const id = client.ui.activeKeyId;
-        const keyIds = client.data.keyManagers;
-        const nextId = Arr.nextValue(keyIds, id);
-        return ActionCreators.setActiveKey(nextId);
+        const index = client.ui.activeKeyIndex;
+        const ids = client.data.profiles;
+        const nextIndex = MathUtils.inRange(0, ids.length - 1, index + 1);
+        return ActionCreators.setActiveKeyIndex(nextIndex);
 }
 
 export function previousKey (client: Client.Client)
 {
-        const id = client.ui.activeKeyId;
-        const keyIds = client.data.keyManagers;
-        const previousId = Arr.previousValue(keyIds, id);
-        return ActionCreators.setActiveKey(previousId);
-}
-
-export function startGenerateKey (client: Client.Client)
-{
-        return ActionCreators.startGenerateKey();
-}
-
-export function deleteKey (client: Client.Client)
-{
-        const id = client.ui.activeKeyId;
-        return ActionCreators.deleteKey(id);
+        const index = client.ui.activeKeyIndex;
+        const ids = client.data.profiles;
+        const nextIndex = MathUtils.inRange(0, ids.length - 1, index - 1);
+        return ActionCreators.setActiveKeyIndex(nextIndex);
 }
 
 export function importKeys (client: Client.Client): Redux.Action<any>
 {
         const body = Client.getActiveMessage(client).body;
         const armouredKeys = KbpgpHelpers.extractPublicKeys(body);
-
-        KbpgpHelpers.loadPublicKeys(armouredKeys).then(instances => {
-                const keyManagersById = Helpers.mapFromArray(
-                        instances, KbpgpHelpers.getUserId, Func.identity);
-                const action = ActionCreators.importKeys(keyManagersById)
-                Redux.handleAction(action);
-        }).catch(err => console.log(err));
-
-        return null;
+        const profiles = client.data.profiles;
+        const profilesById = client.data.profilesById;
+        const newProfileIds = profiles.filter(id => {
+                const profile = profilesById[id];
+                return (armouredKeys.indexOf(profile.publicKey) !== -1);
+        });
+        return ActionCreators.importKeys(newProfileIds)
 }
 
 export function tickFaster (client: Client.Client)

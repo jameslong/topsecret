@@ -1,3 +1,4 @@
+import AppData = require('./data/appdata');
 import Arr = require('../../../../core/src/app/utils/array');
 import Clock = require('../../../../core/src/app/clock');
 import Command = require('./command');
@@ -10,6 +11,7 @@ import Kbpgp = require('kbpgp');
 import KbpgpHelpers = require('../../../../core/src/app/kbpgp');
 import Map = require('../../../../core/src/app/utils/map');
 import Player = require('./player');
+import Profile = require('../../../../core/src/app/profile');
 
 export type IdsById = Map.Map<string[]>;
 
@@ -18,6 +20,7 @@ export interface RuntimeData {
         messagesById: Map.Map<Message.Message>;
         messageIdsByFolderId: IdsById;
         clock: Clock.Clock;
+        knownKeyIds: string[];
 }
 
 export interface Data extends RuntimeData {
@@ -26,8 +29,8 @@ export interface Data extends RuntimeData {
         commandsById: Map.Map<Command.Command>;
         commandIdsByMode: IdsById;
         menuItems: string[];
-        keyManagers: string[];
-        keyManagersById: Map.Map<Kbpgp.KeyManagerInstance>;
+        profiles: string[];
+        profilesById: Map.Map<Profile.Profile>;
 }
 
 type Id = { id: string; }
@@ -70,40 +73,63 @@ function group<T, U>(
         }, result);
 }
 
-export function createData(
-        folderData: Folder.FolderData[],
-        commands: Command.Command[],
-        commandIdsByMode: IdsById,
-        menuItems: string[],
-        player: Player.Player,
-        keyManagersById: Map.Map<Kbpgp.KeyManagerInstance>,
-        clock: Clock.Clock): Data
+export function createDataFromSaveData(
+        appData: AppData.AppData,
+        profilesById: Map.Map<Profile.Profile>,
+        runtimeData: RuntimeData)
 {
-        const getMessages = (folder: Folder.FolderData) => folder.messages;
+        const { folders, commands, commandIdsByMode, menuItems } = appData;
 
-        const foldersById = idMapFromArray(folderData);
-        const folders = folderData.map(getId);
+        const foldersById = idMapFromArray(folders);
+        const folderIds = folders.map(getId);
         const commandsById = idMapFromArray(commands);
-        const messagesById = idMapFromParentArray(folderData, getMessages);
-        const messageIdsByFolderId =
-                childIdsByParentIds(folderData, getMessages);
-
-        const keyManagers = Helpers.arrayFromMap(keyManagersById,
-                (instance, id) => id);
+        const profiles = Map.keys(profilesById);
 
         return {
-                player,
-                folders,
+                player: runtimeData.player,
+                folders: folderIds,
                 foldersById,
                 commandsById,
                 commandIdsByMode,
                 menuItems,
+                messagesById: runtimeData.messagesById,
+                messageIdsByFolderId: runtimeData.messageIdsByFolderId,
+                profiles,
+                profilesById,
+                knownKeyIds: runtimeData.knownKeyIds,
+                clock: runtimeData.clock,
+        };
+}
+
+export function createRuntimeData (
+        player: Player.Player,
+        profilesById: Map.Map<Profile.Profile>,
+        folders: Folder.FolderData[],
+        clock: Clock.Clock): RuntimeData
+{
+        const getMessages = (folder: Folder.FolderData) => folder.messages;
+        const messagesById = idMapFromParentArray(folders, getMessages);
+        const messageIdsByFolderId = childIdsByParentIds(folders, getMessages);
+
+        return {
+                player,
                 messagesById,
                 messageIdsByFolderId,
-                keyManagers,
-                keyManagersById,
                 clock,
+                knownKeyIds: Map.keys(profilesById),
         };
+}
+
+export function createData (
+        appData: AppData.AppData,
+        profilesById: Map.Map<Profile.Profile>,
+        folders: Folder.FolderData[],
+        player: Player.Player,
+        clock: Clock.Clock): Data
+{
+        const runtimeData = createRuntimeData(
+                player, profilesById, folders, clock);
+        return createDataFromSaveData(appData, profilesById, runtimeData);
 }
 
 export function storeMessage (
@@ -129,43 +155,4 @@ export function updateMessage (data: Data, message: Message.Message)
 export function getMessage (data: Data, id: string)
 {
         return data.messagesById[id];
-}
-
-export function storeKeyManager (
-        data: Data, id: string, instance: Kbpgp.KeyManagerInstance)
-{
-        const keyManagers = Arr.push(data.keyManagers, id);
-        const keyManagersById = Map.set(data.keyManagersById, id, instance);
-        return Helpers.assign(data, { keyManagers, keyManagersById });
-}
-
-export function deleteKey (data: Data, id: string)
-{
-        const keyManagers = Arr.removeValue(data.keyManagers, id);
-        const keyManagersById = Map.remove(data.keyManagersById, id);
-
-        const activeKeyId = data.player.activeKeyId;
-        if (id === activeKeyId) {
-                const player = Helpers.assign(
-                        data.player, { activeKeyId: null });
-                return Helpers.assign(data, {
-                        player,
-                        keyManagers,
-                        keyManagersById,
-                });
-        } else {
-                return Helpers.assign(data, { keyManagers, keyManagersById });
-        }
-}
-
-export function createReplyEncryptData (
-        reply: MessageCore.Reply, data: Data): KbpgpHelpers.EncryptData
-{
-        const keyManagersById = data.keyManagersById;
-        const playerId = data.player.activeKeyId;
-        const from = keyManagersById[playerId];
-        const to = keyManagersById[reply.to];
-        const text = reply.body;
-
-        return { from, to, text };
 }

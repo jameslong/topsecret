@@ -1,7 +1,8 @@
 import ReplyOption = require('./replyoption');
 
 export interface ReplyState {
-        replyIndex: number;
+        index: number;
+        sent: number[];
         timestampMs: number;
 }
 
@@ -12,7 +13,7 @@ export interface MessageState {
         reply: ReplyState;
         sentTimestampMs: number;
         childrenSent: boolean[];
-        replySent: boolean;
+        fallbackSent: boolean;
         threadStartName: string;
 }
 
@@ -35,15 +36,19 @@ export interface ThreadMessage {
         name: string;
         threadSubject: string;
         position: Coord;
-        newConversation: boolean;
         endGame: boolean;
         message: Message;
         encrypted: boolean;
         script: string;
         receiver?: string; // For unsolicited player-to-character emails (where message is null)
-        replyOptions: ReplyOption.ReplyOption[];
+        replyOptions: string;
         children: ThreadDelay[];
         fallback: ThreadDelay;
+}
+
+export interface ReplyThreadDelay {
+        name: string;
+        delay: [number, number, number]; // days, hours, minutes
 }
 
 export interface ThreadDelay {

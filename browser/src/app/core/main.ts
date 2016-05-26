@@ -1,5 +1,6 @@
 /// <reference path="../../../../typings/es6-polyfill/es6-polyfill.d.ts" />
 
+import AppData = require('./data/appdata');
 import ConfigData = require('./data/config');
 import MessageData = require('./data/messages');
 import CommandData = require('./data/commands');
@@ -8,47 +9,88 @@ import MenuData = require('./data/menuitems');
 
 import Client = require('./client');
 import Clock = require('../../../../core/src/app/clock');
+import Data = require('./data');
 import EventHandler = require('./eventhandler');
 import KbpgpHelpers = require('../../../../core/src/app/kbpgp');
+import Helpers = require('../../../../core/src/app/utils/helpers');
 import Prom = require('../../../../core/src/app/utils/promise');
 import Reducers = require('./action/reducers');
 import Redux = require('./redux/redux');
 import Root = require('./component/smart/root');
 import Server = require('./server');
 import State = require('../../../../core/src/app/state');
+import UI = require('./ui');
 
-export function init (data: State.Data) {
+export function init (gameData: State.Data)
+{
+        const appConfig = ConfigData.createConfig();
+        const appData = {
+                commands: CommandData.commands,
+                commandIdsByMode: CommandData.commandIdsByMode,
+                menuItems: MenuData.items,
+                folders: MessageData.folders,
+        };
+        return appInit(appConfig, appData, gameData);
+}
+export function appInit (
+        appConfig: ConfigData.ConfigData,
+        appData: AppData.AppData,
+        gameData: State.Data)
+{
         const wrapper = document.getElementById('wrapper');
-        console.log('wrapper' + wrapper);
 
-        const player = PlayerData.player;
-        const config = ConfigData.createConfig();
-        const clock = Clock.createClock(config.timeFactor);
+        const client = Client.createClient(appConfig, appData, gameData);
 
-        const server = Server.createServer(config, data, clock);
-        return Client.createClient(
-                config,
-                player,
-                data,
-                server,
-                clock,
-                CommandData.commands,
-                CommandData.commandIdsByMode,
-                MenuData.items,
-                MessageData.folders)
-        .then(client => {
-                const server = client.server;
+        const getClient = Redux.init(client, Reducers.reduce, Root, wrapper);
+        Redux.render(client, Root, wrapper);
 
-                const getClient = Redux.init(
-                        client, Reducers.reduce, Root, wrapper);
-                Redux.render(client, Root, wrapper);
+        EventHandler.addKeyHandlers();
 
-                EventHandler.addKeyHandlers();
+        const clock = client.data.clock;
+        const player = client.data.player;
+        const server = client.server;
+        return Server.beginGame(player, appConfig, server, clock).then(result =>
+                startTick(getClient)
+        );
+}
 
-                return Server.beginGame(player, config, server).then(result =>
-                        startTick(getClient)
-                );
-        });
+export function newGame (client: Client.Client)
+{
+        const appConfig = ConfigData.createConfig();
+        const appData = {
+                commands: CommandData.commands,
+                commandIdsByMode: CommandData.commandIdsByMode,
+                menuItems: MenuData.items,
+                folders: MessageData.folders,
+        };
+        const newClient = Client.createClient(
+                appConfig, appData, client.server.app.data);
+        const player = newClient.data.player;
+
+        const server = newClient.server;
+        const clock = newClient.data.clock;
+        Server.beginGame(player, appConfig, server, clock);
+
+        return newClient;
+}
+
+export function newGameFromSave (
+        client: Client.Client, saveData: Client.SaveData)
+{
+        const appConfig = ConfigData.createConfig();
+        const appData = {
+                commands: CommandData.commands,
+                commandIdsByMode: CommandData.commandIdsByMode,
+                menuItems: MenuData.items,
+                folders: MessageData.folders,
+        };
+        const gameData = client.server.app.data;
+
+        const newClient = Client.createClientFromSaveData(
+                appConfig, appData, gameData, saveData.saveData);
+        const newUI = Helpers.assign(newClient.ui,
+                { mode: UI.Modes.INDEX_INBOX });
+        return Helpers.assign(newClient, { ui: newUI });
 }
 
 function tick (getClient: () => Client.Client)
@@ -57,8 +99,8 @@ function tick (getClient: () => Client.Client)
 
         const client = getClient();
         const server = client.server;
-        server.app.clock = client.data.clock;
-        return Server.tickServer(server);
+        const clock = client.data.clock;
+        return Server.tickServer(server, clock);
 }
 
 export function startTick (getClient: () => Client.Client)

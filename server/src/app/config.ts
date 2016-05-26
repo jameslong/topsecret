@@ -32,6 +32,7 @@ export interface ConfigState {
                 resignationThread: string;
                 messageSchemaPath: string;
                 profileSchemaPath: string;
+                replyOptionSchemaPath: string;
         },
         timeFactor: number;
 }

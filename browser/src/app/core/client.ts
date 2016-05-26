@@ -1,4 +1,5 @@
 import ActionCreators = require('./action/actioncreators');
+import AppData = require('./data/appdata');
 import Clock = require('../../../../core/src/app/clock');
 import Command = require('./command');
 import ConfigData = require('./data/config');
@@ -10,10 +11,12 @@ import Helpers = require('../../../../core/src/app/utils/helpers');
 import Kbpgp = require('kbpgp');
 import KbpgpHelpers = require('../../../../core/src/app/kbpgp');
 import Map = require('../../../../core/src/app/utils/map');
+import Main = require('./main');
 import Message = require('./message');
 import MessageHelpers = require('../../../../core/src/app/messagehelpers');
 import Player = require('./player');
 import PlayerData = require('./data/player');
+import Profile = require('../../../../core/src/app/profile');
 import Redux = require('./redux/redux');
 import Server = require('./server');
 import State = require('../../../../core/src/app/state');
@@ -23,105 +26,71 @@ export interface Client {
         server: Server.Server;
         data: Data.Data;
         ui: UI.UI;
-        draftKey: KbpgpHelpers.KeyData;
         draftMessage: Draft.Draft;
         messageId: number;
 };
 
+interface RuntimeClient {
+        server: Server.RuntimeServer;
+        data: Data.RuntimeData;
+        messageId: number;
+}
+
 export interface SaveData {
         name: string;
-        saveData: {
-                server: Server.RuntimeServer;
-                data: Data.RuntimeData;
-                messageId: number;
-        };
+        saveData: RuntimeClient;
 }
 
-export function createClient (
-        config: ConfigData.ConfigData,
-        playerData: PlayerData.PlayerData,
-        data: State.Data,
-        server: Server.Server,
-        clock: Clock.Clock,
-        commands: Command.Command[],
-        commandIdsByMode: Data.IdsById,
-        menuItems: string[],
-        folders: Folder.FolderData[])
+export function createClientFromSaveData (
+        appConfig: ConfigData.ConfigData,
+        appData: AppData.AppData,
+        gameData: State.Data,
+        saveData: RuntimeClient): Client
 {
-        const player = {
-                email: playerData.email,
-                activeKeyId: playerData.email,
-        };
-        return loadGameKeys(data, config, playerData).then(keyManagersById => {
-                return createClientFromData(
-                        server,
-                        clock,
-                        player,
-                        commands,
-                        commandIdsByMode,
-                        menuItems,
-                        folders,
-                        keyManagersById);
-        });
-}
+        const profiles = gameData[appConfig.version].profiles;
 
-function loadGameKeys (
-        data: State.Data,
-        config: ConfigData.ConfigData,
-        player: PlayerData.PlayerData)
-{
-        const domain = config.emailDomain;
-        const profiles = data[config.version].profiles;
-        const profileKeyData = Helpers.arrayFromMap(profiles, profile => {
-                const friendlyEmail = MessageHelpers.generateFriendlyEmail(
-                        profile, domain);
-                return {
-                        id: friendlyEmail,
-                        key: profile.publicKey,
-                };
-        });
-        const playerKeyData = {
-                id: player.email,
-                key: player.privateKey,
-                passphrase: player.passphrase,
-        };
-        const keyData = profileKeyData.concat([playerKeyData]);
-        return KbpgpHelpers.loadFromKeyData(keyData);
-}
+        const serverSaveData = saveData.server;
+        const server = Server.createServerFromSaveData(
+                appConfig, gameData, serverSaveData);
 
-export function createClientFromData (
-        server: Server.Server,
-        clock: Clock.Clock,
-        player: Player.Player,
-        commands: Command.Command[],
-        commandIdsByMode: Data.IdsById,
-        menuItems: string[],
-        folders: Folder.FolderData[],
-        keyManagersById: Map.Map<Kbpgp.KeyManagerInstance>): Client
-{
-        const data = Data.createData(
-                folders,
-                commands,
-                commandIdsByMode,
-                menuItems,
-                player,
-                keyManagersById,
-                clock);
+        const dataSaveData = saveData.data;
+        const data = Data.createDataFromSaveData(
+                appData, profiles, dataSaveData);
 
         const folderId = data.folders[0];
-        const keyId = player.activeKeyId;
-        const messageId: string = null;
-        const ui = UI.createUI(
-                UI.Modes.INDEX_INBOX, messageId, folderId, keyId);
+        const messageId = data.messageIdsByFolderId[folderId][0] || null;
+        const uiMode = appConfig.initialUIMode;
+        const ui = UI.createUI(uiMode, messageId, folderId);
 
         return {
                 server,
                 data,
                 ui,
-                draftKey: null,
                 draftMessage: null,
+                messageId: saveData.messageId,
+        };
+}
+
+export function createClient (
+        appConfig: ConfigData.ConfigData,
+        appData: AppData.AppData,
+        gameData: State.Data)
+{
+        const runtimeServer = Server.createRuntimeServer();
+
+        const clock = Clock.createClock(appConfig.timeFactor);
+        const player = PlayerData.player;
+        const profilesById = gameData[appConfig.version].profiles;
+        const folders = appData.folders;
+        const runtimeData = Data.createRuntimeData(
+                player, profilesById, folders, clock);
+        const saveData: RuntimeClient = {
+                server: runtimeServer,
+                data: runtimeData,
                 messageId: 0,
         };
+        return createClientFromSaveData(
+                appConfig, appData, gameData, saveData);
 }
 
 export function tickClient ()
@@ -185,6 +154,7 @@ export function getSaveData (client: Client, name: string): SaveData
                         player: data.player,
                         messagesById: data.messagesById,
                         messageIdsByFolderId: data.messageIdsByFolderId,
+                        knownKeyIds: data.knownKeyIds,
                         clock: data.clock,
                 }
         };
@@ -193,9 +163,5 @@ export function getSaveData (client: Client, name: string): SaveData
 
 export function importSaveData (client: Client, importedData: SaveData)
 {
-        const saveData = importedData.saveData;
-        const server = Helpers.assign(client.server, saveData.server);
-        const data = Helpers.assign(client.data, saveData.data);
-        const messageId = saveData.messageId;
-        return Helpers.assign(client, { server, data, messageId });
+        return Main.newGameFromSave(client, importedData);
 }

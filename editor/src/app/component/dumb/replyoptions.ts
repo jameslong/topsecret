@@ -1,8 +1,8 @@
 import Arr = require('../../../../../core/src/app/utils/array');
-import Message = require('../../message');
+import EditorMessage = require('../../editormessage');
 import Narrative = require('../../narrative');
 import React = require('react');
-import ReplyOption = require('../../replyoption');
+import ReplyOption = require('../../../../../core/src/app/replyoption');
 
 import Core = require('../core');
 import Div = Core.Div;
@@ -14,7 +14,7 @@ type OnSet = (options: ReplyOption.ReplyOptions) => void;
 interface ReplyOptionsProps {
         name: string;
         replyOptions: ReplyOption.ReplyOptions;
-        messages: Message.Messages;
+        messages: EditorMessage.EditorMessages;
         onSet: OnSet;
 };
 
@@ -58,7 +58,7 @@ function onRemoveReplyOption (
 function render (
         onSet: OnSet,
         options: ReplyOption.ReplyOptions,
-        messages: Message.Messages)
+        messages: EditorMessage.EditorMessages)
 {
         const children = options.map((option, index) => {
                 const onSetReplyOptionLocal = (option: ReplyOption.ReplyOption) =>

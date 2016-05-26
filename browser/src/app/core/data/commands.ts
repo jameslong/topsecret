@@ -144,14 +144,16 @@ const composeCommands = [, {
         desc: 'edit message body',
 }];
 
+const composeBodyCommands = [{
+        id: 'end-edit-body',
+        key: 'ESC',
+        keyCodes: [KeyCodes.ESCAPE],
+        actionCreator: KeyHandlers.endEditBody,
+        shortDesc: 'Finish Editing',
+        desc: 'finish editing message body',
+}];
+
 const encryptionCommands = [{
-        id: 'set-player-key',
-        key: '<Return>',
-        keyCodes: [KeyCodes.RETURN],
-        actionCreator: KeyHandlers.setPlayerKey,
-        shortDesc: 'Set active',
-        desc: 'set active encryption key',
-}, {
         id: 'next-key',
         key: 'j',
         keyCodes: [KeyCodes.J, KeyCodes.DOWN],
@@ -165,20 +167,6 @@ const encryptionCommands = [{
         actionCreator: KeyHandlers.previousKey,
         shortDesc: 'Previous',
         desc: 'view previous key',
-}, {
-        id: 'start-generate-key',
-        key: 'g',
-        keyCodes: [KeyCodes.G],
-        actionCreator: KeyHandlers.startGenerateKey,
-        shortDesc: 'Generate',
-        desc: 'generate new PGP key',
-}, {
-        id: 'delete-key',
-        key: 'd',
-        keyCodes: [KeyCodes.D],
-        actionCreator: KeyHandlers.deleteKey,
-        shortDesc: 'Delete',
-        desc: 'delete key',
 }];
 
 const folderCommands = [{
@@ -366,6 +354,7 @@ const saveCommands = [{
 export const commands = [].concat(
         commonCommands,
         composeCommands,
+        composeBodyCommands,
         encryptionCommands,
         folderCommands,
         helpCommands,
@@ -385,13 +374,13 @@ export const commandIdsByMode: Data.IdsById = {
                 'open-main-menu',
                 'open-help'
         ],
+        [UI.Modes.COMPOSE_BODY]: [
+                'end-edit-body'
+        ],
         [UI.Modes.ENCRYPTION]: [
                 'exit',
-                'set-player-key',
                 'next-key',
                 'previous-key',
-                'start-generate-key',
-                'delete-key',
                 'open-main-menu',
                 'open-help'
         ],

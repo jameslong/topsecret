@@ -1,8 +1,10 @@
 import Arr = require('./utils/array');
 import Message = require('./message');
+import MessageHelpers = require('./messagehelpers');
 import Str = require('./utils/string');
 
 export type ReplyOption = ReplyOptionKeyword | ReplyOptionValidPGPKey | ReplyOptionDefault;
+export type ReplyOptions = ReplyOption[];
 
 export const ReplyOptionType = {
         Default: 'default',
@@ -13,21 +15,16 @@ export const ReplyOptionType = {
 export interface ReplyOptionBase<T> {
         type: string;
         parameters: T;
-        messageDelay: Message.ThreadDelay;
+        messageDelays: Message.ReplyThreadDelay[];
 }
 
 interface KeywordParameters {
+        condition: string;
         matches: string[];
 }
 export interface ReplyOptionKeyword extends ReplyOptionBase<KeywordParameters> {}
 export interface ReplyOptionValidPGPKey extends ReplyOptionBase<{}> {}
 export interface ReplyOptionDefault extends ReplyOptionBase<{}>{}
-
-export function getReplyIndex(body: string, replyOptions: ReplyOption[]): number
-{
-        return Arr.find(replyOptions,
-                replyOption => isValidReply(body, replyOption));
-}
 
 export function isValidReply(
         body: string, replyOption: ReplyOption): boolean
@@ -65,4 +62,30 @@ export function extractPublicKey (message: string): string
         var reg = /-----BEGIN PGP PUBLIC KEY BLOCK-----[\s\S]*?-----END PGP PUBLIC KEY BLOCK-----/;
         var matches = message.match(reg);
         return (matches ? matches[0] : null);
+}
+
+export function createReplyOptionKeyword (): ReplyOptionKeyword
+{
+        return {
+                type: ReplyOptionType.Keyword,
+                parameters: {
+                        condition: '',
+                        matches: []
+                },
+                messageDelays: [MessageHelpers.createReplyThreadDelay()]
+        };
+}
+
+export function isReplyOptionType (type: string)
+{
+        return (type === ReplyOptionType.Default ||
+                type === ReplyOptionType.Keyword ||
+                type === ReplyOptionType.ValidPGPKey);
+}
+
+export function getReplyOptionTypes ()
+{
+        return [ReplyOptionType.Default,
+                ReplyOptionType.Keyword,
+                ReplyOptionType.ValidPGPKey];
 }

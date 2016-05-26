@@ -51,7 +51,7 @@ export function child (
 
 export function reply (
         state: UpdateInfo,
-        replyIndex: number,
+        index: number,
         domain: string,
         groupData: State.GameData,
         promises: DBTypes.PromiseFactories)
@@ -61,24 +61,22 @@ export function reply (
         const inReplyToId = message.id;
 
         const messageData = groupData.messages[message.name];
-        const replyDelay = messageData.replyOptions[replyIndex].messageDelay;
+        const replyOptions = groupData.replyOptions[messageData.replyOptions];
+        const replyDelay = replyOptions[message.reply.index].messageDelays[index];
         const name = replyDelay.name;
-        const condition = replyDelay.condition;
 
-        const send = !condition || Script.executeScript(condition, player) ?
-                encryptSendStoreChild(
-                        name,
-                        threadStartName,
-                        inReplyToId,
-                        player,
-                        domain,
-                        timestampMs,
-                        groupData,
-                        promises) :
-                Promise.resolve(message);
+        const send = encryptSendStoreChild(
+                name,
+                threadStartName,
+                inReplyToId,
+                player,
+                domain,
+                timestampMs,
+                groupData,
+                promises);
 
         return send.then(result => {
-                message.replySent = true;
+                message.reply.sent.push(index);
                 return state;
         });
 }
@@ -111,7 +109,7 @@ export function fallback (
                 Promise.resolve(message);
 
         return send.then(result => {
-                message.replySent = true;
+                message.fallbackSent = true;
                 return state;
         });
 }
@@ -154,6 +152,7 @@ export function encryptSendStoreChild (
                 return promises.addMessage(messageState);
         }).then(result => {
                 const script = messageData.script;
+                player.vars[result.name] = true;
                 Script.executeScript(script, player);
                 return result;
         });

@@ -1,7 +1,8 @@
 import Map = require('./utils/map');
+import Script = require('./script');
 
 export interface PlayerVars {
-        [k: string]: string;
+        [k: string]: Script.Atom;
         firstName: string;
         lastName: string;
 }

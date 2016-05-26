@@ -14,17 +14,25 @@
         "encrypted": true,
         "script": "",
         "receiver": null,
-        "replyOptions": [],
+        "replyOptions": "",
         "children": [
                 {
                         "name": "script_child",
                         "condition": "x",
-                        "delay": [0, 0, 0]
+                        "delay": [
+                                0,
+                                0,
+                                0
+                        ]
                 }
         ],
         "fallback": {
                 "name": "script_fallback",
                 "condition": "x",
-                "delay": [0, 0, 0]
+                "delay": [
+                        0,
+                        0,
+                        0
+                ]
         }
 }

@@ -5,9 +5,10 @@ import Config = require('../config');
 import Edge = require('../edge');
 import Helpers = require('./../../../../core/src/app/utils/helpers');
 import Map = require('./../../../../core/src/app/utils/map');
-import Message = require('../message');
+import EditorMessage = require('../editormessage');
 import Narrative = require('../narrative');
 import Redux = require('../redux/redux');
+import ReplyOption = require('./../../../../core/src/app/replyoption');
 import State = require('../state');
 import StoreReducers = require('./storereducers');
 
@@ -74,7 +75,9 @@ function handleSetGameData (state: State.State, action: Actions.SetGameData)
         const narrative = newNarratives[name];
 
         const messages = narrative.messagesById;
-        const newEdges = Edge.createEdges(messages, config.vertexSize);
+        const replyOptions = narrative.replyOptionsById;
+        const newEdges = Edge.createEdges(
+                messages, replyOptions, config.vertexSize);
         const newScratchpad: Map.Map<string> = {};
         const newData: State.Data = {
                 narrativesById: newNarratives,
@@ -160,15 +163,19 @@ function saveNarrativeDifference (
                 saveString,
                 deleteString);
 
-//                saveMapDifference(
-//                        previous.profiles,
-//                        current.profiles,
-//                        Request.saveProfiles,
-//                        Request.deleteProfiles);
+        const saveReplyOption = (name: string, value: ReplyOption.ReplyOptions) =>
+                AsyncRequest.saveReplyOption(url, narrativeName, name, value);
+        const deleteReplyOption = (name: string) =>
+                AsyncRequest.deleteReplyOption(url, narrativeName, name);
+        saveMapDifference(
+                previous.replyOptionsById,
+                current.replyOptionsById,
+                saveReplyOption,
+                deleteReplyOption);
 
-        const saveMessage = (name: string, message: Message.Message) =>
+        const saveMessage = (name: string, message: EditorMessage.EditorMessage) =>
                 AsyncRequest.saveMessage(url, narrativeName, message);
-        const deleteMessage = (name: string, message: Message.Message) =>
+        const deleteMessage = (name: string, message: EditorMessage.EditorMessage) =>
                 AsyncRequest.deleteMessage(url, narrativeName, name);
         saveMapDifference(
                 previous.messagesById,

@@ -1,4 +1,4 @@
-import Message = require('../../message');
+import EditorMessage = require('../../editormessage');
 import Misc = require('../../misc');
 import React = require('react');
 import ReactUtils = require('../../redux/react');
@@ -9,7 +9,7 @@ import Absolute = require('./absolute');
 import Draggable = require('../smart/draggable');
 
 interface NodeProps {
-        message: Message.Message;
+        message: EditorMessage.EditorMessage;
         onClick: (e: MouseEvent) => void;
 };
 

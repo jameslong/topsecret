@@ -1,9 +1,9 @@
 import ActionCreators = require('../../action/actioncreators');
-import Message = require('../../message');
+import EditorMessage = require('../../editormessage');
 import Narrative = require('../../narrative');
 import React = require('react');
 import Redux = require('../../redux/redux');
-import ReplyOption = require('../../replyoption');
+import ReplyOption = require('../../../../../core/src/app/replyoption');
 
 import ReplyOptions = require('../dumb/replyoptions');
 
@@ -11,7 +11,7 @@ interface ReplyOptionsContainerProps extends React.Props<any> {
         name: string;
         narrativeId: string;
         replyOptions: ReplyOption.ReplyOptions;
-        messages: Message.Messages;
+        messages: EditorMessage.EditorMessages;
 };
 
 function renderReplyOptionsContainer (props: ReplyOptionsContainerProps)

@@ -1,0 +1,11 @@
+.feedback-button {
+        display: block;
+        position: absolute;
+        bottom: 50px;
+        right: 7px;
+        font-weight: bold;
+        text-decoration: none;
+        padding: 1rem;
+        color: #fdf6e3;
+        background-color: #dc322f;
+}

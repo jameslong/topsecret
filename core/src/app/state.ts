@@ -1,16 +1,17 @@
-import Clock = require('./clock');
 import DBTypes = require('./dbtypes');
 import Kbpgp = require('./kbpgp');
 import Helpers = require('./utils/helpers');
 import Map = require('./utils/map');
 import Message = require('./message');
 import Profile = require('./profile');
+import ReplyOption = require('./replyoption');
 import Request = require('./requesttypes');
 
 export interface NarrativeData {
         name: string;
         profiles: Map.Map<Profile.Profile>;
         messages: Map.Map<Message.ThreadMessage>;
+        replyOptions: Map.Map<ReplyOption.ReplyOption[]>;
         strings: Map.Map<string>;
 }
 
@@ -25,7 +26,6 @@ export interface State {
         emailDomain: string;
         data: Data;
         promises: DBTypes.PromiseFactories;
-        clock: Clock.Clock;
 }
 
 export function addKeyManagers (data: NarrativeData): Promise<GameData>
@@ -43,6 +43,7 @@ export function addKeyManagers (data: NarrativeData): Promise<GameData>
                         name: data.name,
                         profiles: data.profiles,
                         messages: data.messages,
+                        replyOptions: data.replyOptions,
                         strings: data.strings,
                         keyManagers: instances,
                 };

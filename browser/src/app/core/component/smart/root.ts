@@ -9,6 +9,7 @@ import Core = require('../core');
 import Div = Core.Div;
 
 import Content = require('../dumb/content');
+import FeedbackButton = require('../dumb/feedbackbutton');
 import Footer = require('../dumb/footer');
 import Header = require('../dumb/header');
 
@@ -26,8 +27,10 @@ function renderRoot(props: RootProps)
         const header = createHeader(state.ui.mode, displayedCommands);
         const footer = Footer({ state });
         const content = Content({ state });
+        const feedback = FeedbackButton({});
 
-        return Div({ className: 'root', onClick }, header, content, footer);
+        return Div({ className: 'root', onClick },
+                header, content, footer, feedback);
 }
 
 const Root = React.createFactory(renderRoot);
