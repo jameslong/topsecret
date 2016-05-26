@@ -75,7 +75,7 @@
                 "EC2SecurityGroup" : {
                         "Type" : "AWS::EC2::SecurityGroup",
                         "Properties" : {
-                                "GroupDescription" : "Allow access over http from elastic load balancer",
+                                "GroupDescription" : "Allow access over http from elastic load balancer, and direct SSH access",
                                 "SecurityGroupIngress" : [
                                         {
                                                 "IpProtocol" : "tcp",
@@ -84,6 +84,71 @@
                                                 "SourceSecurityGroupId": {
                                                         "Fn::GetAtt" : [ "ElasticLoadBalancerSecurityGroup", "GroupId" ]
                                                 }
+                                        },
+                                        {
+                                                "IpProtocol": "tcp",
+                                                "FromPort": "22",
+                                                "ToPort": "22",
+                                                "CidrIp": "0.0.0.0/0"
+                                        }
+                                ]
+                        }
+                },
+
+                "S3BucketAccessIAMRole": {
+                        "Type": "AWS::IAM::Role",
+                        "Properties": {
+                                "AssumeRolePolicyDocument": {
+                                        "Version" : "2012-10-17",
+                                        "Statement": [
+                                                {
+                                                        "Effect": "Allow",
+                                                        "Principal": {
+                                                                "Service": [ "ec2.amazonaws.com" ]
+                                                        },
+                                                        "Action": [ "sts:AssumeRole" ]
+                                                }
+                                        ]
+                                },
+                                "Path": "/",
+                                "Policies": [
+                                        {
+                                                "PolicyName": "S3BucketAccessPolicy",
+                                                "PolicyDocument": {
+                                                        "Version" : "2012-10-17",
+                                                        "Statement": [
+                                                                {
+                                                                        "Effect": "Allow",
+                                                                        "Action": [
+                                                                                "s3:ListBucket"
+                                                                        ],
+                                                                        "Resource": [
+                                                                                "arn:aws:s3:::topsecret-deploy"
+                                                                        ]
+                                                                },
+                                                                {
+                                                                        "Effect": "Allow",
+                                                                        "Action": [
+                                                                                "s3:GetObject"
+                                                                        ],
+                                                                        "Resource": [
+                                                                                "arn:aws:s3:::topsecret-deploy/*"
+                                                                        ]
+                                                                }
+                                                        ]
+                                                }
+                                        }
+                                ]
+                        }
+                },
+
+                "S3BucketAccessIAMProfile": {
+                        "Type": "AWS::IAM::InstanceProfile",
+                        "Properties": {
+                                "Path": "/",
+                                "Roles": [
+                                        {
+                                                "Ref": "S3BucketAccessIAMRole"
                                         }
                                 ]
                         }
@@ -92,6 +157,9 @@
                 "AutoScalingGroupLaunchConfiguration": {
                         "Type" : "AWS::AutoScaling::LaunchConfiguration",
                         "Properties" : {
+                                "IamInstanceProfile": {
+                                        "Ref": "S3BucketAccessIAMProfile"
+                                },
                                 "ImageId" : "ami-840910ee",
                                 "InstanceMonitoring" : false,
                                 "InstanceType" : "t2.micro",
@@ -143,7 +211,7 @@
                                 "AvailabilityZones" :{ "Fn::GetAZs" : "" },
                                 "HealthCheck" : {
                                         "HealthyThreshold" : "2",
-                                        "Interval" : "20",
+                                        "Interval" : "300",
                                         "Target" : "HTTP:3000/healthcheck",
                                         "Timeout" : "10",
                                         "UnhealthyThreshold" : "10"
