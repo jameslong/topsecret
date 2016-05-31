@@ -15,7 +15,7 @@ var debugConfig: Config.ConfigState = {
         mailgun: {
                 apiKey: '',
         },
-        emailDomain: 'testmail.playtopsecret.com',
+        emailDomain: 'nsa.playtopsecret.com',
         updateIntervalMs: 1000,
         content: {
                 validApplicationThread: 'transferRequest_valid',
