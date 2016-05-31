@@ -21,7 +21,7 @@ var debugConfig: Config.ConfigState = {
                 validApplicationThread: 'transferRequest_valid',
                 validApplicationThreadPGP: 'transferRequest_valid_pgp',
                 invalidApplicationThread: 'transferRequest_invalid',
-                resignationThread: 'resignation_0',
+                resignationThread: 'resign',
                 narrativeFolder: '../../topsecret-content/game',
                 defaultNarrativeGroup: '0',
                 messageSchemaPath: '../core/src/app/messageschema.json',
