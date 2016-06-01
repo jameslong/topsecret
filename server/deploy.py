@@ -18,6 +18,9 @@ os.makedirs(dirname)
 subprocess.call('git clone --depth 1 git@github.com:jameslong/topsecret-content.git ' + dirname + '/topsecret-content', shell=True)
 subprocess.call('git clone --depth 1 git@github.com:jameslong/topsecret.git ' + dirname + '/topsecret', shell=True)
 
+# Copy credentials
+subprocess.call('cp -r server/credentials ' + dirname + '/topsecret/server', shell=True)
+
 # Install dependencies
 os.chdir(dirname + '/topsecret')
 subprocess.call('npm install', shell=True)
