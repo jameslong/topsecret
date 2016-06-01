@@ -9,8 +9,8 @@ var debugConfig: Config.ConfigState = {
                 accessKeyId: '',
                 secretAccessKey: '',
                 region: '',
-                messagesTableName: 'messages-dev',
-                playersTableName: 'players-dev',
+                messagesTableName: 'message-dev',
+                playersTableName: 'player-dev',
         },
         mailgun: {
                 apiKey: '',
@@ -40,21 +40,21 @@ var releaseConfig: Config.ConfigState = {
                 accessKeyId: '',
                 secretAccessKey: '',
                 region: '',
-                messagesTableName: 'messages',
-                playersTableName: 'players',
+                messagesTableName: 'message-dev',
+                playersTableName: 'player-dev',
         },
         mailgun: {
                 apiKey: '',
         },
-        emailDomain: 'testmail.playtopsecret.com',
+        emailDomain: 'nsa.playtopsecret.com',
         updateIntervalMs: 1000,
         content: {
-                validApplicationThread: 'transferRequest_valid',
-                validApplicationThreadPGP: 'transferRequest_valid_pgp',
-                invalidApplicationThread: 'transferRequest_invalid',
-                resignationThread: 'resignation_0',
-                narrativeFolder: '../content',
-                defaultNarrativeGroup: 'sample_data',
+                validApplicationThread: 'transfer_request_valid',
+                validApplicationThreadPGP: 'transfer_request_valid_pgp',
+                invalidApplicationThread: 'transfer_request_invalid',
+                resignationThread: 'resign',
+                narrativeFolder: '../../topsecret-content/game',
+                defaultNarrativeGroup: '0',
                 messageSchemaPath: '../core/src/app/messageschema.json',
                 profileSchemaPath: '../core/src/app/profileschema.json',
                 replyOptionSchemaPath: '../core/src/app/replyoptionschema.json',
@@ -62,6 +62,6 @@ var releaseConfig: Config.ConfigState = {
         timeFactor: 1
 };
 
-export var releaseMode = false;
+export var releaseMode = true;
 
 export var config = releaseMode ? releaseConfig : debugConfig;
