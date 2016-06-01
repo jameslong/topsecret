@@ -15,13 +15,13 @@ var debugConfig: Config.ConfigState = {
         mailgun: {
                 apiKey: '',
         },
-        emailDomain: 'testmail.playtopsecret.com',
+        emailDomain: 'nsa.playtopsecret.com',
         updateIntervalMs: 1000,
         content: {
-                validApplicationThread: 'transferRequest_valid',
-                validApplicationThreadPGP: 'transferRequest_valid_pgp',
-                invalidApplicationThread: 'transferRequest_invalid',
-                resignationThread: 'resignation_0',
+                validApplicationThread: 'transfer_request_valid',
+                validApplicationThreadPGP: 'transfer_request_valid_pgp',
+                invalidApplicationThread: 'transfer_request_invalid',
+                resignationThread: 'resign',
                 narrativeFolder: '../../topsecret-content/game',
                 defaultNarrativeGroup: '0',
                 messageSchemaPath: '../core/src/app/messageschema.json',

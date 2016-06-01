@@ -53,5 +53,6 @@ export function loadCredentials(config: ConfigState)
                 mailgunConfig = <MailgunConfig>FileSystem.loadJSONSync(
                         'example_credentials/mailgun.json');
         }
-        Helpers.assign(config.aws, awsConfig);
+        Object.assign(config.aws, awsConfig);
+        Object.assign(config.mailgun, mailgunConfig);
 }

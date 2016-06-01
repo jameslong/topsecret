@@ -135,12 +135,16 @@ export function encryptSendStoreChild (
         const messageData = groupData.messages[name];
         const from = groupData.keyManagers[messageData.message.from];
 
-        return KbpgpHelpers.loadKey(player.publicKey).then(to => {
-                const encryptData = { from, to, text: data.body };
-                return KbpgpHelpers.signEncrypt(encryptData);
-        }).then(body => {
-                        data.body = body;
-                        return promises.send(data);
+        const encrypt = player.publicKey ?
+                KbpgpHelpers.loadKey(player.publicKey).then(to => {
+                        const encryptData = { from, to, text: data.body };
+                        return KbpgpHelpers.signEncrypt(encryptData);
+                }) :
+                Promise.resolve(data.body);
+
+        return encrypt.then(body => {
+                data.body = body;
+                return promises.send(data);
         }).then(id => {
                 const messageState = createMessageState(
                         groupData,
