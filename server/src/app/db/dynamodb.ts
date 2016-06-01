@@ -4,7 +4,6 @@
 import Config = require('../config');
 import DBTypes = require('../../../../core/src/app/dbtypes');
 import Func = require('../../../../core/src/app/utils/function');
-import Log = require('../../../../core/src/app/log');
 import Map = require('../../../../core/src/app/utils/map');
 import Message = require('../../../../core/src/app/message');
 import MessageHelpers = require('../../../../core/src/app/messagehelpers');
@@ -260,10 +259,10 @@ export function addMessage (
         messagesTableName: string,
         messageState: DBTypes.AddMessageParams)
 {
-        Log.debug('Storing message dynamo', messageState);
+        // Log.debug('Storing message dynamo', messageState);
 
         const resultMap = (data: any) => {
-                Log.debug('Stored message dynamo', data);
+                // Log.debug('Stored message dynamo', data);
                 return messageState;
         };
 
@@ -281,10 +280,10 @@ export function updateMessage (
         messagesTableName: string,
         messageState: DBTypes.UpdateMessageParams)
 {
-        Log.debug('Updating message dynamo', messageState);
+        // Log.debug('Updating message dynamo', messageState);
 
         const resultMap = (data: any) => {
-                Log.debug('Updated message dynamo', data);
+                // Log.debug('Updated message dynamo', data);
                 return messageState;
         };
 

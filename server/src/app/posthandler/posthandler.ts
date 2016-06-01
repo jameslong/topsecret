@@ -162,6 +162,15 @@ export function createBeginDemoCallback (state: App.State)
                                         narrativeName: string;
                                 } = req.body;
 
+                        Log.metric({
+                                type: 'BEGIN_GAME',
+                                playerEmail: body.email,
+                                firstName: body.firstName,
+                                lastName: body.lastName,
+                                messageName: body.messageName,
+                                narrativeName: body.narrativeName,
+                        });
+
                         var email = body.email;
                         var firstName = body.firstName;
                         var lastName = body.lastName;
@@ -194,6 +203,11 @@ export function createEndDemoCallback (state: App.State)
                         var data: {
                                         email: string;
                                 } = req.body;
+
+                        Log.metric({
+                                type: 'END_GAME',
+                                playerEmail: data.email,
+                        });
 
                         var promises = state.app.promises;
 
@@ -263,6 +277,19 @@ export function createReplyCallback (state: App.State)
                                         subject: string;
                                 } = req.body;
 
+                        Log.metric({
+                                type: 'MESSAGE_RECEIVED',
+                                playerEmail: data.sender,
+                                message: {
+                                        id: data['Message-ID'],
+                                        inReplyToId: data['In-Reply-To'],
+                                        from: data.sender,
+                                        to: data.To,
+                                        subject: data.subject,
+                                        body: data['stripped-text'],
+                                }
+                        });
+
                         const reply = {
                                 from: data.sender,
                                 to: data['To'],
@@ -294,6 +321,19 @@ export function createLocalReplyCallback (state: App.State)
                                         body: string;
                                         to: string;
                                 } = req.body;
+
+                        Log.metric({
+                                type: 'MESSAGE_RECEIVED',
+                                playerEmail: data.from,
+                                message: {
+                                        id: data.id,
+                                        inReplyToId: data.inReplyToId,
+                                        from: data.from,
+                                        to: data.to,
+                                        subject: data.subject,
+                                        body: data.body,
+                                }
+                        });
 
                         const reply = {
                                 from: data.from,

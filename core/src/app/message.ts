@@ -69,6 +69,7 @@ export interface Message {
 }
 
 export interface MessageData {
+        name: string;
         from: string;
         to: string;
         subject: string;
@@ -76,6 +77,11 @@ export interface MessageData {
         inReplyToId: string;
 }
 
-export interface Reply extends MessageData {
+export interface Reply {
         id: string;
+        from: string;
+        to: string;
+        subject: string;
+        body: string;
+        inReplyToId: string;
 }

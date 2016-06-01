@@ -60,7 +60,7 @@ export function createMessageData (
         const passage = strings[message.body];
         const body = (vars ? insertMessageVars(passage, vars) : passage);
 
-        return { from, to, subject, body, inReplyToId };
+        return { name, from, to, subject, body, inReplyToId };
 }
 
 export function addDomain (local: string, domain: string): string

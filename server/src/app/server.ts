@@ -70,6 +70,19 @@ export function sendMail (io: any, messageData: Message.MessageData)
         };
 
         io.sockets.emit('message', message);
+
+        Log.metric({
+                type: 'MESSAGE_SENT',
+                playerEmail: messageData.from,
+                message: {
+                        name: messageData.name,
+                        id,
+                        from: messageData.from,
+                        to: messageData.to,
+                        subject: messageData.subject,
+                }
+        });
+
         return Promise.resolve(id);
 }
 

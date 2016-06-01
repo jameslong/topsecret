@@ -127,7 +127,7 @@ export function init (state: State)
 
 export function updateWrapper (state: State)
 {
-        Log.debug('Update wrapper');
+        // Log.debug('Update wrapper');
 
         const paused = state.server.paused;
         const updatePromise = paused ?
@@ -148,14 +148,14 @@ export function update (state: State)
         const exclusiveStartKey = state.lastEvaluatedKey;
         state.clock = Clock.tick(state.clock);
 
-        Log.debug(`Update - exclusiveStartKey = ${exclusiveStartKey}`);
+        // Log.debug(`Update - exclusiveStartKey = ${exclusiveStartKey}`);
 
         return Main.tick(gameState, state.clock, exclusiveStartKey);
 }
 
 export function onUpdateEnd (state: State, lastEvaluatedKey: string)
 {
-        Log.debug(`Update end - lastEvaluatedKey = ${lastEvaluatedKey}`);
+        // Log.debug(`Update end - lastEvaluatedKey = ${lastEvaluatedKey}`);
 
         state.lastEvaluatedKey = lastEvaluatedKey;
         const config = state.config;

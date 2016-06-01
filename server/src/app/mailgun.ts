@@ -11,23 +11,36 @@ export function createMailgun (key: string, domain: string): any
         return MailgunModule({apiKey: key, domain: domain});
 }
 
-export function sendMail (mailgun: any, messageData: Message.MessageData)
+export function sendMail (mailgun: any, data: Message.MessageData)
 {
-        const mailgunMessageData = {
-                from: messageData.from,
-                to: messageData.to,
-                subject: messageData.subject,
-                text: messageData.body,
+        const mailgunData = {
+                from: data.from,
+                to: data.to,
+                subject: data.subject,
+                text: data.body,
         };
 
         return new Promise<string>((resolve, reject) => {
-                mailgun.messages().send(mailgunMessageData,
+                mailgun.messages().send(mailgunData,
                         (err: any, body: { id: string; }) => {
                                 if (err) {
                                         Log.debug('Mailgun send error', err);
                                         reject(err);
                                 } else {
-                                        const id = (body ? body.id : null);
+                                        const id = body.id;
+
+                                        Log.metric({
+                                                type: 'MESSAGE_SENT',
+                                                playerEmail: data.from,
+                                                message: {
+                                                        name: data.name,
+                                                        id,
+                                                        from: data.from,
+                                                        to: data.to,
+                                                        subject: data.subject,
+                                                }
+                                        });
+
                                         resolve(id);
                                 }
                         });
