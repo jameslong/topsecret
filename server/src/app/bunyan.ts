@@ -14,14 +14,20 @@ export const log = Bunyan.createLogger({
         ],
 });
 
+function getISOString ()
+{
+        const isoString = (new Date()).toISOString();
+        return isoString.substring(0, 19) + '+0000';
+}
+
 /*
 We override global console as typescript as we cannot import a different logger
 when in client/server (typescript does not support conditional imports)
 */
 console.info = (data: Object) => {
-        log.info({ metric: data }, 'metric');
+        log.info({ metric: data, time: getISOString() }, 'metric');
 };
 
 console.error = (data: Object) => {
-        log.error({ err: data }, 'error');
+        log.error({ err: data, time: getISOString() }, 'error');
 };
