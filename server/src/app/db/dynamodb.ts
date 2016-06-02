@@ -4,6 +4,7 @@
 import Config = require('../config');
 import DBTypes = require('../../../../core/src/app/dbtypes');
 import Func = require('../../../../core/src/app/utils/function');
+import Log = require('../../../../core/src/app/log');
 import Map = require('../../../../core/src/app/utils/map');
 import Message = require('../../../../core/src/app/message');
 import MessageHelpers = require('../../../../core/src/app/messagehelpers');
@@ -112,6 +113,7 @@ export function createDynamoDBCalls (config: Config.AWSConfig): DBTypes.DBCalls
 }
 
 export function returnPromise<T, U, V> (
+        request: string,
         docClient: DOC.DynamoDB,
         requestFn: (params: T, callback: Request.Callback<U>) => void,
         params: T,
@@ -119,8 +121,21 @@ export function returnPromise<T, U, V> (
 {
         return new Promise((resolve, reject) => {
                 requestFn.call(docClient, params,
-                        (err: Request.Error, result: U) =>
-                                err ? reject(err) : resolve(map(result)))
+                        (error: Request.Error, result: U) => {
+                                if (error) {
+                                        Log.metric({
+                                                type: 'AWS_REQUEST_ERROR',
+                                                request,
+                                                params,
+                                                error,
+                                        });
+
+                                        reject(error);
+                                } else {
+                                        resolve(map(result));
+                                }
+                        }
+                )
         });
 }
 
@@ -132,7 +147,8 @@ export function deleteTable (
                 TableName: tableName,
         };
 
-        return returnPromise(docClient, docClient.deleteTable, awsParams);
+        return returnPromise(
+                'deleteTable', docClient, docClient.deleteTable, awsParams);
 }
 
 export function createPlayerTable (
@@ -159,7 +175,11 @@ export function createPlayerTable (
                 },
         };
 
-        return returnPromise(docClient, docClient.createTable, awsParams);
+        return returnPromise(
+                'createPlayerTable',
+                docClient,
+                docClient.createTable,
+                awsParams);
 };
 
 export function createMessageTable (
@@ -212,7 +232,11 @@ export function createMessageTable (
                 },
         };
 
-        return returnPromise(docClient, docClient.createTable, awsParams);
+        return returnPromise(
+                'createMessageTable',
+                docClient,
+                docClient.createTable,
+                awsParams);
 };
 
 export function addPlayer (
@@ -225,7 +249,8 @@ export function addPlayer (
                 TableName: playersTableName,
         };
 
-        return returnPromise(docClient, docClient.putItem, awsParams);
+        return returnPromise(
+                'addPlayer', docClient, docClient.putItem, awsParams);
 };
 
 export function updatePlayer (
@@ -238,7 +263,8 @@ export function updatePlayer (
                 TableName: playersTableName,
         };
 
-        return returnPromise(docClient, docClient.putItem, awsParams);
+        return returnPromise(
+                'updatePlayer', docClient, docClient.putItem, awsParams);
 };
 
 export function deletePlayer (
@@ -251,7 +277,8 @@ export function deletePlayer (
                 TableName: playersTableName,
         };
 
-        return returnPromise(docClient, docClient.deleteItem, awsParams);
+        return returnPromise(
+                'deletePlayer', docClient, docClient.deleteItem, awsParams);
 };
 
 export function addMessage (
@@ -272,7 +299,12 @@ export function addMessage (
                 ReturnValues: 'NONE',
         };
 
-        return returnPromise(docClient, docClient.putItem, awsParams, resultMap);
+        return returnPromise(
+                'addMessage',
+                docClient,
+                docClient.putItem,
+                awsParams,
+                resultMap);
 };
 
 export function updateMessage (
@@ -293,7 +325,12 @@ export function updateMessage (
                 ReturnValues: 'NONE',
         };
 
-        return returnPromise(docClient, docClient.putItem, awsParams, resultMap);
+        return returnPromise(
+                'updateMessage',
+                docClient,
+                docClient.putItem,
+                awsParams,
+                resultMap);
 };
 
 export function getMessage (
@@ -309,7 +346,11 @@ export function getMessage (
         };
 
         return returnPromise(
-                docClient, docClient.getItem, awsParams, extractItem);
+                'getMessage',
+                docClient,
+                docClient.getItem,
+                awsParams,
+                extractItem);
 };
 
 export function getMessages (
@@ -340,7 +381,8 @@ export function getMessages (
                 };
         }
 
-        return returnPromise(docClient, docClient.scan, awsParams, resultMap);
+        return returnPromise(
+                'getMessages', docClient, docClient.scan, awsParams, resultMap);
 };
 
 export function deleteMessage (
@@ -357,7 +399,11 @@ export function deleteMessage (
         };
 
         return returnPromise(
-                docClient, docClient.deleteItem, awsParams, extractAttributes);
+                'deleteMessage',
+                docClient,
+                docClient.deleteItem,
+                awsParams,
+                extractAttributes);
 };
 
 export function deleteAllMessages (
@@ -393,7 +439,11 @@ export function getPlayer (
         };
 
         return returnPromise(
-                docClient, docClient.getItem, awsParams, extractItem);
+                'getPlayer',
+                docClient,
+                docClient.getItem,
+                awsParams,
+                extractItem);
 };
 
 export function extractAttributes<T> (data: { Attributes: T })
@@ -427,7 +477,8 @@ export function queryByEmail (
                 TableName: tableName,
         };
 
-        return returnPromise(docClient, docClient.query, queryParams);
+        return returnPromise(
+                'queryByEmail', docClient, docClient.query, queryParams);
 }
 
 export function deleteById (
@@ -452,5 +503,6 @@ export function deleteById (
                 RequestItems: requestItems,
         };
 
-        return returnPromise(docClient, docClient.batchWriteItem, queryParams);
+        return returnPromise(
+                'deleteById', docClient, docClient.batchWriteItem, queryParams);
 }
