@@ -6,7 +6,7 @@ export const assert = (test: boolean, desc: string, meta?: Object) => {
                 error(desc, meta);
         }
 };
-type MetricType = 'BEGIN_GAME' | 'END_GAME' | 'MESSAGE_RECEIVED' | 'MESSAGE_SENT';
+type MetricType = 'BEGIN_GAME' | 'END_GAME' | 'MESSAGE_RECEIVED' | 'MESSAGE_SENT' | 'MESSAGE_NOT_SENT';
 interface Metric {
         type: MetricType;
         playerEmail: string;

@@ -25,6 +25,19 @@ export function sendMail (mailgun: any, data: Message.MessageData)
                         (err: any, body: { id: string; }) => {
                                 if (err) {
                                         Log.debug('Mailgun send error', err);
+
+                                        Log.metric({
+                                                type: 'MESSAGE_NOT_SENT',
+                                                playerEmail: data.from,
+                                                error: err,
+                                                message: {
+                                                        name: data.name,
+                                                        from: data.from,
+                                                        to: data.to,
+                                                        subject: data.subject,
+                                                }
+                                        });
+
                                         reject(err);
                                 } else {
                                         const id = body.id;
