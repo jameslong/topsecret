@@ -78,7 +78,7 @@ export function createGameState (
         ).then(gameData =>
                 onGameData(config, server, gameData)
         ).catch(err => {
-                Log.info('createGameState error', JSON.stringify(err, null, 4));
+                Log.error(err);
                 return onGameData(config, server, null);
         });
 }
@@ -137,7 +137,7 @@ export function updateWrapper (state: State)
         updatePromise.then(lastEvaluatedKey =>
                 onUpdateEnd(state, lastEvaluatedKey)
         ).catch(err => {
-                Log.info(err);
+                Log.error(err);
                 onUpdateEnd(state, null);
         });
 }

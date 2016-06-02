@@ -1,5 +1,4 @@
 export const debug = console.log;
-export const info = console.info;
 export const error = console.error;
 export const assert = (test: boolean, desc: string, meta?: Object) => {
         if (!test) {
@@ -11,6 +10,5 @@ interface Metric {
         type: MetricType;
 }
 export const metric = <T extends Metric>(data: T) => {
-        const stringData = JSON.stringify(data, null, 4);
-        return info('Metric:', stringData);
+        return console.info(data);
 }

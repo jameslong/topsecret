@@ -1,5 +1,9 @@
 /// <reference path="../../../typings/es6-polyfill/es6-polyfill.d.ts" />
 
+// IMPORTANT: This must be included before other files for all logs to be stored
+import Bunyan = require('./bunyan');
+const log = Bunyan.log; // Required for bunyan module to be included in build
+
 import App = require('./app');
 import Config = require('./config');
 import ConfigData = require('./configdata');
@@ -17,5 +21,5 @@ Config.loadCredentials(config);
 App.createState(config).then(state =>
         App.init(state)
 ).catch(err => {
-        Log.info('State warning', err);
+        Log.error(err);
 });

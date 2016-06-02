@@ -23,6 +23,7 @@
   "dependencies": {
     "aws-sdk": "^2.2.40",
     "body-parser": "^1.15.0",
+    "bunyan": "^1.8.1",
     "chai": "^3.5.0",
     "chai-as-promised": "^5.2.0",
     "dynamodb-doc": "^1.0.0",
@@ -44,8 +45,7 @@
     "react": "^0.14.7",
     "react-dom": "^0.14.7",
     "socket.io": "^1.4.5",
-    "typescript": "^1.8.7",
-    "winston": "^2.2.0"
+    "typescript": "^1.8.7"
   },
   "devDependencies": {}
 }

@@ -9,8 +9,6 @@ export function handleReplyRequest (state: App.State, reply: Message.Reply)
         const careersEmail = Careers.isCareersEmail(reply.to);
         const timestampMs = Date.now();
 
-        Log.info('replyReceived', reply);
-
         if (careersEmail) {
                 return Careers.handleCareersEmail(state, reply);
         } else {
