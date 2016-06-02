@@ -180,7 +180,7 @@
                                 "IamInstanceProfile": {
                                         "Ref": "S3BucketAccessIAMProfile"
                                 },
-                                "ImageId" : "ami-840910ee",
+                                "ImageId" : "ami-13be557e",
                                 "InstanceMonitoring" : false,
                                 "InstanceType" : "t2.micro",
                                 "KeyName" : "cloudformation",
@@ -197,19 +197,19 @@
                                                         "cd home/ubuntu",
 
                                                         "# Update packages",
-                                                        "apt update",
+                                                        "apt-get update",
 
                                                         "# Install aws cli",
-                                                        "apt -y install awscli",
+                                                        "apt-get -y install awscli",
 
                                                         "# Install nodejs",
-                                                        "apt -y install nodejs",
+                                                        "apt-get -y install nodejs",
 
                                                         "# Install npm",
-                                                        "apt -y install npm",
+                                                        "apt-get -y install npm",
 
                                                         "# Install unzip",
-                                                        "apt -y install unzip",
+                                                        "apt-get -y install unzip",
 
                                                         "# Install grunt cli",
                                                         "npm install -g grunt-cli",
