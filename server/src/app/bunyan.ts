@@ -8,7 +8,7 @@ export const log = Bunyan.createLogger({
                         type: 'rotating-file',
                         level: 'info',
                         path: '/var/log/topsecret.log',
-                        period: '10000ms',
+                        period: '1d',
                         count: 3
                 }
         ],
