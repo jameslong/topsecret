@@ -180,7 +180,7 @@
                                 "IamInstanceProfile": {
                                         "Ref": "S3BucketAccessIAMProfile"
                                 },
-                                "ImageId" : "ami-13be557e",
+                                "ImageId" : "ami-f5f41398",
                                 "InstanceMonitoring" : false,
                                 "InstanceType" : "t2.micro",
                                 "KeyName" : "cloudformation",
@@ -194,36 +194,36 @@
                                                 "Fn::Join" : ["\n", [
                                                         "#!/bin/bash -xe",
 
-                                                        "cd home/ubuntu",
+                                                        "#cd home/ubuntu",
 
                                                         "# Update packages",
-                                                        "apt-get update",
+                                                        "#apt-get update",
 
                                                         "# Install aws cli",
-                                                        "apt-get -y install awscli",
+                                                        "#apt-get -y install awscli",
 
                                                         "# Install nodejs",
-                                                        "apt-get -y install nodejs",
+                                                        "#apt-get -y install nodejs",
 
                                                         "# Install npm",
-                                                        "apt-get -y install npm",
+                                                        "#apt-get -y install npm",
 
                                                         "# Install unzip",
-                                                        "apt-get -y install unzip",
+                                                        "#apt-get -y install unzip",
 
                                                         "# Install grunt cli",
-                                                        "npm install -g grunt-cli",
+                                                        "#npm install -g grunt-cli",
 
                                                         "# Download file from s3",
-                                                        "aws s3 cp s3://topsecret-deploy ./ --recursive",
+                                                        "#aws s3 cp s3://topsecret-deploy ./ --recursive",
 
                                                         "# Unzip",
-                                                        "unzip topsecret.zip",
+                                                        "#unzip topsecret.zip",
 
-                                                        "cd topsecret/server",
+                                                        "#cd topsecret/server",
 
                                                         "# Start server",
-                                                        "nodejs build/server/src/app/main.js"
+                                                        "#nodejs build/server/src/app/main.js"
                                                 ] ]
                                         }
                                 }
