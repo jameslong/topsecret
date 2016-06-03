@@ -192,6 +192,7 @@
                                 "UserData" : {
                                         "Fn::Base64" : {
                                                 "Fn::Join" : ["\n", [
+                                                        "#!/bin/bash -xe",
                                                         "cd /home/ec2-user",
                                                         "yum -y update",
                                                         "curl --silent --location https://rpm.nodesource.com/setup_4.x | bash -",
