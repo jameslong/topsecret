@@ -198,7 +198,7 @@
                                                         "curl --silent --location https://rpm.nodesource.com/setup_4.x | bash -",
                                                         "yum -y install nodejs",
                                                         "aws s3 cp s3://topsecret-deploy ./ --recursive",
-                                                        "unzip topsecret.zip",
+                                                        "unzip -o topsecret.zip",
                                                         "cd topsecret/server",
                                                         "node build/server/src/app/main.js"
                                                 ] ]
