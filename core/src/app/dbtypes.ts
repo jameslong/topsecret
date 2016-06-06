@@ -4,12 +4,6 @@ import Request = require('./requesttypes');
 import Player = require('./player');
 import Prom = require('./utils/promise');
 
-export type CreateTableParams = string;
-export type CreateTableFact = Prom.Factory<CreateTableParams, {}>;
-
-export type DeleteTableParams = string;
-export type DeleteTableFact = Prom.Factory<DeleteTableParams, {}>;
-
 export type AddPlayerParams = Player.PlayerState;
 export type AddPlayerFact = Prom.Factory<AddPlayerParams, Player.PlayerState>;
 
@@ -52,9 +46,6 @@ export interface PromiseFactories extends DBCalls {
 }
 
 export interface DBCalls {
-        createPlayerTable: CreateTableFact;
-        createMessageTable: CreateTableFact;
-        deleteTable: DeleteTableFact;
         addPlayer: AddPlayerFact;
         updatePlayer: UpdatePlayerFact;
         deletePlayer: DeletePlayerFact;
@@ -74,9 +65,6 @@ export function createPromiseFactories (calls: DBCalls, send: SendMessage)
 {
         return {
                 send,
-                createPlayerTable: calls.createPlayerTable,
-                createMessageTable: calls.createMessageTable,
-                deleteTable: calls.deleteTable,
                 addPlayer: calls.addPlayer,
                 updatePlayer: calls.updatePlayer,
                 deletePlayer: calls.deletePlayer,

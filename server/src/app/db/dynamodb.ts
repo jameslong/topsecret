@@ -69,11 +69,6 @@ export function createDynamoDBCalls (config: Config.AWSConfig): DBTypes.DBCalls
 
         const docClient = new DOC.DynamoDB();
 
-        const createPlayerTableLocal = tablePromiseFactory(
-                docClient, createPlayerTable);
-        const createMessageTableLocal = tablePromiseFactory(
-                docClient, createMessageTable);
-        const deleteTableLocal = tablePromiseFactory(docClient, deleteTable);
         const addPlayerLocal = promiseFactory(
                 docClient, playersTableName, addPlayer);
         const updatePlayerLocal = promiseFactory(
@@ -96,9 +91,6 @@ export function createDynamoDBCalls (config: Config.AWSConfig): DBTypes.DBCalls
                 docClient, messagesTableName, getPlayer);
 
         return {
-                createPlayerTable: createPlayerTableLocal,
-                createMessageTable: createMessageTableLocal,
-                deleteTable: deleteTableLocal,
                 addPlayer: addPlayerLocal,
                 updatePlayer: updatePlayerLocal,
                 deletePlayer: deletePlayerLocal,
@@ -138,106 +130,6 @@ export function returnPromise<T, U, V> (
                 )
         });
 }
-
-export function deleteTable (
-        docClient: DOC.DynamoDB,
-        tableName: DBTypes.CreateTableParams)
-{
-        var awsParams = {
-                TableName: tableName,
-        };
-
-        return returnPromise(
-                'deleteTable', docClient, docClient.deleteTable, awsParams);
-}
-
-export function createPlayerTable (
-        docClient: DOC.DynamoDB,
-        tableName: DBTypes.CreateTableParams)
-{
-        var awsParams = {
-                TableName: tableName,
-                AttributeDefinitions: [
-                        {
-                                AttributeName: 'email',
-                                AttributeType: 'S',
-                        },
-                ],
-                KeySchema: [
-                        {
-                                AttributeName: 'email',
-                                KeyType: "HASH"
-                        }
-                ],
-                ProvisionedThroughput: {
-                        ReadCapacityUnits: 10,
-                        WriteCapacityUnits: 10
-                },
-        };
-
-        return returnPromise(
-                'createPlayerTable',
-                docClient,
-                docClient.createTable,
-                awsParams);
-};
-
-export function createMessageTable (
-        docClient: DOC.DynamoDB,
-        tableName: DBTypes.CreateTableParams)
-{
-        var awsParams = {
-                TableName: tableName,
-                AttributeDefinitions: [
-                        {
-                                AttributeName: 'id',
-                                AttributeType: 'S',
-                        },
-                        {
-                                AttributeName: 'email',
-                                AttributeType: 'S',
-                        },
-                ],
-                KeySchema: [
-                        {
-                                AttributeName: 'id',
-                                KeyType: "HASH",
-                        }
-                ],
-                GlobalSecondaryIndexes: [
-                        {
-                                IndexName: 'email-index',
-                                KeySchema: [
-                                        {
-                                                AttributeName: 'email',
-                                                KeyType: 'HASH'
-                                        },
-                                        {
-                                                AttributeName: 'id',
-                                                KeyType: "RANGE"
-                                        }
-                                ],
-                                Projection: {
-                                        ProjectionType: 'KEYS_ONLY'
-                                },
-                                ProvisionedThroughput: {
-                                        ReadCapacityUnits: 5,
-                                        WriteCapacityUnits: 5
-                                },
-                        }
-                ],
-                ProvisionedThroughput: {
-                        ReadCapacityUnits: 5,
-                        WriteCapacityUnits: 5,
-                },
-        };
-
-        return returnPromise(
-                'createMessageTable',
-                docClient,
-                docClient.createTable,
-                awsParams);
-};
 
 export function addPlayer (
         docClient: DOC.DynamoDB,

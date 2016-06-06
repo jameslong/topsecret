@@ -60,9 +60,6 @@ export function createLocalDBCalls (db: DBState, timeoutMs: number)
         const factory = <T, U>(promise: DBPromise<T, U>) =>
                 delayFactory<T, U>(db, timeoutMs, promise);
 
-        const createPlayerTable = factory(createPlayerTableLocal);
-        const createMessageTable = factory( createMessageTableLocal);
-        const deleteTable = factory(deleteTableLocal);
         const addPlayer = factory(addPlayerLocal);
         const updatePlayer = factory(updatePlayerLocal);
         const deletePlayer = factory(deletePlayerLocal);
@@ -75,9 +72,6 @@ export function createLocalDBCalls (db: DBState, timeoutMs: number)
         const getPlayer = factory(getPlayerLocal);
 
         return {
-                createPlayerTable,
-                createMessageTable,
-                deleteTable,
                 addPlayer,
                 updatePlayer,
                 deletePlayer,
@@ -96,96 +90,6 @@ function returnPromise<T> (err: Request.Error, result: T)
         return new Promise<T>((resolve, reject) =>
                 err ? reject(err) : resolve(result)
         );
-}
-
-export function createPlayerTableLocal (
-        db: DBState,
-        params: DBTypes.CreateTableParams)
-{
-        var error: Request.Error = undefined;
-
-        var hasTable = (db.players !== null);
-
-        if (hasTable) {
-                error = {
-                        code: 'CREATE PLAYERS TABLE',
-                        message: 'could not create players table',
-                };
-        } else {
-                db.players = {};
-        }
-
-        return returnPromise(error, params);
-}
-
-export function deleteTableLocal (
-        db: DBState,
-        tableName: DBTypes.CreateTableParams)
-{
-        return tableName === 'messages' ?
-                deleteMessageTableLocal(db, tableName) :
-                deletePlayerTableLocal(db, tableName);
-}
-
-export function deletePlayerTableLocal (
-        db: DBState,
-        params: DBTypes.CreateTableParams)
-{
-        var error: Request.Error = undefined;
-
-        var hasTable = (db.players !== null);
-
-        if (hasTable) {
-                db.players = null;
-        } else {
-                error = {
-                        code: 'DELETE PLAYERS TABLE',
-                        message: 'could not create players table',
-                };
-        }
-
-        return returnPromise(error, params);
-}
-
-export function createMessageTableLocal (
-        db: DBState,
-        params: DBTypes.CreateTableParams)
-{
-        var error: Request.Error = undefined;
-
-        var hasTable = (db.messages !== null);
-
-        if (hasTable) {
-                error = {
-                        code: 'CREATE MESSAGE TABLE',
-                        message: 'could not create message table',
-                };
-        } else {
-                db.messages = {};
-        }
-
-        return returnPromise(error, params);
-}
-
-export function deleteMessageTableLocal (
-        db: DBState,
-        params: DBTypes.CreateTableParams)
-{
-        var error: Request.Error = undefined;
-
-        var hasTable = (db.messages !== null);
-
-        if (hasTable) {
-                db.messages = null;
-        } else {
-
-                error = {
-                        code: 'DELETE MESSAGE TABLE',
-                        message: 'could not create message table',
-                };
-        }
-
-        return returnPromise(error, params);
 }
 
 export function addPlayerLocal (

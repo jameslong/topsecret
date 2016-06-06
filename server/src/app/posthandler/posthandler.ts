@@ -30,10 +30,6 @@ export function addRequestEndpoints (
 
         // Debug only
         addPost(app, '/localreply', createLocalReplyCallback, state);
-        addPost(app, '/createplayertable', createCreatePlayerTableCallback, state);
-        addPost(app, '/deleteplayertable', createDeletePlayerTableCallback, state);
-        addPost(app, '/createmessagetable', createCreateMessageTableCallback, state);
-        addPost(app, '/deletemessagetable', createDeleteMessageTableCallback, state);
         addPost(app, '/begindemo', createBeginDemoCallback, state);
         addPost(app, '/enddemo', createEndDemoCallback, state);
         addPost(app, '/addplayer', createAddPlayerCallback, state);
@@ -90,64 +86,6 @@ export function addPost (
         var handler = createHandlerFn(state);
         var logHandler = createLogHandler(path, handler);
         app.post(path, logHandler);
-}
-
-export function createCreatePlayerTableCallback (state: App.State)
-{
-        return (req: any, res: any) =>
-                {
-                        var app = state.app;
-                        var promises = app.promises;
-                        var config = state.config;
-                        var tableName = config.aws.playersTableName;
-
-                        promises.createPlayerTable(tableName).then(result =>
-                                res.sendStatus(200)
-                        ).catch(err => res.sentStatus(500));
-                };
-}
-
-export function createDeletePlayerTableCallback (state: App.State)
-{
-        return (req: any, res: any) =>
-                {
-                        var app = state.app;
-                        var promises = app.promises;
-                        var config = state.config;
-                        var tableName = config.aws.playersTableName;
-
-                        promises.deleteTable(tableName).then(result =>
-                                res.sendStatus(200)
-                        ).catch(err => res.sentStatus(500));
-                };
-}
-
-export function createCreateMessageTableCallback (state: App.State)
-{
-        return (req: any, res: any) =>
-                {
-                        var app = state.app;
-                        var promises = app.promises;
-                        var config = state.config;
-                        var tableName = config.aws.messagesTableName;
-
-                        const promise = promises.createMessageTable(tableName);
-                        return createRequestCallback(res, promise);
-                };
-}
-
-export function createDeleteMessageTableCallback (state: App.State)
-{
-        return (req: any, res: any) =>
-                {
-                        var app = state.app;
-                        var promises = app.promises;
-                        var config = state.config;
-                        var tableName = config.aws.messagesTableName;
-
-                        const promise = promises.deleteTable(tableName);
-                        return createRequestCallback(res, promise);
-                };
 }
 
 export function createBeginDemoCallback (state: App.State)
