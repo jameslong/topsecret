@@ -2,8 +2,8 @@ import Config = require('./config');
 
 var debugConfig: Config.ConfigState = {
         port: '3000',
-        useDynamoDB: true,
-        useEmail: true,
+        useDynamoDB: false,
+        useEmail: false,
         debugDBTimeoutMs: 1000,
         aws: {
                 accessKeyId: '',
@@ -33,7 +33,7 @@ var debugConfig: Config.ConfigState = {
 
 var releaseConfig: Config.ConfigState = {
         port: '3000',
-        useDynamoDB: false,
+        useDynamoDB: true,
         useEmail: true,
         debugDBTimeoutMs: 1000,
         aws: {
