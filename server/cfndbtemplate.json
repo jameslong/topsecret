@@ -1,0 +1,75 @@
+{
+        "Description": "Top Secret dynamo db table stack",
+
+        "Resources": {
+
+                "MessageTable": {
+                        "Type" : "AWS::DynamoDB::Table",
+                        "Properties" : {
+                                "AttributeDefinitions" : [
+                                        {
+                                                "AttributeName": "id",
+                                                "AttributeType": "S"
+                                        },
+                                        {
+                                                "AttributeName": "email",
+                                                "AttributeType": "S"
+                                        }
+                                ],
+                                "GlobalSecondaryIndexes" : [
+                                        {
+                                                "IndexName": "email-index",
+                                                "KeySchema": [
+                                                        {
+                                                                "AttributeName": "email",
+                                                                "KeyType": "HASH"
+                                                        }
+                                                ],
+                                                "Projection": {
+                                                        "ProjectionType": "KEYS_ONLY"
+                                                },
+                                                "ProvisionedThroughput": {
+                                                        "ReadCapacityUnits": 5,
+                                                        "WriteCapacityUnits": 5
+                                                }
+                                        }
+                                ],
+                                "KeySchema" : [
+                                        {
+                                                "AttributeName": "id",
+                                                "KeyType": "HASH"
+                                        }
+                                ],
+                                "ProvisionedThroughput" : {
+                                        "ReadCapacityUnits": 5,
+                                        "WriteCapacityUnits": 5
+                                },
+                                "TableName" : "message-dev"
+                        }
+                },
+
+                "PlayerTable": {
+                        "Type" : "AWS::DynamoDB::Table",
+                        "Properties" : {
+                                "AttributeDefinitions" : [
+                                        {
+                                                "AttributeName": "email",
+                                                "AttributeType": "S"
+                                        }
+                                ],
+                                "GlobalSecondaryIndexes" : [],
+                                "KeySchema" : [
+                                        {
+                                                "AttributeName": "email",
+                                                "KeyType": "HASH"
+                                        }
+                                ],
+                                "ProvisionedThroughput" : {
+                                        "ReadCapacityUnits": 5,
+                                        "WriteCapacityUnits": 5
+                                },
+                                "TableName" : "player-dev"
+                        }
+                }
+        }
+}
