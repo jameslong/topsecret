@@ -2,6 +2,7 @@
 /// <reference path='../../../../typings/dynamodb-doc/dynamodb-doc.d.ts'/>
 
 import Config = require('../config');
+import DynamoDB = require('dynamodb-doc');
 import DBTypes = require('../../../../core/src/app/dbtypes');
 import Func = require('../../../../core/src/app/utils/function');
 import Log = require('../../../../core/src/app/log');
@@ -12,44 +13,14 @@ import Player = require('../../../../core/src/app/player');
 import Request = require('../../../../core/src/app/requesttypes');
 
 import AWS = require('aws-sdk');
-import DOC = require('dynamodb-doc');
 
-export interface GetUIDParams extends DOC.UpdateItemParams {
-        UpdateExpression: string;
-        ExpressionAttributeValues: { ":inc": number; };
-        ReturnValues: string;
-}
-
-export interface UpdateMessageParams extends DOC.UpdateItemParams {
-        UpdateExpression: string;
-        ExpressionAttributeValues: Object;
-        ReturnValues: string;
-}
-
-export interface UpdatePlayerParams extends DOC.UpdateItemParams {
-        UpdateExpression: string;
-        ExpressionAttributeValues?: Object;
-        ReturnValues: string;
-}
-
-export interface UpdateData<T> {
-        Attributes: T;
-}
-
-export interface GetMessageUIDData extends UpdateData<{ messageUID: number; }> {}
-
-function tablePromiseFactory<T, U> (
-        docClient: DOC.DynamoDB,
-        requestFn: (docClient: DOC.DynamoDB, params: T) => Promise<U>)
-{
-        return (params: T) => requestFn(docClient, params);
-}
+type DynamoDoc = DynamoDB.DynamoDB;
 
 function promiseFactory<T, U> (
-        docClient: DOC.DynamoDB,
+        docClient: DynamoDoc,
         tableName: string,
         requestFn: (
-                docClient: DOC.DynamoDB,
+                docClient: DynamoDoc,
                 tableName: string,
                 params: T) => Promise<U>)
 {
@@ -66,11 +37,12 @@ export function createDynamoDBCalls (config: Config.AWSConfig): DBTypes.DBCalls
                 playersTableName } = config;
 
         (<any>AWS.config.update)({ accessKeyId, secretAccessKey, region });
-
-        const docClient = new DOC.DynamoDB();
+        const docClient = <DynamoDoc>(new AWS.DynamoDB.DocumentClient({region: 'us-east-1'}));
 
         const addPlayerLocal = promiseFactory(
                 docClient, playersTableName, addPlayer);
+        const getPlayerLocal = promiseFactory(
+                docClient, playersTableName, getPlayer);
         const updatePlayerLocal = promiseFactory(
                 docClient, playersTableName, updatePlayer);
         const deletePlayerLocal = promiseFactory(
@@ -87,11 +59,10 @@ export function createDynamoDBCalls (config: Config.AWSConfig): DBTypes.DBCalls
                 docClient, messagesTableName, getMessage);
         const getMessagesLocal = promiseFactory(
                 docClient, messagesTableName, getMessages);
-        const getPlayerLocal = promiseFactory(
-                docClient, messagesTableName, getPlayer);
 
         return {
                 addPlayer: addPlayerLocal,
+                getPlayer: getPlayerLocal,
                 updatePlayer: updatePlayerLocal,
                 deletePlayer: deletePlayerLocal,
                 deleteAllMessages: deleteAllMessagesLocal,
@@ -100,13 +71,12 @@ export function createDynamoDBCalls (config: Config.AWSConfig): DBTypes.DBCalls
                 deleteMessage: deleteMessageLocal,
                 getMessage: getMessageLocal,
                 getMessages: getMessagesLocal,
-                getPlayer: getPlayerLocal,
         };
 }
 
 export function returnPromise<T, U, V> (
         request: string,
-        docClient: DOC.DynamoDB,
+        docClient: DynamoDoc,
         requestFn: (params: T, callback: Request.Callback<U>) => void,
         params: T,
         map: (result: U) => V = Func.identity): Promise<V>
@@ -132,60 +102,85 @@ export function returnPromise<T, U, V> (
 }
 
 export function addPlayer (
-        docClient: DOC.DynamoDB,
+        docClient: DynamoDoc,
         playersTableName: string,
         playerState: DBTypes.AddPlayerParams)
 {
-        var awsParams: DOC.PutItemParams = {
+        const awsParams: DynamoDB.PutParams = {
                 Item: playerState,
+                TableName: playersTableName,
+                ReturnValues: 'NONE',
+        };
+
+        return returnPromise(
+                'addPlayer',
+                docClient,
+                docClient.put,
+                awsParams,
+                () => playerState);
+};
+
+export function getPlayer (
+        docClient: DynamoDoc,
+        playersTableName: string,
+        email: DBTypes.GetPlayerParams)
+{
+        const awsParams: DynamoDB.GetParams = {
+                Key: {
+                        email,
+                },
                 TableName: playersTableName,
         };
 
         return returnPromise(
-                'addPlayer', docClient, docClient.putItem, awsParams);
+                'getPlayer',
+                docClient,
+                docClient.get,
+                awsParams,
+                extractItem);
 };
 
 export function updatePlayer (
-        docClient: DOC.DynamoDB,
+        docClient: DynamoDoc,
         playersTableName: string,
         playerState: DBTypes.UpdatePlayerParams)
 {
-        var awsParams: DOC.PutItemParams = {
+        const awsParams: DynamoDB.PutParams = {
                 Item: playerState,
                 TableName: playersTableName,
         };
 
         return returnPromise(
-                'updatePlayer', docClient, docClient.putItem, awsParams);
+                'updatePlayer', docClient, docClient.put, awsParams);
 };
 
 export function deletePlayer (
-        docClient: DOC.DynamoDB,
+        docClient: DynamoDoc,
         playersTableName: string,
         email: DBTypes.DeletePlayerParams)
 {
-        var awsParams: DOC.DeleteItemParams = {
-                Key: { email: email },
+        const awsParams: DynamoDB.DeleteParams = {
+                Key: { email },
                 TableName: playersTableName,
+                ReturnValues: 'ALL_OLD',
         };
 
         return returnPromise(
-                'deletePlayer', docClient, docClient.deleteItem, awsParams);
+                'deletePlayer',
+                docClient,
+                docClient.delete,
+                awsParams,
+                extractAttributes);
 };
 
 export function addMessage (
-        docClient: DOC.DynamoDB,
+        docClient: DynamoDoc,
         messagesTableName: string,
         messageState: DBTypes.AddMessageParams)
 {
         // Log.debug('Storing message dynamo', messageState);
 
-        const resultMap = (data: any) => {
-                // Log.debug('Stored message dynamo', data);
-                return messageState;
-        };
-
-        var awsParams: DOC.PutItemParams = {
+        const awsParams: DynamoDB.PutParams = {
                 Item: messageState,
                 TableName: messagesTableName,
                 ReturnValues: 'NONE',
@@ -194,24 +189,19 @@ export function addMessage (
         return returnPromise(
                 'addMessage',
                 docClient,
-                docClient.putItem,
+                docClient.put,
                 awsParams,
-                resultMap);
+                () => messageState);
 };
 
 export function updateMessage (
-        docClient: DOC.DynamoDB,
+        docClient: DynamoDoc,
         messagesTableName: string,
         messageState: DBTypes.UpdateMessageParams)
 {
         // Log.debug('Updating message dynamo', messageState);
 
-        const resultMap = (data: any) => {
-                // Log.debug('Updated message dynamo', data);
-                return messageState;
-        };
-
-        var awsParams = {
+        const awsParams: DynamoDB.PutParams = {
                 Item: messageState,
                 TableName: messagesTableName,
                 ReturnValues: 'NONE',
@@ -220,17 +210,17 @@ export function updateMessage (
         return returnPromise(
                 'updateMessage',
                 docClient,
-                docClient.putItem,
+                docClient.put,
                 awsParams,
-                resultMap);
+                () => messageState);
 };
 
 export function getMessage (
-        docClient: DOC.DynamoDB,
+        docClient: DynamoDoc,
         messagesTableName: string,
         id: DBTypes.GetMessageParams)
 {
-        var awsParams = {
+        const awsParams: DynamoDB.GetParams = {
                 Key: {
                         id: id,
                 },
@@ -240,13 +230,13 @@ export function getMessage (
         return returnPromise(
                 'getMessage',
                 docClient,
-                docClient.getItem,
+                docClient.get,
                 awsParams,
                 extractItem);
 };
 
 export function getMessages (
-        docClient: DOC.DynamoDB,
+        docClient: DynamoDoc,
         messagesTableName: string,
         params: DBTypes.GetMessagesParams)
 {
@@ -255,14 +245,14 @@ export function getMessages (
                         messages: data.Items,
                         lastEvaluatedKey: null,
                 };
-                var lastEvaluatedKey = data ? data.LastEvaluatedKey : null;
+                const lastEvaluatedKey = data ? data.LastEvaluatedKey : null;
                 result.lastEvaluatedKey = lastEvaluatedKey ?
                         lastEvaluatedKey.id : null;
 
                 return result;
         };
 
-        let awsParams: any = {
+        let awsParams: DynamoDB.ScanParams = {
                 Limit : params.maxResults,
                 TableName: messagesTableName,
         };
@@ -278,11 +268,11 @@ export function getMessages (
 };
 
 export function deleteMessage (
-        docClient: DOC.DynamoDB,
+        docClient: DynamoDoc,
         messagesTableName: string,
         id: DBTypes.DeleteMessageParams)
 {
-        var awsParams= {
+        const awsParams: DynamoDB.DeleteParams = {
                 Key: {
                         id: id,
                 },
@@ -293,13 +283,13 @@ export function deleteMessage (
         return returnPromise(
                 'deleteMessage',
                 docClient,
-                docClient.deleteItem,
+                docClient.delete,
                 awsParams,
                 extractAttributes);
 };
 
 export function deleteAllMessages (
-        docClient: DOC.DynamoDB,
+        docClient: DynamoDoc,
         messagesTableName: string,
         email: DBTypes.DeleteAllMessagesParams)
 {
@@ -316,26 +306,6 @@ export function deleteAllMessages (
                                 data) :
                         null
         );
-};
-
-export function getPlayer (
-        docClient: DOC.DynamoDB,
-        playersTableName: string,
-        email: DBTypes.GetPlayerParams)
-{
-        var awsParams = {
-                Key: {
-                        email: email,
-                },
-                TableName: playersTableName,
-        };
-
-        return returnPromise(
-                'getPlayer',
-                docClient,
-                docClient.getItem,
-                awsParams,
-                extractItem);
 };
 
 export function extractAttributes<T> (data: { Attributes: T })
@@ -359,13 +329,16 @@ export function queryByEmail (
         email: string,
         tableName: string,
         indexName: string,
-        docClient: DOC.DynamoDB): Promise<QueryByEmailData>
+        docClient: DynamoDoc): Promise<QueryByEmailData>
 {
-        var queryParams = {
+        const queryParams = {
                 IndexName: indexName,
-                KeyConditions: [
-                        docClient.Condition('email', 'EQ', email)
-                ],
+                KeyConditions: {
+                        email: {
+                                ComparisonOperator: 'EQ',
+                                AttributeValueList: [email],
+                        },
+                },
                 TableName: tableName,
         };
 
@@ -375,26 +348,23 @@ export function queryByEmail (
 
 export function deleteById (
         tableName: string,
-        docClient: DOC.DynamoDB,
+        docClient: DynamoDoc,
         emailQueryData: QueryByEmailData)
 {
-        var requestItems: Map.Map<any[]> = {};
-        var deleteRequests = emailQueryData.Items.map(function (item)
-                {
-                        return {
-                                DeleteRequest: {
-                                        Key: {
-                                                id: item.id,
-                                        }
-                                }
-                        };
-                });
+        const requestItems: Map.Map<any[]> = {};
+        const deleteRequests = emailQueryData.Items.map(item => {
+                return {
+                        DeleteRequest: {
+                                Key: { id: item.id }
+                        }
+                };
+        });
         requestItems[tableName] = deleteRequests;
 
-        var queryParams = {
+        const queryParams = {
                 RequestItems: requestItems,
         };
 
         return returnPromise(
-                'deleteById', docClient, docClient.batchWriteItem, queryParams);
+                'deleteById', docClient, docClient.batchWrite, queryParams);
 }

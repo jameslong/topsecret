@@ -21,12 +21,11 @@
   },
   "homepage": "https://github.com/jameslong/topsecret#readme",
   "dependencies": {
-    "aws-sdk": "^2.2.40",
+    "aws-sdk": "^2.3.17",
     "body-parser": "^1.15.0",
     "bunyan": "^1.8.1",
     "chai": "^3.5.0",
     "chai-as-promised": "^5.2.0",
-    "dynamodb-doc": "^1.0.0",
     "express": "^4.13.4",
     "grunt": "^0.4.5",
     "grunt-contrib-clean": "^1.0.0",

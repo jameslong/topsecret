@@ -37,22 +37,24 @@ export interface ConfigState {
         timeFactor: number;
 }
 
-export function loadCredentials(config: ConfigState)
+export function loadCredentials(path: string)
 {
         let awsConfig: AWSConfig = null;
         let mailgunConfig: MailgunConfig = null;
         try {
                 awsConfig = <AWSConfig>FileSystem.loadJSONSync(
-                        'credentials/aws.json');
+                        `${path}/credentials/aws.json`);
                 mailgunConfig = <MailgunConfig>FileSystem.loadJSONSync(
-                        'credentials/mailgun.json');
+                        `${path}/credentials/mailgun.json`);
         } catch (e) {
                 console.log('Using example credentials');
                 awsConfig = <AWSConfig>FileSystem.loadJSONSync(
-                        'example_credentials/aws.json');
+                        `${path}/example_credentials/aws.json`);
                 mailgunConfig = <MailgunConfig>FileSystem.loadJSONSync(
-                        'example_credentials/mailgun.json');
+                        `${path}/example_credentials/mailgun.json`);
         }
-        Object.assign(config.aws, awsConfig);
-        Object.assign(config.mailgun, mailgunConfig);
+        return {
+                aws: awsConfig,
+                mailgun: mailgunConfig,
+        };
 }

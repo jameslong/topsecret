@@ -4,25 +4,32 @@ declare module "dynamodb-doc" {
                 message: string;
         }
 
-        export interface GetItemParams {
+        export interface GetParams {
                 Key: Object;
                 TableName: string;
         }
 
-        export interface PutItemParams {
+        export interface PutParams {
                 Item: any;
                 TableName: string;
-                ReturnValues?: string;
+                ReturnValues?: 'NONE' | 'ALL_OLD';
         }
 
-        export interface UpdateItemParams {
+        export interface UpdateParams {
                 Key: Object;
                 TableName: string;
         }
 
-        export interface DeleteItemParams {
+        export interface DeleteParams {
                 Key: Object;
                 TableName: string;
+                ReturnValues?: 'NONE' | 'ALL_OLD';
+        }
+
+        export interface ScanParams {
+                Limit : number;
+                TableName: string;
+                ExclusiveStartKey?: Object;
         }
 
         export interface RequestFn<T, U> {
@@ -30,15 +37,12 @@ declare module "dynamodb-doc" {
         }
 
         export class DynamoDB {
-                Condition: <T>(name: string, op: string, value: T) => Object;
-                batchWriteItem: RequestFn<any, any>;
-                createTable: RequestFn<any, any>;
-                deleteItem: RequestFn<DeleteItemParams, any>;
-                deleteTable: RequestFn<any, any>;
-                getItem: RequestFn<GetItemParams, any>;
-                scan: RequestFn<any, any>;
-                putItem: RequestFn<PutItemParams, any>;
-                updateItem: RequestFn<UpdateItemParams, any>;
+                put: RequestFn<PutParams, any>;
+                batchWrite: RequestFn<any, any>;
+                delete: RequestFn<DeleteParams, any>;
+                get: RequestFn<GetParams, any>;
+                scan: RequestFn<ScanParams, any>;
+                update: RequestFn<UpdateParams, any>;
                 query: RequestFn<any, any>;
         }
 }

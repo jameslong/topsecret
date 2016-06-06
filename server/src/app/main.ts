@@ -16,7 +16,9 @@ ConfigData.releaseMode ?
         Log.debug('RELEASE MODE') :
         Log.debug('DEBUG MODE');
 
-Config.loadCredentials(config);
+const credentials = Config.loadCredentials('./');
+Object.assign(config.aws, credentials.aws);
+Object.assign(config.mailgun, credentials.mailgun);
 
 App.createState(config).then(state =>
         App.init(state)
