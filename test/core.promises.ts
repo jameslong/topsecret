@@ -93,6 +93,7 @@ describe('Promises', function () {
                                         player.email,
                                         groupData);
                                 message.reply = {
+                                        body: '',
                                         timestampMs: 0,
                                         index: replyIndex,
                                         sent: [],
