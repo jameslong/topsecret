@@ -12,7 +12,7 @@ import Script = require('./script');
 import State = require('./state');
 
 export function handleReplyMessage (
-        reply: Message.Reply,
+        reply: Message.MailgunReply,
         timestampMs: number,
         data: Map.Map<State.GameData>,
         promises: DBTypes.PromiseFactories)
@@ -35,7 +35,7 @@ export function handleReplyMessage (
 }
 
 export function handleTimelyReply (
-        reply: Message.Reply,
+        reply: Message.MailgunReply,
         timestampMs: number,
         player: Player.PlayerState,
         message: Message.MessageState,
@@ -44,7 +44,8 @@ export function handleTimelyReply (
 {
         const groupName = player.version;
         const groupData = data[groupName];
-        const ciphertext = reply.body;
+        const body = reply.body;
+        const strippedBody = reply.strippedBody;
         const profiles = groupData.profiles;
         const profile = Profile.getProfileByEmail(reply.to, profiles);
         const keyManager = groupData.keyManagers[profile.name];
@@ -58,18 +59,22 @@ export function handleTimelyReply (
                         KBPGP.loadKey(player.publicKey).then(from => {
                                 const keyManagers = [keyManager, from];
                                 const keyRing = KBPGP.createKeyRing(keyManagers);
-                                return KBPGP.decryptVerify(keyRing, ciphertext).then(plaintext =>
-                                        handleDecryptedReplyMessage(
-                                                plaintext,
+                                return KBPGP.decryptVerify(keyRing, strippedBody).then(plaintext => {
+                                        const newStrippedBody = MessageHelpers.stripBody(plaintext);
+                                        const newBody = plaintext;
+                                        return handleDecryptedReplyMessage(
+                                                newBody,
+                                                newStrippedBody,
                                                 timestampMs,
                                                 player,
                                                 message,
                                                 groupData,
                                                 promises)
-                                );
+                                });
                         }) :
                         handleDecryptedReplyMessage(
-                                ciphertext,
+                                body,
+                                strippedBody,
                                 timestampMs,
                                 player,
                                 message,
@@ -82,6 +87,7 @@ export function handleTimelyReply (
 
 export function handleDecryptedReplyMessage (
         body: string,
+        strippedBody: string,
         timestampMs: number,
         player: Player.PlayerState,
         messageState: Message.MessageState,
@@ -99,11 +105,11 @@ export function handleDecryptedReplyMessage (
                         <boolean><any>Script.executeScript(condition, player);
         });
         const matched = Arr.find(conditions, index =>
-                ReplyOption.isValidReply(body, messageReplyOptions[index]));
+                ReplyOption.isValidReply(strippedBody, messageReplyOptions[index]));
 
         if (matched !== -1) {
                 const index = conditions[matched];
-                messageState.reply = { index, timestampMs, sent: [] };
+                messageState.reply = { index, body, timestampMs, sent: [] };
                 return promises.addMessage(messageState);
         } else {
                 return null;
@@ -123,7 +129,7 @@ export function handleReplyOptionValidPGPKey(
 
         return promises.updatePlayer(player).then(player => {
                 const sent: number[] = [];
-                message.reply = { index: replyIndex, sent, timestampMs };
+                message.reply = { index: replyIndex, body, sent, timestampMs };
                 return promises.updateMessage(message)
         });
 }

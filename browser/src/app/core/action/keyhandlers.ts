@@ -207,7 +207,6 @@ export function encryptSend (client: Client.Client): Redux.Action<any>
         const inReplyToId = parent ? parent.id : null;
 
         const reply = Draft.createReplyFromDraft(draft, id, inReplyToId);
-        const strippedBody = MessageHelpers.stripBody(reply.body);
         const data = client.data;
         const timestampMs = Clock.gameTimeMs(client.data.clock);
 
@@ -233,11 +232,12 @@ export function encryptSend (client: Client.Client): Redux.Action<any>
                 const encryptData = {
                         from: instances[0],
                         to: instances[1],
-                        text: strippedBody,
+                        text: reply.strippedBody,
                 };
                 return KbpgpHelpers.signEncrypt(encryptData);
         }).then(body => {
-                const encryptedReply = Helpers.assign(reply, { body });
+                const encryptedReply = Helpers.assign(reply,
+                        { strippedBody: body });
                 const app = client.server.app;
                 return PromisesReply.handleReplyMessage(
                         encryptedReply,

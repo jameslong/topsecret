@@ -278,10 +278,12 @@ export function createPlayerlessMessageData (
         inReplyToId: string,
         emailDomain: string)
 {
+        const quotedReply = '';
         return MessageHelpers.createMessageData(
                 messageName,
                 threadStartName,
                 inReplyToId,
+                quotedReply,
                 email,
                 emailDomain,
                 groupData,
@@ -294,12 +296,14 @@ export function createMessageData (
         messageName: string,
         threadStartName: string,
         inReplyToId: string,
+        quotedReply: string,
         emailDomain: string)
 {
         return MessageHelpers.createMessageData(
                 messageName,
                 threadStartName,
                 inReplyToId,
+                quotedReply,
                 player.email,
                 emailDomain,
                 groupData,

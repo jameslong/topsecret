@@ -78,6 +78,7 @@ export function send (id: Id, data: Message.MessageData) {
                 to: data.to,
                 subject: data.subject,
                 body: data.body,
+                strippedBody: data.body,
                 id: messageId,
                 inReplyToId: data.inReplyToId,
         };

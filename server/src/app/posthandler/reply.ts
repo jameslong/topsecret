@@ -4,7 +4,8 @@ import Log = require('../../../../core/src/app/log');
 import Message = require('../../../../core/src/app/message');
 import PromisesReply = require('../../../../core/src/app/promisesreply');
 
-export function handleReplyRequest (state: App.State, reply: Message.Reply)
+export function handleReplyRequest (
+        state: App.State, reply: Message.MailgunReply)
 {
         const careersEmail = Careers.isCareersEmail(reply.to);
         const timestampMs = Date.now();

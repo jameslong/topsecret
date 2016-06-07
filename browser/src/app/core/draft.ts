@@ -1,5 +1,6 @@
 import Helpers = require('../../../../core/src/app/utils/helpers');
 import Message = require('./message');
+import MessageHelpers = require('../../../../core/src/app/messagehelpers');
 import MessageCore = require('../../../../core/src/app/message');
 import Str = require('../../../../core/src/app/utils/string');
 
@@ -72,10 +73,11 @@ export function setContent (draft: Draft, content: Message.MessageContent)
 }
 
 export function createReplyFromDraft (
-        draft: Draft, id: string, inReplyToId: string): MessageCore.Reply
+        draft: Draft, id: string, inReplyToId: string): MessageCore.MailgunReply
 {
         const { from, to, subject, body } = draft.content;
-        return { from, to, subject, body, id, inReplyToId };
+        const strippedBody = body;
+        return { from, to, subject, body: '', strippedBody, id, inReplyToId };
 }
 
 export function createMessageFromReply (

@@ -4,6 +4,7 @@ export interface ReplyState {
         index: number;
         sent: number[];
         timestampMs: number;
+        body: string;
 }
 
 export interface MessageState {
@@ -84,4 +85,8 @@ export interface Reply {
         subject: string;
         body: string;
         inReplyToId: string;
+}
+
+export interface MailgunReply extends Reply {
+        strippedBody: string; // Same as body but with quoted text removed
 }

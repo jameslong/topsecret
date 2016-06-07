@@ -10,7 +10,7 @@ import State = require('../../../../core/src/app/state');
 
 export function handleCareersEmail (
         state: App.State,
-        reply: Message.Reply)
+        reply: Message.MailgunReply)
 {
         var defaultNarrativeGroup =
                 state.config.content.defaultNarrativeGroup;
@@ -18,7 +18,7 @@ export function handleCareersEmail (
 
         var email = reply.from;
         var subject = reply.subject;
-        var body = reply.body;
+        var strippedBody = reply.strippedBody;
 
         var resignationLetter = Str.contains(reply.subject, 'resign');
 
@@ -28,7 +28,7 @@ export function handleCareersEmail (
                         groupData,
                         email);
         } else {
-                var playerData = extractPlayerData(body);
+                var playerData = extractPlayerData(strippedBody);
 
                 return playerData  ?
                         handleValidApplication(

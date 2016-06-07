@@ -7,6 +7,7 @@ import FileSystem = require('../../../../core/src/app/filesystem');
 import Helpers = require('../../../../core/src/app/utils/helpers');
 import Log = require('../../../../core/src/app/log');
 import Message = require('../../../../core/src/app/message');
+import MessageHelpers = require('../../../../core/src/app/messagehelpers');
 import Player = require('../../../../core/src/app/player');
 import Reply = require('./reply');
 import ReplyOption = require('../../../../core/src/app/replyoption');
@@ -211,9 +212,13 @@ export function createReplyCallback (state: App.State)
                                         'Message-ID': string;
                                         'In-Reply-To': string;
                                         'stripped-text': string;
+                                        'body-plain': string;
                                         To: string;
                                         subject: string;
                                 } = req.body;
+
+                        const body = data['stripped-text'] || '';
+                        const strippedBody = data['body-plain'] || '';
 
                         Log.metric({
                                 type: 'MESSAGE_RECEIVED',
@@ -224,7 +229,8 @@ export function createReplyCallback (state: App.State)
                                         from: data.sender,
                                         to: data.To,
                                         subject: data.subject,
-                                        body: data['stripped-text'],
+                                        body,
+                                        strippedBody,
                                 }
                         });
 
@@ -232,7 +238,8 @@ export function createReplyCallback (state: App.State)
                                 from: data.sender,
                                 to: data['To'],
                                 subject: data.subject,
-                                body: data['stripped-text'] || '',
+                                body,
+                                strippedBody,
                                 inReplyToId: data['In-Reply-To'],
                                 id: data['Message-ID'],
                         };
@@ -260,6 +267,9 @@ export function createLocalReplyCallback (state: App.State)
                                         to: string;
                                 } = req.body;
 
+                        const body = data.body;
+                        const strippedBody = MessageHelpers.stripBody(body);
+
                         Log.metric({
                                 type: 'MESSAGE_RECEIVED',
                                 playerEmail: data.from,
@@ -269,7 +279,8 @@ export function createLocalReplyCallback (state: App.State)
                                         from: data.from,
                                         to: data.to,
                                         subject: data.subject,
-                                        body: data.body,
+                                        body,
+                                        strippedBody,
                                 }
                         });
 
@@ -278,6 +289,7 @@ export function createLocalReplyCallback (state: App.State)
                                 to: data.to,
                                 subject: data.subject,
                                 body: data.body || '',
+                                strippedBody,
                                 inReplyToId: data.inReplyToId,
                                 id: data.id,
                         };

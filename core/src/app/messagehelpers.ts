@@ -36,6 +36,7 @@ export function createMessageData (
         name: string,
         threadStartName: string,
         inReplyToId: string,
+        quotedBody: string,
         to: string,
         domain: string,
         groupData: State.GameData,
@@ -59,8 +60,11 @@ export function createMessageData (
 
         const passage = strings[message.body];
         const body = (vars ? insertMessageVars(passage, vars) : passage);
+        const fullBody = quotedBody ?
+                body + '\n\n' + Str.prependToLines('>', quotedBody) :
+                body;
 
-        return { name, from, to, subject, body, inReplyToId };
+        return { name, from, to, subject, body: fullBody, inReplyToId };
 }
 
 export function addDomain (local: string, domain: string): string

@@ -30,12 +30,14 @@ export function child (
         const child = messageData.children[childIndex];
         const name = child.name;
         const condition = child.condition;
+        const quotedReply = '';
 
         const send = !condition || Script.executeScript(condition, player) ?
                 encryptSendStoreChild(
                         name,
                         threadStartName,
                         inReplyToId,
+                        quotedReply,
                         player,
                         domain,
                         timestampMs,
@@ -59,6 +61,7 @@ export function reply (
         const { message, player, timestampMs } = state;
         const threadStartName = message.threadStartName;
         const inReplyToId = message.id;
+        const quotedReply = message.reply.body;
 
         const messageData = groupData.messages[message.name];
         const replyOptions = groupData.replyOptions[messageData.replyOptions];
@@ -69,6 +72,7 @@ export function reply (
                 name,
                 threadStartName,
                 inReplyToId,
+                quotedReply,
                 player,
                 domain,
                 timestampMs,
@@ -95,12 +99,14 @@ export function fallback (
         const fallback = messageData.fallback;
         const name = fallback.name;
         const condition = fallback.condition;
+        const quotedReply = '';
 
         const send = !condition || Script.executeScript(condition, player) ?
                 encryptSendStoreChild(
                         name,
                         threadStartName,
                         inReplyToId,
+                        quotedReply,
                         player,
                         domain,
                         timestampMs,
@@ -118,6 +124,7 @@ export function encryptSendStoreChild (
         name: string,
         threadStartName: string,
         inReplyToId: string,
+        quotedReply: string,
         player: Player.PlayerState,
         domain: string,
         timestampMs: number,
@@ -130,6 +137,7 @@ export function encryptSendStoreChild (
                 name,
                 threadStartName,
                 inReplyToId,
+                quotedReply,
                 domain);
 
         const messageData = groupData.messages[name];
@@ -207,12 +215,14 @@ export function beginGame (
 {
         const threadStartName: string = null;
         const inReplyToId: string = null;
+        const quotedReply = '';
 
         return promises.addPlayer(player).then(result =>
                 encryptSendStoreChild(
                         name,
                         threadStartName,
                         inReplyToId,
+                        quotedReply,
                         player,
                         domain,
                         timestampMs,
