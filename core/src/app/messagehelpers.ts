@@ -61,7 +61,7 @@ export function createMessageData (
         const passage = strings[message.body];
         const body = (vars ? insertMessageVars(passage, vars) : passage);
         const fullBody = quotedBody ?
-                body + '\n\n' + Str.prependToLines('>', quotedBody) :
+                body + '\n\n' + Str.prependToLines('> ', quotedBody) :
                 body;
 
         return { name, from, to, subject, body: fullBody, inReplyToId };
