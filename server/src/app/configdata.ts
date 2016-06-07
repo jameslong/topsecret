@@ -62,6 +62,6 @@ var releaseConfig: Config.ConfigState = {
         timeFactor: 1
 };
 
-export var releaseMode = false;
+export var releaseMode = true;
 
 export var config = releaseMode ? releaseConfig : debugConfig;
