@@ -180,7 +180,7 @@
                                 "AvailabilityZones" :{ "Fn::GetAZs" : "" },
                                 "HealthCheck" : {
                                         "HealthyThreshold" : "2",
-                                        "Interval" : "30",
+                                        "Interval" : "60",
                                         "Target" : "HTTP:3000/healthcheck",
                                         "Timeout" : "10",
                                         "UnhealthyThreshold" : "10"
