@@ -4,6 +4,7 @@ import KeyHandlers = require('../action/keyhandlers');
 import UI = require('../ui');
 
 const KeyCodes = {
+        A: 65,
         B: 66,
         C: 67,
         D: 68,
@@ -306,6 +307,13 @@ const pagerCommands = [{
         shortDesc: 'Previous',
         desc: 'view previous message',
 }, {
+        id: 'open-attachment',
+        key: 'a',
+        keyCodes: [KeyCodes.A],
+        actionCreator: KeyHandlers.openAttachment,
+        shortDesc: 'Open attachment',
+        desc: 'open attachment',
+}, {
         id: 'import-keys',
         key: 'l',
         keyCodes: [KeyCodes.L],
@@ -436,6 +444,7 @@ export const commandIdsByMode: Data.IdsById = {
                 'mail',
                 'reply',
                 'decrypt',
+                'open-attachment',
                 'import-keys',
                 'change',
                 'open-main-menu',

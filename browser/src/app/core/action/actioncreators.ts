@@ -52,6 +52,8 @@ export const endEditBody = createEmptyActionCreator(Actions.Types.END_EDIT_BODY)
 export const editSubject = createActionCreator<boolean>(Actions.Types.EDIT_SUBJECT);
 export const editTo = createActionCreator<boolean>(Actions.Types.EDIT_TO);
 
+export const openAttachment = createActionCreator<string>(Actions.Types.OPEN_ATTACHMENT);
+
 export const setActiveKeyIndex = createActionCreator<number>(Actions.Types.SET_ACTIVE_KEY_INDEX);
 export const importKeys = createActionCreator<Actions.ImportKeysParams>(Actions.Types.IMPORT_KEYS);
 

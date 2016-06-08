@@ -254,6 +254,17 @@ export function encryptSend (client: Client.Client): Redux.Action<any>
         return ActionCreators.sendingMessage(true);
 }
 
+export function openAttachment (client: Client.Client): Redux.Action<any>
+{
+        const currentMessage = Client.getActiveMessage(client);
+        const attachmentPath = currentMessage.attachment;
+        if (attachmentPath) {
+                window.open(attachmentPath);
+        }
+
+        return null;
+}
+
 export function decrypt (client: Client.Client): Redux.Action<any>
 {
         const messageId = client.ui.activeMessageId;

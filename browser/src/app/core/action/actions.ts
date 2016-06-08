@@ -35,6 +35,8 @@ export const Types = {
         EDIT_SUBJECT: 'EDIT_SUBJECT',
         EDIT_TO: 'EDIT_TO',
 
+        OPEN_ATTACHMENT: 'OPEN_ATTACHMENT',
+
         SET_ACTIVE_KEY_INDEX: 'SET_ACTIVE_KEY_INDEX',
         IMPORT_KEYS: 'IMPORT_KEYS',
 
@@ -65,6 +67,8 @@ export interface EditBody extends Redux.Action<void> {}
 export interface EndEditBody extends Redux.Action<void> {}
 export interface EditSubject extends Redux.Action<boolean> {}
 export interface EditTo extends Redux.Action<boolean> {}
+
+export interface OpenAttachment extends Redux.Action<string> {}
 
 export interface ComposeMessageParams {
         sender: string;
