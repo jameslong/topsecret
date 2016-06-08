@@ -234,7 +234,7 @@ export function createReplyCallback (state: App.State)
                                 }
                         });
 
-                        const reply = {
+                        const reply: Message.MailgunReply = {
                                 from: data.sender,
                                 to: data['To'],
                                 subject: data.subject,
@@ -242,6 +242,7 @@ export function createReplyCallback (state: App.State)
                                 strippedBody,
                                 inReplyToId: data['In-Reply-To'],
                                 id: data['Message-ID'],
+                                attachment: null,
                         };
 
                         if (reply.inReplyToId !== null) {
@@ -284,7 +285,7 @@ export function createLocalReplyCallback (state: App.State)
                                 }
                         });
 
-                        const reply = {
+                        const reply: Message.MailgunReply = {
                                 from: data.from,
                                 to: data.to,
                                 subject: data.subject,
@@ -292,10 +293,10 @@ export function createLocalReplyCallback (state: App.State)
                                 strippedBody,
                                 inReplyToId: data.inReplyToId,
                                 id: data.id,
+                                attachment: null,
                         };
 
-                        const promise = Reply.handleReplyRequest(
-                                state, reply);
+                        const promise = Reply.handleReplyRequest(state, reply);
                         return createRequestCallback(res, promise);
                 };
 }

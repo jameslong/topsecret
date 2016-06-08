@@ -67,6 +67,7 @@ export function sendMail (io: any, messageData: Message.MessageData)
                 to: messageData.to,
                 subject: messageData.subject,
                 body: messageData.body,
+                attachment: messageData.attachment,
         };
 
         io.sockets.emit('message', message);
