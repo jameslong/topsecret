@@ -16,5 +16,6 @@
         "receiver": null,
         "replyOptions": "",
         "children": [],
-        "fallback": null
+        "fallback": null,
+        "attachment": null
 }

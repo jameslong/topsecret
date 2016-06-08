@@ -73,6 +73,15 @@
                                         "type": "null"
                                 }
                         ]
+                },
+                "attachment": {
+                        "anyOf": [
+                                {
+                                        "type": "string"
+                                }, {
+                                        "type": "null"
+                                }
+                        ]
                 }
         },
         "required": [
@@ -86,6 +95,7 @@
                 "receiver",
                 "replyOptions",
                 "children",
-                "fallback"
+                "fallback",
+                "attachment"
         ]
 }

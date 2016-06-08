@@ -26,5 +26,6 @@
                         ]
                 }
         ],
-        "fallback": null
+        "fallback": null,
+        "attachment": null
 }

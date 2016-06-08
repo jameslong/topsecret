@@ -18,5 +18,6 @@
         "receiver": null,
         "replyOptions": "reply_expired_ro",
         "children": [],
-        "fallback": null
+        "fallback": null,
+        "attachment": null
 }
