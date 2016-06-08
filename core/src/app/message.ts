@@ -45,6 +45,7 @@ export interface ThreadMessage {
         replyOptions: string;
         children: ThreadDelay[];
         fallback: ThreadDelay;
+        attachment: string;
 }
 
 export interface ReplyThreadDelay {
@@ -76,6 +77,7 @@ export interface MessageData {
         subject: string;
         body: string;
         inReplyToId: string;
+        attachment: string;
 }
 
 export interface Reply {

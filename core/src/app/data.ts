@@ -1,4 +1,5 @@
 import FileSystem = require('./filesystem');
+import Func = require('./utils/function');
 import Helpers = require('./utils/helpers');
 import Map = require('./utils/map');
 import Message = require('./message');
@@ -12,14 +13,6 @@ export interface Path {
 
 export interface Stats {
         isDirectory: () => boolean;
-}
-
-export interface NarrativeData {
-        name: string;
-        profiles: Map.Map<Profile.Profile>;
-        messages: Map.Map<Message.ThreadMessage>;
-        replyOptions: Map.Map<ReplyOption.ReplyOption[]>;
-        strings: Map.Map<string>;
 }
 
 export function loadNarrativeData (path: string)
@@ -39,24 +32,29 @@ export function loadGameData (path: string, name: string)
         return State.addKeyManagers(narrative);
 }
 
-export function initKeyManagers (data: NarrativeData[])
+export function initKeyManagers (data: State.NarrativeData[])
 {
         const promises = data.map(narrative => State.addKeyManagers(narrative));
         return Promise.all(promises);
 }
 
-export function loadNarrative (stem: string, name: string): NarrativeData
+export function loadNarrative (stem: string, name: string): State.NarrativeData
 {
         const path = join(stem, name);
         const profilesPath = join(path, 'profiles');
         const messagesPath = join(path, 'messages');
         const replyOptionsPath = join(path, 'replyoptions');
         const stringsPath = join(path, 'strings');
+        const attachmentsPath = join(path, 'attachments');
 
         const profiles = FileSystem.loadJSONDirSync<Profile.Profile>(profilesPath);
         const messages = FileSystem.loadJSONDirSync<Message.ThreadMessage>(messagesPath);
         const replyOptions = FileSystem.loadJSONDirAsMap<ReplyOption.ReplyOption[]>(replyOptionsPath);
         const strings = FileSystem.loadJSONDirAsMap<string>(stringsPath);
+        const attachmentPaths = FileSystem.readFilenamesSync(attachmentsPath);
+        const attachments = Helpers.mapFromArray(
+                attachmentPaths, Func.identity,
+                path => join(attachmentsPath, path));
 
         return {
                 name,
@@ -64,6 +62,7 @@ export function loadNarrative (stem: string, name: string): NarrativeData
                 messages: Helpers.mapFromNameArray(messages),
                 replyOptions,
                 strings,
+                attachments,
         };
 }
 

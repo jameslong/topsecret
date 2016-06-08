@@ -1,16 +1,16 @@
 /// <reference path='../../../typings/is-my-json-valid/is-my-json-valid.d.ts'/>
 
-import Data = require('./data');
 import Helpers = require('./utils/helpers');
 import Map = require('./utils/map');
 import Message = require('./message');
 import Profile = require('./profile');
 import Script = require('./script');
+import State = require('./state');
 
 import validator = require('is-my-json-valid');
 
 export function getDataErrors (
-        data: Data.NarrativeData,
+        data: State.NarrativeData,
         profileSchema: JSON,
         messageSchema: JSON,
         replyOptionSchema: JSON): Object[]

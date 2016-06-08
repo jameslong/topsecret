@@ -18,6 +18,7 @@ export function sendMail (mailgun: any, data: Message.MessageData)
                 to: data.to,
                 subject: data.subject,
                 text: data.body,
+                attachment: data.attachment,
         };
 
         return new Promise<string>((resolve, reject) => {

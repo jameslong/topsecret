@@ -13,6 +13,7 @@ export interface NarrativeData {
         messages: Map.Map<Message.ThreadMessage>;
         replyOptions: Map.Map<ReplyOption.ReplyOption[]>;
         strings: Map.Map<string>;
+        attachments: Map.Map<string>;
 }
 
 export interface GameData extends NarrativeData {
@@ -45,6 +46,7 @@ export function addKeyManagers (data: NarrativeData): Promise<GameData>
                         messages: data.messages,
                         replyOptions: data.replyOptions,
                         strings: data.strings,
+                        attachments: data.attachments,
                         keyManagers: instances,
                 };
         });

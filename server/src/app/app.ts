@@ -67,7 +67,7 @@ export function createGameState (
                 }
                 return result;
         }, []);
-        const promise = new Promise<Data.NarrativeData[]>((resolve, reject) =>
+        const promise = new Promise<State.NarrativeData[]>((resolve, reject) =>
                 dataErrors.length ?
                         reject(dataErrors) :
                         resolve(narrativeData)

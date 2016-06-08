@@ -63,8 +63,18 @@ export function createMessageData (
         const fullBody = quotedBody ?
                 body + '\n\n' + Str.prependToLines('> ', quotedBody) :
                 body;
+        const attachment =
+                groupData.attachments[threadMessage.attachment] || null;
 
-        return { name, from, to, subject, body: fullBody, inReplyToId };
+        return {
+                name,
+                from,
+                to,
+                subject,
+                body: fullBody,
+                inReplyToId,
+                attachment
+        };
 }
 
 export function addDomain (local: string, domain: string): string
