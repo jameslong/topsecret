@@ -1,0 +1,20 @@
+{
+        "name": "attachment",
+        "threadSubject": "attachment_subject",
+        "position": {
+                "x": 825,
+                "y": 385
+        },
+        "endGame": false,
+        "message": {
+                "from": "james",
+                "body": "attachment_body"
+        },
+        "encrypted": true,
+        "script": "",
+        "receiver": null,
+        "replyOptions": "",
+        "children": [],
+        "fallback": null,
+        "attachment": "testdocument.pdf"
+}
