@@ -1,4 +1,5 @@
 import Helpers = require('../../../../core/src/app/utils/helpers');
+import Message = require('../../../../core/src/app/message');
 
 export interface Message {
         id: string;
@@ -9,6 +10,7 @@ export interface Message {
         to: string;
         subject: string;
         body: string;
+        attachment: string;
 };
 
 export interface MessageContent {
@@ -88,11 +90,21 @@ export function markReplied(message: Message, replied: boolean)
 }
 
 export function createMessage (
-        content: MessageContent, id: string, timestampMs: number): Message
+        reply: Message.Reply, id: string, timestampMs: number): Message
 {
         const date = new Date(timestampMs).toISOString();
-        const { from, to, subject, body } = content;
+        const { from, to, subject, body, attachment } = reply;
         const read = false;
         const replied = false;
-        return { id, date, read, replied, from, to, subject, body };
+        return {
+                id,
+                date,
+                read,
+                replied,
+                from,
+                to,
+                subject,
+                body,
+                attachment,
+        };
 }

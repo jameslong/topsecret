@@ -87,6 +87,7 @@ export interface Reply {
         subject: string;
         body: string;
         inReplyToId: string;
+        attachment: string;
 }
 
 export interface MailgunReply extends Reply {

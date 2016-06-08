@@ -47,6 +47,11 @@ export function removeFileExtension (text: string)
         return text.substr(0, text.lastIndexOf('.'));
 }
 
+export function removePath (text: string)
+{
+        return text.split('/').pop();
+}
+
 export function split<T> (
         text: string, separator: string, replacer: (text: string) => T): T[]
 {

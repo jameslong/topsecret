@@ -81,6 +81,7 @@ export function send (id: Id, data: Message.MessageData) {
                 strippedBody: data.body,
                 id: messageId,
                 inReplyToId: data.inReplyToId,
+                attachment: data.attachment,
         };
         const action = ActionCreators.receiveReply(reply);
         Redux.handleAction(action);

@@ -245,9 +245,9 @@ function handleCreateMessage (
                 replyOptions: '',
                 children: [],
                 fallback: null,
+                attachment: null,
                 selected: false,
                 valid: false,
-
         };
         const newMessages = Helpers.assign(messages, { [name]: newMessage });
         const newNarrative = Helpers.assign(narrative,

@@ -77,7 +77,15 @@ export function createReplyFromDraft (
 {
         const { from, to, subject, body } = draft.content;
         const strippedBody = body;
-        return { from, to, subject, body: '', strippedBody, id, inReplyToId };
+        return {
+                from,
+                to,
+                subject,
+                body: '', strippedBody,
+                id,
+                inReplyToId,
+                attachment: null,
+        };
 }
 
 export function createMessageFromReply (
