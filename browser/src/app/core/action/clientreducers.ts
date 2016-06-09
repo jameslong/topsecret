@@ -39,6 +39,7 @@ export function clientReducer (client: Client.Client, action: Redux.Action<any>)
                 ui: UIReducers.ui(client.ui, action),
                 draftMessage: DraftReducers.draft(client.draftMessage, action),
                 messageId: messageId(client.messageId, action),
+                openFile: client.openFile,
         };
 }
 

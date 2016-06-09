@@ -21,7 +21,7 @@ import Server = require('./server');
 import State = require('../../../../core/src/app/state');
 import UI = require('./ui');
 
-export function init (gameData: State.Data)
+export function init (gameData: State.Data, openFile: (path: string) => void)
 {
         const appConfig = ConfigData.createConfig();
         const appData = {
@@ -30,16 +30,18 @@ export function init (gameData: State.Data)
                 menuItems: MenuData.items,
                 folders: MessageData.folders,
         };
-        return appInit(appConfig, appData, gameData);
+        return appInit(appConfig, appData, gameData, openFile);
 }
 export function appInit (
         appConfig: ConfigData.ConfigData,
         appData: AppData.AppData,
-        gameData: State.Data)
+        gameData: State.Data,
+        openFile: (path: string) => void)
 {
         const wrapper = document.getElementById('wrapper');
 
-        const client = Client.createClient(appConfig, appData, gameData);
+        const client = Client.createClient(
+                appConfig, appData, gameData, openFile);
 
         const getClient = Redux.init(client, Reducers.reduce, Root, wrapper);
         Redux.render(client, Root, wrapper);
@@ -64,7 +66,7 @@ export function newGame (client: Client.Client)
                 folders: MessageData.folders,
         };
         const newClient = Client.createClient(
-                appConfig, appData, client.server.app.data);
+                appConfig, appData, client.server.app.data, client.openFile);
         const player = newClient.data.player;
 
         const server = newClient.server;
@@ -85,9 +87,10 @@ export function newGameFromSave (
                 folders: MessageData.folders,
         };
         const gameData = client.server.app.data;
+        const openFile = client.openFile;
 
         const newClient = Client.createClientFromSaveData(
-                appConfig, appData, gameData, saveData.saveData);
+                appConfig, appData, gameData, openFile, saveData.saveData);
         const newUI = Helpers.assign(newClient.ui,
                 { mode: UI.Modes.INDEX_INBOX });
         return Helpers.assign(newClient, { ui: newUI });

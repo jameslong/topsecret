@@ -259,7 +259,7 @@ export function openAttachment (client: Client.Client): Redux.Action<any>
         const currentMessage = Client.getActiveMessage(client);
         const attachmentPath = currentMessage.attachment;
         if (attachmentPath) {
-                window.open(attachmentPath);
+                client.openFile(attachmentPath);
         }
 
         return null;

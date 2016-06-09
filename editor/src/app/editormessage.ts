@@ -30,6 +30,7 @@ export function convertToMessage (data: Message.ThreadMessage): EditorMessage
                 replyOptions: data.replyOptions,
                 children: data.children,
                 fallback: data.fallback,
+                attachment: data.attachment,
                 selected,
                 valid,
         };

@@ -28,6 +28,7 @@ export interface Client {
         ui: UI.UI;
         draftMessage: Draft.Draft;
         messageId: number;
+        openFile: (path: string) => void;
 };
 
 interface RuntimeClient {
@@ -45,6 +46,7 @@ export function createClientFromSaveData (
         appConfig: ConfigData.ConfigData,
         appData: AppData.AppData,
         gameData: State.Data,
+        openFile: (path: string) => void,
         saveData: RuntimeClient): Client
 {
         const profiles = gameData[appConfig.version].profiles;
@@ -68,13 +70,15 @@ export function createClientFromSaveData (
                 ui,
                 draftMessage: null,
                 messageId: saveData.messageId,
+                openFile,
         };
 }
 
 export function createClient (
         appConfig: ConfigData.ConfigData,
         appData: AppData.AppData,
-        gameData: State.Data)
+        gameData: State.Data,
+        openFile: (path: string) => void)
 {
         const runtimeServer = Server.createRuntimeServer();
 
@@ -90,7 +94,7 @@ export function createClient (
                 messageId: 0,
         };
         return createClientFromSaveData(
-                appConfig, appData, gameData, saveData);
+                appConfig, appData, gameData, openFile, saveData);
 }
 
 export function tickClient ()
