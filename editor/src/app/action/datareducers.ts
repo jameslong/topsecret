@@ -208,8 +208,9 @@ function onNarrativeUpdate (
         const replyOptions = narrative.replyOptionsById;
         const strings = narrative.stringsById;
         const profiles = narrative.profilesById;
+        const attachments = narrative.attachments;
         const newMessages = EditorMessage.markMessagesValid(
-                messages, replyOptions, strings, profiles);
+                messages, replyOptions, strings, profiles, attachments);
         const newNarrative = Helpers.assign(narrative, {
                 messagesById: newMessages });
         const newNarratives = Helpers.assign(narratives, {

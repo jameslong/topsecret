@@ -61,11 +61,17 @@ export function markMessagesValid (
         messages: EditorMessages,
         replyOptions: Map.Map<ReplyOption.ReplyOptions>,
         strings: Strings,
-        profiles: Profile.Profiles)
+        profiles: Profile.Profiles,
+        attachments: Strings)
 {
         return Map.map(messages, message =>
                 markMessageValid(
-                        message, messages, replyOptions, strings, profiles));
+                        message,
+                        messages,
+                        replyOptions,
+                        strings,
+                        profiles,
+                        attachments));
 }
 
 export function markMessageValid (
@@ -73,10 +79,16 @@ export function markMessageValid (
         messages: EditorMessages,
         replyOptions: Map.Map<ReplyOption.ReplyOptions>,
         strings: Strings,
-        profiles: Profile.Profiles)
+        profiles: Profile.Profiles,
+        attachments: Strings)
 {
         const valid = isValidMessage(
-                message, messages, replyOptions, strings, profiles);
+                message,
+                messages,
+                replyOptions,
+                strings,
+                profiles,
+                attachments);
         return Helpers.assign(message, { valid });
 }
 
@@ -85,13 +97,15 @@ export function isValidMessage (
         messages: EditorMessages,
         replyOptions: Map.Map<ReplyOption.ReplyOptions>,
         strings: Strings,
-        profiles: Profile.Profiles)
+        profiles: Profile.Profiles,
+        attachments: Strings)
 {
         return validSubject(message, strings) &&
                 validContent(message, strings, profiles) &&
                 validFallback(message, messages) &&
                 validReplyOptions(message, messages, replyOptions) &&
-                validChildren(message, messages);
+                validChildren(message, messages) &&
+                validAttachment(message, attachments);
 }
 
 function validFallback (message: EditorMessage, messages: EditorMessages)
@@ -117,6 +131,12 @@ function validChildren (message: EditorMessage, messages: EditorMessages)
 {
         return message.children.every(child =>
                 validMessageDelay(child, messages));
+}
+
+function validAttachment (message: EditorMessage, attachments: Strings)
+{
+        const attachment = message.attachment;
+        return !attachment || Map.exists(attachments, attachment);
 }
 
 export function validMessageDelay (

@@ -22,6 +22,7 @@ import Multiple = require('./multiple');
 import Optional = require('./optional');
 import ReplyOptionsContainer = require('../smart/replyoptionscontainer');
 import TextComponent = require('./text');
+import TextInputValidated = require('../textinputvalidated');
 
 interface EditMessageProps extends React.Props<any> {
         name: string,
@@ -52,6 +53,7 @@ function renderEditMessage (props: EditMessageProps)
         const profiles = narrative.profilesById;
         const replyOptions = narrative.replyOptionsById;
         const strings = narrative.stringsById;
+        const attachments = narrative.attachments;
 
         const name = createName(
                 messageName,
@@ -76,7 +78,8 @@ function renderEditMessage (props: EditMessageProps)
 
         const endGame = createEndGame(message, props.onSetEndGame);
         const encrypted = createEncrypted(message, props.onSetEncrypted);
-        const attachment = createAttachment(message, props.onSetAttachment);
+        const attachment = createAttachment(
+                message, attachments, props.onSetAttachment);
         const script = createScript(message, props.onSetScript);
 
         const dataLists = createDataLists(narrative);
@@ -190,6 +193,7 @@ function createEncrypted (
 
 function createAttachment (
         message: EditorMessage.EditorMessage,
+        attachments: Map.Map<string>,
         onSetAttachment: (attachment: string) => void)
 {
         const attachment = message.attachment;
@@ -199,8 +203,11 @@ function createAttachment (
                 placeholder: '',
                 value: attachment,
                 onChange: onSetAttachment,
+                list: 'attachmentNames',
         };
-        return TextComponent(props);
+        const validName = !attachment || Map.exists(attachments, attachment);
+        return TextInputValidated.createValidatedText(
+                props, validName);
 }
 
 function createScript (
@@ -340,6 +347,7 @@ function createDataLists (narrative: Narrative.Narrative)
 {
         const messages = narrative.messagesById;
         const profiles = narrative.profilesById;
+        const attachments = narrative.attachments;
         const strings = narrative.stringsById;
 
         const messageNames = Object.keys(messages)
@@ -351,6 +359,10 @@ function createDataLists (narrative: Narrative.Narrative)
         const stringNames = Object.keys(strings);
         const stringDataList = createDataList('stringNames', stringNames);
 
+        const attachmentNames = Object.keys(attachments);
+        const attachmentDataList = createDataList(
+                'attachmentNames', attachmentNames);
+
         const replyOptionTypes = ReplyOption.getReplyOptionTypes();
         const replyOptionDataList = createDataList(
                 'replyOptionTypes', replyOptionTypes);
@@ -359,6 +371,7 @@ function createDataLists (narrative: Narrative.Narrative)
                 messageDataList,
                 profileDataList,
                 stringDataList,
+                attachmentDataList,
                 replyOptionDataList);
 }
 

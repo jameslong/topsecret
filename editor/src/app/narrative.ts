@@ -14,6 +14,7 @@ export interface NarrativeData {
         profiles: Profile.Profiles;
         replyOptions: Map.Map<ReplyOption.ReplyOptions>,
         strings: Strings;
+        attachments: Strings;
 }
 
 export type NarrativesData = Map.Map<NarrativeData>;
@@ -24,6 +25,7 @@ export interface Narrative {
         profilesById: Profile.Profiles;
         replyOptionsById: Map.Map<ReplyOption.ReplyOptions>;
         stringsById: Strings;
+        attachments: Strings;
 };
 
 export type Narratives = Map.Map<Narrative>;
@@ -36,6 +38,7 @@ export function convertToNarrative (data: NarrativeData): Narrative
                 profilesById: data.profiles,
                 replyOptionsById: data.replyOptions,
                 stringsById: data.strings,
+                attachments: data.attachments,
         };
 }
 
@@ -50,8 +53,13 @@ export function markNarrativeValid (narrative: Narrative)
         const profiles = narrative.profilesById;
         const replyOptions = narrative.replyOptionsById;
         const strings = narrative.stringsById;
+        const attachments = narrative.attachments;
         const newMessages = EditorMessage.markMessagesValid(
-                narrative.messagesById, replyOptions, strings, profiles);
+                narrative.messagesById,
+                replyOptions,
+                strings,
+                profiles,
+                attachments);
 
         return Helpers.assign(narrative, { messagesById: newMessages });
 }
