@@ -73,6 +73,10 @@ export function data (
                 const setEncrypted = <Actions.SetMessageEncrypted><any>action;
                 return handleSetMessageEncrypted(state, config, setEncrypted);
 
+        case Actions.Types.SET_MESSAGE_ATTACHMENT:
+                const setAttachment = <Actions.SetMessageAttachment><any>action;
+                return handleSetMessageAttachment(state, config, setAttachment);
+
         case Actions.Types.SET_MESSAGE_SCRIPT:
                 const setScript = <Actions.SetMessageScript><any>action;
                 return handleSetMessageScript(state, config, setScript);
@@ -579,6 +583,20 @@ function handleSetMessageEncrypted (
                 parameters.name,
                 'encrypted',
                 parameters.value,
+                parameters.narrativeId,
+                state);
+}
+
+function handleSetMessageAttachment (
+        state: State.Data,
+        config: Config.Config,
+        action: Actions.SetMessageAttachment)
+{
+        const parameters = action.parameters;
+        return setMessageProperty(
+                parameters.name,
+                'attachment',
+                parameters.value || null,
                 parameters.narrativeId,
                 state);
 }

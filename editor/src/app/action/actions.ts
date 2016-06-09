@@ -32,6 +32,7 @@ export const Types = {
         SET_MESSAGE_FALLBACK: 'SET_MESSAGE_FALLBACK',
         SET_MESSAGE_CHILDREN: 'SET_MESSAGE_CHILDREN',
         SET_MESSAGE_REPLY_OPTIONS: 'SET_MESSAGE_REPLY_OPTIONS',
+        SET_MESSAGE_ATTACHMENT: 'SET_MESSAGE_ATTACHMENT',
         SET_MESSAGE_SCRIPT: 'SET_MESSAGE_SCRIPT',
         SET_STRING: 'SET_STRING',
 };
@@ -99,6 +100,9 @@ export interface SetMessageEndGame extends Redux.Action<SetMessageEndGameParams>
 
 export type SetMessageEncryptedParams = NameValueParameters<boolean>;
 export interface SetMessageEncrypted extends Redux.Action<SetMessageEncryptedParams> {}
+
+export type SetMessageAttachmentParams = NameValueParameters<string>;
+export interface SetMessageAttachment extends Redux.Action<SetMessageAttachmentParams> {}
 
 export type SetMessageScriptParams = NameValueParameters<string>;
 export interface SetMessageScript extends Redux.Action<SetMessageScriptParams> {}

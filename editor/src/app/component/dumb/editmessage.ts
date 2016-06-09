@@ -32,6 +32,7 @@ interface EditMessageProps extends React.Props<any> {
         onSetString: (name: string, value: string) => void;
         onSetEndGame: (endGame: boolean) => void;
         onSetEncrypted: (encrypted: boolean) => void;
+        onSetAttachment: (attachment: string) => void;
         onSetScript: (script: string) => void;
         onSetChildren: (delays: MessageDelay.MessageDelays) => void;
         onSetFallback: (delay: MessageDelay.MessageDelay) => void;
@@ -75,6 +76,7 @@ function renderEditMessage (props: EditMessageProps)
 
         const endGame = createEndGame(message, props.onSetEndGame);
         const encrypted = createEncrypted(message, props.onSetEncrypted);
+        const attachment = createAttachment(message, props.onSetAttachment);
         const script = createScript(message, props.onSetScript);
 
         const dataLists = createDataLists(narrative);
@@ -90,6 +92,7 @@ function renderEditMessage (props: EditMessageProps)
                 ComponentHelpers.wrapInTitleGroup('Reply options', options),
                 ComponentHelpers.wrapInTitleGroup('Fallback',
                         ComponentHelpers.wrapInSubgroup(fallback)),
+                ComponentHelpers.wrapInTitleGroup('Attachment', attachment),
                 ComponentHelpers.wrapInTitleGroup('Script', script),
                 ComponentHelpers.wrapInGroup(
                         ComponentHelpers.wrapInSubgroup(endGame, encrypted)
@@ -183,6 +186,21 @@ function createEncrypted (
         };
         return ComponentHelpers.wrapInLabel(
                 'Encrypted', Checkbox(newEncryptedProps));
+}
+
+function createAttachment (
+        message: EditorMessage.EditorMessage,
+        onSetAttachment: (attachment: string) => void)
+{
+        const attachment = message.attachment;
+        const messageName = message.name;
+
+        const props = {
+                placeholder: '',
+                value: attachment,
+                onChange: onSetAttachment,
+        };
+        return TextComponent(props);
 }
 
 function createScript (

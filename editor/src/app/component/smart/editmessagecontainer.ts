@@ -31,6 +31,8 @@ function renderEditMessageContainer (props: EditMessageContainerProps)
                 onSetEndGame(narrativeId, name, endGame);
         const onSetEncryptedLocal = (encrypted: boolean) =>
                 onSetEncrypted(narrativeId, name, encrypted);
+        const onSetAttachmentLocal = (path: string) =>
+                onSetAttachment(narrativeId, name, path);
         const onSetScriptLocal = (script: string) =>
                 onSetScript(narrativeId, name, script);
         const onSetChildrenLocal = (delays: MessageDelay.MessageDelays) =>
@@ -47,6 +49,7 @@ function renderEditMessageContainer (props: EditMessageContainerProps)
                 onSetString: onSetStringLocal,
                 onSetEndGame: onSetEndGameLocal,
                 onSetEncrypted: onSetEncryptedLocal,
+                onSetAttachment: onSetAttachmentLocal,
                 onSetScript: onSetScriptLocal,
                 onSetChildren: onSetChildrenLocal,
                 onSetFallback: onSetFallbackLocal,
@@ -123,6 +126,17 @@ function onSetEncrypted (
                 narrativeId,
                 name: messageName,
                 value: newEncrypted,
+        });
+        Redux.handleAction(action);
+}
+
+function onSetAttachment (
+        narrativeId: string, messageName: string, newPath: string)
+{
+        const action = ActionCreators.setMessageAttachment({
+                narrativeId,
+                name: messageName,
+                value: newPath,
         });
         Redux.handleAction(action);
 }

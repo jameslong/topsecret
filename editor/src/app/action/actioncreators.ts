@@ -46,6 +46,7 @@ export const setMessageSubject = createActionCreator<Actions.SetMessageSubjectPa
 export const setMessageBody = createActionCreator<Actions.SetMessageBodyParams>(Actions.Types.SET_MESSAGE_BODY);
 export const setMessageEndGame = createActionCreator<Actions.SetMessageEndGameParams>(Actions.Types.SET_MESSAGE_END_GAME);
 export const setMessageEncrypted = createActionCreator<Actions.SetMessageEncryptedParams>(Actions.Types.SET_MESSAGE_ENCRYPTED);
+export const setMessageAttachment = createActionCreator<Actions.SetMessageAttachmentParams>(Actions.Types.SET_MESSAGE_ATTACHMENT);
 export const setMessageScript = createActionCreator<Actions.SetMessageScriptParams>(Actions.Types.SET_MESSAGE_SCRIPT);
 export const setMessagePosition = createActionCreator<Actions.SetMessagePositionParams>(Actions.Types.SET_MESSAGE_POSITION);
 export const setMessageContent = createActionCreator<Actions.SetMessageContentParams>(Actions.Types.SET_MESSAGE_CONTENT);
