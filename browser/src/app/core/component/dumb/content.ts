@@ -7,6 +7,7 @@ import Help = require('./help');
 import Index = require('./index');
 import LoadMenu = require('./loadmenu');
 import LocalStorage = require('../../localstorage');
+import Menu = require('../../menu');
 import Pager = require('./pager');
 import MainMenu = require('./mainmenu');
 import React = require('react');
@@ -118,8 +119,14 @@ function createEncryption (state: Client.Client)
 function createMainMenu (state: Client.Client)
 {
         const activeMainMenuIndex = state.ui.activeMainMenuIndex;
-        const menuItems = state.data.menuItems;
-        return MainMenu({ activeMainMenuIndex, menuItems });
+        let items = state.data.menuItems;
+        const itemsById = state.data.menuItemsById;
+        const activeItems = Menu.getActiveMainMenuItems(items, itemsById);
+        return MainMenu({
+                activeMainMenuIndex,
+                menuItems: activeItems,
+                menuItemsById: itemsById
+        });
 }
 
 function createLoadMenu (state: Client.Client)

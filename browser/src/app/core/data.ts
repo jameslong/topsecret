@@ -5,6 +5,7 @@ import Command = require('./command');
 import Folder = require('./folder');
 import Func = require('../../../../core/src/app/utils/function');
 import Helpers = require('../../../../core/src/app/utils/helpers');
+import Menu = require('./menu');
 import Message = require('./message');
 import MessageCore = require('../../../../core/src/app/message');
 import Kbpgp = require('kbpgp');
@@ -29,6 +30,7 @@ export interface Data extends RuntimeData {
         commandsById: Map.Map<Command.Command>;
         commandIdsByMode: IdsById;
         menuItems: string[];
+        menuItemsById: Map.Map<Menu.Item>;
         profiles: string[];
         profilesById: Map.Map<Profile.Profile>;
 }
@@ -76,7 +78,7 @@ function group<T, U>(
 export function createDataFromSaveData(
         appData: AppData.AppData,
         profilesById: Map.Map<Profile.Profile>,
-        runtimeData: RuntimeData)
+        runtimeData: RuntimeData): Data
 {
         const { folders, commands, commandIdsByMode, menuItems } = appData;
 
@@ -84,6 +86,8 @@ export function createDataFromSaveData(
         const folderIds = folders.map(getId);
         const commandsById = idMapFromArray(commands);
         const profiles = Map.keys(profilesById);
+        const menuItemIds = menuItems.map(getId);
+        const menuItemsById = idMapFromArray(menuItems);
 
         return {
                 player: runtimeData.player,
@@ -91,12 +95,13 @@ export function createDataFromSaveData(
                 foldersById,
                 commandsById,
                 commandIdsByMode,
-                menuItems,
+                menuItems: menuItemIds,
+                menuItemsById,
                 messagesById: runtimeData.messagesById,
                 messageIdsByFolderId: runtimeData.messageIdsByFolderId,
                 profiles,
                 profilesById,
-                knownKeyIds: runtimeData.knownKeyIds,
+                        knownKeyIds: runtimeData.knownKeyIds,
                 clock: runtimeData.clock,
         };
 }
