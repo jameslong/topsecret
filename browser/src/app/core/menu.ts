@@ -12,6 +12,8 @@ export type SaveMenuOptionType =
         'SAVE' |
         'NEW_SAVE';
 
+export type LoadMenuOptionType = 'LOAD';
+
 export interface MainMenuItem {
         id: string;
         type: MainMenuOptionType;
@@ -21,6 +23,12 @@ export interface MainMenuItem {
 export interface SaveMenuItem {
         id: string;
         type: SaveMenuOptionType;
+        text: string;
+}
+
+export interface LoadMenuItem {
+        id: string;
+        type: LoadMenuOptionType;
         text: string;
 }
 
@@ -73,4 +81,17 @@ export function getSaveMenuItems (): SaveMenuItem[]
                 text: 'New Save'
         };
         return saveItems.concat(newSaveItem);
+}
+
+export function getLoadMenuItems (): LoadMenuItem[]
+{
+        const saveNames = LocalStorage.getSaveNames();
+        return saveNames.map(name => {
+                const item: LoadMenuItem = {
+                        id: `save_${name}`,
+                        type: 'LOAD',
+                        text: name,
+                };
+                return item;
+        });
 }

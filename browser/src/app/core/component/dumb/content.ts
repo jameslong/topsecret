@@ -129,7 +129,7 @@ function createMainMenu (state: Client.Client)
 function createLoadMenu (state: Client.Client)
 {
         const activeIndex = state.ui.activeLoadIndex;
-        const saves = LocalStorage.getSaveNames();
+        const saves = Menu.getLoadMenuItems();
         return LoadMenu({ activeIndex, saves });
 }
 

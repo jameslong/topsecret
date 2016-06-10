@@ -125,18 +125,21 @@ export function exitLoad (client: Client.Client)
 export function load (client: Client.Client)
 {
         const activeIndex = client.ui.activeLoadIndex;
-        const saves = LocalStorage.getSaveNames();
-        const saveName = saves[activeIndex];
-        console.log('Loading', saveName);
-        const saveData = LocalStorage.load<Client.SaveData>(saveName);
-        return ActionCreators.importSaveData(saveData);
+        const items = Menu.getLoadMenuItems();
+        const item = items[activeIndex];
+        if (item) {
+                const saveName = item.text;
+                console.log('Loading', saveName);
+                const saveData = LocalStorage.load<Client.SaveData>(saveName);
+                return ActionCreators.importSaveData(saveData);
+        }
 }
 
 export function nextLoad (client: Client.Client)
 {
         const currentIndex = client.ui.activeLoadIndex;
-        const saves = LocalStorage.getSaveNames();
-        const max = saves.length - 1;
+        const items = Menu.getLoadMenuItems();
+        const max = items.length - 1;
         const index = MathUtils.inRange(0, max, currentIndex + 1);
         return ActionCreators.setActiveLoadIndex(index);
 }
@@ -144,8 +147,8 @@ export function nextLoad (client: Client.Client)
 export function previousLoad (client: Client.Client)
 {
         const currentIndex = client.ui.activeLoadIndex;
-        const saves = LocalStorage.getSaveNames();
-        const max = saves.length - 1;
+        const items = Menu.getLoadMenuItems();
+        const max = items.length - 1;
         const index = MathUtils.inRange(0, max, currentIndex - 1);
         return ActionCreators.setActiveLoadIndex(index);
 }
