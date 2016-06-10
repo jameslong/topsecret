@@ -119,7 +119,8 @@ function createMainMenu (state: Client.Client)
 {
         const activeMainMenuIndex = state.ui.activeMainMenuIndex;
         const menuItems = state.data.menuItems;
-        return MainMenu({ activeMainMenuIndex, menuItems });
+        const menuItemsById = state.data.menuItemsById;
+        return MainMenu({ activeMainMenuIndex, menuItems, menuItemsById });
 }
 
 function createLoadMenu (state: Client.Client)
