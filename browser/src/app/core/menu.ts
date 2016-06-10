@@ -14,11 +14,34 @@ export interface Item {
         text: string;
 }
 
-export function getActiveMainMenuItems (ids: string[], itemsById: Map.Map<Item>)
+const mainMenuItems: Item[] = [
+        {
+                id: 'continue',
+                type: 'CONTINUE_GAME',
+                text: 'Continue',
+        }, {
+                id: 'newGame',
+                type: 'NEW_GAME',
+                text: 'New Game',
+        }, {
+                id: 'save',
+                type: 'SAVE',
+                text: 'Save',
+        }, {
+                id: 'load',
+                type: 'LOAD',
+                text: 'Load',
+        }, {
+                id: 'quit',
+                type: 'QUIT',
+                text: 'Quit',
+        }
+];
+
+export function getMainMenuItems (): Item[]
 {
         const saves = LocalStorage.getSaveNames();
-        return ids = saves.length ?
-                ids :
-                ids.filter(id => itemsById[id].type !== 'CONTINUE_GAME');
-
+        return saves.length ?
+                mainMenuItems :
+                mainMenuItems.filter(item => item.type !== 'CONTINUE_GAME');
 }

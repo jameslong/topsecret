@@ -38,10 +38,8 @@ export function exitMainMenu (client: Client.Client)
 export function nextMenuOption (client: Client.Client)
 {
         const currentIndex = client.ui.activeMainMenuIndex;
-        const items = client.data.menuItems;
-        const itemsById = client.data.menuItemsById;
-        const activeItems = Menu.getActiveMainMenuItems(items, itemsById);
-        const max = activeItems.length - 1;
+        const items = Menu.getMainMenuItems();
+        const max = items.length - 1;
         const index = MathUtils.inRange(0, max, currentIndex + 1);
         return ActionCreators.setActiveMenuIndex(index);
 }
@@ -49,10 +47,8 @@ export function nextMenuOption (client: Client.Client)
 export function previousMenuOption (client: Client.Client)
 {
         const currentIndex = client.ui.activeMainMenuIndex;
-        const items = client.data.menuItems;
-        const itemsById = client.data.menuItemsById;
-        const activeItems = Menu.getActiveMainMenuItems(items, itemsById);
-        const max = activeItems.length - 1;
+        const items = Menu.getMainMenuItems();
+        const max = items.length - 1;
         const index = MathUtils.inRange(0, max, currentIndex - 1);
         return ActionCreators.setActiveMenuIndex(index);
 }
@@ -60,11 +56,8 @@ export function previousMenuOption (client: Client.Client)
 export function selectMenuOption (client: Client.Client)
 {
         const index = client.ui.activeMainMenuIndex;
-        const items = client.data.menuItems;
-        const itemsById = client.data.menuItemsById;
-        const activeItems = Menu.getActiveMainMenuItems(items, itemsById);
-        const id = activeItems[index];
-        const item = client.data.menuItemsById[id];
+        const items = Menu.getMainMenuItems();
+        const item = items[index];
         const type = item.type;
 
         switch (type) {

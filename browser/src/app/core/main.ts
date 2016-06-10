@@ -5,7 +5,6 @@ import ConfigData = require('./data/config');
 import MessageData = require('./data/messages');
 import CommandData = require('./data/commands');
 import PlayerData = require('./data/player');
-import MenuData = require('./data/menuitems');
 
 import Client = require('./client');
 import Clock = require('../../../../core/src/app/clock');
@@ -27,7 +26,6 @@ export function init (gameData: State.Data, openFile: (path: string) => void)
         const appData = {
                 commands: CommandData.commands,
                 commandIdsByMode: CommandData.commandIdsByMode,
-                menuItems: MenuData.items,
                 folders: MessageData.folders,
         };
         return appInit(appConfig, appData, gameData, openFile);
@@ -62,7 +60,6 @@ export function newGame (client: Client.Client)
         const appData = {
                 commands: CommandData.commands,
                 commandIdsByMode: CommandData.commandIdsByMode,
-                menuItems: MenuData.items,
                 folders: MessageData.folders,
         };
         const newClient = Client.createClient(
@@ -83,7 +80,6 @@ export function newGameFromSave (
         const appData = {
                 commands: CommandData.commands,
                 commandIdsByMode: CommandData.commandIdsByMode,
-                menuItems: MenuData.items,
                 folders: MessageData.folders,
         };
         const gameData = client.server.app.data;
