@@ -87,19 +87,23 @@ export function exitSave (client: Client.Client)
 export function save (client: Client.Client)
 {
         const index = client.ui.activeSaveIndex;
-        const saves = LocalStorage.getSaveNames();
-        const saveName = index < saves.length ?
-                saves[index] : Date.now().toString();
-        const saveData = Client.getSaveData(client, saveName);
-        console.log('Saving', saveData);
-        return LocalStorage.save(saveData);
+        const items = Menu.getSaveMenuItems();
+        const item = items[index];
+        if (item) {
+                const saveName = item.type === 'SAVE' ?
+                        item.text :
+                        Date.now().toString();
+                const saveData = Client.getSaveData(client, saveName);
+                console.log('Saving', saveData);
+                return LocalStorage.save(saveData);
+        }
 }
 
 export function nextSave (client: Client.Client)
 {
         const currentIndex = client.ui.activeSaveIndex;
-        const saves = LocalStorage.getSaveNames();
-        const max = saves.length;
+        const items = Menu.getSaveMenuItems();
+        const max = items.length - 1;
         const index = MathUtils.inRange(0, max, currentIndex + 1);
         return ActionCreators.setActiveSaveIndex(index);
 }
@@ -107,8 +111,8 @@ export function nextSave (client: Client.Client)
 export function previousSave (client: Client.Client)
 {
         const currentIndex = client.ui.activeSaveIndex;
-        const saves = LocalStorage.getSaveNames();
-        const max = saves.length;
+        const items = Menu.getSaveMenuItems();
+        const max = items.length - 1;
         const index = MathUtils.inRange(0, max, currentIndex - 1);
         return ActionCreators.setActiveSaveIndex(index);
 }

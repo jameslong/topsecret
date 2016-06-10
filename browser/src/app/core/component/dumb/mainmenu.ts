@@ -5,7 +5,7 @@ import SelectableRows = require('./selectablerows');
 
 interface MainMenuProps extends React.Props<any> {
         activeMainMenuIndex: number;
-        menuItems: Menu.Item[];
+        menuItems: Menu.MainMenuItem[];
 }
 
 function renderMainMenu(props: MainMenuProps)

@@ -1,17 +1,18 @@
+import Menu = require('../../menu');
 import React = require('react');
 import SelectableRows = require('./selectablerows');
 
 interface SaveProps extends React.Props<any> {
         activeIndex: number;
-        saves: string[];
+        saves: Menu.SaveMenuItem[];
 }
 
 function renderSave(props: SaveProps)
 {
+        const { activeIndex, saves } = props;
         const highlightedIndices: number[] = [];
-        const rowData = props.saves.map(item => [item]);
-        rowData.push(['New Save']);
-        const selectedIndex = props.activeIndex;
+        const rowData = saves.map(item => [item.text]);
+        const selectedIndex = activeIndex;
         return SelectableRows({ rowData, selectedIndex, highlightedIndices });
 }
 

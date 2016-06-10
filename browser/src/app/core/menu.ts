@@ -1,20 +1,30 @@
 import LocalStorage = require('./localstorage');
 import Map = require('../../../../core/src/app/utils/map');
 
-export type OptionType =
+export type MainMenuOptionType =
         'CONTINUE_GAME' |
         'NEW_GAME' |
         'SAVE' |
         'LOAD' |
         'QUIT';
 
-export interface Item {
+export type SaveMenuOptionType =
+        'SAVE' |
+        'NEW_SAVE';
+
+export interface MainMenuItem {
         id: string;
-        type: OptionType;
+        type: MainMenuOptionType;
         text: string;
 }
 
-const mainMenuItems: Item[] = [
+export interface SaveMenuItem {
+        id: string;
+        type: SaveMenuOptionType;
+        text: string;
+}
+
+const mainMenuItems: MainMenuItem[] = [
         {
                 id: 'continue',
                 type: 'CONTINUE_GAME',
@@ -38,10 +48,29 @@ const mainMenuItems: Item[] = [
         }
 ];
 
-export function getMainMenuItems (): Item[]
+export function getMainMenuItems (): MainMenuItem[]
 {
         const saves = LocalStorage.getSaveNames();
         return saves.length ?
                 mainMenuItems :
                 mainMenuItems.filter(item => item.type !== 'CONTINUE_GAME');
+}
+
+export function getSaveMenuItems (): SaveMenuItem[]
+{
+        const saveNames = LocalStorage.getSaveNames();
+        const saveItems = saveNames.map(name => {
+                const item: SaveMenuItem = {
+                        id: `save_${name}`,
+                        type: 'SAVE',
+                        text: name,
+                };
+                return item;
+        });
+        const newSaveItem: SaveMenuItem = {
+                id: 'newSave',
+                type: 'NEW_SAVE',
+                text: 'New Save'
+        };
+        return saveItems.concat(newSaveItem);
 }
