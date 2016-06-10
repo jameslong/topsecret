@@ -58,6 +58,10 @@ export function selectMenuOption (client: Client.Client)
         const type = item.type;
 
         switch (type) {
+        case 'CONTINUE_GAME':
+                const saveData = LocalStorage.getMostRecentSave<Client.SaveData>();
+                return ActionCreators.importSaveData(saveData);
+
         case 'NEW_GAME':
                 return ActionCreators.newGame();
 

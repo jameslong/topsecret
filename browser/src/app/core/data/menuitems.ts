@@ -4,7 +4,7 @@ import Menu = require('../menu');
 export const items: Menu.Item[] = [
         {
                 id: 'continue',
-                type: 'CONTINUE',
+                type: 'CONTINUE_GAME',
                 text: 'Continue',
         }, {
                 id: 'newGame',

@@ -1,4 +1,9 @@
-export type OptionType = 'CONTINUE' | 'NEW_GAME' | 'SAVE' | 'LOAD' | 'QUIT';
+export type OptionType =
+        'CONTINUE_GAME' |
+        'NEW_GAME' |
+        'SAVE' |
+        'LOAD' |
+        'QUIT';
 
 export interface Item {
         id: string;
