@@ -11,6 +11,7 @@ import KbpgpHelpers = require('../../../../../core/src/app/kbpgp');
 import LocalStorage = require('../localstorage');
 import MathUtils = require('../../../../../core/src/app/utils/math');
 import Map = require('../../../../../core/src/app/utils/map');
+import Menu = require('../menu');
 import MessageCore = require('../../../../../core/src/app/message');
 import MessageHelpers = require('../../../../../core/src/app/messagehelpers');
 import PromisesReply = require('../../../../../core/src/app/promisesreply');
@@ -37,7 +38,10 @@ export function exitMainMenu (client: Client.Client)
 export function nextMenuOption (client: Client.Client)
 {
         const currentIndex = client.ui.activeMainMenuIndex;
-        const max = client.data.menuItems.length - 1;
+        const items = client.data.menuItems;
+        const itemsById = client.data.menuItemsById;
+        const activeItems = Menu.getActiveMainMenuItems(items, itemsById);
+        const max = activeItems.length - 1;
         const index = MathUtils.inRange(0, max, currentIndex + 1);
         return ActionCreators.setActiveMenuIndex(index);
 }
@@ -45,7 +49,10 @@ export function nextMenuOption (client: Client.Client)
 export function previousMenuOption (client: Client.Client)
 {
         const currentIndex = client.ui.activeMainMenuIndex;
-        const max = client.data.menuItems.length - 1;
+        const items = client.data.menuItems;
+        const itemsById = client.data.menuItemsById;
+        const activeItems = Menu.getActiveMainMenuItems(items, itemsById);
+        const max = activeItems.length - 1;
         const index = MathUtils.inRange(0, max, currentIndex - 1);
         return ActionCreators.setActiveMenuIndex(index);
 }
@@ -53,7 +60,10 @@ export function previousMenuOption (client: Client.Client)
 export function selectMenuOption (client: Client.Client)
 {
         const index = client.ui.activeMainMenuIndex;
-        const id = client.data.menuItems[index];
+        const items = client.data.menuItems;
+        const itemsById = client.data.menuItemsById;
+        const activeItems = Menu.getActiveMainMenuItems(items, itemsById);
+        const id = activeItems[index];
         const item = client.data.menuItemsById[id];
         const type = item.type;
 
