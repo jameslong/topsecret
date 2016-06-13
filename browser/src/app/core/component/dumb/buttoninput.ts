@@ -1,10 +1,13 @@
 import React = require('react');
 
+import Core = require('../core');
+import Button = Core.Button;
+
 interface ButtonProps extends React.Props<any> {
         text: string;
         disabled: boolean;
         onClick: (event: Event) => void;
-        className: string;
+        className?: string;
 };
 
 function renderButton(props: ButtonProps)

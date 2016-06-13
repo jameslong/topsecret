@@ -23,7 +23,16 @@ declare namespace Kbpgp {
                 sign: (obj: Object, callback: (err: Error) => void) => void;
                 unlock_pgp: (
                         options: { passphrase: string },
-                        callback: (err: Error) => void) => void;
+                        callback: (err: Error) => void
+                        ) => void;
+                export_pgp_public: (
+                        options: {},
+                        callback: (err: Error, publicKey: string) => void
+                        ) => void;
+                export_pgp_private: (
+                        options: { passphrase: string; },
+                        callback: (err: Error, privateKey: string) => void
+                        ) => void;
         }
 
         namespace keyring {

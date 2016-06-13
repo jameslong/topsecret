@@ -53,7 +53,7 @@ export function previousMenuOption (client: Client.Client)
         return ActionCreators.setActiveMenuIndex(index);
 }
 
-export function selectMenuOption (client: Client.Client)
+export function selectMenuOption (client: Client.Client): Redux.Action<any>
 {
         const index = client.ui.activeMainMenuIndex;
         const items = Menu.getMainMenuItems(client.ui.seenMainMenu);
@@ -69,7 +69,7 @@ export function selectMenuOption (client: Client.Client)
                 return ActionCreators.setMode(UI.Modes.INDEX_INBOX);
 
         case 'NEW_GAME':
-                return ActionCreators.newGame();
+                return ActionCreators.setMode(UI.Modes.NEW_GAME);
 
         case 'SAVE':
                 return ActionCreators.setMode(UI.Modes.SAVE_MENU);

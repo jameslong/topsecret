@@ -88,6 +88,7 @@ body {
 #wrapper {
         height: 100vh;
         background-color: var(--main-bg-colour);
+        display: flex;
 }
 
 p {

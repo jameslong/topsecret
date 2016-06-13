@@ -12,6 +12,7 @@ export const Modes = {
         LOAD_MENU: 'LOAD_MENU',
         MAIN_MENU: 'MAIN_MENU',
         SAVE_MENU: 'SAVE_MENU',
+        NEW_GAME: 'NEW_GAME',
 }
 
 export interface UI {
@@ -59,6 +60,7 @@ export function createUI (
 export function isEditing (ui: UI)
 {
         return ui.mode === Modes.COMPOSE_BODY ||
+                ui.mode === Modes.NEW_GAME ||
                 ui.editingDraftTo ||
                 ui.editingDraftSubject ||
                 ui.editingDraftKeyName ||

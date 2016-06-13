@@ -133,3 +133,32 @@ export interface EncryptData {
         to: Kbpgp.KeyManagerInstance;
         text: string;
 }
+
+export function exportPublicKey (instance: Kbpgp.KeyManagerInstance)
+{
+        return new Promise<string>((resolve, reject) => {
+                instance.export_pgp_public({}, (err, publicKey) => {
+                        err ? reject(err) : resolve(publicKey);
+                });
+        });
+}
+
+export function exportPrivateKey (
+        instance: Kbpgp.KeyManagerInstance, passphrase: string)
+{
+        const opts = { passphrase };
+        return new Promise<string>((resolve, reject) => {
+                instance.export_pgp_private(opts, (err, privateKey) => {
+                        err ? reject(err) : resolve(privateKey);
+                });
+        });
+}
+
+export function exportKeyPair (
+        instance: Kbpgp.KeyManagerInstance, passphrase: string)
+{
+        const publicKey = exportPublicKey(instance);
+        const privateKey = exportPrivateKey(instance, passphrase);
+
+        return Promise.all([publicKey, privateKey]);
+}
