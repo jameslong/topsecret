@@ -119,7 +119,7 @@ function createEncryption (state: Client.Client)
 function createMainMenu (state: Client.Client)
 {
         const activeMainMenuIndex = state.ui.activeMainMenuIndex;
-        const items = Menu.getMainMenuItems();
+        const items = Menu.getMainMenuItems(state.ui.seenMainMenu);
         return MainMenu({
                 activeMainMenuIndex,
                 menuItems: items,

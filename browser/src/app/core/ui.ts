@@ -30,6 +30,7 @@ export interface UI {
         sending: boolean;
         decrypting: boolean;
         generatingKey: boolean;
+        seenMainMenu: boolean;
 }
 
 export function createUI (
@@ -51,6 +52,7 @@ export function createUI (
                 sending: false,
                 decrypting: false,
                 generatingKey: false,
+                seenMainMenu: false,
         };
 }
 
@@ -66,5 +68,6 @@ export function isEditing (ui: UI)
 export function setMode (ui: UI, mode: string)
 {
         const previousMode = ui.mode;
-        return Helpers.assign(ui, { mode, previousMode });
+        const seenMainMenu = ui.seenMainMenu || mode !== Modes.MAIN_MENU;
+        return Helpers.assign(ui, { mode, previousMode, seenMainMenu });
 }

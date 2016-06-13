@@ -38,7 +38,7 @@ export function exitMainMenu (client: Client.Client)
 export function nextMenuOption (client: Client.Client)
 {
         const currentIndex = client.ui.activeMainMenuIndex;
-        const items = Menu.getMainMenuItems();
+        const items = Menu.getMainMenuItems(client.ui.seenMainMenu);
         const max = items.length - 1;
         const index = MathUtils.inRange(0, max, currentIndex + 1);
         return ActionCreators.setActiveMenuIndex(index);
@@ -47,7 +47,7 @@ export function nextMenuOption (client: Client.Client)
 export function previousMenuOption (client: Client.Client)
 {
         const currentIndex = client.ui.activeMainMenuIndex;
-        const items = Menu.getMainMenuItems();
+        const items = Menu.getMainMenuItems(client.ui.seenMainMenu);
         const max = items.length - 1;
         const index = MathUtils.inRange(0, max, currentIndex - 1);
         return ActionCreators.setActiveMenuIndex(index);
@@ -56,7 +56,7 @@ export function previousMenuOption (client: Client.Client)
 export function selectMenuOption (client: Client.Client)
 {
         const index = client.ui.activeMainMenuIndex;
-        const items = Menu.getMainMenuItems();
+        const items = Menu.getMainMenuItems(client.ui.seenMainMenu);
         const item = items[index];
         const type = item.type;
 
@@ -64,6 +64,9 @@ export function selectMenuOption (client: Client.Client)
         case 'CONTINUE_GAME':
                 const saveData = LocalStorage.getMostRecentSave<Client.SaveData>();
                 return ActionCreators.importSaveData(saveData);
+
+        case 'RESUME_GAME':
+                return ActionCreators.setMode(UI.Modes.INDEX_INBOX);
 
         case 'NEW_GAME':
                 return ActionCreators.newGame();

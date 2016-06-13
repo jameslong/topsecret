@@ -103,6 +103,10 @@ export function ui (ui: UI.UI, action: Redux.Action<any>)
                         const newGame = <Actions.NewGame><any>action;
                         return handleNewGame(ui, newGame);
 
+                case Actions.Types.IMPORT_SAVE_DATA:
+                        const saveData = <Actions.ImportSaveData><any>action;
+                        return handleImportSaveData(ui, saveData);
+
                 default:
                         return ui;
         }
@@ -259,6 +263,11 @@ function handleSetActiveSaveIndex (
 }
 
 function handleNewGame (ui: UI.UI, action: Actions.NewGame)
+{
+        return UI.setMode(ui, UI.Modes.INDEX_INBOX);
+}
+
+function handleImportSaveData (ui: UI.UI, action: Actions.ImportSaveData)
 {
         return UI.setMode(ui, UI.Modes.INDEX_INBOX);
 }

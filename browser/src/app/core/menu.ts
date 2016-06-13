@@ -2,6 +2,7 @@ import LocalStorage = require('./localstorage');
 import Map = require('../../../../core/src/app/utils/map');
 
 export type MainMenuOptionType =
+        'RESUME_GAME' |
         'CONTINUE_GAME' |
         'NEW_GAME' |
         'SAVE' |
@@ -34,6 +35,10 @@ export interface LoadMenuItem {
 
 const mainMenuItems: MainMenuItem[] = [
         {
+                id: 'resume',
+                type: 'RESUME_GAME',
+                text: 'Resume',
+        }, {
                 id: 'continue',
                 type: 'CONTINUE_GAME',
                 text: 'Continue',
@@ -56,12 +61,21 @@ const mainMenuItems: MainMenuItem[] = [
         }
 ];
 
-export function getMainMenuItems (): MainMenuItem[]
+export function getMainMenuItems (hasSeenMainMenu: boolean): MainMenuItem[]
 {
         const saves = LocalStorage.getSaveNames();
-        return saves.length ?
-                mainMenuItems :
-                mainMenuItems.filter(item => item.type !== 'CONTINUE_GAME');
+
+        if (hasSeenMainMenu) {
+                return mainMenuItems.filter(
+                        item => item.type !== 'CONTINUE_GAME');
+        } else {
+                if (saves.length) {
+                        return mainMenuItems.filter(
+                                item => item.type !== 'RESUME_GAME');
+                } else {
+                        return mainMenuItems;
+                }
+        }
 }
 
 export function getSaveMenuItems (): SaveMenuItem[]
