@@ -119,27 +119,24 @@ function createEncryption (state: Client.Client)
 function createMainMenu (state: Client.Client)
 {
         const activeMainMenuIndex = state.ui.activeMainMenuIndex;
-        let items = state.data.menuItems;
-        const itemsById = state.data.menuItemsById;
-        const activeItems = Menu.getActiveMainMenuItems(items, itemsById);
+        const items = Menu.getMainMenuItems(state.ui.seenMainMenu);
         return MainMenu({
                 activeMainMenuIndex,
-                menuItems: activeItems,
-                menuItemsById: itemsById
+                menuItems: items,
         });
 }
 
 function createLoadMenu (state: Client.Client)
 {
         const activeIndex = state.ui.activeLoadIndex;
-        const saves = LocalStorage.getSaveNames();
+        const saves = Menu.getLoadMenuItems();
         return LoadMenu({ activeIndex, saves });
 }
 
 function createSaveMenu (state: Client.Client)
 {
         const activeIndex = state.ui.activeSaveIndex;
-        const saves = LocalStorage.getSaveNames();
+        const saves = Menu.getSaveMenuItems();
         return SaveMenu({ activeIndex, saves });
 }
 

@@ -5,14 +5,12 @@ import SelectableRows = require('./selectablerows');
 
 interface MainMenuProps extends React.Props<any> {
         activeMainMenuIndex: number;
-        menuItems: string[];
-        menuItemsById: Map.Map<Menu.Item>;
+        menuItems: Menu.MainMenuItem[];
 }
 
 function renderMainMenu(props: MainMenuProps)
 {
-        const menuItemsById = props.menuItemsById;
-        const menuItems = props.menuItems.map(id => menuItemsById[id]);
+        const menuItems = props.menuItems;
         const highlightedIndices: number[] = [];
         const rowData = menuItems.map(item => [item.text]);
         const selectedIndex = props.activeMainMenuIndex;

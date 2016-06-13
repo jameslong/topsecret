@@ -38,10 +38,8 @@ export function exitMainMenu (client: Client.Client)
 export function nextMenuOption (client: Client.Client)
 {
         const currentIndex = client.ui.activeMainMenuIndex;
-        const items = client.data.menuItems;
-        const itemsById = client.data.menuItemsById;
-        const activeItems = Menu.getActiveMainMenuItems(items, itemsById);
-        const max = activeItems.length - 1;
+        const items = Menu.getMainMenuItems(client.ui.seenMainMenu);
+        const max = items.length - 1;
         const index = MathUtils.inRange(0, max, currentIndex + 1);
         return ActionCreators.setActiveMenuIndex(index);
 }
@@ -49,10 +47,8 @@ export function nextMenuOption (client: Client.Client)
 export function previousMenuOption (client: Client.Client)
 {
         const currentIndex = client.ui.activeMainMenuIndex;
-        const items = client.data.menuItems;
-        const itemsById = client.data.menuItemsById;
-        const activeItems = Menu.getActiveMainMenuItems(items, itemsById);
-        const max = activeItems.length - 1;
+        const items = Menu.getMainMenuItems(client.ui.seenMainMenu);
+        const max = items.length - 1;
         const index = MathUtils.inRange(0, max, currentIndex - 1);
         return ActionCreators.setActiveMenuIndex(index);
 }
@@ -60,17 +56,17 @@ export function previousMenuOption (client: Client.Client)
 export function selectMenuOption (client: Client.Client)
 {
         const index = client.ui.activeMainMenuIndex;
-        const items = client.data.menuItems;
-        const itemsById = client.data.menuItemsById;
-        const activeItems = Menu.getActiveMainMenuItems(items, itemsById);
-        const id = activeItems[index];
-        const item = client.data.menuItemsById[id];
+        const items = Menu.getMainMenuItems(client.ui.seenMainMenu);
+        const item = items[index];
         const type = item.type;
 
         switch (type) {
         case 'CONTINUE_GAME':
                 const saveData = LocalStorage.getMostRecentSave<Client.SaveData>();
                 return ActionCreators.importSaveData(saveData);
+
+        case 'RESUME_GAME':
+                return ActionCreators.setMode(UI.Modes.INDEX_INBOX);
 
         case 'NEW_GAME':
                 return ActionCreators.newGame();
@@ -94,19 +90,23 @@ export function exitSave (client: Client.Client)
 export function save (client: Client.Client)
 {
         const index = client.ui.activeSaveIndex;
-        const saves = LocalStorage.getSaveNames();
-        const saveName = index < saves.length ?
-                saves[index] : Date.now().toString();
-        const saveData = Client.getSaveData(client, saveName);
-        console.log('Saving', saveData);
-        return LocalStorage.save(saveData);
+        const items = Menu.getSaveMenuItems();
+        const item = items[index];
+        if (item) {
+                const saveName = item.type === 'SAVE' ?
+                        item.text :
+                        Date.now().toString();
+                const saveData = Client.getSaveData(client, saveName);
+                console.log('Saving', saveData);
+                return LocalStorage.save(saveData);
+        }
 }
 
 export function nextSave (client: Client.Client)
 {
         const currentIndex = client.ui.activeSaveIndex;
-        const saves = LocalStorage.getSaveNames();
-        const max = saves.length;
+        const items = Menu.getSaveMenuItems();
+        const max = items.length - 1;
         const index = MathUtils.inRange(0, max, currentIndex + 1);
         return ActionCreators.setActiveSaveIndex(index);
 }
@@ -114,8 +114,8 @@ export function nextSave (client: Client.Client)
 export function previousSave (client: Client.Client)
 {
         const currentIndex = client.ui.activeSaveIndex;
-        const saves = LocalStorage.getSaveNames();
-        const max = saves.length;
+        const items = Menu.getSaveMenuItems();
+        const max = items.length - 1;
         const index = MathUtils.inRange(0, max, currentIndex - 1);
         return ActionCreators.setActiveSaveIndex(index);
 }
@@ -128,18 +128,21 @@ export function exitLoad (client: Client.Client)
 export function load (client: Client.Client)
 {
         const activeIndex = client.ui.activeLoadIndex;
-        const saves = LocalStorage.getSaveNames();
-        const saveName = saves[activeIndex];
-        console.log('Loading', saveName);
-        const saveData = LocalStorage.load<Client.SaveData>(saveName);
-        return ActionCreators.importSaveData(saveData);
+        const items = Menu.getLoadMenuItems();
+        const item = items[activeIndex];
+        if (item) {
+                const saveName = item.text;
+                console.log('Loading', saveName);
+                const saveData = LocalStorage.load<Client.SaveData>(saveName);
+                return ActionCreators.importSaveData(saveData);
+        }
 }
 
 export function nextLoad (client: Client.Client)
 {
         const currentIndex = client.ui.activeLoadIndex;
-        const saves = LocalStorage.getSaveNames();
-        const max = saves.length - 1;
+        const items = Menu.getLoadMenuItems();
+        const max = items.length - 1;
         const index = MathUtils.inRange(0, max, currentIndex + 1);
         return ActionCreators.setActiveLoadIndex(index);
 }
@@ -147,8 +150,8 @@ export function nextLoad (client: Client.Client)
 export function previousLoad (client: Client.Client)
 {
         const currentIndex = client.ui.activeLoadIndex;
-        const saves = LocalStorage.getSaveNames();
-        const max = saves.length - 1;
+        const items = Menu.getLoadMenuItems();
+        const max = items.length - 1;
         const index = MathUtils.inRange(0, max, currentIndex - 1);
         return ActionCreators.setActiveLoadIndex(index);
 }
