@@ -1,3 +1,66 @@
 .new-game {
+        display: flex;
+        width: 100%;
+}
+
+.new-game-content {
+        display: flex;
+        flex-direction: column;
+        max-width: 40rem;
         margin: auto;
+}
+
+.new-game form {
+        margin: auto;
+}
+
+.new-game-form-item {
+        display: flex;
+        padding-bottom: 0.5rem;
+}
+
+.new-game-form-item > span {
+        flex-grow: 1;
+        text-align: right;
+        padding-right: 1em;
+}
+
+.new-game input {
+        border: none;
+        background-color: var(--infobar-bg-colour);
+        color: var(--light-font-colour);
+        font-size: inherit;
+        font-family: inherit;
+        padding: 0;
+        width: 12rem;
+}
+
+.new-game input:focus {
+        outline: none;
+}
+
+.new-game-button-wrapper {
+        display: flex;
+        justify-content: flex-end;
+}
+
+.new-game button {
+        border: 1px solid var(--infobar-bg-colour);
+        background: none;
+        color: var(--light-font-colour);
+        font-size: inherit;
+        font-family: inherit;
+        outline: none;
+}
+
+.new-game-banner {
+        white-space: pre;
+        margin: auto;
+        padding-bottom: 3rem;
+}
+
+.new-game-footer {
+        font-size: 60%;
+        padding-top: 3rem;
+        text-align: justify;
 }

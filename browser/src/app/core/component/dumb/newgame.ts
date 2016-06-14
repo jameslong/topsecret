@@ -9,6 +9,7 @@ import Text = require('./text');
 import Core = require('../core');
 import Div = Core.Div;
 import Form = Core.Form;
+import Span = Core.Span;
 
 interface ContentProps extends React.Props<any> {
         state: Client.Client;
@@ -18,8 +19,9 @@ function renderContent(props: ContentProps)
 {
         const state = props.state;
 
+        const firstNameLabel = Span({}, 'First Name:');
         const firstName = Text({
-                placeholder: 'First Name',
+                placeholder: '',
                 value: null,
                 name: 'firstName',
                 onChange: (e: any) => {
@@ -27,8 +29,9 @@ function renderContent(props: ContentProps)
                         e.preventDefault();
                 }
         });
+        const lastNameLabel = Span({}, 'Last Name:');
         const lastName = Text({
-                placeholder: 'Last Name',
+                placeholder: '',
                 value: null,
                 name: 'lastName',
                 onChange: (e: any) => {
@@ -43,13 +46,31 @@ function renderContent(props: ContentProps)
         });
 
         const formProps = {
-                className: 'new-game',
                 onSubmit: (submitEvent: any) => onSubmit(state, submitEvent)
         };
-        return Form(formProps,
-                Div({}, firstName),
-                Div({}, lastName),
-                submit);
+        const form = Form(formProps,
+                Div({ className: 'new-game-form-item' },
+                        firstNameLabel, firstName),
+                Div({ className: 'new-game-form-item' },
+                        lastNameLabel, lastName),
+                Div({ className: 'new-game-button-wrapper' }, submit)
+        );
+
+        const bannerText = ` _   _  _____         _   _ ______ _______
+| \\ | |/ ____|  /\\   | \\ | |  ____|__   __|
+|  \\| | (___   /  \\  |  \\| | |__     | |
+| . \` |\\___ \\ / /\\ \\ | . \` |  __|    | |
+| |\\  |____) / ____ \\| |\\  | |____   | |
+|_| \\_|_____/_/    \\_\\_| \\_|______|  |_|`;
+
+        const banner = Div({ className: 'new-game-banner' }, bannerText);
+
+        const footerText = 'WARNING:  The use of this U.S. Government system is restricted to authorized users only. Unauthorized access, use, or modification of this computer system or of the data contained herein or in transit to/from this system constitutes a violation of Title 18, United States Code, Section 1030 and state criminal and civil laws. These systems and equipment are subject to monitoring to ensure proper performance of applicable security features or procedures. Such monitoring may result in the acquisition, recording and analysis of all data being communicated, transmitted, processed or stored in this system by a user. If monitoring reveals possible evidence of criminal activity, such evidence may be provided to law enforcement personnel.';
+        const footer = Div({ className: 'new-game-footer' }, footerText);
+
+        return Div({ className: 'new-game'},
+                Div({ className: 'new-game-content' }, banner, form, footer)
+        );
 }
 
 const Content = React.createFactory(renderContent);
