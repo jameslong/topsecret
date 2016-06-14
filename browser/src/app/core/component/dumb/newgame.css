@@ -26,7 +26,7 @@
 }
 
 .new-game input {
-        border: none;
+        border: 1px solid var(--infobar-bg-colour);
         background-color: var(--infobar-bg-colour);
         color: var(--light-font-colour);
         font-size: inherit;
@@ -37,6 +37,7 @@
 
 .new-game input:focus {
         outline: none;
+        border: 1px solid var(--main-font-colour);
 }
 
 .new-game-button-wrapper {
@@ -51,6 +52,14 @@
         font-size: inherit;
         font-family: inherit;
         outline: none;
+}
+
+.new-game button:focus {
+        border: 1px solid var(--main-font-colour);
+}
+
+.new-game button:hover {
+        background-color: var(--infobar-bg-colour);
 }
 
 .new-game-banner {
