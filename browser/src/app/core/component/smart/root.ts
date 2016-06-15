@@ -4,6 +4,7 @@ import Data = require('../../data');
 import React = require('react');
 import Redux = require('../../redux/redux');
 import Client = require('../../client');
+import UI = require('../../ui');
 
 import Core = require('../core');
 import Div = Core.Div;
@@ -11,15 +12,31 @@ import Div = Core.Div;
 import Content = require('../dumb/content');
 import FeedbackButton = require('../dumb/feedbackbutton');
 import Footer = require('../dumb/footer');
+import NewGame = require('../dumb/newgame');
+import NewGameLoading = require('../dumb/newgameloading');
 import Header = require('../dumb/header');
 
 interface RootProps extends React.Props<any> {
         state: Client.Client;
 }
 
-function renderRoot(props: RootProps)
+function renderRoot(props: RootProps): React.ReactElement<any>
 {
         const state = props.state;
+        if (state.ui.mode === UI.Modes.NEW_GAME) {
+                return NewGame({ state });
+        } else if (state.ui.mode === UI.Modes.NEW_GAME_LOADING) {
+                const loadingInfo = state.ui.loadingInfo;
+                return NewGameLoading({ loadingInfo });
+        } else {
+                return renderGame(state);
+        }
+}
+
+const Root = React.createFactory(renderRoot);
+
+function renderGame (state: Client.Client)
+{
         const commands = Client.getActiveCommands(state);
         const displayedCommands = commands.filter(
                 command => command.shortDesc.length > 0);
@@ -32,8 +49,6 @@ function renderRoot(props: RootProps)
         return Div({ className: 'root', onClick },
                 header, content, footer, feedback);
 }
-
-const Root = React.createFactory(renderRoot);
 
 function onClick (e: MouseEvent)
 {

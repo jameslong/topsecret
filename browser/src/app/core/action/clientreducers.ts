@@ -62,5 +62,6 @@ function handleImportSaveData (
 
 function handleNewGame (client: Client.Client, action: Actions.NewGame)
 {
-        return Main.newGame(client);
+        const player = action.parameters;
+        return Main.newGame(client, player);
 }

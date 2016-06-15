@@ -3,6 +3,7 @@ import Arr = require('../../../../../core/src/app/utils/array');
 import Client = require('../client');
 import Folder = require('../folder');
 import Message = require('../../../../../core/src/app/message');
+import Player = require('../player');
 import Redux = require('../redux/redux');
 import UI = require('../ui');
 
@@ -62,4 +63,6 @@ export const setActiveMenuIndex = createActionCreator<number>(Actions.Types.SET_
 export const setActiveSaveIndex = createActionCreator<number>(Actions.Types.SET_ACTIVE_SAVE_MENU_INDEX);
 
 export const importSaveData = createActionCreator<Client.SaveData>(Actions.Types.IMPORT_SAVE_DATA);
-export const newGame = createEmptyActionCreator(Actions.Types.NEW_GAME);
+export const newGame = createActionCreator<Player.Player>(Actions.Types.NEW_GAME);
+export const newGameLogin = createEmptyActionCreator(Actions.Types.NEW_GAME_LOGIN);
+export const newGameLoadingInfo = createActionCreator<string>(Actions.Types.NEW_GAME_LOADING_INFO);

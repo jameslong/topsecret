@@ -18,6 +18,7 @@ import Redux = require('./redux/redux');
 import Root = require('./component/smart/root');
 import Server = require('./server');
 import State = require('../../../../core/src/app/state');
+import Player = require('./player');
 import UI = require('./ui');
 
 export function init (gameData: State.Data, openFile: (path: string) => void)
@@ -28,18 +29,25 @@ export function init (gameData: State.Data, openFile: (path: string) => void)
                 commandIdsByMode: CommandData.commandIdsByMode,
                 folders: MessageData.folders,
         };
-        return appInit(appConfig, appData, gameData, openFile);
+        const defaultPlayer = PlayerData.player;
+        return appInit(
+                appConfig, appData, gameData, defaultPlayer, openFile);
 }
 export function appInit (
         appConfig: ConfigData.ConfigData,
         appData: AppData.AppData,
         gameData: State.Data,
+        defaultPlayer: Player.Player,
         openFile: (path: string) => void)
 {
         const wrapper = document.getElementById('wrapper');
 
         const client = Client.createClient(
-                appConfig, appData, gameData, openFile);
+                appConfig,
+                appData,
+                gameData,
+                defaultPlayer,
+                openFile);
 
         const getClient = Redux.init(client, Reducers.reduce, Root, wrapper);
         Redux.render(client, Root, wrapper);
@@ -54,7 +62,7 @@ export function appInit (
         );
 }
 
-export function newGame (client: Client.Client)
+export function newGame (client: Client.Client, player: Player.Player)
 {
         const appConfig = ConfigData.createConfig();
         const appData = {
@@ -62,9 +70,13 @@ export function newGame (client: Client.Client)
                 commandIdsByMode: CommandData.commandIdsByMode,
                 folders: MessageData.folders,
         };
+        const gameData = client.server.app.data;
         const newClient = Client.createClient(
-                appConfig, appData, client.server.app.data, client.openFile);
-        const player = newClient.data.player;
+                appConfig,
+                appData,
+                gameData,
+                player,
+                client.openFile);
 
         const server = newClient.server;
         const clock = newClient.data.clock;

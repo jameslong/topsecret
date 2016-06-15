@@ -15,7 +15,6 @@ import Main = require('./main');
 import Message = require('./message');
 import MessageHelpers = require('../../../../core/src/app/messagehelpers');
 import Player = require('./player');
-import PlayerData = require('./data/player');
 import Profile = require('../../../../core/src/app/profile');
 import Redux = require('./redux/redux');
 import Server = require('./server');
@@ -78,12 +77,12 @@ export function createClient (
         appConfig: ConfigData.ConfigData,
         appData: AppData.AppData,
         gameData: State.Data,
+        player: Player.Player,
         openFile: (path: string) => void)
 {
         const runtimeServer = Server.createRuntimeServer();
 
         const clock = Clock.createClock(appConfig.timeFactor);
-        const player = PlayerData.player;
         const profilesById = gameData[appConfig.version].profiles;
         const folders = appData.folders;
         const runtimeData = Data.createRuntimeData(
