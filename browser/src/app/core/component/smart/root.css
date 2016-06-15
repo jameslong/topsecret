@@ -16,7 +16,7 @@
         max-width: 100px;
         height: auto;
         position: absolute;
-        top: 1rem;
+        top: 2rem;
         right: 2rem;
         animation: flickerAnimation 1s infinite;
 }
