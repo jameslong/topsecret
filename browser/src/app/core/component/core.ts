@@ -5,6 +5,7 @@ export const Div = React.createFactory('div');
 export const P = React.createFactory('p');
 export const Br = React.createFactory('br');
 export const Form = React.createFactory('form');
+export const Img = React.createFactory('img');
 export const Span = React.createFactory('span');
 export const Input = React.createFactory('input');
 export const Table = React.createFactory('table');

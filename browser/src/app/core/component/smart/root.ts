@@ -8,6 +8,7 @@ import UI = require('../../ui');
 
 import Core = require('../core');
 import Div = Core.Div;
+import Img = Core.Img;
 
 import Content = require('../dumb/content');
 import FeedbackButton = require('../dumb/feedbackbutton');
@@ -45,9 +46,15 @@ function renderGame (state: Client.Client)
         const footer = Footer({ state });
         const content = Content({ state });
         const feedback = FeedbackButton({});
+        const fastforward = state.data.clock.timeFactor > 1 ?
+                Img({
+                        className: 'root-fastforward',
+                        src: '../assets/fast-forward.png'
+                }) :
+                null;
 
         return Div({ className: 'root', onClick },
-                header, content, footer, feedback);
+                header, content, footer, feedback, fastforward);
 }
 
 function onClick (e: MouseEvent)
