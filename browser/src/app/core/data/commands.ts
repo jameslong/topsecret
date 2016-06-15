@@ -97,8 +97,8 @@ const commonCommands: Command.Command[] = [{
         key: '+',
         keyCodes: [KeyCodes.PLUS],
         actionCreator: KeyHandlers.tickFaster,
-        shortDesc: '',
-        desc: 'speed up time',
+        shortDesc: 'fast-forward',
+        desc: 'speed up time until next message is received',
 }, {
         id: 'tick-slower',
         key: '-',
@@ -106,13 +106,13 @@ const commonCommands: Command.Command[] = [{
         actionCreator: KeyHandlers.tickSlower,
         shortDesc: '',
         desc: 'slow down time',
-}, {
-        id: 'add-time-offset',
-        key: 'o',
-        keyCodes: [KeyCodes.O],
-        actionCreator: KeyHandlers.addTimeOffset,
-        shortDesc: '',
-        desc: 'move 6 hours ahead of present',
+// }, {
+//         id: 'add-time-offset',
+//         key: 'o',
+//         keyCodes: [KeyCodes.O],
+//         actionCreator: KeyHandlers.addTimeOffset,
+//         shortDesc: '',
+//         desc: 'move 6 hours ahead of present',
 }];
 
 const composeCommands = [, {
@@ -408,11 +408,11 @@ export const commandIdsByMode: Data.IdsById = {
                 'reply',
                 'change',
                 'encryption',
-                'open-help',
                 'tick-faster',
                 'tick-slower',
-                'add-time-offset',
-                'open-main-menu'
+                // 'add-time-offset',
+                'open-main-menu',
+                'open-help'
         ],
         [UI.Modes.INDEX_SENT]: [
                 'next-message',

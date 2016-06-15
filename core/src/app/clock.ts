@@ -39,15 +39,14 @@ export function displayGameTime (clock: Clock)
 
 export function tickFaster (clock: Clock)
 {
-        const temp = Math.round(clock.timeFactor * 60);
+        const temp = Math.round(clock.timeFactor * 3600);
         const timeFactor = MathUtil.inRange(1, 3600, temp);
         return Helpers.assign(clock, { timeFactor });
 }
 
 export function tickSlower (clock: Clock)
 {
-        const temp = Math.round(clock.timeFactor / 60);
-        const timeFactor = MathUtil.inRange(1, 3600, temp);
+        const timeFactor = 1;
         return Helpers.assign(clock, { timeFactor });
 }
 
