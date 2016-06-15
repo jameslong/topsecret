@@ -1,7 +1,9 @@
 import ActionCreators = require('../../action/actioncreators');
 import ButtonInput = require('./buttoninput');
 import Client = require('../../client');
-import Kbpgp = require('../../../../../../core/src/app/kbpgp');
+import Kbpgp = require('kbpgp');
+import KbpgpHelpers = require('../../../../../../core/src/app/kbpgp');
+import Prom = require('../../../../../../core/src/app/utils/promise');
 import React = require('react');
 import Redux = require('../../redux/redux');
 import Text = require('./text');
@@ -11,11 +13,11 @@ import Div = Core.Div;
 import Form = Core.Form;
 import Span = Core.Span;
 
-interface ContentProps extends React.Props<any> {
+interface NewGameProps extends React.Props<any> {
         state: Client.Client;
 }
 
-function renderContent(props: ContentProps)
+function renderNewGame(props: NewGameProps)
 {
         const state = props.state;
 
@@ -73,31 +75,58 @@ function renderContent(props: ContentProps)
         );
 }
 
-const Content = React.createFactory(renderContent);
+const NewGame = React.createFactory(renderNewGame);
 
 function onSubmit (state: Client.Client, e: any)
 {
         const { firstName, lastName } =
                 <{ firstName: string; lastName: string; }> extractFormValues(e);
 
+        if (firstName && lastName) {
+                const userId = `${firstName} ${lastName} <${firstName.toLowerCase()}.${lastName.toLowerCase()}@nsa.gov>`;
+                const passphrase = `passphrase`;
+                const asp = new Kbpgp.ASP({
+                        progress_hook: (info) => {
+                                const text = KbpgpHelpers.formatProgress(info);
+                                const action = ActionCreators.newGameLoadingInfo(
+                                        text);
+                                Redux.handleAction(action);
+                        }
+                });
 
-        const userId = `${firstName} ${lastName} <${firstName.toLowerCase()}.${lastName.toLowerCase()}@nsa.gov>`;
-        const passphrase = `passphrase`;
-        Kbpgp.generateKeyPair(userId).then(instance => {
-                return Kbpgp.exportKeyPair(instance, passphrase);
-        }).then(keyPair => {
-                const player = {
-                        email: userId,
-                        firstName,
-                        lastName,
-                        timezoneOffset: 0,
-                        publicKey: keyPair[0],
-                        privateKey: keyPair[1],
-                        passphrase,
-                };
-                const action = ActionCreators.newGame(player);
+                const connecting = Prom.delay(100).then(res => {
+                        const action = ActionCreators.newGameLoadingInfo(
+                                'connecting to NSA network...');
+                        Redux.handleAction(action);
+                }).then(res => Prom.delay(1500)).then(res => {
+                        const action = ActionCreators.newGameLoadingInfo(
+                                'connection successful');
+                        Redux.handleAction(action);
+                }).then(res => Prom.delay(500)).then(res => {
+                        const action = ActionCreators.newGameLoadingInfo(
+                                'generating PGP key pair...');
+                        Redux.handleAction(action);
+                }).then(res => Prom.delay(800)).then(res => {
+                        KbpgpHelpers.generateKeyPair(userId, asp).then(instance => {
+                                return KbpgpHelpers.exportKeyPair(instance, passphrase);
+                        }).then(keyPair => {
+                                const player = {
+                                        email: userId,
+                                        firstName,
+                                        lastName,
+                                        timezoneOffset: 0,
+                                        publicKey: keyPair[0],
+                                        privateKey: keyPair[1],
+                                        passphrase,
+                                };
+                                const action = ActionCreators.newGame(player);
+                                Redux.handleAction(action);
+                        });
+                });
+
+                const action = ActionCreators.newGameLogin();
                 Redux.handleAction(action);
-        });
+        }
 
         e.preventDefault();
         e.stopPropagation();
@@ -133,4 +162,4 @@ function extractFormValues (formSubmitEvent: any): any
         return formValues;
 }
 
-export = Content;
+export = NewGame;

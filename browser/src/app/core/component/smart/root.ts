@@ -13,6 +13,7 @@ import Content = require('../dumb/content');
 import FeedbackButton = require('../dumb/feedbackbutton');
 import Footer = require('../dumb/footer');
 import NewGame = require('../dumb/newgame');
+import NewGameLoading = require('../dumb/newgameloading');
 import Header = require('../dumb/header');
 
 interface RootProps extends React.Props<any> {
@@ -24,6 +25,9 @@ function renderRoot(props: RootProps): React.ReactElement<any>
         const state = props.state;
         if (state.ui.mode === UI.Modes.NEW_GAME) {
                 return NewGame({ state });
+        } else if (state.ui.mode === UI.Modes.NEW_GAME_LOADING) {
+                const loadingInfo = state.ui.loadingInfo;
+                return NewGameLoading({ loadingInfo });
         } else {
                 return renderGame(state);
         }

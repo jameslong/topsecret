@@ -1,4 +1,5 @@
 import Actions = require('./actions');
+import Arr = require('../../../../../core/src/app/utils/array');
 import Helpers = require('../../../../../core/src/app/utils/helpers');
 import Folder = require('../folder');
 import Redux = require('../redux/redux');
@@ -102,6 +103,14 @@ export function ui (ui: UI.UI, action: Redux.Action<any>)
                 case Actions.Types.NEW_GAME:
                         const newGame = <Actions.NewGame><any>action;
                         return handleNewGame(ui, newGame);
+
+                case Actions.Types.NEW_GAME_LOGIN:
+                        const newGameLogin = <Actions.NewGameLogin><any>action;
+                        return handleNewGameLogin(ui, newGameLogin);
+
+                case Actions.Types.NEW_GAME_LOADING_INFO:
+                        const loadingInfo = <Actions.NewGameLoadingInfo><any>action;
+                        return handleNewGameLoadingInfo(ui, loadingInfo);
 
                 case Actions.Types.IMPORT_SAVE_DATA:
                         const saveData = <Actions.ImportSaveData><any>action;
@@ -265,6 +274,21 @@ function handleSetActiveSaveIndex (
 function handleNewGame (ui: UI.UI, action: Actions.NewGame)
 {
         return UI.setMode(ui, UI.Modes.INDEX_INBOX);
+}
+
+function handleNewGameLogin (ui: UI.UI, action: Actions.NewGameLogin)
+{
+        return UI.setMode(ui, UI.Modes.NEW_GAME_LOADING);
+}
+
+function handleNewGameLoadingInfo (
+        ui: UI.UI, action: Actions.NewGameLoadingInfo)
+{
+        const max = 8;
+        const info = action.parameters;
+        const loadingInfo = Arr.push(ui.loadingInfo, info)
+
+        return Helpers.assign(ui, { loadingInfo });
 }
 
 function handleImportSaveData (ui: UI.UI, action: Actions.ImportSaveData)

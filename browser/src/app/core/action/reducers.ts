@@ -17,7 +17,8 @@ export function reduce (
 
 export function mapKeyToAction (client: Client.Client, action: Actions.KeyDown)
 {
-        if (UI.isEditing(client.ui)) {
+        if (UI.isEditing(client.ui) ||
+            client.ui.mode === UI.Modes.NEW_GAME_LOADING) {
                 return null;
         }
 

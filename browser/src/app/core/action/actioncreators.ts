@@ -64,3 +64,5 @@ export const setActiveSaveIndex = createActionCreator<number>(Actions.Types.SET_
 
 export const importSaveData = createActionCreator<Client.SaveData>(Actions.Types.IMPORT_SAVE_DATA);
 export const newGame = createActionCreator<Player.Player>(Actions.Types.NEW_GAME);
+export const newGameLogin = createEmptyActionCreator(Actions.Types.NEW_GAME_LOGIN);
+export const newGameLoadingInfo = createActionCreator<string>(Actions.Types.NEW_GAME_LOADING_INFO);

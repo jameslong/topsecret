@@ -47,7 +47,9 @@ export const Types = {
 
         IMPORT_SAVE_DATA: 'IMPORT_SAVE_DATA',
         NEW_GAME: 'NEW_GAME',
-        SET_NEW_PLAYER_INFO: 'NEW_GAME_PLAYER_INFO',
+        NEW_GAME_LOGIN: 'NEW_GAME_LOGIN',
+        NEW_GAME_LOADING_INFO: 'NEW_GAME_LOADING_INFO',
+        SET_NEW_PLAYER_INFO: 'SET_NEW_GAME_PLAYER_INFO',
 };
 
 export interface Blur extends Redux.Action<void> {}
@@ -116,6 +118,7 @@ export interface SetActiveSaveIndex extends Redux.Action<number> {}
 
 export interface ImportSaveData extends Redux.Action<Client.SaveData> {}
 export interface NewGame extends Redux.Action<Player.Player> {}
+export interface NewGameLogin extends Redux.Action<void> {}
 
 export interface SetNewGamePlayerInfoParams {
         firstName: string;
@@ -123,3 +126,4 @@ export interface SetNewGamePlayerInfoParams {
         privateKey: string;
 }
 export interface SetNewGamePlayerInfo extends Redux.Action<SetNewGamePlayerInfoParams> {}
+export interface NewGameLoadingInfo extends Redux.Action<string> {}

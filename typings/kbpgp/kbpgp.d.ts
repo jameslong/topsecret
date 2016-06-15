@@ -2,6 +2,7 @@ declare namespace Kbpgp {
         namespace KeyManager {
                 interface Options {
                         userid: string;
+                        asp?: ASP;
                 }
 
                 function generate_rsa (
@@ -39,6 +40,17 @@ declare namespace Kbpgp {
                 class KeyRing {
                         add_key_manager(instance: KeyManagerInstance): void;
                 }
+        }
+
+        interface Progress {
+                what: string;
+                p?: number;
+                i?: number;
+                total?: number;
+        }
+
+        class ASP {
+                constructor(opts: { progress_hook: (info: Progress) => void; });
         }
 
         function box (

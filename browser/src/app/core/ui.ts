@@ -13,6 +13,7 @@ export const Modes = {
         MAIN_MENU: 'MAIN_MENU',
         SAVE_MENU: 'SAVE_MENU',
         NEW_GAME: 'NEW_GAME',
+        NEW_GAME_LOADING: 'NEW_GAME_LOADING',
 }
 
 export interface UI {
@@ -32,6 +33,7 @@ export interface UI {
         decrypting: boolean;
         generatingKey: boolean;
         seenMainMenu: boolean;
+        loadingInfo: string[];
 }
 
 export function createUI (
@@ -54,6 +56,7 @@ export function createUI (
                 decrypting: false,
                 generatingKey: false,
                 seenMainMenu: false,
+                loadingInfo: [],
         };
 }
 

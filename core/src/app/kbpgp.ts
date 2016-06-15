@@ -67,10 +67,10 @@ export function loadKey (key: string, passphrase?: string)
         });
 }
 
-export function generateKeyPair (userid: string)
+export function generateKeyPair (userid: string, asp: Kbpgp.ASP)
 {
         return new Promise<Kbpgp.KeyManagerInstance>((resolve, reject) => {
-                Kbpgp.KeyManager.generate_rsa({ userid }, (err, instance) => {
+                Kbpgp.KeyManager.generate_rsa({ userid, asp }, (err, instance) => {
                         err ?
                                 reject(err) :
                                 instance.sign({}, err =>
@@ -161,4 +161,23 @@ export function exportKeyPair (
         const privateKey = exportPrivateKey(instance, passphrase);
 
         return Promise.all([publicKey, privateKey]);
+}
+
+export function formatProgress (o: Kbpgp.Progress)
+{
+        let msg = '';
+        switch (o.what) {
+        case 'fermat':
+            msg = 'hunting for a prime ...' + o.p.toString().slice(-3);
+            break;
+        case 'mr':
+            msg = 'confirming prime candidate ' + ~~(100 * o.i / o.total) + '%';
+            break;
+        case 'found':
+            msg = 'found a prime';
+            break;
+        default:
+            msg = '' + o.what;
+        }
+        return msg;
 }

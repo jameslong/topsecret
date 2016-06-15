@@ -6,7 +6,7 @@
 .new-game-content {
         display: flex;
         flex-direction: column;
-        max-width: 40rem;
+        width: 40rem;
         margin: auto;
 }
 
