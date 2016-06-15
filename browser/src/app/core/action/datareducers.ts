@@ -63,8 +63,10 @@ function handleReceiveReply (data: Data.Data, action: Actions.ReceiveReply)
 {
         const reply = action.parameters;
         const timestampMs = Clock.gameTimeMs(data.clock);
+        const clock = Clock.tickSlower(data.clock);
         const message = Message.createMessage(reply, reply.id, timestampMs);
-        return Data.storeMessage(data, message, 'inbox');
+        const newData = Data.storeMessage(data, message, 'inbox');
+        return Helpers.assign(newData, { clock });
 }
 
 function handleSendMessage (data: Data.Data, action: Actions.SendMessage)
