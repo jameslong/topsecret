@@ -106,7 +106,7 @@ function onSubmit (state: Client.Client, e: any)
                         const action = ActionCreators.newGameLoadingInfo(
                                 'generating PGP key pair...');
                         Redux.handleAction(action);
-                }).then(res => Prom.delay(800)).then(res => {
+                }).then(res => Prom.delay(1500)).then(res => {
                         KbpgpHelpers.generateKeyPair(userId, asp).then(instance => {
                                 return KbpgpHelpers.exportKeyPair(instance, passphrase);
                         }).then(keyPair => {
