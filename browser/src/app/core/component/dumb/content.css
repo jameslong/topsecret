@@ -1,7 +1,25 @@
-.content {
+#content {
         display: flex;
         flex-direction: column;
         flex-grow: 1;
         overflow: auto;
         min-height: 2em;
+}
+
+#content::-webkit-scrollbar-track
+{
+	width: 5px;
+	background-color: var(--main-bg-colour);
+}
+
+#content::-webkit-scrollbar
+{
+	width: 5px;
+	background-color: var(--main-bg-colour);
+}
+
+#content::-webkit-scrollbar-thumb
+{
+	border-radius: 5px;
+	background-color: var(--highlighted-font-colour);
 }

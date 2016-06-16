@@ -62,7 +62,7 @@ function renderContent(props: ContentProps)
                 break;
         }
 
-        return Div({ className: 'content' }, content);
+        return Div({ id: 'content' }, content);
 }
 
 const Content = React.createFactory(renderContent);
