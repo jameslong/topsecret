@@ -258,7 +258,7 @@ export function encryptSend (client: Client.Client): Redux.Action<any>
                 return KbpgpHelpers.signEncrypt(encryptData);
         }).then(body => {
                 const encryptedReply = Helpers.assign(reply,
-                        { strippedBody: body });
+                        { strippedBody: body, body });
                 const app = client.server.app;
                 return PromisesReply.handleReplyMessage(
                         encryptedReply,
