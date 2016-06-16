@@ -1,5 +1,5 @@
 {
-        "Description": "Top Secret s3 bucket for github ssh key",
+        "Description": "Top Secret s3 bucket for game data",
 
         "Resources": {
                 "S3Bucket": {
