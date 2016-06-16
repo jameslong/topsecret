@@ -6,3 +6,7 @@
         max-width: 700px;
         color: var(--light-font-colour);
 }
+
+.pager-body .quoted {
+        color: var(--main-font-colour);
+}
