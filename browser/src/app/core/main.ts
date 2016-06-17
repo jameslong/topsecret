@@ -34,8 +34,6 @@ export function init (
         };
         const defaultPlayer = PlayerData.player;
 
-        const wrapper = document.getElementById('wrapper');
-
         const client = Client.createClient(
                 appConfig,
                 appData,
@@ -44,6 +42,7 @@ export function init (
                 openFile,
                 openExternal);
 
+        const wrapper = document.getElementById('wrapper');
         const getClient = Redux.init(client, Reducers.reduce, Root, wrapper);
         Redux.render(client, Root, wrapper);
 
@@ -52,7 +51,11 @@ export function init (
         startTick(getClient);
 }
 
-export function newGame (client: Client.Client, player: Player.Player)
+export function newGame (
+        gameData: State.Data,
+        player: Player.Player,
+        openFile: (path: string) => void,
+        openExternal: (path: string) => void)
 {
         const appConfig = ConfigData.createConfig();
         const appData = {
@@ -60,14 +63,13 @@ export function newGame (client: Client.Client, player: Player.Player)
                 commandIdsByMode: CommandData.commandIdsByMode,
                 folders: MessageData.folders,
         };
-        const gameData = client.server.app.data;
         const newClient = Client.createClient(
                 appConfig,
                 appData,
                 gameData,
                 player,
-                client.openFile,
-                client.openExternal);
+                openFile,
+                openExternal);
 
         const server = newClient.server;
         const clock = newClient.data.clock;
@@ -77,7 +79,10 @@ export function newGame (client: Client.Client, player: Player.Player)
 }
 
 export function newGameFromSave (
-        client: Client.Client, saveData: Client.SaveData)
+        gameData: State.Data,
+        openFile: (path: string) => void,
+        openExternal: (path: string) => void,
+        saveData: Client.SaveData)
 {
         const appConfig = ConfigData.createConfig();
         const appData = {
@@ -85,9 +90,6 @@ export function newGameFromSave (
                 commandIdsByMode: CommandData.commandIdsByMode,
                 folders: MessageData.folders,
         };
-        const gameData = client.server.app.data;
-        const openFile = client.openFile;
-        const openExternal = client.openExternal;
 
         return Client.createClientFromSaveData(
                 appConfig,

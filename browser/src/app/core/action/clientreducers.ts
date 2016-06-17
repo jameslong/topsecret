@@ -58,11 +58,15 @@ function handleImportSaveData (
         client: Client.Client, action: Actions.ImportSaveData)
 {
         const saveData = action.parameters;
-        return Main.newGameFromSave(client, saveData);
+        const { openFile, openExternal } = client;
+        const gameData = client.server.app.data;
+        return Main.newGameFromSave(gameData, openFile, openExternal, saveData);
 }
 
 function handleNewGame (client: Client.Client, action: Actions.NewGame)
 {
         const player = action.parameters;
-        return Main.newGame(client, player);
+        const { openFile, openExternal } = client;
+        const gameData = client.server.app.data;
+        return Main.newGame(gameData, player, openFile, openExternal);
 }
