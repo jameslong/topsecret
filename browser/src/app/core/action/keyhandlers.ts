@@ -62,9 +62,6 @@ export function selectMenuOption (client: Client.Client): Redux.Action<any>
 
         switch (type) {
         case 'CONTINUE_GAME':
-                const saveData = LocalStorage.getMostRecentSave<Client.SaveData>();
-                return ActionCreators.importSaveData(saveData);
-
         case 'RESUME_GAME':
                 return ActionCreators.setMode(UI.Modes.INDEX_INBOX);
 
