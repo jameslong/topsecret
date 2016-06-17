@@ -21,7 +21,10 @@ import State = require('../../../../core/src/app/state');
 import Player = require('./player');
 import UI = require('./ui');
 
-export function init (gameData: State.Data, openFile: (path: string) => void)
+export function init (
+        gameData: State.Data,
+        openFile: (path: string) => void,
+        openExternal: (path: string) => void)
 {
         const appConfig = ConfigData.createConfig();
         const appData = {
@@ -31,14 +34,20 @@ export function init (gameData: State.Data, openFile: (path: string) => void)
         };
         const defaultPlayer = PlayerData.player;
         return appInit(
-                appConfig, appData, gameData, defaultPlayer, openFile);
+                appConfig,
+                appData,
+                gameData,
+                defaultPlayer,
+                openFile,
+                openExternal);
 }
 export function appInit (
         appConfig: ConfigData.ConfigData,
         appData: AppData.AppData,
         gameData: State.Data,
         defaultPlayer: Player.Player,
-        openFile: (path: string) => void)
+        openFile: (path: string) => void,
+        openExternal: (path: string) => void)
 {
         const wrapper = document.getElementById('wrapper');
 
@@ -47,7 +56,8 @@ export function appInit (
                 appData,
                 gameData,
                 defaultPlayer,
-                openFile);
+                openFile,
+                openExternal);
 
         const getClient = Redux.init(client, Reducers.reduce, Root, wrapper);
         Redux.render(client, Root, wrapper);
@@ -76,7 +86,8 @@ export function newGame (client: Client.Client, player: Player.Player)
                 appData,
                 gameData,
                 player,
-                client.openFile);
+                client.openFile,
+                client.openExternal);
 
         const server = newClient.server;
         const clock = newClient.data.clock;
@@ -96,9 +107,15 @@ export function newGameFromSave (
         };
         const gameData = client.server.app.data;
         const openFile = client.openFile;
+        const openExternal = client.openExternal;
 
         const newClient = Client.createClientFromSaveData(
-                appConfig, appData, gameData, openFile, saveData.saveData);
+                appConfig,
+                appData,
+                gameData,
+                openFile,
+                openExternal,
+                saveData.saveData);
         const newUI = Helpers.assign(newClient.ui,
                 { mode: UI.Modes.INDEX_INBOX });
         return Helpers.assign(newClient, { ui: newUI });

@@ -40,6 +40,7 @@ export function clientReducer (client: Client.Client, action: Redux.Action<any>)
                 draftMessage: DraftReducers.draft(client.draftMessage, action),
                 messageId: messageId(client.messageId, action),
                 openFile: client.openFile,
+                openExternal: client.openExternal,
         };
 }
 

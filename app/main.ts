@@ -17,7 +17,8 @@ window.onload = () => {
                 Helpers.mapFromNameArray(data)
         ).then(narratives => {
                 const openFile = (path: string) => shell.openItem(path);
-                Main.init(narratives, openFile);
+                const openExternal = (path: string) => shell.openExternal(path);
+                Main.init(narratives, openFile, openExternal);
         }).catch(err => {
                 console.log(err);
                 throw err;

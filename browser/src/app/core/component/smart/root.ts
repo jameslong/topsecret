@@ -45,7 +45,7 @@ function renderGame (state: Client.Client)
         const header = createHeader(state.ui.mode, displayedCommands);
         const footer = Footer({ state });
         const content = Content({ state });
-        const feedback = FeedbackButton({});
+        const feedback = FeedbackButton({ openExternal: state.openExternal });
         const fastforward = state.data.clock.timeFactor > 1 ?
                 Img({
                         className: 'root-fastforward',
