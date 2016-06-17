@@ -167,8 +167,3 @@ export function getSaveData (client: Client, name: string): SaveData
         };
         return { name, saveData };
 }
-
-export function importSaveData (client: Client, importedData: SaveData)
-{
-        return Main.newGameFromSave(client, importedData);
-}

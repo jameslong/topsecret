@@ -33,22 +33,7 @@ export function init (
                 folders: MessageData.folders,
         };
         const defaultPlayer = PlayerData.player;
-        return appInit(
-                appConfig,
-                appData,
-                gameData,
-                defaultPlayer,
-                openFile,
-                openExternal);
-}
-export function appInit (
-        appConfig: ConfigData.ConfigData,
-        appData: AppData.AppData,
-        gameData: State.Data,
-        defaultPlayer: Player.Player,
-        openFile: (path: string) => void,
-        openExternal: (path: string) => void)
-{
+
         const wrapper = document.getElementById('wrapper');
 
         const client = Client.createClient(
@@ -64,12 +49,7 @@ export function appInit (
 
         EventHandler.addKeyHandlers();
 
-        const clock = client.data.clock;
-        const player = client.data.player;
-        const server = client.server;
-        return Server.beginGame(player, appConfig, server, clock).then(result =>
-                startTick(getClient)
-        );
+        startTick(getClient);
 }
 
 export function newGame (client: Client.Client, player: Player.Player)
@@ -109,16 +89,13 @@ export function newGameFromSave (
         const openFile = client.openFile;
         const openExternal = client.openExternal;
 
-        const newClient = Client.createClientFromSaveData(
+        return Client.createClientFromSaveData(
                 appConfig,
                 appData,
                 gameData,
                 openFile,
                 openExternal,
                 saveData.saveData);
-        const newUI = Helpers.assign(newClient.ui,
-                { mode: UI.Modes.INDEX_INBOX });
-        return Helpers.assign(newClient, { ui: newUI });
 }
 
 function tick (getClient: () => Client.Client)
