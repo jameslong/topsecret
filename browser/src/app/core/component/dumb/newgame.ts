@@ -24,7 +24,7 @@ function renderNewGame(props: NewGameProps)
         const firstNameLabel = Span({}, 'First Name:');
         const firstName = Text({
                 placeholder: '',
-                value: null,
+                value: undefined,
                 name: 'firstName',
                 onChange: (e: any) => {
                         e.stopPropagation();
@@ -34,7 +34,7 @@ function renderNewGame(props: NewGameProps)
         const lastNameLabel = Span({}, 'Last Name:');
         const lastName = Text({
                 placeholder: '',
-                value: null,
+                value: undefined,
                 name: 'lastName',
                 onChange: (e: any) => {
                         e.stopPropagation();
