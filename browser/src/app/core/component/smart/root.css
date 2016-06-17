@@ -13,10 +13,13 @@
 }
 
 .root-fastforward {
-        max-width: 100px;
-        height: auto;
+        width: 100px;
+        height: 60px;
         position: absolute;
         top: 2rem;
         right: 2rem;
         animation: flickerAnimation 1s infinite;
+        background-image: url('../assets/fast-forward.png');
+        background-repeat: no-repeat;
+        background-size: contain;
 }

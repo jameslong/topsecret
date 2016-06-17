@@ -47,11 +47,7 @@ function renderGame (state: Client.Client)
         const content = Content({ state });
         const feedback = FeedbackButton({ openExternal: state.openExternal });
         const fastforward = state.data.clock.timeFactor > 1 ?
-                Img({
-                        className: 'root-fastforward',
-                        src: '../assets/fast-forward.png'
-                }) :
-                null;
+                Div({ className: 'root-fastforward' }) : null;
 
         return Div({ className: 'root', onClick },
                 header, content, footer, feedback, fastforward);
