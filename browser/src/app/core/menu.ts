@@ -66,14 +66,14 @@ const mainMenuItems: MainMenuItem[] = [
         }
 ];
 
-export function getMainMenuItems (hasSeenMainMenu: boolean): MainMenuItem[]
+export function getMainMenuItems (hasSeenInbox: boolean): MainMenuItem[]
 {
         const saves = LocalStorage.getSaveNames();
         if (saves.length === 0) {
                 return mainMenuItems.filter(item =>
                         item.type !== 'RESUME_GAME' &&
                         item.type !== 'CONTINUE_GAME');
-        } else if (hasSeenMainMenu) {
+        } else if (hasSeenInbox) {
                 return mainMenuItems.filter(
                         item => item.type !== 'CONTINUE_GAME');
         } else {

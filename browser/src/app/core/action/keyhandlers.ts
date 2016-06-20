@@ -38,7 +38,7 @@ export function exitMainMenu (client: Client.Client)
 export function nextMenuOption (client: Client.Client)
 {
         const currentIndex = client.ui.activeMainMenuIndex;
-        const items = Menu.getMainMenuItems(client.ui.seenMainMenu);
+        const items = Menu.getMainMenuItems(client.ui.hasSeenInbox);
         const max = items.length - 1;
         const index = MathUtils.inRange(0, max, currentIndex + 1);
         return ActionCreators.setActiveMenuIndex(index);
@@ -47,7 +47,7 @@ export function nextMenuOption (client: Client.Client)
 export function previousMenuOption (client: Client.Client)
 {
         const currentIndex = client.ui.activeMainMenuIndex;
-        const items = Menu.getMainMenuItems(client.ui.seenMainMenu);
+        const items = Menu.getMainMenuItems(client.ui.hasSeenInbox);
         const max = items.length - 1;
         const index = MathUtils.inRange(0, max, currentIndex - 1);
         return ActionCreators.setActiveMenuIndex(index);
@@ -56,7 +56,7 @@ export function previousMenuOption (client: Client.Client)
 export function selectMenuOption (client: Client.Client): Redux.Action<any>
 {
         const index = client.ui.activeMainMenuIndex;
-        const items = Menu.getMainMenuItems(client.ui.seenMainMenu);
+        const items = Menu.getMainMenuItems(client.ui.hasSeenInbox);
         const item = items[index];
         const type = item.type;
 
