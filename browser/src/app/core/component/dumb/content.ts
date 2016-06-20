@@ -4,6 +4,7 @@ import ComposeBodyContainer = require('../smart/composebodycontainer');
 import Encryption = require('./encryption');
 import Folder = require('./folder');
 import Help = require('./help');
+import HowToPlay = require('./howtoplay');
 import Index = require('./index');
 import LoadMenu = require('./loadmenu');
 import LocalStorage = require('../../localstorage');
@@ -57,6 +58,9 @@ function renderContent(props: ContentProps)
                 break;
         case UI.Modes.LOAD_MENU:
                 content = createLoadMenu(state);
+                break;
+        case UI.Modes.HOW_TO_PLAY:
+                content = HowToPlay();
                 break;
         default:
                 break;

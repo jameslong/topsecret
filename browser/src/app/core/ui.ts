@@ -9,6 +9,7 @@ export const Modes = {
         COMPOSE_BODY: 'COMPOSE_BODY',
         ENCRYPTION: 'ENCRYPTION',
         FOLDER: 'FOLDER',
+        HOW_TO_PLAY: 'HOW_TO_PLAY',
         LOAD_MENU: 'LOAD_MENU',
         MAIN_MENU: 'MAIN_MENU',
         SAVE_MENU: 'SAVE_MENU',

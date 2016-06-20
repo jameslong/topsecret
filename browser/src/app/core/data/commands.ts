@@ -359,6 +359,15 @@ const saveCommands = [{
         desc: 'delete save data',
 }];
 
+const howToPlayCommands = [{
+        id: 'exit-how-to-play',
+        key: 'i',
+        keyCodes: [KeyCodes.I],
+        actionCreator: KeyHandlers.exitHowToPlay,
+        shortDesc: 'Exit',
+        desc: 'return to main menu',
+}];
+
 export const commands = [].concat(
         commonCommands,
         composeCommands,
@@ -370,7 +379,8 @@ export const commands = [].concat(
         loadCommands,
         menuCommands,
         pagerCommands,
-        saveCommands);
+        saveCommands,
+        howToPlayCommands);
 
 export const commandIdsByMode: Data.IdsById = {
         [UI.Modes.COMPOSE]: [
@@ -429,13 +439,15 @@ export const commandIdsByMode: Data.IdsById = {
                 'load',
                 'next-load',
                 'previous-load',
-                'delete-save'
+                'delete-save',
+                'open-help'
         ],
         [UI.Modes.MAIN_MENU]: [
                 'exit-main-menu',
                 'select-menu-option',
                 'next-menu-option',
-                'previous-menu-option'
+                'previous-menu-option',
+                'open-help'
         ],
         [UI.Modes.PAGER]: [
                 'exit-pager',
@@ -455,6 +467,11 @@ export const commandIdsByMode: Data.IdsById = {
                 'save',
                 'next-save',
                 'previous-save',
-                'delete-save'
+                'delete-save',
+                'open-help'
+        ],
+        [UI.Modes.HOW_TO_PLAY]: [
+                'exit-how-to-play',
+                'open-help'
         ],
 }
