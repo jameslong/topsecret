@@ -8,7 +8,7 @@ interface FeedbackButtonProps extends React.Props<any> {
 
 function renderFeedbackButton(props: FeedbackButtonProps)
 {
-        const href = 'https://docs.google.com/forms/d/11eFwJmswpetWYbOS6hbshPTPSzdCuCENsB_5nMVCLMM/viewform';
+        const href = 'https://docs.google.com/forms/d/1WpNaf_a2-025wCkYtCr5KKUYSarP2LZAmF6F6vkLf0c/viewform';
         const onClick = () => props.openExternal(href);
         const target ='_blank';
         const text = 'Give feedback';
