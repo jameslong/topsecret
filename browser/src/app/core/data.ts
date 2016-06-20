@@ -83,6 +83,7 @@ export function createDataFromSaveData(
         const folderIds = folders.map(getId);
         const commandsById = idMapFromArray(commands);
         const profiles = Map.keys(profilesById);
+        const clock = Clock.updateAfterLoad(runtimeData.clock);
 
         return {
                 player: runtimeData.player,
@@ -95,7 +96,7 @@ export function createDataFromSaveData(
                 profiles,
                 profilesById,
                         knownKeyIds: runtimeData.knownKeyIds,
-                clock: runtimeData.clock,
+                clock,
         };
 }
 

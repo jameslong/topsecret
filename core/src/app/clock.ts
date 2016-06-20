@@ -14,6 +14,12 @@ export function createClock (timeFactor: number)
         return { lastTickMs, lastTickGameMs, timeFactor };
 }
 
+export function updateAfterLoad (clock: Clock)
+{
+        const lastTickMs = Date.now();
+        return Helpers.assign(clock, { lastTickMs });
+}
+
 export function tick (clock: Clock)
 {
         const timestampMs = Date.now();
