@@ -69,7 +69,7 @@ const mainMenuItems: MainMenuItem[] = [
 export function getMainMenuItems (hasSeenInbox: boolean): MainMenuItem[]
 {
         const saves = LocalStorage.getSaveNames();
-        if (saves.length === 0) {
+        if (saves.length === 0 && !hasSeenInbox) {
                 return mainMenuItems.filter(item =>
                         item.type !== 'RESUME_GAME' &&
                         item.type !== 'CONTINUE_GAME');
