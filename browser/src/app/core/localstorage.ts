@@ -47,6 +47,6 @@ export function getMostRecentSave<T extends SaveData> (): T
 {
         const saveNames = getSaveNames();
         return saveNames.length ?
-                load<T>(saveNames.sort()[0]) :
+                load<T>(saveNames.sort()[saveNames.length - 1]) :
                 null;
 }
