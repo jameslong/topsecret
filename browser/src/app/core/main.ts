@@ -12,6 +12,7 @@ import Data = require('./data');
 import EventHandler = require('./eventhandler');
 import KbpgpHelpers = require('../../../../core/src/app/kbpgp');
 import Helpers = require('../../../../core/src/app/utils/helpers');
+import LocalStorage = require('./localstorage');
 import Prom = require('../../../../core/src/app/utils/promise');
 import Reducers = require('./action/reducers');
 import Redux = require('./redux/redux');
@@ -34,13 +35,22 @@ export function init (
         };
         const defaultPlayer = PlayerData.player;
 
-        const client = Client.createClient(
-                appConfig,
-                appData,
-                gameData,
-                defaultPlayer,
-                openFile,
-                openExternal);
+        const save = LocalStorage.getMostRecentSave<Client.SaveData>();
+        const client = save ?
+                Client.createClientFromSaveData(
+                        appConfig,
+                        appData,
+                        gameData,
+                        openFile,
+                        openExternal,
+                        save.saveData) :
+                Client.createClient(
+                        appConfig,
+                        appData,
+                        gameData,
+                        defaultPlayer,
+                        openFile,
+                        openExternal);
 
         const wrapper = document.getElementById('wrapper');
         const getClient = Redux.init(client, Reducers.reduce, Root, wrapper);

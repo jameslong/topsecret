@@ -5,6 +5,7 @@ export type MainMenuOptionType =
         'RESUME_GAME' |
         'CONTINUE_GAME' |
         'NEW_GAME' |
+        'HOW_TO_PLAY' |
         'SAVE' |
         'LOAD' |
         'QUIT';
@@ -46,6 +47,10 @@ const mainMenuItems: MainMenuItem[] = [
                 id: 'newGame',
                 type: 'NEW_GAME',
                 text: 'New Game',
+        }, {
+                id: 'howToPlay',
+                type: 'HOW_TO_PLAY',
+                text: 'How To Play',
         }, {
                 id: 'save',
                 type: 'SAVE',

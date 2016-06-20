@@ -62,14 +62,14 @@ export function selectMenuOption (client: Client.Client): Redux.Action<any>
 
         switch (type) {
         case 'CONTINUE_GAME':
-                const saveData = LocalStorage.getMostRecentSave<Client.SaveData>();
-                return ActionCreators.importSaveData(saveData);
-
         case 'RESUME_GAME':
                 return ActionCreators.setMode(UI.Modes.INDEX_INBOX);
 
         case 'NEW_GAME':
                 return ActionCreators.setMode(UI.Modes.NEW_GAME);
+
+        case 'HOW_TO_PLAY':
+                return ActionCreators.setMode(UI.Modes.HOW_TO_PLAY);
 
         case 'SAVE':
                 return ActionCreators.setMode(UI.Modes.SAVE_MENU);
@@ -166,6 +166,11 @@ export function deleteSave (client: Client.Client)
         if (saveName) {
                 LocalStorage.deleteSave(saveName);
         }
+}
+
+export function exitHowToPlay (client: Client.Client)
+{
+        return ActionCreators.setMode(UI.Modes.MAIN_MENU);
 }
 
 export function help (client: Client.Client)
