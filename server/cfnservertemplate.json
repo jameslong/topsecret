@@ -162,13 +162,91 @@
                 "ElasticLoadBalancerSecurityGroup" : {
                         "Type" : "AWS::EC2::SecurityGroup",
                         "Properties" : {
-                                "GroupDescription" : "Allow public access over HTTP",
+                                "GroupDescription" : "Allow Mailgun access over HTTP",
                                 "SecurityGroupIngress" : [
                                         {
                                                 "IpProtocol" : "tcp",
                                                 "FromPort" : "80",
                                                 "ToPort" : "3000",
-                                                "CidrIp" : "0.0.0.0/0"
+                                                "CidrIp" : "173.193.210.32/27"
+                                        },
+                                        {
+                                                "IpProtocol" : "tcp",
+                                                "FromPort" : "80",
+                                                "ToPort" : "3000",
+                                                "CidrIp" : "50.23.218.192/27"
+                                        },
+                                        {
+                                                "IpProtocol" : "tcp",
+                                                "FromPort" : "80",
+                                                "ToPort" : "3000",
+                                                "CidrIp" : "174.37.226.64/27"
+                                        },
+                                        {
+                                                "IpProtocol" : "tcp",
+                                                "FromPort" : "80",
+                                                "ToPort" : "3000",
+                                                "CidrIp" : "208.43.239.136/30"
+                                        },
+                                        {
+                                                "IpProtocol" : "tcp",
+                                                "FromPort" : "80",
+                                                "ToPort" : "3000",
+                                                "CidrIp" : "184.173.105.0/24"
+                                        },
+                                        {
+                                                "IpProtocol" : "tcp",
+                                                "FromPort" : "80",
+                                                "ToPort" : "3000",
+                                                "CidrIp" : "184.173.153.0/24"
+                                        },
+                                        {
+                                                "IpProtocol" : "tcp",
+                                                "FromPort" : "80",
+                                                "ToPort" : "3000",
+                                                "CidrIp" : "104.130.122.0/23"
+                                        },
+                                        {
+                                                "IpProtocol" : "tcp",
+                                                "FromPort" : "80",
+                                                "ToPort" : "3000",
+                                                "CidrIp" : "209.61.151.0/24"
+                                        },
+                                        {
+                                                "IpProtocol" : "tcp",
+                                                "FromPort" : "80",
+                                                "ToPort" : "3000",
+                                                "CidrIp" : "166.78.68.0/22"
+                                        },
+                                        {
+                                                "IpProtocol" : "tcp",
+                                                "FromPort" : "80",
+                                                "ToPort" : "3000",
+                                                "CidrIp" : "198.61.254.0/23"
+                                        },
+                                        {
+                                                "IpProtocol" : "tcp",
+                                                "FromPort" : "80",
+                                                "ToPort" : "3000",
+                                                "CidrIp" : "192.237.158.0/23"
+                                        },
+                                        {
+                                                "IpProtocol" : "tcp",
+                                                "FromPort" : "80",
+                                                "ToPort" : "3000",
+                                                "CidrIp" : "23.253.182.0/24"
+                                        },
+                                        {
+                                                "IpProtocol" : "tcp",
+                                                "FromPort" : "80",
+                                                "ToPort" : "3000",
+                                                "CidrIp" : "23.253.183.0/24"
+                                        },
+                                        {
+                                                "IpProtocol" : "tcp",
+                                                "FromPort" : "80",
+                                                "ToPort" : "3000",
+                                                "CidrIp" : "104.130.96.0/28"
                                         }
                                 ]
                         }
