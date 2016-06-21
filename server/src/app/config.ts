@@ -33,6 +33,8 @@ export interface ConfigState {
                 messageSchemaPath: string;
                 profileSchemaPath: string;
                 replyOptionSchemaPath: string;
+                htmlFooter: string;
+                textFooter: string;
         },
         timeFactor: number;
 }

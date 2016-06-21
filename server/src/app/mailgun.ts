@@ -3,6 +3,7 @@
 import Log = require('./../../../core/src/app/log');
 import Message = require('./../../../core/src/app/message');
 import Request = require('./../../../core/src/app/requesttypes');
+import Str = require('./../../../core/src/app/utils/string');
 
 import MailgunModule = require('mailgun-js');
 
@@ -11,13 +12,26 @@ export function createMailgun (key: string, domain: string): any
         return MailgunModule({apiKey: key, domain: domain});
 }
 
-export function sendMail (mailgun: any, data: Message.MessageData)
+export function sendMail (
+        mailgun: any,
+        htmlFooter: string,
+        textFooter: string,
+        data: Message.MessageData)
 {
+        const body = data.body;
+        const text = `${body}${textFooter}`;
+
+        const ps = Str.split(body, '\n\n', text => `<p>${text}</p>`);
+        const elements = ps.map(text => text.replace('\n', '<br>'));
+        const elementsString = elements.join('');
+        const html = `<div>${elementsString}${htmlFooter}</div>`;
+
         const mailgunData = {
                 from: data.from,
                 to: data.to,
                 subject: data.subject,
-                text: data.body,
+                text,
+                html,
                 attachment: data.attachment,
         };
 

@@ -7,12 +7,14 @@ import Server = require('./server');
 export function createSendFn (
         io: any,
         useEmail: boolean,
+        htmlFooter: string,
+        textFooter: string,
         emailAPIKey: string,
         emailDomain: string)
 {
         var mailgun = Mailgun.createMailgun(emailAPIKey, emailDomain);
         return (data: Message.MessageData) =>
                 useEmail ?
-                        Mailgun.sendMail(mailgun, data) :
+                        Mailgun.sendMail(mailgun, htmlFooter, textFooter, data) :
                         Server.sendMail(io, data);
 }
