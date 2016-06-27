@@ -1,4 +1,5 @@
 import App = require('../app');
+const Auth = require('basic-auth');
 import Careers = require('./careers');
 import Data = require('../../../../core/src/app/data');
 import DataValidation = require('../../../../core/src/app/datavalidation');
@@ -14,41 +15,54 @@ import ReplyOption = require('../../../../core/src/app/replyoption');
 import Request = require('../../../../core/src/app/requesttypes');
 import Server = require('../server');
 
-export function addRequestEndpoints (
-        state: App.State)
+interface RequestHandler { (state: App.State, req: any, res: any): void; }
+
+export function addRequestEndpoints (state: App.State)
 {
-        var serverState = state.server;
-        var app = serverState.app;
+        const serverState = state.server;
+        const app = serverState.app;
 
-        app.get('/healthcheck', function (req: any, res: any)
-                {
-                        res.sendStatus(200);
-                });
+        const { user, password } = state.config.basicAuth;
+        const auth = state.config.useBasicAuth ?
+                (req: any, res: any, next: any) => {
+                        authenticate(user, password, req, res, next);
+                } :
+                (req: any, res: any, next: any) => {
+                        next();
+                };
+        const authPost = (path: string, handler: RequestHandler) =>
+                addAuthPost(app, state, auth, path, handler);
+        const post = (path: string, handler: RequestHandler) =>
+                addPost(app, state, path, handler);
+        const authGet = (path: string, handler: RequestHandler) =>
+                addAuthGet(app, state, auth, path, handler);
 
-        addPost(app, '/reply', createReplyCallback, state);
-        addPost(app, '/pause', createPauseCallback, state);
-        addPost(app, '/unpause', createUnpauseCallback, state);
+        app.get('/healthcheck', (req: any, res: any) => res.sendStatus(200));
+
+        post('/reply', reply);
+        authPost('/pause', pause);
+        authPost('/unpause', unpause);
 
         // Debug only
-        addPost(app, '/localreply', createLocalReplyCallback, state);
-        addPost(app, '/begindemo', createBeginDemoCallback, state);
-        addPost(app, '/enddemo', createEndDemoCallback, state);
-        addPost(app, '/addplayer', createAddPlayerCallback, state);
-        addPost(app, '/removeplayer', createDeletePlayerCallback, state);
+        authPost('/localreply', localReply);
+        authPost('/begindemo', beginDemo);
+        authPost('/enddemo', endDemo);
+        authPost('/addplayer', addPlayer);
+        authPost('/removeplayer', deletePlayer);
 
         // Author only
-        addPost(app, '/loadmessage', createLoadMessageCallback, state);
-        addPost(app, '/savemessage', createSaveMessageCallback, state);
-        addPost(app, '/deletemessage', createDeleteMessageCallback, state);
-        addPost(app, '/savereplyoption', createSaveReplyOptionCallback, state);
-        addPost(app, '/deletereplyoption', createDeleteReplyOptionCallback, state);
-        addPost(app, '/savestring', createSaveStringCallback, state);
-        addPost(app, '/deletestring', createDeleteStringCallback, state);
-        addGet(app, '/narratives', createNarrativesCallback, state);
-        addGet(app, '/validatedata', createValidateDataCallback, state);
+        authPost('/loadmessage', loadMessage);
+        authPost('/savemessage', saveMessage);
+        authPost('/deletemessage', deleteMessage);
+        authPost('/savereplyoption', saveReplyOption);
+        authPost('/deletereplyoption', deleteReplyOption);
+        authPost('/savestring', saveString);
+        authPost('/deletestring', deleteString);
+        authGet('/narratives', narratives);
+        authGet('/validatedata', validateData);
 
-        var http = serverState.server;
-        var port = state.config.port;
+        const http = serverState.server;
+        const port = state.config.port;
 
         http.listen(port, function ()
                 {
@@ -56,519 +70,510 @@ export function addRequestEndpoints (
                 });
 }
 
-export function createLogHandler (
-        path: string,
-        handler: Server.RequestHandler): Server.RequestHandler
+export function authenticate (
+        user: string, password: string, req: any, res: any, next: any)
 {
-        return (req: any, res: any) => {
-                Log.debug('Request: ' + path);
-                handler(req, res);
-        };
+        console.log('authenticating request');
+        const auth = Auth(req);
+        if (!auth || auth.name !== user || auth.pass !== password) {
+                res.setHeader('www-authenticate', 'basic realm=authorization required');
+                return res.sendStatus(401);
+        } else {
+                next();
+        }
+}
+
+export function logHandler (path: string, req: any, res: any, next: any)
+{
+        Log.debug('Request: ' + path);
+        next();
 }
 
 export function addGet (
         app: Server.ExpressApp,
+        state: App.State,
         path: string,
-        createHandlerFn: (state: App.State) => Server.RequestHandler,
-        state: App.State)
+        handler: (state: App.State, req: any, res: any) => void)
 {
-        var handler = createHandlerFn(state);
-        var logHandler = createLogHandler(path, handler);
-        app.get(path, logHandler);
+        const handlerFn = (req: any, res: any) => handler(state, req, res);
+        const log = (req: any, res: any, next: any) =>
+                logHandler(path, req, res, next);
+        app.get(path, log, handlerFn);
 }
 
+export function addAuthGet (
+        app: Server.ExpressApp,
+        state: App.State,
+        auth: Server.RequestHandler,
+        path: string,
+        handler: (state: App.State, req: any, res: any) => void)
+{
+        const handlerFn = (req: any, res: any) => handler(state, req, res);
+        const log = (req: any, res: any, next: any) =>
+                logHandler(path, req, res, next);
+        app.get(path, auth, log, handlerFn);
+}
 
 export function addPost (
         app: Server.ExpressApp,
+        state: App.State,
         path: string,
-        createHandlerFn: (state: App.State) => Server.RequestHandler,
-        state: App.State)
+        handler: (state: App.State, req: any, res: any) => void)
 {
-        var handler = createHandlerFn(state);
-        var logHandler = createLogHandler(path, handler);
-        app.post(path, logHandler);
+        const handlerFn = (req: any, res: any) => handler(state, req, res);
+        const log = (req: any, res: any, next: any) =>
+                logHandler(path, req, res, next);
+        app.post(path, log, handlerFn);
 }
 
-export function createBeginDemoCallback (state: App.State)
+export function addAuthPost (
+        app: Server.ExpressApp,
+        state: App.State,
+        auth: Server.RequestHandler,
+        path: string,
+        handler: (state: App.State, req: any, res: any) => void)
 {
-        return (req: any, res: any) =>
-                {
-                        var body: {
-                                        email: string;
-                                        firstName: string;
-                                        lastName: string;
-                                        messageName: string;
-                                        narrativeName: string;
-                                } = req.body;
-
-                        Log.metric({
-                                type: 'BEGIN_GAME',
-                                playerEmail: body.email,
-                                firstName: body.firstName,
-                                lastName: body.lastName,
-                                messageName: body.messageName,
-                                narrativeName: body.narrativeName,
-                        });
-
-                        var email = body.email;
-                        var firstName = body.firstName;
-                        var lastName = body.lastName;
-                        var newMessageName = body.messageName;
-                        var narrativeName = body.narrativeName;
-
-                        var playerData = {
-                                firstName: firstName,
-                                lastName: lastName,
-                                usePGP: false,
-                        };
-
-                        var groupData = App.getGroupData(state.app, narrativeName);
-
-                        const promise = Demo.beginDemo(
-                                state,
-                                groupData,
-                                email,
-                                playerData,
-                                newMessageName);
-
-                        createRequestCallback(res, promise);
-                };
+        const handlerFn = (req: any, res: any) => handler(state, req, res);
+        const log = (req: any, res: any, next: any) =>
+                logHandler(path, req, res, next);
+        app.post(path, auth, log, handlerFn);
 }
 
-export function createEndDemoCallback (state: App.State)
+export function beginDemo (state: App.State, req: any, res: any)
 {
-        return (req: any, res: any) =>
-                {
-                        var data: {
-                                        email: string;
-                                } = req.body;
+        const body: {
+                        email: string;
+                        firstName: string;
+                        lastName: string;
+                        messageName: string;
+                        narrativeName: string;
+                } = req.body;
 
-                        Log.metric({
-                                type: 'END_GAME',
-                                playerEmail: data.email,
-                        });
+        Log.metric({
+                type: 'BEGIN_GAME',
+                playerEmail: body.email,
+                firstName: body.firstName,
+                lastName: body.lastName,
+                messageName: body.messageName,
+                narrativeName: body.narrativeName,
+        });
 
-                        var promises = state.app.promises;
+        const email = body.email;
+        const firstName = body.firstName;
+        const lastName = body.lastName;
+        const newMessageName = body.messageName;
+        const narrativeName = body.narrativeName;
 
-                        const promise = Demo.endDemo(state, data.email);
-                        return createRequestCallback(res, promise);
-                };
+        const playerData = {
+                firstName: firstName,
+                lastName: lastName,
+                usePGP: false,
+        };
+
+        const groupData = App.getGroupData(state.app, narrativeName);
+
+        const promise = Demo.beginDemo(
+                state,
+                groupData,
+                email,
+                playerData,
+                newMessageName);
+
+        return createRequestCallback(res, promise);
 }
 
-export function createAddPlayerCallback (state: App.State)
+export function endDemo (state: App.State, req: any, res: any)
 {
-        return (req: any, res: any) =>
-                {
-                        const data: {
-                                email: string;
-                                publicKey: string;
-                                firstName: string;
-                                lastName: string;
-                                timezoneOffset: number;
-                                } = req.body;
-                        const email = data.email;
-                        const publicKey = (data.publicKey || null);
-                        const firstName = data.firstName;
-                        const lastName = data.lastName;
-                        const timezoneOffset = data.timezoneOffset;
+        const data: {
+                        email: string;
+                } = req.body;
 
-                        const app = state.app;
-                        const promises = app.promises;
+        Log.metric({
+                type: 'END_GAME',
+                playerEmail: data.email,
+        });
 
-                        const version = state.config.content.defaultNarrativeGroup;
-                        const player = Player.createPlayerState(
-                                email,
-                                publicKey,
-                                version,
-                                firstName,
-                                lastName,
-                                timezoneOffset);
+        const promises = state.app.promises;
 
-                        const promise = promises.addPlayer(player);
-                        return createRequestCallback(res, promise);
-                };
+        const promise = Demo.endDemo(state, data.email);
+        return createRequestCallback(res, promise);
 }
 
-export function createDeletePlayerCallback (state: App.State)
+export function addPlayer (state: App.State, req: any, res: any)
 {
-        return (req: any, res: any) =>
-                {
-                        var email = req.body.email;
+        const data: {
+                email: string;
+                publicKey: string;
+                firstName: string;
+                lastName: string;
+                timezoneOffset: number;
+                } = req.body;
+        const email = data.email;
+        const publicKey = (data.publicKey || null);
+        const firstName = data.firstName;
+        const lastName = data.lastName;
+        const timezoneOffset = data.timezoneOffset;
 
-                        var app = state.app;
-                        var promises = app.promises;
+        const app = state.app;
+        const promises = app.promises;
 
-                        const promise = promises.deletePlayer(email);
-                        return createRequestCallback(res, promise);
-                };
+        const version = state.config.content.defaultNarrativeGroup;
+        const player = Player.createPlayerState(
+                email,
+                publicKey,
+                version,
+                firstName,
+                lastName,
+                timezoneOffset);
+
+        const promise = promises.addPlayer(player);
+        return createRequestCallback(res, promise);
 }
 
-export function createReplyCallback (state: App.State)
+export function deletePlayer (
+        state: App.State, req: any, res: any)
 {
-        return (req: any, res: any) =>
-                {
-                        const data: {
-                                        'sender': string;
-                                        'Message-ID': string;
-                                        'In-Reply-To': string;
-                                        'stripped-text': string;
-                                        'body-plain': string;
-                                        To: string;
-                                        subject: string;
-                                } = req.body;
+        const email = req.body.email;
 
-                        const body = data['stripped-text'] || '';
-                        const strippedBody = data['body-plain'] || '';
+        const app = state.app;
+        const promises = app.promises;
 
-                        Log.metric({
-                                type: 'MESSAGE_RECEIVED',
-                                playerEmail: data.sender,
-                                message: {
-                                        id: data['Message-ID'],
-                                        inReplyToId: data['In-Reply-To'],
-                                        from: data.sender,
-                                        to: data.To,
-                                        subject: data.subject,
-                                        body,
-                                        strippedBody,
-                                }
-                        });
-
-                        const reply: Message.MailgunReply = {
-                                from: data.sender,
-                                to: data['To'],
-                                subject: data.subject,
-                                body,
-                                strippedBody,
-                                inReplyToId: data['In-Reply-To'],
-                                id: data['Message-ID'],
-                                attachment: null,
-                        };
-
-                        if (reply.inReplyToId !== null) {
-                                const promise = Reply.handleReplyRequest(
-                                        state, reply);
-                                return createRequestCallback(res, promise);
-                        } else {
-                                res.sentStatus(200);
-                        }
-                };
+        const promise = promises.deletePlayer(email);
+        return createRequestCallback(res, promise);
 }
 
-export function createLocalReplyCallback (state: App.State)
+export function reply (state: App.State, req: any, res: any)
 {
-        return (req: any, res: any) =>
-                {
-                        const data: {
-                                        from: string;
-                                        inReplyToId: string;
-                                        id: string;
-                                        subject: string;
-                                        body: string;
-                                        to: string;
-                                } = req.body;
+        const data: {
+                        'sender': string;
+                        'Message-ID': string;
+                        'In-Reply-To': string;
+                        'stripped-text': string;
+                        'body-plain': string;
+                        To: string;
+                        subject: string;
+                } = req.body;
 
-                        const body = data.body;
-                        const strippedBody = MessageHelpers.stripBody(body);
+        const body = data['stripped-text'] || '';
+        const strippedBody = data['body-plain'] || '';
 
-                        Log.metric({
-                                type: 'MESSAGE_RECEIVED',
-                                playerEmail: data.from,
-                                message: {
-                                        id: data.id,
-                                        inReplyToId: data.inReplyToId,
-                                        from: data.from,
-                                        to: data.to,
-                                        subject: data.subject,
-                                        body,
-                                        strippedBody,
-                                }
-                        });
+        Log.metric({
+                type: 'MESSAGE_RECEIVED',
+                playerEmail: data.sender,
+                message: {
+                        id: data['Message-ID'],
+                        inReplyToId: data['In-Reply-To'],
+                        from: data.sender,
+                        to: data.To,
+                        subject: data.subject,
+                        body,
+                        strippedBody,
+                }
+        });
 
-                        const reply: Message.MailgunReply = {
-                                from: data.from,
-                                to: data.to,
-                                subject: data.subject,
-                                body: data.body || '',
-                                strippedBody,
-                                inReplyToId: data.inReplyToId,
-                                id: data.id,
-                                attachment: null,
-                        };
+        const reply: Message.MailgunReply = {
+                from: data.sender,
+                to: data['To'],
+                subject: data.subject,
+                body,
+                strippedBody,
+                inReplyToId: data['In-Reply-To'],
+                id: data['Message-ID'],
+                attachment: null,
+        };
 
-                        const promise = Reply.handleReplyRequest(state, reply);
-                        return createRequestCallback(res, promise);
-                };
+        if (reply.inReplyToId !== null) {
+                const promise = Reply.handleReplyRequest(
+                        state, reply);
+                return createRequestCallback(res, promise);
+        } else {
+                res.sentStatus(200);
+        }
 }
 
-export function createPauseCallback (state: App.State)
+export function localReply (state: App.State, req: any, res: any)
 {
-        return (req: any, res: any) =>
-                {
-                        state.server.paused = true;
-                        res.sendStatus(200);
-                };
+        const data: {
+                        from: string;
+                        inReplyToId: string;
+                        id: string;
+                        subject: string;
+                        body: string;
+                        to: string;
+                } = req.body;
+
+        const body = data.body;
+        const strippedBody = MessageHelpers.stripBody(body);
+
+        Log.metric({
+                type: 'MESSAGE_RECEIVED',
+                playerEmail: data.from,
+                message: {
+                        id: data.id,
+                        inReplyToId: data.inReplyToId,
+                        from: data.from,
+                        to: data.to,
+                        subject: data.subject,
+                        body,
+                        strippedBody,
+                }
+        });
+
+        const reply: Message.MailgunReply = {
+                from: data.from,
+                to: data.to,
+                subject: data.subject,
+                body: data.body || '',
+                strippedBody,
+                inReplyToId: data.inReplyToId,
+                id: data.id,
+                attachment: null,
+        };
+
+        const promise = Reply.handleReplyRequest(state, reply);
+        return createRequestCallback(res, promise);
 }
 
-export function createUnpauseCallback (state: App.State)
+export function pause (state: App.State, req: any, res: any)
 {
-        return (req: any, res: any) =>
-                {
-                        state.server.paused = false;
-                        res.sendStatus(200);
-                };
+        state.server.paused = true;
+        res.sendStatus(200);
 }
 
-export function createLoadMessageCallback (state: App.State)
+export function unpause (state: App.State, req: any, res: any)
 {
-        return (req: any, res: any) =>
-                {
-                        var data: {
-                                        messageName: string;
-                                        narrativeName: string;
-                                        threadName: string;
-                                } = req.body;
-
-                        var app = state.app;
-                        var config = state.config;
-
-                        var path = config.content.narrativeFolder;
-                        const messageName = data.messageName + '.json';
-                        const messagePath = Data.join(
-                                path, data.narrativeName, messageName);
-
-                        var message = Data.loadMessage(messagePath);
-
-                        var responseData = {
-                                message: message,
-                        };
-                        res.send(responseData);
-                };
+        state.server.paused = false;
+        res.sendStatus(200);
 }
 
-export function createSaveMessageCallback (state: App.State)
+export function loadMessage (state: App.State, req: any, res: any)
 {
-        return (req: any, res: any) =>
-                {
-                        var data: {
-                                        narrativeName: string;
-                                        message: Message.ThreadMessage;
-                                } = req.body;
+        const data: {
+                        messageName: string;
+                        narrativeName: string;
+                        threadName: string;
+                } = req.body;
 
-                        var app = state.app;
-                        var config = state.config;
+        const app = state.app;
+        const config = state.config;
 
-                        const narrativeName = data.narrativeName;
-                        const message = data.message;
-                        var path = config.content.narrativeFolder;
-                        const messagePath = Data.join(
-                                path,
-                                narrativeName,
-                                'messages',
-                                message.name) + '.json';
+        const path = config.content.narrativeFolder;
+        const messageName = data.messageName + '.json';
+        const messagePath = Data.join(
+                path, data.narrativeName, messageName);
 
+        const message = Data.loadMessage(messagePath);
 
-                        Data.saveMessage(messagePath, message);
-
-                        Log.debug('Message saved');
-
-                        const promise = App.updateGameState(state);
-                        return createRequestCallback(res, promise);
-                };
+        const responseData = {
+                message: message,
+        };
+        res.send(responseData);
 }
 
-export function createSaveReplyOptionCallback (state: App.State)
+export function saveMessage (state: App.State, req: any, res: any)
 {
-        return (req: any, res: any) =>
-                {
-                        var data: {
-                                        narrativeName: string;
-                                        name: string;
-                                        value: ReplyOption.ReplyOptions;
-                                } = req.body;
+        const data: {
+                        narrativeName: string;
+                        message: Message.ThreadMessage;
+                } = req.body;
 
-                        var app = state.app;
-                        var config = state.config;
+        const app = state.app;
+        const config = state.config;
 
-                        const { name, narrativeName, value } = data;
-                        const path = config.content.narrativeFolder;
-                        const optionPath = Data.join(
-                                path,
-                                narrativeName,
-                                'replyoptions',
-                                name) + '.json';
+        const narrativeName = data.narrativeName;
+        const message = data.message;
+        const path = config.content.narrativeFolder;
+        const messagePath = Data.join(
+                path,
+                narrativeName,
+                'messages',
+                message.name) + '.json';
 
-                        FileSystem.saveJSONSync(optionPath, value);
 
-                        Log.debug('Reply options saved');
+        Data.saveMessage(messagePath, message);
 
-                        const promise = App.updateGameState(state);
-                        return createRequestCallback(res, promise);
-                };
+        Log.debug('Message saved');
+
+        const promise = App.updateGameState(state);
+        return createRequestCallback(res, promise);
 }
 
-export function createDeleteReplyOptionCallback (state: App.State)
+export function saveReplyOption (
+        state: App.State, req: any, res: any)
 {
-        return (req: any, res: any) =>
-                {
-                        const data: {
-                                        narrativeName: string;
-                                        name: string;
-                                } = req.body;
+        const data: {
+                        narrativeName: string;
+                        name: string;
+                        value: ReplyOption.ReplyOptions;
+                } = req.body;
 
-                        const app = state.app;
-                        const config = state.config;
+        const app = state.app;
+        const config = state.config;
 
-                        const { name, narrativeName } = data;
+        const { name, narrativeName, value } = data;
+        const path = config.content.narrativeFolder;
+        const optionPath = Data.join(
+                path,
+                narrativeName,
+                'replyoptions',
+                name) + '.json';
 
-                        const path = config.content.narrativeFolder;
-                        const optionPath = Data.join(
-                                path,
-                                narrativeName,
-                                'replyoptions',
-                                name) + '.json';
+        FileSystem.saveJSONSync(optionPath, value);
 
-                        FileSystem.deleteFile(optionPath);
+        Log.debug('Reply options saved');
 
-                        const promise = App.updateGameState(state);
-                        return createRequestCallback(res, promise);
-                };
+        const promise = App.updateGameState(state);
+        return createRequestCallback(res, promise);
 }
 
-export function createDeleteMessageCallback (state: App.State)
+export function deleteReplyOption (
+        state: App.State, req: any, res: any)
 {
-        return (req: any, res: any) =>
-                {
-                        var data: {
-                                        narrativeName: string;
-                                        messageName: string;
-                                } = req.body;
+        const data: {
+                        narrativeName: string;
+                        name: string;
+                } = req.body;
 
-                        var app = state.app;
-                        var config = state.config;
+        const app = state.app;
+        const config = state.config;
 
-                        const narrativeName = data.narrativeName;
-                        const messageName = data.messageName;
+        const { name, narrativeName } = data;
 
-                        var path = config.content.narrativeFolder;
-                        const messagePath = Data.join(
-                                path,
-                                narrativeName,
-                                'messages',
-                                messageName) + '.json';
+        const path = config.content.narrativeFolder;
+        const optionPath = Data.join(
+                path,
+                narrativeName,
+                'replyoptions',
+                name) + '.json';
 
-                        Data.deleteMessage(messagePath);
+        FileSystem.deleteFile(optionPath);
 
-                        const promise = App.updateGameState(state);
-                        return createRequestCallback(res, promise);
-                };
+        const promise = App.updateGameState(state);
+        return createRequestCallback(res, promise);
 }
 
-export function createSaveStringCallback (state: App.State)
+export function deleteMessage (
+        state: App.State, req: any, res: any)
 {
-        return (req: any, res: any) =>
-                {
-                        var data: {
-                                        narrativeName: string;
-                                        name: string;
-                                        value: string;
-                                } = req.body;
+        const data: {
+                        narrativeName: string;
+                        messageName: string;
+                } = req.body;
 
-                        var app = state.app;
-                        var config = state.config;
+        const app = state.app;
+        const config = state.config;
 
-                        const narrativeName = data.narrativeName;
-                        var path = config.content.narrativeFolder;
-                        const stringPath = Data.join(
-                                path,
-                                narrativeName,
-                                'strings',
-                                data.name) + '.json';
+        const narrativeName = data.narrativeName;
+        const messageName = data.messageName;
 
-                        FileSystem.saveJSONSync(stringPath, data.value);
+        const path = config.content.narrativeFolder;
+        const messagePath = Data.join(
+                path,
+                narrativeName,
+                'messages',
+                messageName) + '.json';
 
-                        Log.debug('String saved: ' + data.name);
+        Data.deleteMessage(messagePath);
 
-                        const promise = App.updateGameState(state);
-                        return createRequestCallback(res, promise);
-                };
+        const promise = App.updateGameState(state);
+        return createRequestCallback(res, promise);
 }
 
-export function createDeleteStringCallback (state: App.State)
+export function saveString (state: App.State, req: any, res: any)
 {
-        return (req: any, res: any) =>
-                {
-                        var data: {
-                                        narrativeName: string;
-                                        name: string;
-                                } = req.body;
+        const data: {
+                        narrativeName: string;
+                        name: string;
+                        value: string;
+                } = req.body;
 
-                        var app = state.app;
-                        var config = state.config;
+        const app = state.app;
+        const config = state.config;
 
-                        const narrativeName = data.narrativeName;
+        const narrativeName = data.narrativeName;
+        const path = config.content.narrativeFolder;
+        const stringPath = Data.join(
+                path,
+                narrativeName,
+                'strings',
+                data.name) + '.json';
 
-                        var path = config.content.narrativeFolder;
-                        const stringPath = Data.join(
-                                path,
-                                narrativeName,
-                                'strings',
-                                data.name) + '.json';
+        FileSystem.saveJSONSync(stringPath, data.value);
 
-                        FileSystem.deleteFile(stringPath);
+        Log.debug('String saved: ' + data.name);
 
-                        Log.debug('String deleted: ' + data.name);
-
-                        const promise = App.updateGameState(state);
-                        return createRequestCallback(res, promise);
-                };
+        const promise = App.updateGameState(state);
+        return createRequestCallback(res, promise);
 }
 
-export function createNarrativesCallback (state: App.State)
+export function deleteString (
+        state: App.State, req: any, res: any)
 {
-        return (req: any, res: any) =>
-                {
-                        const app = state.app;
-                        const config = state.config;
-                        const data: {} = req.query;
+        const data: {
+                        narrativeName: string;
+                        name: string;
+                } = req.body;
 
-                        const path = config.content.narrativeFolder;
-                        const narrativeData = Data.loadNarrativeData(path);
-                        const narratives = Helpers.mapFromNameArray(
-                                narrativeData);
+        const app = state.app;
+        const config = state.config;
 
-                        res.send(narratives);
-                };
+        const narrativeName = data.narrativeName;
+
+        const path = config.content.narrativeFolder;
+        const stringPath = Data.join(
+                path,
+                narrativeName,
+                'strings',
+                data.name) + '.json';
+
+        FileSystem.deleteFile(stringPath);
+
+        Log.debug('String deleted: ' + data.name);
+
+        const promise = App.updateGameState(state);
+        return createRequestCallback(res, promise);
 }
 
-export function createValidateDataCallback (state: App.State)
+export function narratives (state: App.State, req: any, res: any)
 {
-        return (req: any, res: any) =>
-                {
-                        const data: { narrativeName: string; } = req.query;
+        const app = state.app;
+        const config = state.config;
+        const data: {} = req.query;
 
-                        const app = state.app;
-                        const config = state.config;
+        const path = config.content.narrativeFolder;
+        const narrativeData = Data.loadNarrativeData(path);
+        const narratives = Helpers.mapFromNameArray(
+                narrativeData);
 
-                        const path = config.content.narrativeFolder;
+        res.send(narratives);
+}
 
-                        const narrativeData = Data.loadNarrative(
-                                path, data.narrativeName);
-                        const content = config.content;
-                        const profileSchema = FileSystem.loadJSONSync<JSON>(
-                                content.profileSchemaPath);
-                        const messageSchema = FileSystem.loadJSONSync<JSON>(
-                                content.messageSchemaPath);
-                        const replyOptionSchema = FileSystem.loadJSONSync<JSON>(
-                                content.replyOptionSchemaPath);
-                        const dataErrors = DataValidation.getDataErrors(
-                                narrativeData,
-                                profileSchema,
-                                messageSchema,
-                                replyOptionSchema);
+export function validateData (
+        state: App.State, req: any, res: any)
+{
+        const data: { narrativeName: string; } = req.query;
 
-                        res.send(dataErrors);
-                };
+        const app = state.app;
+        const config = state.config;
+
+        const path = config.content.narrativeFolder;
+
+        const narrativeData = Data.loadNarrative(
+                path, data.narrativeName);
+        const content = config.content;
+        const profileSchema = FileSystem.loadJSONSync<JSON>(
+                content.profileSchemaPath);
+        const messageSchema = FileSystem.loadJSONSync<JSON>(
+                content.messageSchemaPath);
+        const replyOptionSchema = FileSystem.loadJSONSync<JSON>(
+                content.replyOptionSchemaPath);
+        const dataErrors = DataValidation.getDataErrors(
+                narrativeData,
+                profileSchema,
+                messageSchema,
+                replyOptionSchema);
+
+        res.send(dataErrors);
 }
 
 export function createRequestCallback (res: any, promise: Promise<any>)

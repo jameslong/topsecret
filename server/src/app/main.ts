@@ -18,6 +18,7 @@ ConfigData.releaseMode ?
 
 const credentials = Config.loadCredentials('./');
 Object.assign(config.aws, credentials.aws);
+Object.assign(config.basicAuth, credentials.basicAuth);
 Object.assign(config.mailgun, credentials.mailgun);
 
 App.createState(config).then(state =>
