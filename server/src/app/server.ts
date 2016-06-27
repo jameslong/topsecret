@@ -13,12 +13,12 @@ import multer = require('multer');
 const app = express();
 
 export interface RequestHandler {
-        (req: any, res: any): void;
+        (req: any, res: any, next: any): void;
 }
 
 export interface ExpressApp {
-        get: (path: string, handler: RequestHandler) => void;
-        post: (path: string, handler: RequestHandler) => void;
+        get: (path: string, ...handler: RequestHandler[]) => void;
+        post: (path: string, ...handler: RequestHandler[]) => void;
         use: any;
 }
 
