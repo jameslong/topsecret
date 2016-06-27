@@ -22,6 +22,7 @@
   "homepage": "https://github.com/jameslong/topsecret#readme",
   "dependencies": {
     "aws-sdk": "^2.3.17",
+    "basic-auth": "^1.0.4",
     "body-parser": "^1.15.0",
     "bunyan": "^1.8.1",
     "chai": "^3.5.0",

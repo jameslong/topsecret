@@ -7,6 +7,7 @@ const debugConfig: Config.ConfigState = {
         port: '3000',
         useDynamoDB: false,
         useEmail: false,
+        useBasicAuth: false,
         debugDBTimeoutMs: 1000,
         aws: {
                 accessKeyId: '',
@@ -14,6 +15,10 @@ const debugConfig: Config.ConfigState = {
                 region: '',
                 messagesTableName: 'message-dev',
                 playersTableName: 'player-dev',
+        },
+        basicAuth: {
+                user: '',
+                password: '',
         },
         mailgun: {
                 apiKey: '',
@@ -40,6 +45,7 @@ const releaseConfig: Config.ConfigState = {
         port: '3000',
         useDynamoDB: true,
         useEmail: true,
+        useBasicAuth: true,
         debugDBTimeoutMs: 1000,
         aws: {
                 accessKeyId: '',
@@ -47,6 +53,10 @@ const releaseConfig: Config.ConfigState = {
                 region: '',
                 messagesTableName: 'message-dev',
                 playersTableName: 'player-dev',
+        },
+        basicAuth: {
+                user: '',
+                password: '',
         },
         mailgun: {
                 apiKey: '',

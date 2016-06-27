@@ -1,4 +1,5 @@
 import App = require('../app');
+const Auth = require('basic-auth');
 import Careers = require('./careers');
 import Data = require('../../../../core/src/app/data');
 import DataValidation = require('../../../../core/src/app/datavalidation');
@@ -20,34 +21,45 @@ export function addRequestEndpoints (state: App.State)
 {
         const serverState = state.server;
         const app = serverState.app;
+
+        const { user, password } = state.config.basicAuth;
+        const auth = state.config.useBasicAuth ?
+                (req: any, res: any, next: any) => {
+                        authenticate(user, password, req, res, next);
+                } :
+                (req: any, res: any, next: any) => {
+                        next();
+                };
+        const authPost = (path: string, handler: RequestHandler) =>
+                addAuthPost(app, state, auth, path, handler);
         const post = (path: string, handler: RequestHandler) =>
                 addPost(app, state, path, handler);
-        const get = (path: string, handler: RequestHandler) =>
-                addGet(app, state, path, handler);
+        const authGet = (path: string, handler: RequestHandler) =>
+                addAuthGet(app, state, auth, path, handler);
 
         app.get('/healthcheck', (req: any, res: any) => res.sendStatus(200));
 
         post('/reply', reply);
-        post('/pause', pause);
-        post('/unpause', unpause);
+        authPost('/pause', pause);
+        authPost('/unpause', unpause);
 
         // Debug only
-        post('/localreply', localReply);
-        post('/begindemo', beginDemo);
-        post('/enddemo', endDemo);
-        post('/addplayer', addPlayer);
-        post('/removeplayer', deletePlayer);
+        authPost('/localreply', localReply);
+        authPost('/begindemo', beginDemo);
+        authPost('/enddemo', endDemo);
+        authPost('/addplayer', addPlayer);
+        authPost('/removeplayer', deletePlayer);
 
         // Author only
-        post('/loadmessage', loadMessage);
-        post('/savemessage', saveMessage);
-        post('/deletemessage', deleteMessage);
-        post('/savereplyoption', saveReplyOption);
-        post('/deletereplyoption', deleteReplyOption);
-        post('/savestring', saveString);
-        post('/deletestring', deleteString);
-        get('/narratives', narratives);
-        get('/validatedata', validateData);
+        authPost('/loadmessage', loadMessage);
+        authPost('/savemessage', saveMessage);
+        authPost('/deletemessage', deleteMessage);
+        authPost('/savereplyoption', saveReplyOption);
+        authPost('/deletereplyoption', deleteReplyOption);
+        authPost('/savestring', saveString);
+        authPost('/deletestring', deleteString);
+        authGet('/narratives', narratives);
+        authGet('/validatedata', validateData);
 
         const http = serverState.server;
         const port = state.config.port;
@@ -56,6 +68,19 @@ export function addRequestEndpoints (state: App.State)
                 {
                         Log.debug('Listening on *: ' + port);
                 });
+}
+
+export function authenticate (
+        user: string, password: string, req: any, res: any, next: any)
+{
+        console.log('authenticating request');
+        const auth = Auth(req);
+        if (!auth || auth.name !== user || auth.pass !== password) {
+                res.setHeader('www-authenticate', 'basic realm=authorization required');
+                return res.sendStatus(401);
+        } else {
+                next();
+        }
 }
 
 export function logHandler (path: string, req: any, res: any, next: any)
@@ -76,6 +101,18 @@ export function addGet (
         app.get(path, log, handlerFn);
 }
 
+export function addAuthGet (
+        app: Server.ExpressApp,
+        state: App.State,
+        auth: Server.RequestHandler,
+        path: string,
+        handler: (state: App.State, req: any, res: any) => void)
+{
+        const handlerFn = (req: any, res: any) => handler(state, req, res);
+        const log = (req: any, res: any, next: any) =>
+                logHandler(path, req, res, next);
+        app.get(path, auth, log, handlerFn);
+}
 
 export function addPost (
         app: Server.ExpressApp,
@@ -87,6 +124,19 @@ export function addPost (
         const log = (req: any, res: any, next: any) =>
                 logHandler(path, req, res, next);
         app.post(path, log, handlerFn);
+}
+
+export function addAuthPost (
+        app: Server.ExpressApp,
+        state: App.State,
+        auth: Server.RequestHandler,
+        path: string,
+        handler: (state: App.State, req: any, res: any) => void)
+{
+        const handlerFn = (req: any, res: any) => handler(state, req, res);
+        const log = (req: any, res: any, next: any) =>
+                logHandler(path, req, res, next);
+        app.post(path, auth, log, handlerFn);
 }
 
 export function beginDemo (state: App.State, req: any, res: any)
