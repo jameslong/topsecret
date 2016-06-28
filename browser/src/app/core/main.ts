@@ -36,7 +36,9 @@ export function init (
         const defaultPlayer = PlayerData.player;
 
         const save = LocalStorage.getMostRecentSave<Client.SaveData>();
-        const client = save ?
+        const testing = appConfig.beginGameMessage;
+        const loadFromSave = (save && !testing);
+        const client = (save && !testing) ?
                 Client.createClientFromSaveData(
                         appConfig,
                         appData,
@@ -57,6 +59,13 @@ export function init (
         Redux.render(client, Root, wrapper);
 
         EventHandler.addKeyHandlers();
+
+        if (testing) {
+                const player = client.data.player;
+                const server = client.server;
+                const clock = client.data.clock;
+                Server.beginGame(player, appConfig, server, clock);
+        }
 
         startTick(getClient);
 }

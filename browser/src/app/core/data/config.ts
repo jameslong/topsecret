@@ -27,9 +27,9 @@ function getQueryVariable (variable: string): string
 
 function getQueryStringParams (): QueryStringParams
 {
-        const version = getQueryVariable('version') || '0';
-        const messageName = getQueryVariable('messageName') || 'welcome';
-        const initialUIMode = getQueryVariable('uiMode') || 'MAIN_MENU';
+        const version = getQueryVariable('version') || null;
+        const messageName = getQueryVariable('messageName') || null;
+        const initialUIMode = getQueryVariable('uiMode') || null;
         return { version, messageName, initialUIMode };
 }
 
