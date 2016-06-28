@@ -47,7 +47,10 @@ export function isKeywordReply (
         replyOption: ReplyOptionKeyword, text: string): boolean
 {
         const matches = replyOption.parameters.matches;
-        return matches.some(match => Str.contains(text, match));
+        return matches.some(match => {
+                const trimmedMatch = match.trim();
+                return Str.contains(text, trimmedMatch);
+        });
 }
 
 export function isValidKeyReply (
