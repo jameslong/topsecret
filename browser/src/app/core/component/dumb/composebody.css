@@ -1,21 +1,16 @@
-.compose-body {
-        display: flex;
-        flex-direction: column;
-        flex-grow: 1;
-        max-width: 700px;
-}
-
 .compose-body textarea {
         border: none;
         background-color: inherit;
         color: var(--light-font-colour);
+        max-width: 700px;
         width: 100%;
         font-size: inherit;
         font-family: inherit;
         padding: 0;
-        min-height: 25em;
-        flex-grow: 1;
+        min-height: 1000px;
+        height: 200vh;
         line-height: inherit;
+        overflow: hidden;
 }
 
 .compose-body textarea:focus {
