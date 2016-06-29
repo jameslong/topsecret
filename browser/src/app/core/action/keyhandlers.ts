@@ -93,9 +93,14 @@ export function save (client: Client.Client)
         const items = Menu.getSaveMenuItems();
         const item = items[index];
         if (item) {
-                const saveName = item.type === 'SAVE' ?
-                        item.text :
-                        Date.now().toString();
+                let saveName = item.text;
+                if (item.type === 'NEW_SAVE') {
+                        const date = new Date();
+                        const displayDate = date.toString();
+                        const player = client.data.player;
+                        const { firstName, lastName } = player;
+                        saveName = `${displayDate} - ${firstName} ${lastName}`
+                }
                 const saveData = Client.getSaveData(client, saveName);
                 console.log('Saving', saveData);
                 return LocalStorage.save(saveData);
