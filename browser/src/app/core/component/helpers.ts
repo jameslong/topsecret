@@ -9,18 +9,20 @@ export function wrapInLabel (label: string, value: string)
 
 export function createBody (body: string)
 {
-        const paragraphs = body.split('\n\n');
-        const sections = paragraphs.map(text => text.split('\n'));
-        return paragraphs.map((text, index) => {
-                const sections = text.split('\n');
-                const breaks = sections.reduce((result, section, index) => {
-                        result.push(section, Br());
+        const ps = body.split('\n\n');
+        const contents = ps.map(text => text.split('\n'));
+        return contents.map((p, index) => {
+                let quoted = false;
+                const brs = p.reduce((result, item) => {
+                        if (item.length && item[0] === '>') {
+                                quoted = true;
+                        }
+                        result.push(item, Br());
                         return result;
                 }, []);
-                const quoted = sections[0][0] === '>';
                 const className = quoted ? 'quoted' : null;
                 const key = index;
                 const props = { className, key };
-                return P(props, ...breaks);
+                return P(props, ...brs);
         });
 }
