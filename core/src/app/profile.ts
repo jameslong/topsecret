@@ -5,6 +5,7 @@ export interface Profile {
         email: string;
         firstName: string;
         lastName: string;
+        signature: string;
         publicKey: string;
         privateKey: string;
         passphrase: string;

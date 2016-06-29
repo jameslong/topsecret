@@ -57,12 +57,14 @@ export function createMessageData (
 
         const fromProfile = profiles[message.from];
         const from = fromProfile.email;
+        const signature = fromProfile.signature;
 
         const passage = strings[message.body];
         const body = (vars ? insertMessageVars(passage, vars) : passage);
-        const fullBody = quotedBody ?
-                body + '\n\n' + Str.prependToLines('> ', quotedBody) :
-                body;
+        const bodyAndSig = `${body}\n\n${signature}`;
+        const finalBody = quotedBody ?
+                bodyAndSig + '\n\n' + Str.prependToLines('> ', quotedBody) :
+                bodyAndSig;
         const attachment =
                 groupData.attachments[threadMessage.attachment] || null;
 
@@ -71,7 +73,7 @@ export function createMessageData (
                 from,
                 to,
                 subject,
-                body: fullBody,
+                body: finalBody,
                 inReplyToId,
                 attachment
         };
