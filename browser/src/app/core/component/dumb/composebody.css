@@ -1,3 +1,7 @@
+.compose-body {
+        padding: 0 0.25rem;
+}
+
 .compose-body textarea {
         border: none;
         background-color: inherit;
