@@ -1,15 +1,16 @@
-export interface QueryStringParams {
-        version: string;
-        messageName: string;
-        initialUIMode: string;
-}
+import Helpers = require('../../../../../core/src/app/utils/helpers');
 
-export interface ConfigData {
-        emailDomain: string;
-        timeFactor: number;
+export interface GameSettings {
         version: string;
         beginGameMessage: string;
         initialUIMode: string;
+        timeFactor: number;
+        emailDomain: string;
+}
+
+export interface ConfigData {
+        hasCustomSettings: boolean;
+        settings: GameSettings;
 }
 function getQueryVariable (variable: string): string
 {
@@ -25,22 +26,46 @@ function getQueryVariable (variable: string): string
         return null;
 }
 
-function getQueryStringParams (): QueryStringParams
+function getQueryStringParams (): GameSettings
 {
         const version = getQueryVariable('version') || null;
-        const messageName = getQueryVariable('messageName') || null;
+        const beginGameMessage = getQueryVariable('messageName') || null;
         const initialUIMode = getQueryVariable('uiMode') || null;
-        return { version, messageName, initialUIMode };
+        const emailDomain = getQueryVariable('emailDomain') || null;
+        const timeFactorParam = getQueryVariable('timeFactor');
+        const timeFactor = timeFactorParam ? parseFloat(timeFactorParam) : null;
+        return {
+                emailDomain,
+                version,
+                beginGameMessage,
+                initialUIMode,
+                timeFactor,
+        };
 }
 
 export function createConfig (): ConfigData
 {
         const params = getQueryStringParams();
-        return {
-                emailDomain: 'nsa.gov',
+        const defaultSettings = {
+                version: '0',
+                beginGameMessage: 'welcome',
+                initialUIMode: 'MAIN_MENU',
                 timeFactor: 1,
+                emailDomain: 'nsa.gov',
+        };
+        const customSettings = {
                 version: params.version,
-                beginGameMessage: params.messageName,
-                initialUIMode: params.initialUIMode,
+                beginGameMessage: params.beginGameMessage,
+                initialUIMode: params.initialUIMode || defaultSettings.initialUIMode,
+                timeFactor: params.timeFactor || defaultSettings.timeFactor,
+                emailDomain: params.emailDomain || defaultSettings.emailDomain,
+
+        };
+        const hasCustomSettings = params.beginGameMessage !== null;
+        const settings = hasCustomSettings ? customSettings : defaultSettings;
+
+        return {
+                hasCustomSettings,
+                settings,
         };
 }

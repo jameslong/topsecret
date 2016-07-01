@@ -36,18 +36,19 @@ export function init (
         const defaultPlayer = PlayerData.player;
 
         const save = LocalStorage.getMostRecentSave<Client.SaveData>();
-        const testing = appConfig.beginGameMessage;
+        const testing = appConfig.hasCustomSettings;
+        const settings = appConfig.settings;
         const loadFromSave = (save && !testing);
         const client = (save && !testing) ?
                 Client.createClientFromSaveData(
-                        appConfig,
+                        settings,
                         appData,
                         gameData,
                         openFile,
                         openExternal,
                         save.saveData) :
                 Client.createClient(
-                        appConfig,
+                        settings,
                         appData,
                         gameData,
                         defaultPlayer,
@@ -64,7 +65,7 @@ export function init (
                 const player = client.data.player;
                 const server = client.server;
                 const clock = client.data.clock;
-                Server.beginGame(player, appConfig, server, clock);
+                Server.beginGame(player, settings, server, clock);
         }
 
         startTick(getClient);
@@ -82,8 +83,9 @@ export function newGame (
                 commandIdsByMode: CommandData.commandIdsByMode,
                 folders: MessageData.folders,
         };
+        const settings = appConfig.settings;
         const newClient = Client.createClient(
-                appConfig,
+                settings,
                 appData,
                 gameData,
                 player,
@@ -92,7 +94,7 @@ export function newGame (
 
         const server = newClient.server;
         const clock = newClient.data.clock;
-        Server.beginGame(player, appConfig, server, clock);
+        Server.beginGame(player, settings, server, clock);
 
         return newClient;
 }
@@ -111,7 +113,7 @@ export function newGameFromSave (
         };
 
         return Client.createClientFromSaveData(
-                appConfig,
+                appConfig.settings,
                 appData,
                 gameData,
                 openFile,

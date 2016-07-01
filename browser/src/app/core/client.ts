@@ -43,18 +43,18 @@ export interface SaveData {
 }
 
 export function createClientFromSaveData (
-        appConfig: ConfigData.ConfigData,
+        settings: ConfigData.GameSettings,
         appData: AppData.AppData,
         gameData: State.Data,
         openFile: (path: string) => void,
         openExternal: (path: string) => void,
         saveData: RuntimeClient): Client
 {
-        const profiles = gameData[appConfig.version].profiles;
+        const profiles = gameData[settings.version].profiles;
 
         const serverSaveData = saveData.server;
         const server = Server.createServerFromSaveData(
-                appConfig, gameData, serverSaveData);
+                settings, gameData, serverSaveData);
 
         const dataSaveData = saveData.data;
         const data = Data.createDataFromSaveData(
@@ -62,7 +62,7 @@ export function createClientFromSaveData (
 
         const folderId = data.folders[0];
         const messageId = data.messageIdsByFolderId[folderId][0] || null;
-        const uiMode = appConfig.initialUIMode;
+        const uiMode = settings.initialUIMode;
         const ui = UI.createUI(uiMode, messageId, folderId);
 
         return {
@@ -77,7 +77,7 @@ export function createClientFromSaveData (
 }
 
 export function createClient (
-        appConfig: ConfigData.ConfigData,
+        settings: ConfigData.GameSettings,
         appData: AppData.AppData,
         gameData: State.Data,
         player: Player.Player,
@@ -86,8 +86,8 @@ export function createClient (
 {
         const runtimeServer = Server.createRuntimeServer();
 
-        const clock = Clock.createClock(appConfig.timeFactor);
-        const profilesById = gameData[appConfig.version].profiles;
+        const clock = Clock.createClock(settings.timeFactor);
+        const profilesById = gameData[settings.version].profiles;
         const folders = appData.folders;
         const runtimeData = Data.createRuntimeData(
                 player, profilesById, folders, clock);
@@ -97,7 +97,7 @@ export function createClient (
                 messageId: 0,
         };
         return createClientFromSaveData(
-                appConfig, appData, gameData, openFile, openExternal, saveData);
+                settings, appData, gameData, openFile, openExternal, saveData);
 }
 
 export function tickClient ()

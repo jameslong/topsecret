@@ -27,11 +27,11 @@ export interface Server extends RuntimeServer {
 }
 
 export function createServerFromSaveData (
-        config: ConfigData.ConfigData,
+        settings: ConfigData.GameSettings,
         data: State.Data,
         saveData: RuntimeServer)
 {
-        const emailDomain = config.emailDomain;
+        const emailDomain = settings.emailDomain;
         const lastEvaluatedKey = saveData.lastEvaluatedKey;
         const db = saveData.db;
         const id = saveData.id;
@@ -54,10 +54,10 @@ export function createRuntimeServer (): RuntimeServer
         };
 }
 
-export function createServer (config: ConfigData.ConfigData, data: State.Data)
+export function createServer (settings: ConfigData.GameSettings, data: State.Data)
 {
         const runtimeServer = createRuntimeServer();
-        return createServerFromSaveData(config, data, runtimeServer);
+        return createServerFromSaveData(settings, data, runtimeServer);
 }
 
 function createPromises (id: Id, db: LocalDB.DBState)
@@ -90,12 +90,12 @@ export function send (id: Id, data: Message.MessageData) {
 
 export function beginGame (
         playerData: AppPlayer.Player,
-        config: ConfigData.ConfigData,
+        settings: ConfigData.GameSettings,
         server: Server,
         clock: Clock.Clock)
 {
         const { email, publicKey, firstName, lastName, timezoneOffset } = playerData;
-        const { version, beginGameMessage, emailDomain } = config;
+        const { version, beginGameMessage, emailDomain } = settings;
 
         const player = Player.createPlayerState(
                 email, publicKey, version, firstName, lastName, timezoneOffset);
