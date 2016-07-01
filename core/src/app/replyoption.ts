@@ -1,4 +1,5 @@
 import Arr = require('./utils/array');
+import Kbpgp = require('./kbpgp');
 import Message = require('./message');
 import MessageHelpers = require('./messagehelpers');
 import Str = require('./utils/string');
@@ -27,19 +28,19 @@ export interface ReplyOptionValidPGPKey extends ReplyOptionBase<{}> {}
 export interface ReplyOptionDefault extends ReplyOptionBase<{}>{}
 
 export function isValidReply(
-        body: string, replyOption: ReplyOption): boolean
+        body: string, replyOption: ReplyOption): Promise<boolean>
 {
         switch (replyOption.type) {
         case ReplyOptionType.Keyword:
                 const keywordOption = <ReplyOptionKeyword>replyOption;
-                return isKeywordReply(keywordOption, body);
+                return Promise.resolve(isKeywordReply(keywordOption, body));
 
         case ReplyOptionType.ValidPGPKey:
                 const validOption = <ReplyOptionValidPGPKey>replyOption;
                 return isValidKeyReply(validOption, body);
 
         default:
-                return true;
+                return Promise.resolve(true);
         }
 }
 
@@ -54,10 +55,14 @@ export function isKeywordReply (
 }
 
 export function isValidKeyReply (
-        replyOption: ReplyOptionValidPGPKey, text: string): boolean
+        replyOption: ReplyOptionValidPGPKey, text: string)
 {
         const publicKey = extractPublicKey(text);
-        return (publicKey ? true : false);
+        if (publicKey) {
+                return Kbpgp.isValidPublicKey(publicKey);
+        } else {
+                return Promise.resolve(false);
+        }
 }
 
 export function extractPublicKey (message: string): string

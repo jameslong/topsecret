@@ -113,6 +113,13 @@ export function decryptVerify (
         });
 }
 
+export function isValidPublicKey (key: string)
+{
+        return loadKey(key).then(
+                instance => !instance.has_pgp_private()
+        ).catch(err => false);
+}
+
 export function getDisplayType (instance: Kbpgp.KeyManagerInstance)
 {
         return instance.has_pgp_private() ? 'public/private' : 'public';

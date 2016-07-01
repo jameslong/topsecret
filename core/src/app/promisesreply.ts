@@ -7,6 +7,7 @@ import Message = require('./message');
 import MessageHelpers = require('./messagehelpers');
 import Player = require('./player');
 import Profile = require('./profile');
+import Prom = require('./utils/promise');
 import ReplyOption = require('./replyoption');
 import Script = require('./script');
 import State = require('./state');
@@ -104,32 +105,30 @@ export function handleDecryptedReplyMessage (
                 return !condition ||
                         <boolean><any>Script.executeScript(condition, player);
         });
-        const matched = Arr.find(conditions, index =>
-                ReplyOption.isValidReply(strippedBody, messageReplyOptions[index]));
 
-        if (matched !== -1) {
-                const index = conditions[matched];
-                messageState.reply = { index, body, timestampMs, sent: [] };
-                return promises.addMessage(messageState);
-        } else {
-                return null;
-        }
-}
+        const validChecks = conditions.map(index =>
+                () => ReplyOption.isValidReply(
+                        strippedBody, messageReplyOptions[index]));
 
-export function handleReplyOptionValidPGPKey(
-        body: string,
-        timestampMs: number,
-        replyIndex: number,
-        player: Player.PlayerState,
-        message: Message.MessageState,
-        promises: DBTypes.PromiseFactories)
-{
-        const publicKey = ReplyOption.extractPublicKey(body);
-        player.publicKey = publicKey;
+        return Prom.find(validChecks).then(matched => {
+                if (matched !== -1) {
+                        const index = conditions[matched];
+                        const option = messageReplyOptions[index];
+                        messageState.reply = { index, body, timestampMs, sent: [] };
 
-        return promises.updatePlayer(player).then(player => {
-                const sent: number[] = [];
-                message.reply = { index: replyIndex, body, sent, timestampMs };
-                return promises.updateMessage(message)
+                        if (option.type === ReplyOption.ReplyOptionType.ValidPGPKey) {
+                                const publicKey = ReplyOption.extractPublicKey(body);
+                                player.publicKey = publicKey;
+
+                                return promises.updatePlayer(player).then(player =>
+                                        promises.addMessage(messageState)
+                                );
+                        } else {
+                                return promises.addMessage(messageState);
+
+                        }
+                } else {
+                        return null;
+                }
         });
 }
