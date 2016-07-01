@@ -31,14 +31,12 @@ export function createServerFromSaveData (
         data: State.Data,
         saveData: RuntimeServer)
 {
-        const emailDomain = settings.emailDomain;
         const lastEvaluatedKey = saveData.lastEvaluatedKey;
         const db = saveData.db;
         const id = saveData.id;
         const promises = createPromises(id, db);
 
         const app = {
-                emailDomain,
                 data,
                 promises,
         };
@@ -95,7 +93,7 @@ export function beginGame (
         clock: Clock.Clock)
 {
         const { email, publicKey, firstName, lastName, timezoneOffset } = playerData;
-        const { version, beginGameMessage, emailDomain } = settings;
+        const { version, beginGameMessage } = settings;
 
         const player = Player.createPlayerState(
                 email, publicKey, version, firstName, lastName, timezoneOffset);
@@ -107,7 +105,6 @@ export function beginGame (
         return Promises.beginGame(
                 beginGameMessage,
                 player,
-                emailDomain,
                 timestampMs,
                 groupData,
                 promises);

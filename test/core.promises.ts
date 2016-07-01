@@ -20,7 +20,6 @@ describe('Promises', function () {
                                 return Promises.beginGame(
                                         'begingame',
                                         player,
-                                        'testmail.playtopsecret.com',
                                         timestampMs,
                                         groupData,
                                         promises);
@@ -48,7 +47,6 @@ describe('Promises', function () {
                                 return Promises.resign(
                                         'resign',
                                         player.email,
-                                        'testmail.playtopsecret.com',
                                         groupData,
                                         promises);
                         });
@@ -60,7 +58,6 @@ describe('Promises', function () {
                         const player = TestHelpers.createPlayer0();
                         const promises = TestHelpers.createPromises();
                         const childIndex = 0;
-                        const domain = 'testmail.playtopsecret.com';
                         const timestampMs = Date.now();
 
                         return TestHelpers.testGameData().then(groupData => {
@@ -72,7 +69,6 @@ describe('Promises', function () {
                                 return Promises.child(
                                         state,
                                         childIndex,
-                                        domain,
                                         groupData,
                                         promises)
                         });
@@ -83,7 +79,6 @@ describe('Promises', function () {
                 it('should resolve without error', function () {
                         const player = TestHelpers.createPlayer0();
                         const promises = TestHelpers.createPromises();
-                        const domain = 'testmail.playtopsecret.com';
                         const replyIndex = 0;
                         const timestampMs = Date.now();
 
@@ -103,7 +98,6 @@ describe('Promises', function () {
                                 return Promises.reply(
                                         state,
                                         replyIndex,
-                                        domain,
                                         groupData,
                                         promises)
                         });

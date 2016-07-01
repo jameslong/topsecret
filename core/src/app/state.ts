@@ -24,7 +24,6 @@ export type Narratives = Map.Map<NarrativeData>;
 export type Data = Map.Map<GameData>;
 
 export interface State {
-        emailDomain: string;
         data: Data;
         promises: DBTypes.PromiseFactories;
 }

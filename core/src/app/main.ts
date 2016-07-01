@@ -69,7 +69,6 @@ function pendingChildren (
 {
         const { message, player } = state;
         const offsetHours = player.timezoneOffset;
-        const domain = app.emailDomain;
 
         const messageData = groupData.messages[message.name];
         const children = messageData.children;
@@ -86,7 +85,6 @@ function pendingChildren (
                         Promises.child(
                                 state,
                                 index,
-                                domain,
                                 groupData,
                                 promises)
         );
@@ -125,7 +123,7 @@ function pendingResponse (
                         options[index], offsetHours, replyTimestampMs, currentMs));
 
                 return ready.map(index => pendingReply(
-                        groupData, state, index, promises, app.emailDomain));
+                        groupData, state, index, promises));
         } else {
                 const readyFallback =
                         messageData.fallback &&
@@ -136,11 +134,7 @@ function pendingResponse (
                                 sentMs,
                                 currentMs);
                 if (readyFallback) {
-                        return [pendingFallback(
-                                groupData,
-                                state,
-                                promises,
-                                app.emailDomain)];
+                        return [pendingFallback(groupData, state, promises)];
                 }
         }
 
@@ -151,8 +145,7 @@ function pendingReply (
         groupData: State.GameData,
         state: Promises.UpdateInfo,
         index: number,
-        promises: DBTypes.PromiseFactories,
-        emailDomain: string)
+        promises: DBTypes.PromiseFactories)
 {
         const { message, player } = state;
 
@@ -163,7 +156,6 @@ function pendingReply (
                 Promises.reply(
                         state,
                         index,
-                        emailDomain,
                         groupData,
                         promises);
 }
@@ -171,13 +163,11 @@ function pendingReply (
 function pendingFallback (
         groupData: State.GameData,
         state: Promises.UpdateInfo,
-        promises: DBTypes.PromiseFactories,
-        emailDomain: string)
+        promises: DBTypes.PromiseFactories)
 {
         return (state: Promises.UpdateInfo) =>
                 Promises.fallback(
                         state,
-                        emailDomain,
                         groupData,
                         promises);
 }
@@ -275,8 +265,7 @@ export function createPlayerlessMessageData (
         email: string,
         messageName: string,
         threadStartName: string,
-        inReplyToId: string,
-        emailDomain: string)
+        inReplyToId: string)
 {
         const quotedReply = '';
         return MessageHelpers.createMessageData(
@@ -285,7 +274,6 @@ export function createPlayerlessMessageData (
                 inReplyToId,
                 quotedReply,
                 email,
-                emailDomain,
                 groupData,
                 null);
 }
@@ -296,8 +284,7 @@ export function createMessageData (
         messageName: string,
         threadStartName: string,
         inReplyToId: string,
-        quotedReply: string,
-        emailDomain: string)
+        quotedReply: string)
 {
         return MessageHelpers.createMessageData(
                 messageName,
@@ -305,7 +292,6 @@ export function createMessageData (
                 inReplyToId,
                 quotedReply,
                 player.email,
-                emailDomain,
                 groupData,
                 player.vars);
 }

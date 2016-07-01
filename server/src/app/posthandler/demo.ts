@@ -16,7 +16,6 @@ export function beginDemo (
         threadMessageName: string)
 {
         const app = state.app;
-        const domain = app.emailDomain;
         const promises = app.promises;
 
         const publicKey: string = null;
@@ -31,7 +30,6 @@ export function beginDemo (
         return Promises.beginGame(
                 threadMessageName,
                 player,
-                domain,
                 timestampMs,
                 groupData,
                 promises);

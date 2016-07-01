@@ -52,10 +52,8 @@ export function handleResignation (
         const promises = app.promises;
 
         const messageName = state.config.content.resignationThread;
-        const domain = app.emailDomain;
 
-        return Promises.resign(
-                messageName, email, domain, groupData, promises);
+        return Promises.resign(messageName, email, groupData, promises);
 }
 
 export function handleValidApplication (
@@ -92,8 +90,7 @@ export function handleInvalidApplication (
                 email,
                 messageName,
                 threadStartName,
-                inReplyToId,
-                app.emailDomain);
+                inReplyToId);
         return app.promises.send(data);
 }
 

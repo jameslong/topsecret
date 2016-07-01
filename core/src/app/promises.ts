@@ -18,7 +18,6 @@ export interface UpdateInfo {
 export function child (
         state: UpdateInfo,
         childIndex: number,
-        domain: string,
         groupData: State.GameData,
         promises: DBTypes.PromiseFactories)
 {
@@ -39,7 +38,6 @@ export function child (
                         inReplyToId,
                         quotedReply,
                         player,
-                        domain,
                         timestampMs,
                         groupData,
                         promises) :
@@ -54,7 +52,6 @@ export function child (
 export function reply (
         state: UpdateInfo,
         index: number,
-        domain: string,
         groupData: State.GameData,
         promises: DBTypes.PromiseFactories)
 {
@@ -74,7 +71,6 @@ export function reply (
                 inReplyToId,
                 quotedReply,
                 player,
-                domain,
                 timestampMs,
                 groupData,
                 promises);
@@ -87,7 +83,6 @@ export function reply (
 
 export function fallback (
         state: UpdateInfo,
-        domain: string,
         groupData: State.GameData,
         promises: DBTypes.PromiseFactories)
 {
@@ -108,7 +103,6 @@ export function fallback (
                         inReplyToId,
                         quotedReply,
                         player,
-                        domain,
                         timestampMs,
                         groupData,
                         promises) :
@@ -126,7 +120,6 @@ export function encryptSendStoreChild (
         inReplyToId: string,
         quotedReply: string,
         player: Player.PlayerState,
-        domain: string,
         timestampMs: number,
         groupData: State.GameData,
         promises: DBTypes.PromiseFactories)
@@ -137,8 +130,7 @@ export function encryptSendStoreChild (
                 name,
                 threadStartName,
                 inReplyToId,
-                quotedReply,
-                domain);
+                quotedReply);
 
         const messageData = groupData.messages[name];
         const from = groupData.keyManagers[messageData.message.from];
@@ -208,7 +200,6 @@ export function endGame (
 export function beginGame (
         name: string,
         player: Player.PlayerState,
-        domain: string,
         timestampMs: number,
         groupData: State.GameData,
         promises: DBTypes.PromiseFactories)
@@ -224,7 +215,6 @@ export function beginGame (
                         inReplyToId,
                         quotedReply,
                         player,
-                        domain,
                         timestampMs,
                         groupData,
                         promises));
@@ -233,14 +223,13 @@ export function beginGame (
 export function resign (
         name: string,
         email: string,
-        domain: string,
         groupData: State.GameData,
         promises: DBTypes.PromiseFactories)
 {
         const threadStartName: string = null;
         const inReplyToId: string = null;
         const data = Main.createPlayerlessMessageData(
-                groupData, email, name, threadStartName, inReplyToId, domain);
+                groupData, email, name, threadStartName, inReplyToId);
 
         return promises.send(data).then(id =>
                 endGame(email, promises));

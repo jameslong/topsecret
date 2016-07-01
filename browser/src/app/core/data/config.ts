@@ -5,7 +5,6 @@ export interface GameSettings {
         beginGameMessage: string;
         initialUIMode: string;
         timeFactor: number;
-        emailDomain: string;
 }
 
 export interface ConfigData {
@@ -31,11 +30,9 @@ function getQueryStringParams (): GameSettings
         const version = getQueryVariable('version') || null;
         const beginGameMessage = getQueryVariable('messageName') || null;
         const initialUIMode = getQueryVariable('uiMode') || null;
-        const emailDomain = getQueryVariable('emailDomain') || null;
         const timeFactorParam = getQueryVariable('timeFactor');
         const timeFactor = timeFactorParam ? parseFloat(timeFactorParam) : null;
         return {
-                emailDomain,
                 version,
                 beginGameMessage,
                 initialUIMode,
@@ -51,15 +48,12 @@ export function createConfig (): ConfigData
                 beginGameMessage: 'welcome',
                 initialUIMode: 'MAIN_MENU',
                 timeFactor: 1,
-                emailDomain: 'nsa.gov',
         };
         const customSettings = {
                 version: params.version,
                 beginGameMessage: params.beginGameMessage,
                 initialUIMode: params.initialUIMode || defaultSettings.initialUIMode,
                 timeFactor: params.timeFactor || defaultSettings.timeFactor,
-                emailDomain: params.emailDomain || defaultSettings.emailDomain,
-
         };
         const hasCustomSettings = params.beginGameMessage !== null;
         const settings = hasCustomSettings ? customSettings : defaultSettings;

@@ -99,7 +99,6 @@ export function onGameData (
 
 
         const gameState: State.State = {
-                emailDomain: config.emailDomain,
                 data: null,
                 promises,
         };

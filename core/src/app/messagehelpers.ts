@@ -38,7 +38,6 @@ export function createMessageData (
         inReplyToId: string,
         quotedBody: string,
         to: string,
-        domain: string,
         groupData: State.GameData,
         vars: Player.PlayerVars): Message.MessageData
 {
