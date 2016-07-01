@@ -1,0 +1,20 @@
+{
+        "name": "pgp_reply",
+        "threadSubject": "pgp_reply_subject",
+        "position": {
+                "x": 990,
+                "y": 385
+        },
+        "endGame": false,
+        "message": {
+                "from": "james",
+                "body": "pgp_reply_body"
+        },
+        "encrypted": true,
+        "script": "",
+        "receiver": null,
+        "replyOptions": "pgp_reply_ro",
+        "children": [],
+        "fallback": null,
+        "attachment": null
+}

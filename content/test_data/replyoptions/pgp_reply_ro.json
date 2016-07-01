@@ -1,0 +1,36 @@
+[
+        {
+                "type": "validPGPKey",
+                "parameters": {
+                        "condition": "",
+                        "matches": []
+                },
+                "messageDelays": [
+                        {
+                                "name": "pgp_valid_key",
+                                "delay": [
+                                        0,
+                                        0,
+                                        0
+                                ]
+                        }
+                ]
+        },
+        {
+                "type": "default",
+                "parameters": {
+                        "condition": "",
+                        "matches": []
+                },
+                "messageDelays": [
+                        {
+                                "name": "pgp_invalid_key",
+                                "delay": [
+                                        0,
+                                        0,
+                                        0
+                                ]
+                        }
+                ]
+        }
+]

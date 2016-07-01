@@ -1,0 +1,20 @@
+{
+        "name": "pgp_valid_key",
+        "threadSubject": "",
+        "position": {
+                "x": 990,
+                "y": 495
+        },
+        "endGame": false,
+        "message": {
+                "from": "james",
+                "body": "pgp_valid_key_body"
+        },
+        "encrypted": true,
+        "script": "",
+        "receiver": null,
+        "replyOptions": "",
+        "children": [],
+        "fallback": null,
+        "attachment": null
+}
