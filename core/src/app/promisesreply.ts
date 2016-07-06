@@ -11,6 +11,7 @@ import Prom = require('./utils/promise');
 import ReplyOption = require('./replyoption');
 import Script = require('./script');
 import State = require('./state');
+import Str = require('./utils/string');
 
 export function handleReplyMessage (
         reply: Message.MailgunReply,
@@ -107,8 +108,7 @@ export function handleDecryptedReplyMessage (
         });
 
         const validChecks = conditions.map(index =>
-                () => ReplyOption.isValidReply(
-                        strippedBody, messageReplyOptions[index]));
+                () => isValidReply(strippedBody, messageReplyOptions[index]));
 
         return Prom.find(validChecks).then(matched => {
                 if (matched !== -1) {
@@ -117,7 +117,7 @@ export function handleDecryptedReplyMessage (
                         messageState.reply = { index, body, timestampMs, sent: [] };
 
                         if (option.type === ReplyOption.ReplyOptionType.ValidPGPKey) {
-                                const publicKey = ReplyOption.extractPublicKey(body);
+                                const publicKey = extractPublicKey(body);
                                 player.publicKey = publicKey;
 
                                 return promises.updatePlayer(player).then(player =>
@@ -131,4 +131,49 @@ export function handleDecryptedReplyMessage (
                         return null;
                 }
         });
+}
+
+export function isValidReply(
+        body: string, replyOption: ReplyOption.ReplyOption): Promise<boolean>
+{
+        switch (replyOption.type) {
+        case ReplyOption.ReplyOptionType.Keyword:
+                const keywordOption = <ReplyOption.ReplyOptionKeyword>replyOption;
+                return Promise.resolve(isKeywordReply(keywordOption, body));
+
+        case ReplyOption.ReplyOptionType.ValidPGPKey:
+                const validOption = <ReplyOption.ReplyOptionValidPGPKey>replyOption;
+                return isValidKeyReply(validOption, body);
+
+        default:
+                return Promise.resolve(true);
+        }
+}
+
+export function isKeywordReply (
+        replyOption: ReplyOption.ReplyOptionKeyword, text: string): boolean
+{
+        const matches = replyOption.parameters.matches;
+        return matches.some(match => {
+                const trimmedMatch = match.trim();
+                return Str.contains(text, trimmedMatch);
+        });
+}
+
+export function isValidKeyReply (
+        replyOption: ReplyOption.ReplyOptionValidPGPKey, text: string)
+{
+        const publicKey = extractPublicKey(text);
+        if (publicKey) {
+                return KBPGP.isValidPublicKey(publicKey);
+        } else {
+                return Promise.resolve(false);
+        }
+}
+
+export function extractPublicKey (message: string): string
+{
+        var reg = /-----BEGIN PGP PUBLIC KEY BLOCK-----[\s\S]*?-----END PGP PUBLIC KEY BLOCK-----/;
+        var matches = message.match(reg);
+        return (matches ? matches[0] : null);
 }
