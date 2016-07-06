@@ -95,7 +95,7 @@ export function createDataFromSaveData(
                 messageIdsByFolderId: runtimeData.messageIdsByFolderId,
                 profiles,
                 profilesById,
-                        knownKeyIds: runtimeData.knownKeyIds,
+                knownKeyIds: runtimeData.knownKeyIds,
                 clock,
         };
 }
