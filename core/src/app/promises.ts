@@ -135,7 +135,7 @@ export function encryptSendStoreChild (
         const messageData = groupData.messages[name];
         const from = groupData.keyManagers[messageData.message.from];
 
-        const encrypt = player.publicKey ?
+        const encrypt = player.publicKey && messageData.encrypted ?
                 KbpgpHelpers.loadKey(player.publicKey).then(to => {
                         const encryptData = { from, to, text: data.body };
                         return KbpgpHelpers.signEncrypt(encryptData);
