@@ -147,6 +147,7 @@ export function beginDemo (state: App.State, req: any, res: any)
                         lastName: string;
                         messageName: string;
                         narrativeName: string;
+                        utcOffset: number;
                 } = req.body;
 
         Log.metric({
@@ -156,6 +157,7 @@ export function beginDemo (state: App.State, req: any, res: any)
                 lastName: body.lastName,
                 messageName: body.messageName,
                 narrativeName: body.narrativeName,
+                utcOffset: body.utcOffset,
         });
 
         const email = body.email;
@@ -163,11 +165,13 @@ export function beginDemo (state: App.State, req: any, res: any)
         const lastName = body.lastName;
         const newMessageName = body.messageName;
         const narrativeName = body.narrativeName;
+        const utcOffset = body.utcOffset;
 
         const playerData = {
                 firstName: firstName,
                 lastName: lastName,
                 usePGP: false,
+                utcOffset,
         };
 
         const groupData = App.getGroupData(state.app, narrativeName);

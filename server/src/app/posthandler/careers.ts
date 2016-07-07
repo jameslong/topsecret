@@ -103,64 +103,41 @@ export interface PlayerApplicationData {
         firstName: string;
         lastName: string;
         usePGP: boolean;
+        utcOffset: number;
 }
 
 export function extractPlayerData (applicationText: string)
         : PlayerApplicationData
 {
-        var data: PlayerApplicationData = null;
-        var firstName: string = null;
-        var lastName: string = null;
-        var usePGP = false;
+        const firstNameLabel = 'First Name:';
+        const lastNameLabel = 'Last Name:';
+        const pgpLabel = 'Use PGP Encryption (Y/N):';
+        const timezoneLabel = 'UTC offset (hours):';
 
-        var firstNameLabel = 'First Name:';
-        var lastNameLabel = 'Last Name:';
-        var pgpLabel = 'Use PGP Encryption (Y/N):';
+        const firstName = extractFormField(applicationText, firstNameLabel);
+        const lastName = extractFormField(applicationText, lastNameLabel);
+        const pgp = extractFormField(applicationText, pgpLabel);
+        const usePGP = (pgp && pgp.toLowerCase().indexOf('y') !== -1);
+        const timeOffset = extractFormField(applicationText, timezoneLabel);
+        const validOffset = timeOffset && !isNaN(<number><any>timeOffset);
+        const utcOffset = parseInt(timeOffset) || 0;
 
-        firstName = extractFormField(applicationText, firstNameLabel, 0);
-
-        if (firstName) {
-                var firstNameIndex = applicationText.indexOf(firstNameLabel);
-                lastName = extractFormField(
-                        applicationText, lastNameLabel, firstNameIndex);
-
-                if (lastName) {
-                        var lastNameIndex = applicationText.indexOf(lastNameLabel);
-                        var pgp = extractFormField(
-                                applicationText, pgpLabel, lastNameIndex);
-                        if (pgp && pgp.toLowerCase().indexOf('y') !== -1) {
-                                usePGP = true;
-                        }
-
-                }
-        }
-
-        if (firstName && lastName) {
-                data = {
-                        firstName: firstName,
-                        lastName: lastName,
-                        usePGP: usePGP,
-                };
-        }
-
-        return data;
+        return (firstName && lastName && pgp && validOffset) ?
+                {
+                        firstName,
+                        lastName,
+                        usePGP,
+                        utcOffset,
+                } :
+                null;
 }
 
-export function extractFormField (
-        text: string, label: string, startIndex: number): string
+export function extractFormField (text: string, label: string): string
 {
-        var value: string = null;
+        const lines = Str.splitByLines(text);
+        const matches = lines.filter(line => Str.beginsWith(line, label));
 
-        var labelIndex = text.indexOf(label, startIndex);
-        if (labelIndex !== -1) {
-                labelIndex += label.length;
-
-                var lineEndIndex = text.indexOf('\n', labelIndex);
-                if (lineEndIndex !== -1) {
-                        value = text.substring(labelIndex, lineEndIndex);
-                        value = value.trim() || null;
-                }
-        }
-
-        return value;
+        return (matches.length > 0) ?
+                (matches[0].substring(label.length).trim() || null) :
+                null;
 }
