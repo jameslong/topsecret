@@ -89,7 +89,9 @@ export function markMessageValid (
                 strings,
                 profiles,
                 attachments);
-        return Helpers.assign(message, { valid });
+        return message.valid === valid ?
+                message :
+                Helpers.assign(message, { valid });
 }
 
 export function isValidMessage (
