@@ -103,6 +103,7 @@ export interface PlayerApplicationData {
         firstName: string;
         lastName: string;
         usePGP: boolean;
+        utcOffset: number;
 }
 
 export function extractPlayerData (applicationText: string)
@@ -111,17 +112,22 @@ export function extractPlayerData (applicationText: string)
         const firstNameLabel = 'First Name:';
         const lastNameLabel = 'Last Name:';
         const pgpLabel = 'Use PGP Encryption (Y/N):';
+        const timezoneLabel = 'UTC offset (hours):';
 
         const firstName = extractFormField(applicationText, firstNameLabel);
         const lastName = extractFormField(applicationText, lastNameLabel);
         const pgp = extractFormField(applicationText, pgpLabel);
         const usePGP = (pgp && pgp.toLowerCase().indexOf('y') !== -1);
+        const timeOffset = extractFormField(applicationText, timezoneLabel);
+        const validOffset = timeOffset && !isNaN(<number><any>timeOffset);
+        const utcOffset = parseInt(timeOffset) || 0;
 
-        return (firstName && lastName && pgp) ?
+        return (firstName && lastName && pgp && validOffset) ?
                 {
                         firstName,
                         lastName,
                         usePGP,
+                        utcOffset,
                 } :
                 null;
 }

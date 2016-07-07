@@ -68,7 +68,7 @@ function pendingChildren (
         promises: DBTypes.PromiseFactories)
 {
         const { message, player } = state;
-        const offsetHours = player.timezoneOffset;
+        const offsetHours = player.utcOffset;
 
         const messageData = groupData.messages[message.name];
         const children = messageData.children;
@@ -98,7 +98,7 @@ function pendingResponse (
         promises: DBTypes.PromiseFactories)
 {
         const { message, player } = state;
-        const offsetHours = player.timezoneOffset;
+        const offsetHours = player.utcOffset;
         const messageData = groupData.messages[message.name];
         const sentMs = message.sentTimestampMs;
         const hasReplyOptions = messageData.replyOptions;
