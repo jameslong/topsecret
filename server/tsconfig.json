@@ -9,6 +9,6 @@
                 "outDir": "build"
         },
         "files": [
-                "src/app/main.ts"
+                "src/main.ts"
         ]
 }

@@ -1,4 +1,4 @@
-/// <reference path='../../../typings/bunyan/bunyan.d.ts'/>
+/// <reference path='../../typings/bunyan/bunyan.d.ts'/>
 import Bunyan = require('bunyan');
 
 export const log = Bunyan.createLogger({

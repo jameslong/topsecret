@@ -1,6 +1,6 @@
-import Data = require('../../../core/src/app/data');
-import FileSystem = require('../../../core/src/app/filesystem');
-import Helpers = require('../../../core/src/app/utils/helpers');
+import Data = require('../../core/src/app/data');
+import FileSystem = require('../../core/src/app/filesystem');
+import Helpers = require('../../core/src/app/utils/helpers');
 
 export interface AWSConfig {
         accessKeyId: string;
