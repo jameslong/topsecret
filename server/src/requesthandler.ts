@@ -648,15 +648,15 @@ export function handleCareersEmail (
         state: App.State,
         reply: Message.MailgunReply)
 {
-        var defaultNarrativeGroup =
+        const defaultNarrativeGroup =
                 state.config.content.defaultNarrativeGroup;
-        var groupData = App.getGroupData(state.app, defaultNarrativeGroup);
+        const groupData = App.getGroupData(state.app, defaultNarrativeGroup);
 
-        var email = reply.from;
-        var subject = reply.subject;
-        var strippedBody = reply.strippedBody;
+        const email = reply.from;
+        const subject = reply.subject;
+        const strippedBody = reply.strippedBody;
 
-        var resignationLetter = Str.contains(reply.subject, 'resign');
+        const resignationLetter = Str.contains(reply.subject, 'resign');
 
         if (resignationLetter) {
                 return handleResignation(
@@ -664,7 +664,7 @@ export function handleCareersEmail (
                         groupData,
                         email);
         } else {
-                var playerData = extractPlayerData(strippedBody);
+                const playerData = extractPlayerData(strippedBody);
 
                 return playerData  ?
                         handleValidApplication(
@@ -698,9 +698,9 @@ export function handleValidApplication (
         email: string,
         playerData: PlayerApplicationData)
 {
-        var config = state.config;
+        const config = state.config;
 
-        var initialThreadMessage = playerData.usePGP ?
+        const initialThreadMessage = playerData.usePGP ?
                 config.content.validApplicationThreadPGP :
                 config.content.validApplicationThread;
 

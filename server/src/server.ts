@@ -42,9 +42,9 @@ export function createServerState (): ServerState
                           next();
                 });
 
-        var server = require('http').Server(app);
+        const server = require('http').Server(app);
 
-        var io = require('socket.io')(server);
+        const io = require('socket.io')(server);
         io.on('connection', (socket: any) => {
                         Log.debug('New websocket connection');
                 });
@@ -91,7 +91,7 @@ export function sendMail (io: any, messageData: Message.MessageData)
 let idCounter = 0;
 function generateMessageId (): string
 {
-        var id = idCounter.toString();
+        const id = idCounter.toString();
         idCounter += 1;
         return id;
 }
