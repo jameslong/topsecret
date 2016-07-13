@@ -1,6 +1,6 @@
 import AsyncRequest = require('./core/asyncrequest');
 import Main = require('./core/main');
-import Map = require('../../../core/src/app/utils/map');
+import Map = require('../../../core/src/utils/map');
 
 const serverURL = 'http://127.0.0.1:3000';
 

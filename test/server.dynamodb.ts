@@ -3,8 +3,8 @@
 /// <reference path="../typings/es6-polyfill/es6-polyfill.d.ts" />
 /// <reference path='../typings/aws-sdk/aws-sdk.d.ts'/>
 
-import DBTypes = require('../core/src/app/dbtypes');
-import Helpers = require('../core/src/app/utils/helpers');
+import DBTypes = require('../core/src/dbtypes');
+import Helpers = require('../core/src/utils/helpers');
 import TestHelpers = require('./helpers');
 
 import Chai = require('chai');

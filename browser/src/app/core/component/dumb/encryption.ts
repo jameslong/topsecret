@@ -1,10 +1,10 @@
 import EncryptionType = require('../../folder');
 import Kbpgp = require('kbpgp');
-import KbpgpHelpers = require('../../../../../../core/src/app/kbpgp');
-import Helpers = require('../../../../../../core/src/app/utils/helpers');
-import Map = require('../../../../../../core/src/app/utils/map');
+import KbpgpHelpers = require('../../../../../../core/src/kbpgp');
+import Helpers = require('../../../../../../core/src/utils/helpers');
+import Map = require('../../../../../../core/src/utils/map');
 import Player = require('../../player');
-import Profile = require('../../../../../../core/src/app/profile');
+import Profile = require('../../../../../../core/src/profile');
 import React = require('react');
 import SelectableRows = require('./selectablerows');
 

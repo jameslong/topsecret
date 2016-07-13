@@ -1,5 +1,5 @@
 import Message = require('../../message');
-import MessageHelpers = require('../../../../../../core/src/app/messagehelpers');
+import MessageHelpers = require('../../../../../../core/src/messagehelpers');
 import React = require('react');
 
 import Core = require('../core');

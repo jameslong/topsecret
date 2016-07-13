@@ -7,18 +7,18 @@ import CommandData = require('./data/commands');
 import PlayerData = require('./data/player');
 
 import Client = require('./client');
-import Clock = require('../../../../core/src/app/clock');
+import Clock = require('../../../../core/src/clock');
 import Data = require('./data');
 import EventHandler = require('./eventhandler');
-import KbpgpHelpers = require('../../../../core/src/app/kbpgp');
-import Helpers = require('../../../../core/src/app/utils/helpers');
+import KbpgpHelpers = require('../../../../core/src/kbpgp');
+import Helpers = require('../../../../core/src/utils/helpers');
 import LocalStorage = require('./localstorage');
-import Prom = require('../../../../core/src/app/utils/promise');
+import Prom = require('../../../../core/src/utils/promise');
 import Reducers = require('./action/reducers');
 import Redux = require('./redux/redux');
 import Root = require('./component/smart/root');
 import Server = require('./server');
-import State = require('../../../../core/src/app/state');
+import State = require('../../../../core/src/state');
 import Player = require('./player');
 import UI = require('./ui');
 

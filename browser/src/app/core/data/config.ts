@@ -1,4 +1,4 @@
-import Helpers = require('../../../../../core/src/app/utils/helpers');
+import Helpers = require('../../../../../core/src/utils/helpers');
 
 export interface GameSettings {
         version: string;

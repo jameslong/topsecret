@@ -1,4 +1,4 @@
-/// <reference path='../../../typings/is-my-json-valid/is-my-json-valid.d.ts'/>
+/// <reference path='../../typings/is-my-json-valid/is-my-json-valid.d.ts'/>
 
 import Helpers = require('./utils/helpers');
 import Map = require('./utils/map');

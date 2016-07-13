@@ -3,7 +3,7 @@ import EditorMessage = require('../../editormessage');
 import Narrative = require('../../narrative');
 import React = require('react');
 import Redux = require('../../redux/redux');
-import ReplyOption = require('../../../../../core/src/app/replyoption');
+import ReplyOption = require('../../../../../core/src/replyoption');
 
 import ReplyOptions = require('../dumb/replyoptions');
 

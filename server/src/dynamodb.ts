@@ -3,14 +3,14 @@
 
 import Config = require('./config');
 import DynamoDB = require('dynamodb-doc');
-import DBTypes = require('../../core/src/app/dbtypes');
-import Func = require('../../core/src/app/utils/function');
-import Log = require('../../core/src/app/log');
-import Map = require('../../core/src/app/utils/map');
-import Message = require('../../core/src/app/message');
-import MessageHelpers = require('../../core/src/app/messagehelpers');
-import Player = require('../../core/src/app/player');
-import Request = require('../../core/src/app/requesttypes');
+import DBTypes = require('../../core/src/dbtypes');
+import Func = require('../../core/src/utils/function');
+import Log = require('../../core/src/log');
+import Map = require('../../core/src/utils/map');
+import Message = require('../../core/src/message');
+import MessageHelpers = require('../../core/src/messagehelpers');
+import Player = require('../../core/src/player');
+import Request = require('../../core/src/requesttypes');
 
 import AWS = require('aws-sdk');
 

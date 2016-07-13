@@ -1,15 +1,15 @@
 /// <reference path="../typings/es6-polyfill/es6-polyfill.d.ts" />
 
-import Data = require('../core/src/app/data');
-import DBTypes = require('../core/src/app/dbtypes');
-import FileSystem = require('../core/src/app/filesystem');
-import KBPGP = require('../core/src/app/kbpgp');
-import LocalDB = require('../core/src/app/localdb');
-import Main = require('../core/src/app/main');
-import Message = require('../core/src/app/message');
-import MessageHelpers = require('../core/src/app/messagehelpers');
-import Player = require('../core/src/app/player');
-import State = require('../core/src/app/state');
+import Data = require('../core/src/data');
+import DBTypes = require('../core/src/dbtypes');
+import FileSystem = require('../core/src/filesystem');
+import KBPGP = require('../core/src/kbpgp');
+import LocalDB = require('../core/src/localdb');
+import Main = require('../core/src/main');
+import Message = require('../core/src/message');
+import MessageHelpers = require('../core/src/messagehelpers');
+import Player = require('../core/src/player');
+import State = require('../core/src/state');
 
 export function createPlayer0 ()
 {

@@ -1,4 +1,4 @@
-import Map = require('../../../../core/src/app/utils/map');
+import Map = require('../../../../core/src/utils/map');
 
 export interface Player {
         email: string;

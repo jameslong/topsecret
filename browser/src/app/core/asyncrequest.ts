@@ -1,8 +1,8 @@
 /// <reference path="../../../../typings/jquery/jquery.d.ts" />
 
 import $ = require('jquery');
-import Helpers = require('../../../../core/src/app/utils/helpers');
-import State = require('../../../../core/src/app/state');
+import Helpers = require('../../../../core/src/utils/helpers');
+import State = require('../../../../core/src/state');
 
 export function narratives (url: string)
 {

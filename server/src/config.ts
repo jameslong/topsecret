@@ -1,6 +1,6 @@
-import Data = require('../../core/src/app/data');
-import FileSystem = require('../../core/src/app/filesystem');
-import Helpers = require('../../core/src/app/utils/helpers');
+import Data = require('../../core/src/data');
+import FileSystem = require('../../core/src/filesystem');
+import Helpers = require('../../core/src/utils/helpers');
 
 export interface Credentials {
         awsAccessKeyId: string;
@@ -74,9 +74,9 @@ const debugConfig: ConfigState = {
                 resignationThread: 'resign',
                 narrativeFolder: '../../topsecret-content/game',
                 defaultNarrativeGroup: '0',
-                messageSchemaPath: '../core/src/app/messageschema.json',
-                profileSchemaPath: '../core/src/app/profileschema.json',
-                replyOptionSchemaPath: '../core/src/app/replyoptionschema.json',
+                messageSchemaPath: '../core/src/messageschema.json',
+                profileSchemaPath: '../core/src/profileschema.json',
+                replyOptionSchemaPath: '../core/src/replyoptionschema.json',
                 htmlFooter: htmlFooter,
                 textFooter: textFooter,
         },
@@ -101,9 +101,9 @@ const releaseConfig: ConfigState = {
                 resignationThread: 'resign',
                 narrativeFolder: '../../topsecret-content/game',
                 defaultNarrativeGroup: '0',
-                messageSchemaPath: '../core/src/app/messageschema.json',
-                profileSchemaPath: '../core/src/app/profileschema.json',
-                replyOptionSchemaPath: '../core/src/app/replyoptionschema.json',
+                messageSchemaPath: '../core/src/messageschema.json',
+                profileSchemaPath: '../core/src/profileschema.json',
+                replyOptionSchemaPath: '../core/src/replyoptionschema.json',
                 htmlFooter: htmlFooter,
                 textFooter: textFooter,
         },

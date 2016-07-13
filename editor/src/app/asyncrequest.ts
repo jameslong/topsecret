@@ -2,11 +2,11 @@
 
 import $ = require('jquery');
 import ActionCreators = require('./action/actioncreators');
-import Map = require('./../../../core/src/app/utils/map');
+import Map = require('./../../../core/src/utils/map');
 import EditorMessage = require('./editormessage');
 import Narrative = require('./narrative');
 import Redux = require('./redux/redux');
-import ReplyOption = require('./../../../core/src/app/replyoption');
+import ReplyOption = require('./../../../core/src/replyoption');
 
 export function requestNarratives (url: string)
 {

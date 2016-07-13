@@ -1,5 +1,5 @@
-import Helpers = require('../../../../core/src/app/utils/helpers');
-import Message = require('../../../../core/src/app/message');
+import Helpers = require('../../../../core/src/utils/helpers');
+import Message = require('../../../../core/src/message');
 
 export interface Message {
         id: string;

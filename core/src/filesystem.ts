@@ -1,4 +1,4 @@
-/// <reference path="../../../typings/node/node.d.ts"/>
+/// <reference path="../../typings/node/node.d.ts"/>
 
 import Data = require('./data');
 import Helpers = require('./utils/helpers');

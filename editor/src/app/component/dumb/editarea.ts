@@ -1,5 +1,5 @@
-import Func = require('../../../../../core/src/app/utils/function');
-import Helpers = require('../../../../../core/src/app/utils/helpers');
+import Func = require('../../../../../core/src/utils/function');
+import Helpers = require('../../../../../core/src/utils/helpers');
 import Narrative = require('../../narrative');
 import React = require('react');
 import State = require('../../state');

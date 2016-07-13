@@ -2,7 +2,7 @@
 /// <reference path="../typings/mocha/mocha.d.ts" />
 /// <reference path="../typings/es6-polyfill/es6-polyfill.d.ts" />
 
-import Helpers = require('../core/src/app/utils/helpers');
+import Helpers = require('../core/src/utils/helpers');
 import TestHelpers = require('./helpers');
 
 import Chai = require('chai');

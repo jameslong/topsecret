@@ -1,6 +1,6 @@
 import Actions = require('./actions');
 import Draft = require('../draft');
-import Helpers = require('../../../../../core/src/app/utils/helpers');
+import Helpers = require('../../../../../core/src/utils/helpers');
 import Message = require('../message');
 import Redux = require('../redux/redux');
 

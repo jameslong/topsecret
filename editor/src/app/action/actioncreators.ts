@@ -4,7 +4,7 @@ import EditorMessage = require('../editormessage');
 import MessageDelay = require('../messagedelay');
 import Narrative = require('../narrative');
 import Redux = require('../redux/redux');
-import ReplyOption = require('../../../../core/src/app/replyoption');
+import ReplyOption = require('../../../../core/src/replyoption');
 
 function createAction<T> (type: string, parameters: T): Redux.Action<T>
 {
