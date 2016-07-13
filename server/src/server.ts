@@ -4,7 +4,6 @@
 
 import Log = require('./../../core/src/app/log');
 import Message = require('./../../core/src/app/message');
-import Request = require('./../../core/src/app/requesttypes');
 
 import express = require('express');
 import bodyParser = require('body-parser');
@@ -24,7 +23,6 @@ export interface ExpressApp {
 
 export interface ServerState {
         app: ExpressApp;
-        io: any;
         server: any;
         paused: boolean;
 }
@@ -44,34 +42,16 @@ export function createServerState (): ServerState
 
         const server = require('http').Server(app);
 
-        const io = require('socket.io')(server);
-        io.on('connection', (socket: any) => {
-                        Log.debug('New websocket connection');
-                });
-
         return {
                 app: app,
-                io: io,
                 server: server,
                 paused: false,
         };
 }
 
-export function sendMail (io: any, messageData: Message.MessageData)
+export function sendMail (messageData: Message.MessageData)
 {
         const id = generateMessageId();
-        const message: Message.Reply = {
-                id,
-                inReplyToId: messageData.inReplyToId,
-                from: messageData.from,
-                to: messageData.to,
-                subject: messageData.subject,
-                body: messageData.body,
-                attachment: messageData.attachment,
-        };
-
-        io.sockets.emit('message', message);
-
         Log.metric({
                 type: 'MESSAGE_SENT',
                 playerEmail: messageData.from,

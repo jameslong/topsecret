@@ -95,7 +95,7 @@ export function onGameData (
         const mailgun = Mailgun.createMailgun(emailAPIKey, emailDomain);
         const send = (data: Message.MessageData) => useEmail ?
                 Mailgun.sendMail(mailgun, htmlFooter, textFooter, data) :
-                Server.sendMail(server.io, data);
+                Server.sendMail(data);
 
         const calls = config.useDynamoDB ?
                 DynamoDB.createDynamoDBCalls(config) :
