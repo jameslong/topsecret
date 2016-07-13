@@ -2,21 +2,13 @@ import Data = require('../../core/src/app/data');
 import FileSystem = require('../../core/src/app/filesystem');
 import Helpers = require('../../core/src/app/utils/helpers');
 
-export interface AWSConfig {
-        accessKeyId: string;
-        secretAccessKey: string;
-        region: string;
-        messagesTableName: string;
-        playersTableName: string;
-}
-
-export interface MailgunConfig {
-        apiKey: string;
-}
-
-export interface BasicAuthConfig {
-        user: string;
-        password: string;
+export interface Credentials {
+        awsAccessKeyId: string;
+        awsSecretAccessKey: string;
+        awsRegion: string;
+        basicAuthUser: string;
+        basicAuthPassword: string;
+        mailgunApiKey: string;
 }
 
 export interface ConfigState {
@@ -24,10 +16,10 @@ export interface ConfigState {
         useDynamoDB: boolean;
         useEmail: boolean;
         useBasicAuth: boolean;
+        credentials: Credentials;
         debugDBTimeoutMs: number;
-        aws: AWSConfig;
-        basicAuth: BasicAuthConfig;
-        mailgun: MailgunConfig;
+        messagesTableName: string;
+        playersTableName: string;
         emailDomain: string;
         updateIntervalMs: number;
         content: {
@@ -48,32 +40,17 @@ export interface ConfigState {
 
 export function loadCredentials(path: string)
 {
-        let aws: AWSConfig = null;
-        let basicAuth: BasicAuthConfig = null;
-        let mailgun: MailgunConfig = null;
-
+        let credentials: Credentials = null;
         try {
-                aws = <AWSConfig>FileSystem.loadJSONSync(
-                        `${path}/credentials/aws.json`);
-                basicAuth = <BasicAuthConfig>FileSystem.loadJSONSync(
-                        `${path}/credentials/basicauth.json`);
-                mailgun = <MailgunConfig>FileSystem.loadJSONSync(
-                        `${path}/credentials/mailgun.json`);
+                credentials = <Credentials>FileSystem.loadJSONSync(
+                        `${path}/credentials.json`);
         } catch (e) {
                 console.log('Using example credentials');
-                aws = <AWSConfig>FileSystem.loadJSONSync(
-                        `${path}/example_credentials/aws.json`);
-                basicAuth = <BasicAuthConfig>FileSystem.loadJSONSync(
-                        `${path}/example_credentials/basicauth.json`);
-                mailgun = <MailgunConfig>FileSystem.loadJSONSync(
-                        `${path}/example_credentials/mailgun.json`);
+                credentials = <Credentials>FileSystem.loadJSONSync(
+                        `${path}/example_credentials.json`);
         }
 
-        return {
-                aws,
-                basicAuth,
-                mailgun,
-        };
+        return credentials;
 }
 
 const htmlFooter = `<br><div style="border-top:1px solid #CCCCCC; font-size:12px;"><p>This message is part of Top Secret, a story you signed up for. Top Secret is currently in Early Access. There are bugs and the game is unfinished. You can give feedback about the game <a href="https://docs.google.com/forms/d/1dgz3smQ1AkvH6sRLPVC6vSHFP2mYq_KYPd4CmKS-w60/viewform">here</a>.</p><p>To stop playing, email careers@nsa.playtopsecret.com with the word 'resign' in the subject line.</p></div>`;
@@ -85,20 +62,9 @@ const debugConfig: ConfigState = {
         useEmail: false,
         useBasicAuth: false,
         debugDBTimeoutMs: 1000,
-        aws: {
-                accessKeyId: '',
-                secretAccessKey: '',
-                region: '',
-                messagesTableName: 'message-dev',
-                playersTableName: 'player-dev',
-        },
-        basicAuth: {
-                user: '',
-                password: '',
-        },
-        mailgun: {
-                apiKey: '',
-        },
+        credentials: null,
+        messagesTableName: 'message-dev',
+        playersTableName: 'player-dev',
         emailDomain: 'nsa.playtopsecret.com',
         updateIntervalMs: 1000,
         content: {
@@ -123,20 +89,9 @@ const releaseConfig: ConfigState = {
         useEmail: true,
         useBasicAuth: true,
         debugDBTimeoutMs: 1000,
-        aws: {
-                accessKeyId: '',
-                secretAccessKey: '',
-                region: '',
-                messagesTableName: 'message-dev',
-                playersTableName: 'player-dev',
-        },
-        basicAuth: {
-                user: '',
-                password: '',
-        },
-        mailgun: {
-                apiKey: '',
-        },
+        credentials: null,
+        messagesTableName: 'message-dev',
+        playersTableName: 'player-dev',
         emailDomain: 'nsa.playtopsecret.com',
         updateIntervalMs: 1000,
         content: {

@@ -27,17 +27,14 @@ function promiseFactory<T, U> (
         return (params: T) => requestFn(docClient, tableName, params);
 }
 
-export function createDynamoDBCalls (config: Config.AWSConfig): DBTypes.DBCalls
+export function createDynamoDBCalls (config: Config.ConfigState): DBTypes.DBCalls
 {
-        const {
-                accessKeyId,
-                secretAccessKey,
-                region,
-                messagesTableName,
-                playersTableName } = config;
-
+        const { credentials, messagesTableName, playersTableName } = config;
+        const accessKeyId = credentials.awsAccessKeyId;
+        const secretAccessKey = credentials.awsSecretAccessKey;
+        const region = credentials.awsRegion;
         (<any>AWS.config.update)({ accessKeyId, secretAccessKey, region });
-        const docClient = <DynamoDoc>(new AWS.DynamoDB.DocumentClient({region: 'us-east-1'}));
+        const docClient = <DynamoDoc>(new AWS.DynamoDB.DocumentClient({region}));
 
         const addPlayerLocal = promiseFactory(
                 docClient, playersTableName, addPlayer);

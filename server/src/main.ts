@@ -14,7 +14,7 @@ Config.releaseMode ?
         Log.debug('DEBUG MODE');
 
 const credentials = Config.loadCredentials('./');
-const config = Helpers.assign(Config.config, credentials);
+const config = Helpers.assign(Config.config, { credentials });
 
 App.createState(config).then(state =>
         App.init(state)

@@ -16,14 +16,8 @@ import AWS = require('aws-sdk');
 import Config = require('../server/src/config');
 import DynamoDB = require('../server/src/dynamodb');
 
-const credentials = Config.loadCredentials('./server').aws;
-const config = {
-        accessKeyId: credentials.accessKeyId,
-        secretAccessKey: credentials.secretAccessKey,
-        region: credentials.region,
-        playersTableName: 'player-dev',
-        messagesTableName: 'message-dev',
-};
+const credentials = Config.loadCredentials('./server');
+const config = Helpers.assign(Config.config, { credentials });
 
 AWS.config.update(credentials);
 const db = DynamoDB.createDynamoDBCalls(config);

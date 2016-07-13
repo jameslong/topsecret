@@ -19,7 +19,7 @@ subprocess.call('git clone --depth 1 git@github.com:jameslong/topsecret-content.
 subprocess.call('git clone --depth 1 git@github.com:jameslong/topsecret.git ' + dirname + '/topsecret', shell=True)
 
 # Copy credentials
-subprocess.call('cp -r server/credentials ' + dirname + '/topsecret/server', shell=True)
+subprocess.call('cp server/credentials.json ' + dirname + '/topsecret/server', shell=True)
 
 # Install dependencies
 os.chdir(dirname + '/topsecret')

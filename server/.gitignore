@@ -1,5 +1,5 @@
 build
 node_modules
-credentials
+credentials.json
 error.log
 info.log

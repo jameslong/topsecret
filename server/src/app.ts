@@ -91,14 +91,14 @@ export function onGameData (
 {
         const { useEmail, emailDomain } = config;
         const { htmlFooter, textFooter } = config.content;
-        const emailAPIKey = config.mailgun.apiKey;
+        const emailAPIKey = config.credentials.mailgunApiKey;
         const mailgun = Mailgun.createMailgun(emailAPIKey, emailDomain);
         const send = (data: Message.MessageData) => useEmail ?
                 Mailgun.sendMail(mailgun, htmlFooter, textFooter, data) :
                 Server.sendMail(server.io, data);
 
         const calls = config.useDynamoDB ?
-                DynamoDB.createDynamoDBCalls(config.aws) :
+                DynamoDB.createDynamoDBCalls(config) :
                 LocalDB.createLocalDBCalls(
                         LocalDB.createDB(), config.debugDBTimeoutMs);
         const promises = DBTypes.createPromiseFactories(calls, send);

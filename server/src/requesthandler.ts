@@ -25,7 +25,9 @@ export function addRequestEndpoints (state: App.State)
         const serverState = state.server;
         const app = serverState.app;
 
-        const { user, password } = state.config.basicAuth;
+        const credentials = state.config.credentials;
+        const user = credentials.basicAuthUser;
+        const password = credentials.basicAuthPassword;
         const auth = state.config.useBasicAuth ?
                 (req: any, res: any, next: any) => {
                         authenticate(user, password, req, res, next);
