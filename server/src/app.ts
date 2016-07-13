@@ -10,13 +10,13 @@ import Helpers = require('./../../core/src/app/utils/helpers');
 import LocalDB = require('../../core/src/app/localdb');
 import Log = require('./../../core/src/app/log');
 import Main = require('./../../core/src/app/main');
+import Mailgun = require('./mailgun');
 import Map = require('./../../core/src/app/utils/map');
 import Message = require('./../../core/src/app/message');
 import PostHandler = require('./requesthandler');
 import Profile = require('./../../core/src/app/profile');
 import Prom = require('./../../core/src/app/utils/promise');
 import Request = require('./../../core/src/app/requesttypes');
-import Sender = require('./sender');
 import Server = require('./server');
 import State = require('./../../core/src/app/state');
 
@@ -89,13 +89,14 @@ export function onGameData (
         server: Server.ServerState,
         gameData: State.GameData[])
 {
-        const send = Sender.createSendFn(
-                server.io,
-                config.useEmail,
-                config.content.htmlFooter,
-                config.content.textFooter,
-                config.mailgun.apiKey,
-                config.emailDomain);
+        const { useEmail, emailDomain } = config;
+        const { htmlFooter, textFooter } = config.content;
+        const emailAPIKey = config.mailgun.apiKey;
+        const mailgun = Mailgun.createMailgun(emailAPIKey, emailDomain);
+        const send = (data: Message.MessageData) => useEmail ?
+                Mailgun.sendMail(mailgun, htmlFooter, textFooter, data) :
+                Server.sendMail(server.io, data);
+
         const calls = config.useDynamoDB ?
                 DynamoDB.createDynamoDBCalls(config.aws) :
                 LocalDB.createLocalDBCalls(
