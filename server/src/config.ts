@@ -48,29 +48,31 @@ export interface ConfigState {
 
 export function loadCredentials(path: string)
 {
-        let awsConfig: AWSConfig = null;
-        let authConfig: BasicAuthConfig = null;
-        let mailgunConfig: MailgunConfig = null;
+        let aws: AWSConfig = null;
+        let basicAuth: BasicAuthConfig = null;
+        let mailgun: MailgunConfig = null;
+
         try {
-                awsConfig = <AWSConfig>FileSystem.loadJSONSync(
+                aws = <AWSConfig>FileSystem.loadJSONSync(
                         `${path}/credentials/aws.json`);
-                authConfig = <BasicAuthConfig>FileSystem.loadJSONSync(
+                basicAuth = <BasicAuthConfig>FileSystem.loadJSONSync(
                         `${path}/credentials/basicauth.json`);
-                mailgunConfig = <MailgunConfig>FileSystem.loadJSONSync(
+                mailgun = <MailgunConfig>FileSystem.loadJSONSync(
                         `${path}/credentials/mailgun.json`);
         } catch (e) {
                 console.log('Using example credentials');
-                awsConfig = <AWSConfig>FileSystem.loadJSONSync(
+                aws = <AWSConfig>FileSystem.loadJSONSync(
                         `${path}/example_credentials/aws.json`);
-                authConfig = <BasicAuthConfig>FileSystem.loadJSONSync(
+                basicAuth = <BasicAuthConfig>FileSystem.loadJSONSync(
                         `${path}/example_credentials/basicauth.json`);
-                mailgunConfig = <MailgunConfig>FileSystem.loadJSONSync(
+                mailgun = <MailgunConfig>FileSystem.loadJSONSync(
                         `${path}/example_credentials/mailgun.json`);
         }
+
         return {
-                aws: awsConfig,
-                basicAuth: authConfig,
-                mailgun: mailgunConfig,
+                aws,
+                basicAuth,
+                mailgun,
         };
 }
 

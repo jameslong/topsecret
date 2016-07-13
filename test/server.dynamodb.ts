@@ -13,8 +13,8 @@ Chai.use(ChaiAsPromised);
 
 // Load and init AWS
 import AWS = require('aws-sdk');
-import Config = require('../server/src/app/config');
-import DynamoDB = require('../server/src/app/db/dynamodb');
+import Config = require('../server/src/config');
+import DynamoDB = require('../server/src/dynamodb');
 
 const credentials = Config.loadCredentials('./server').aws;
 const config = {
@@ -28,7 +28,7 @@ const config = {
 AWS.config.update(credentials);
 const db = DynamoDB.createDynamoDBCalls(config);
 const player = TestHelpers.createPlayer0();
-const modifiedPlayer = Helpers.assign(player, { timezoneOffset: 10 });
+const modifiedPlayer = Helpers.assign(player, { utcOffset: 10 });
 const message0 = TestHelpers.createMessage0();
 const modifiedMessage0 = Helpers.assign(message0, { fallbackSent: true });
 const message1 = TestHelpers.createMessage1();

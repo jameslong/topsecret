@@ -6,18 +6,15 @@ const log = Logging.log; // Required for bunyan module to be included in build
 
 import App = require('./app');
 import Config = require('./config');
+import Helpers = require('../../core/src/app/utils/helpers');
 import Log = require('./../../core/src/app/log');
-import Request = require('./../../core/src/app/requesttypes');
 
-const config = Config.config;
 Config.releaseMode ?
         Log.debug('RELEASE MODE') :
         Log.debug('DEBUG MODE');
 
 const credentials = Config.loadCredentials('./');
-Object.assign(config.aws, credentials.aws);
-Object.assign(config.basicAuth, credentials.basicAuth);
-Object.assign(config.mailgun, credentials.mailgun);
+const config = Helpers.assign(Config.config, credentials);
 
 App.createState(config).then(state =>
         App.init(state)
