@@ -1,30 +1,32 @@
-import Clock = require('./../../../core/src/app/clock');
+import Clock = require('./../../core/src/app/clock');
 import Config = require('./config');
-import Data = require('../../../core/src/app/data');
-import DataValidation = require('../../../core/src/app/datavalidation');
-import FileSystem = require('../../../core/src/app/filesystem');
-import DBSetup = require('./db/dbsetup');
-import DBTypes = require('./../../../core/src/app/dbtypes');
-import KBPGP = require('./../../../core/src/app/kbpgp');
-import Helpers = require('./../../../core/src/app/utils/helpers');
-import Log = require('./../../../core/src/app/log');
-import Main = require('./../../../core/src/app/main');
-import Map = require('./../../../core/src/app/utils/map');
-import Message = require('./../../../core/src/app/message');
-import PostHandler = require('./posthandler/posthandler');
-import Profile = require('./../../../core/src/app/profile');
-import Prom = require('./../../../core/src/app/utils/promise');
-import Request = require('./../../../core/src/app/requesttypes');
-import Sender = require('./sender');
+import Data = require('../../core/src/app/data');
+import DataValidation = require('../../core/src/app/datavalidation');
+import DynamoDB = require('./dynamodb');
+import FileSystem = require('../../core/src/app/filesystem');
+import DBTypes = require('./../../core/src/app/dbtypes');
+import KBPGP = require('./../../core/src/app/kbpgp');
+import Helpers = require('./../../core/src/app/utils/helpers');
+import LocalDB = require('../../core/src/app/localdb');
+import Log = require('./../../core/src/app/log');
+import Main = require('./../../core/src/app/main');
+import Mailgun = require('./mailgun');
+import Map = require('./../../core/src/app/utils/map');
+import Message = require('./../../core/src/app/message');
+import PostHandler = require('./requesthandler');
+import Profile = require('./../../core/src/app/profile');
+import Prom = require('./../../core/src/app/utils/promise');
+import Request = require('./../../core/src/app/requesttypes');
 import Server = require('./server');
-import State = require('./../../../core/src/app/state');
+import State = require('./../../core/src/app/state');
 
 export interface State {
         config: Config.ConfigState;
-        server: Server.ServerState;
-        lastEvaluatedKey: string;
-        app: State.State;
         clock: Clock.Clock;
+        game: State.State;
+        lastEvaluatedKey: string; // Used to request next message from db
+        paused: boolean;
+        server: Server.ServerState;
 }
 
 export function createState (config: Config.ConfigState)
@@ -32,9 +34,17 @@ export function createState (config: Config.ConfigState)
         const server = Server.createServerState();
         const lastEvaluatedKey: string = null;
         const clock = Clock.createClock(config.timeFactor);
+        const paused = false;
 
-        return createGameState(config, server).then(app => {
-                return { config, server, lastEvaluatedKey, app, clock };
+        return createGameState(config, server).then(game => {
+                return {
+                        config,
+                        clock,
+                        game,
+                        lastEvaluatedKey,
+                        paused,
+                        server,
+                };
         });
 }
 
@@ -88,15 +98,19 @@ export function onGameData (
         server: Server.ServerState,
         gameData: State.GameData[])
 {
-        const send = Sender.createSendFn(
-                server.io,
-                config.useEmail,
-                config.content.htmlFooter,
-                config.content.textFooter,
-                config.mailgun.apiKey,
-                config.emailDomain);
-        const promises = DBSetup.createPromiseFactories(config, send);
+        const { useEmail, emailDomain } = config;
+        const { htmlFooter, textFooter } = config.content;
+        const emailAPIKey = config.credentials.mailgunApiKey;
+        const mailgun = Mailgun.createMailgun(emailAPIKey, emailDomain);
+        const send = (data: Message.MessageData) => useEmail ?
+                Mailgun.sendMail(mailgun, htmlFooter, textFooter, data) :
+                Server.sendMail(data);
 
+        const calls = config.useDynamoDB ?
+                DynamoDB.createDynamoDBCalls(config) :
+                LocalDB.createLocalDBCalls(
+                        LocalDB.createDB(), config.debugDBTimeoutMs);
+        const promises = DBTypes.createPromiseFactories(calls, send);
 
         const gameState: State.State = {
                 data: null,
@@ -115,7 +129,7 @@ export function updateGameState (state: State)
 {
         const config = state.config;
         return createGameState(state.config, state.server).then(gameState => {
-                state.app = gameState;
+                state.game = gameState;
                 return state;
         });
 }
@@ -130,7 +144,7 @@ export function updateWrapper (state: State)
 {
         // Log.debug('Update wrapper');
 
-        const paused = state.server.paused;
+        const paused = state.paused;
         const updatePromise = paused ?
                 Promise.resolve(state.lastEvaluatedKey) :
                 update(state);
@@ -145,7 +159,7 @@ export function updateWrapper (state: State)
 
 export function update (state: State)
 {
-        const gameState = state.app;
+        const gameState = state.game;
         const exclusiveStartKey = state.lastEvaluatedKey;
         state.clock = Clock.tick(state.clock);
 

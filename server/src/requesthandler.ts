@@ -1,19 +1,22 @@
-import App = require('../app');
+import App = require('./app');
 const Auth = require('basic-auth');
-import Careers = require('./careers');
-import Data = require('../../../../core/src/app/data');
-import DataValidation = require('../../../../core/src/app/datavalidation');
-import Demo = require('./demo');
-import FileSystem = require('../../../../core/src/app/filesystem');
-import Helpers = require('../../../../core/src/app/utils/helpers');
-import Log = require('../../../../core/src/app/log');
-import Message = require('../../../../core/src/app/message');
-import MessageHelpers = require('../../../../core/src/app/messagehelpers');
-import Player = require('../../../../core/src/app/player');
-import Reply = require('./reply');
-import ReplyOption = require('../../../../core/src/app/replyoption');
-import Request = require('../../../../core/src/app/requesttypes');
-import Server = require('../server');
+import Clock = require('../../core/src/app/clock');
+import Data = require('../../core/src/app/data');
+import DataValidation = require('../../core/src/app/datavalidation');
+import FileSystem = require('../../core/src/app/filesystem');
+import Helpers = require('../../core/src/app/utils/helpers');
+import Log = require('../../core/src/app/log');
+import Main = require('../../core/src/app/main');
+import Message = require('../../core/src/app/message');
+import MessageHelpers = require('../../core/src/app/messagehelpers');
+import Player = require('../../core/src/app/player');
+import Promises = require('../../core/src/app/promises');
+import PromisesReply = require('../../core/src/app/promisesreply');
+import ReplyOption = require('../../core/src/app/replyoption');
+import Request = require('../../core/src/app/requesttypes');
+import Server = require('./server');
+import State = require('../../core/src/app/state');
+import Str = require('../../core/src/app/utils/string');
 
 interface RequestHandler { (state: App.State, req: any, res: any): void; }
 
@@ -22,7 +25,9 @@ export function addRequestEndpoints (state: App.State)
         const serverState = state.server;
         const app = serverState.app;
 
-        const { user, password } = state.config.basicAuth;
+        const credentials = state.config.credentials;
+        const user = credentials.basicAuthUser;
+        const password = credentials.basicAuthPassword;
         const auth = state.config.useBasicAuth ?
                 (req: any, res: any, next: any) => {
                         authenticate(user, password, req, res, next);
@@ -174,9 +179,9 @@ export function beginDemo (state: App.State, req: any, res: any)
                 utcOffset,
         };
 
-        const groupData = App.getGroupData(state.app, narrativeName);
+        const groupData = App.getGroupData(state.game, narrativeName);
 
-        const promise = Demo.beginDemo(
+        const promise = beginGame(
                 state,
                 groupData,
                 email,
@@ -197,9 +202,9 @@ export function endDemo (state: App.State, req: any, res: any)
                 playerEmail: data.email,
         });
 
-        const promises = state.app.promises;
+        const promises = state.game.promises;
 
-        const promise = Demo.endDemo(state, data.email);
+        const promise = endGame(state, data.email);
         return createRequestCallback(res, promise);
 }
 
@@ -218,7 +223,7 @@ export function addPlayer (state: App.State, req: any, res: any)
         const lastName = data.lastName;
         const timezoneOffset = data.timezoneOffset;
 
-        const app = state.app;
+        const app = state.game;
         const promises = app.promises;
 
         const version = state.config.content.defaultNarrativeGroup;
@@ -239,7 +244,7 @@ export function deletePlayer (
 {
         const email = req.body.email;
 
-        const app = state.app;
+        const app = state.game;
         const promises = app.promises;
 
         const promise = promises.deletePlayer(email);
@@ -287,7 +292,7 @@ export function reply (state: App.State, req: any, res: any)
         };
 
         if (reply.inReplyToId !== null) {
-                const promise = Reply.handleReplyRequest(
+                const promise = handleReplyRequest(
                         state, reply);
                 return createRequestCallback(res, promise);
         } else {
@@ -334,19 +339,19 @@ export function localReply (state: App.State, req: any, res: any)
                 attachment: null,
         };
 
-        const promise = Reply.handleReplyRequest(state, reply);
+        const promise = handleReplyRequest(state, reply);
         return createRequestCallback(res, promise);
 }
 
 export function pause (state: App.State, req: any, res: any)
 {
-        state.server.paused = true;
+        state.paused = true;
         res.sendStatus(200);
 }
 
 export function unpause (state: App.State, req: any, res: any)
 {
-        state.server.paused = false;
+        state.paused = false;
         res.sendStatus(200);
 }
 
@@ -358,7 +363,7 @@ export function loadMessage (state: App.State, req: any, res: any)
                         threadName: string;
                 } = req.body;
 
-        const app = state.app;
+        const app = state.game;
         const config = state.config;
 
         const path = config.content.narrativeFolder;
@@ -381,7 +386,7 @@ export function saveMessage (state: App.State, req: any, res: any)
                         message: Message.ThreadMessage;
                 } = req.body;
 
-        const app = state.app;
+        const app = state.game;
         const config = state.config;
 
         const narrativeName = data.narrativeName;
@@ -411,7 +416,7 @@ export function saveReplyOption (
                         value: ReplyOption.ReplyOptions;
                 } = req.body;
 
-        const app = state.app;
+        const app = state.game;
         const config = state.config;
 
         const { name, narrativeName, value } = data;
@@ -438,7 +443,7 @@ export function deleteReplyOption (
                         name: string;
                 } = req.body;
 
-        const app = state.app;
+        const app = state.game;
         const config = state.config;
 
         const { name, narrativeName } = data;
@@ -464,7 +469,7 @@ export function deleteMessage (
                         messageName: string;
                 } = req.body;
 
-        const app = state.app;
+        const app = state.game;
         const config = state.config;
 
         const narrativeName = data.narrativeName;
@@ -491,7 +496,7 @@ export function saveString (state: App.State, req: any, res: any)
                         value: string;
                 } = req.body;
 
-        const app = state.app;
+        const app = state.game;
         const config = state.config;
 
         const narrativeName = data.narrativeName;
@@ -518,7 +523,7 @@ export function deleteString (
                         name: string;
                 } = req.body;
 
-        const app = state.app;
+        const app = state.game;
         const config = state.config;
 
         const narrativeName = data.narrativeName;
@@ -540,7 +545,7 @@ export function deleteString (
 
 export function narratives (state: App.State, req: any, res: any)
 {
-        const app = state.app;
+        const app = state.game;
         const config = state.config;
         const data: {} = req.query;
 
@@ -557,7 +562,7 @@ export function validateData (
 {
         const data: { narrativeName: string; } = req.query;
 
-        const app = state.app;
+        const app = state.game;
         const config = state.config;
 
         const path = config.content.narrativeFolder;
@@ -585,4 +590,192 @@ export function createRequestCallback (res: any, promise: Promise<any>)
         return promise.then(result =>
                 res.sendStatus(200)
         ).catch(err => res.sendStatus(500));
+}
+
+export function handleReplyRequest (
+        state: App.State, reply: Message.MailgunReply)
+{
+        const careersEmail = isCareersEmail(reply.to);
+        const timestampMs = Date.now();
+
+        if (careersEmail) {
+                return handleCareersEmail(state, reply);
+        } else {
+                const app = state.game;
+                const { data, promises } = app;
+                return PromisesReply.handleReplyMessage(
+                        reply,
+                        timestampMs,
+                        data,
+                        promises);
+        }
+}
+
+export function beginGame (
+        state: App.State,
+        groupData: State.GameData,
+        email: string,
+        playerData: PlayerApplicationData,
+        threadMessageName: string)
+{
+        const app = state.game;
+        const promises = app.promises;
+
+        const publicKey: string = null;
+        const firstName = playerData.firstName;
+        const lastName = playerData.lastName;
+        const version = state.config.content.defaultNarrativeGroup;
+        const utcOffset = playerData.utcOffset;
+        const player = Player.createPlayerState(
+                email, publicKey, version, firstName, lastName, utcOffset);
+        const timestampMs = Clock.gameTimeMs(state.clock);
+
+        return Promises.beginGame(
+                threadMessageName,
+                player,
+                timestampMs,
+                groupData,
+                promises);
+}
+
+export function endGame (state: App.State, email: string)
+{
+        const app = state.game;
+        const promises = app.promises;
+
+        return Promises.endGame(email, promises);
+}
+
+export function handleCareersEmail (
+        state: App.State,
+        reply: Message.MailgunReply)
+{
+        const defaultNarrativeGroup =
+                state.config.content.defaultNarrativeGroup;
+        const groupData = App.getGroupData(state.game, defaultNarrativeGroup);
+
+        const email = reply.from;
+        const subject = reply.subject;
+        const strippedBody = reply.strippedBody;
+
+        const resignationLetter = Str.contains(reply.subject, 'resign');
+
+        if (resignationLetter) {
+                return handleResignation(
+                        state,
+                        groupData,
+                        email);
+        } else {
+                const playerData = extractPlayerData(strippedBody);
+
+                return playerData  ?
+                        handleValidApplication(
+                                state,
+                                groupData,
+                                email,
+                                playerData) :
+                        handleInvalidApplication(
+                                state,
+                                groupData,
+                                email);
+        }
+}
+
+export function handleResignation (
+        state: App.State,
+        groupData: State.GameData,
+        email: string)
+{
+        const app = state.game;
+        const promises = app.promises;
+
+        const messageName = state.config.content.resignationThread;
+
+        return Promises.resign(messageName, email, groupData, promises);
+}
+
+export function handleValidApplication (
+        state: App.State,
+        groupData: State.GameData,
+        email: string,
+        playerData: PlayerApplicationData)
+{
+        const config = state.config;
+
+        const initialThreadMessage = playerData.usePGP ?
+                config.content.validApplicationThreadPGP :
+                config.content.validApplicationThread;
+
+        return beginGame(
+                state,
+                groupData,
+                email,
+                playerData,
+                initialThreadMessage);
+}
+
+export function handleInvalidApplication (
+        state: App.State,
+        groupData: State.GameData,
+        email: string)
+{
+        const app = state.game;
+        const messageName = state.config.content.invalidApplicationThread;
+        const threadStartName: string = null;
+        const inReplyToId: string = null;
+        const data = Main.createPlayerlessMessageData(
+                groupData,
+                email,
+                messageName,
+                threadStartName,
+                inReplyToId);
+        return app.promises.send(data);
+}
+
+export function isCareersEmail (to: string): boolean
+{
+        return (to.toLowerCase().indexOf('careers') !== -1);
+}
+
+export interface PlayerApplicationData {
+        firstName: string;
+        lastName: string;
+        usePGP: boolean;
+        utcOffset: number;
+}
+
+export function extractPlayerData (applicationText: string)
+        : PlayerApplicationData
+{
+        const firstNameLabel = 'First Name:';
+        const lastNameLabel = 'Last Name:';
+        const pgpLabel = 'Use PGP Encryption (Y/N):';
+        const timezoneLabel = 'UTC offset (hours):';
+
+        const firstName = extractFormField(applicationText, firstNameLabel);
+        const lastName = extractFormField(applicationText, lastNameLabel);
+        const pgp = extractFormField(applicationText, pgpLabel);
+        const usePGP = (pgp && pgp.toLowerCase().indexOf('y') !== -1);
+        const timeOffset = extractFormField(applicationText, timezoneLabel);
+        const validOffset = timeOffset && !isNaN(<number><any>timeOffset);
+        const utcOffset = parseInt(timeOffset) || 0;
+
+        return (firstName && lastName && pgp && validOffset) ?
+                {
+                        firstName,
+                        lastName,
+                        usePGP,
+                        utcOffset,
+                } :
+                null;
+}
+
+export function extractFormField (text: string, label: string): string
+{
+        const lines = Str.splitByLines(text);
+        const matches = lines.filter(line => Str.beginsWith(line, label));
+
+        return (matches.length > 0) ?
+                (matches[0].substring(label.length).trim() || null) :
+                null;
 }

@@ -1,22 +1,22 @@
-/// <reference path='../../../../typings/aws-sdk/aws-sdk.d.ts'/>
-/// <reference path='../../../../typings/dynamodb-doc/dynamodb-doc.d.ts'/>
+/// <reference path='../../typings/aws-sdk/aws-sdk.d.ts'/>
+/// <reference path='../../typings/dynamodb-doc/dynamodb-doc.d.ts'/>
 
-import Config = require('../config');
+import Config = require('./config');
 import DynamoDB = require('dynamodb-doc');
-import DBTypes = require('../../../../core/src/app/dbtypes');
-import Func = require('../../../../core/src/app/utils/function');
-import Log = require('../../../../core/src/app/log');
-import Map = require('../../../../core/src/app/utils/map');
-import Message = require('../../../../core/src/app/message');
-import MessageHelpers = require('../../../../core/src/app/messagehelpers');
-import Player = require('../../../../core/src/app/player');
-import Request = require('../../../../core/src/app/requesttypes');
+import DBTypes = require('../../core/src/app/dbtypes');
+import Func = require('../../core/src/app/utils/function');
+import Log = require('../../core/src/app/log');
+import Map = require('../../core/src/app/utils/map');
+import Message = require('../../core/src/app/message');
+import MessageHelpers = require('../../core/src/app/messagehelpers');
+import Player = require('../../core/src/app/player');
+import Request = require('../../core/src/app/requesttypes');
 
 import AWS = require('aws-sdk');
 
 type DynamoDoc = DynamoDB.DynamoDB;
 
-function promiseFactory<T, U> (
+function bind<T, U> (
         docClient: DynamoDoc,
         tableName: string,
         requestFn: (
@@ -27,54 +27,32 @@ function promiseFactory<T, U> (
         return (params: T) => requestFn(docClient, tableName, params);
 }
 
-export function createDynamoDBCalls (config: Config.AWSConfig): DBTypes.DBCalls
+export function createDynamoDBCalls (config: Config.ConfigState): DBTypes.DBCalls
 {
-        const {
-                accessKeyId,
-                secretAccessKey,
-                region,
-                messagesTableName,
-                playersTableName } = config;
-
+        const credentials = config.credentials;
+        const messageTable = config.messagesTableName;
+        const playerTable = config.playersTableName;
+        const accessKeyId = credentials.awsAccessKeyId;
+        const secretAccessKey = credentials.awsSecretAccessKey;
+        const region = credentials.awsRegion;
         (<any>AWS.config.update)({ accessKeyId, secretAccessKey, region });
-        const docClient = <DynamoDoc>(new AWS.DynamoDB.DocumentClient({region: 'us-east-1'}));
-
-        const addPlayerLocal = promiseFactory(
-                docClient, playersTableName, addPlayer);
-        const getPlayerLocal = promiseFactory(
-                docClient, playersTableName, getPlayer);
-        const updatePlayerLocal = promiseFactory(
-                docClient, playersTableName, updatePlayer);
-        const deletePlayerLocal = promiseFactory(
-                docClient, playersTableName, deletePlayer);
-        const deleteAllMessagesLocal = promiseFactory(
-                docClient, messagesTableName, deleteAllMessages);
-        const addMessageLocal = promiseFactory(
-                docClient, messagesTableName, addMessage);
-        const updateMessageLocal = promiseFactory(
-                docClient, messagesTableName, updateMessage);
-        const deleteMessageLocal = promiseFactory(
-                docClient, messagesTableName, deleteMessage);
-        const getMessageLocal = promiseFactory(
-                docClient, messagesTableName, getMessage);
-        const getMessagesLocal = promiseFactory(
-                docClient, messagesTableName, getMessages);
+        const doc = <DynamoDoc>(new AWS.DynamoDB.DocumentClient({region}));
 
         return {
-                addPlayer: addPlayerLocal,
-                getPlayer: getPlayerLocal,
-                updatePlayer: updatePlayerLocal,
-                deletePlayer: deletePlayerLocal,
-                deleteAllMessages: deleteAllMessagesLocal,
-                addMessage: addMessageLocal,
-                updateMessage: updateMessageLocal,
-                deleteMessage: deleteMessageLocal,
-                getMessage: getMessageLocal,
-                getMessages: getMessagesLocal,
+                addPlayer: bind(doc, playerTable, addPlayer),
+                getPlayer: bind(doc, playerTable, getPlayer),
+                updatePlayer: bind(doc, playerTable, updatePlayer),
+                deletePlayer: bind(doc, playerTable, deletePlayer),
+                deleteAllMessages: bind(doc, messageTable, deleteAllMessages),
+                addMessage: bind(doc, messageTable, addMessage),
+                updateMessage: bind(doc, messageTable, updateMessage),
+                deleteMessage: bind(doc, messageTable, deleteMessage),
+                getMessage: bind(doc, messageTable, getMessage),
+                getMessages: bind(doc, messageTable, getMessages),
         };
 }
 
-export function returnPromise<T, U, V> (
+export function promise<T, U, V> (
         request: string,
         docClient: DynamoDoc,
         requestFn: (params: T, callback: Request.Callback<U>) => void,
@@ -112,7 +90,7 @@ export function addPlayer (
                 ReturnValues: 'NONE',
         };
 
-        return returnPromise(
+        return promise(
                 'addPlayer',
                 docClient,
                 docClient.put,
@@ -132,7 +110,7 @@ export function getPlayer (
                 TableName: playersTableName,
         };
 
-        return returnPromise(
+        return promise(
                 'getPlayer',
                 docClient,
                 docClient.get,
@@ -150,8 +128,7 @@ export function updatePlayer (
                 TableName: playersTableName,
         };
 
-        return returnPromise(
-                'updatePlayer', docClient, docClient.put, awsParams);
+        return promise('updatePlayer', docClient, docClient.put, awsParams);
 };
 
 export function deletePlayer (
@@ -165,7 +142,7 @@ export function deletePlayer (
                 ReturnValues: 'ALL_OLD',
         };
 
-        return returnPromise(
+        return promise(
                 'deletePlayer',
                 docClient,
                 docClient.delete,
@@ -186,7 +163,7 @@ export function addMessage (
                 ReturnValues: 'NONE',
         };
 
-        return returnPromise(
+        return promise(
                 'addMessage',
                 docClient,
                 docClient.put,
@@ -207,7 +184,7 @@ export function updateMessage (
                 ReturnValues: 'NONE',
         };
 
-        return returnPromise(
+        return promise(
                 'updateMessage',
                 docClient,
                 docClient.put,
@@ -227,7 +204,7 @@ export function getMessage (
                 TableName: messagesTableName,
         };
 
-        return returnPromise(
+        return promise(
                 'getMessage',
                 docClient,
                 docClient.get,
@@ -263,7 +240,7 @@ export function getMessages (
                 };
         }
 
-        return returnPromise(
+        return promise(
                 'getMessages', docClient, docClient.scan, awsParams, resultMap);
 };
 
@@ -280,7 +257,7 @@ export function deleteMessage (
                 ReturnValues: 'ALL_OLD',
         };
 
-        return returnPromise(
+        return promise(
                 'deleteMessage',
                 docClient,
                 docClient.delete,
@@ -342,8 +319,7 @@ export function queryByEmail (
                 TableName: tableName,
         };
 
-        return returnPromise(
-                'queryByEmail', docClient, docClient.query, queryParams);
+        return promise('queryByEmail', docClient, docClient.query, queryParams);
 }
 
 export function deleteById (
@@ -365,6 +341,6 @@ export function deleteById (
                 RequestItems: requestItems,
         };
 
-        return returnPromise(
+        return promise(
                 'deleteById', docClient, docClient.batchWrite, queryParams);
 }
