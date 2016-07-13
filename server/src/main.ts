@@ -6,13 +6,11 @@ const log = Logging.log; // Required for bunyan module to be included in build
 
 import App = require('./app');
 import Config = require('./config');
-import ConfigData = require('./configdata');
 import Log = require('./../../core/src/app/log');
 import Request = require('./../../core/src/app/requesttypes');
 
-const config = ConfigData.config;
-
-ConfigData.releaseMode ?
+const config = Config.config;
+Config.releaseMode ?
         Log.debug('RELEASE MODE') :
         Log.debug('DEBUG MODE');
 
