@@ -134,7 +134,7 @@
                                                         "chmod +x ./awslogs-agent-setup.py",
                                                         "./awslogs-agent-setup.py -n -r us-east-1 -c topsecret/server/awslogs.cfg",
                                                         "cd topsecret/server",
-                                                        "node build/server/src/app/main.js"
+                                                        "node build/server/src/main.js"
                                                 ] ]
                                         }
                                 }
