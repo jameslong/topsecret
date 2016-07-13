@@ -22,10 +22,11 @@ import State = require('./../../core/src/app/state');
 
 export interface State {
         config: Config.ConfigState;
-        server: Server.ServerState;
-        lastEvaluatedKey: string;
-        app: State.State;
         clock: Clock.Clock;
+        game: State.State;
+        lastEvaluatedKey: string; // Used to request next message from db
+        paused: boolean;
+        server: Server.ServerState;
 }
 
 export function createState (config: Config.ConfigState)
@@ -33,9 +34,17 @@ export function createState (config: Config.ConfigState)
         const server = Server.createServerState();
         const lastEvaluatedKey: string = null;
         const clock = Clock.createClock(config.timeFactor);
+        const paused = false;
 
-        return createGameState(config, server).then(app => {
-                return { config, server, lastEvaluatedKey, app, clock };
+        return createGameState(config, server).then(game => {
+                return {
+                        config,
+                        clock,
+                        game,
+                        lastEvaluatedKey,
+                        paused,
+                        server,
+                };
         });
 }
 
@@ -120,7 +129,7 @@ export function updateGameState (state: State)
 {
         const config = state.config;
         return createGameState(state.config, state.server).then(gameState => {
-                state.app = gameState;
+                state.game = gameState;
                 return state;
         });
 }
@@ -135,7 +144,7 @@ export function updateWrapper (state: State)
 {
         // Log.debug('Update wrapper');
 
-        const paused = state.server.paused;
+        const paused = state.paused;
         const updatePromise = paused ?
                 Promise.resolve(state.lastEvaluatedKey) :
                 update(state);
@@ -150,7 +159,7 @@ export function updateWrapper (state: State)
 
 export function update (state: State)
 {
-        const gameState = state.app;
+        const gameState = state.game;
         const exclusiveStartKey = state.lastEvaluatedKey;
         state.clock = Clock.tick(state.clock);
 

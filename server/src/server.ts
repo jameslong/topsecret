@@ -9,8 +9,6 @@ import express = require('express');
 import bodyParser = require('body-parser');
 import multer = require('multer');
 
-const app = express();
-
 export interface RequestHandler {
         (req: any, res: any, next: any): void;
 }
@@ -24,28 +22,27 @@ export interface ExpressApp {
 export interface ServerState {
         app: ExpressApp;
         server: any;
-        paused: boolean;
 }
 
 export function createServerState (): ServerState
 {
+        const app = express();
         app.use(bodyParser.urlencoded({
                 extended: true
         }));
         app.use(bodyParser.json());
         app.use(multer({}));
-        app.use(function(req: any, res: any, next: any) {
-                          res.header("Access-Control-Allow-Origin", "*");
-                          res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-                          next();
-                });
+        app.use(function (req: any, res: any, next: any) {
+                  res.header("Access-Control-Allow-Origin", "*");
+                  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+                  next();
+        });
 
         const server = require('http').Server(app);
 
         return {
-                app: app,
-                server: server,
-                paused: false,
+                app,
+                server,
         };
 }
 

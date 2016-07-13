@@ -179,7 +179,7 @@ export function beginDemo (state: App.State, req: any, res: any)
                 utcOffset,
         };
 
-        const groupData = App.getGroupData(state.app, narrativeName);
+        const groupData = App.getGroupData(state.game, narrativeName);
 
         const promise = beginGame(
                 state,
@@ -202,7 +202,7 @@ export function endDemo (state: App.State, req: any, res: any)
                 playerEmail: data.email,
         });
 
-        const promises = state.app.promises;
+        const promises = state.game.promises;
 
         const promise = endGame(state, data.email);
         return createRequestCallback(res, promise);
@@ -223,7 +223,7 @@ export function addPlayer (state: App.State, req: any, res: any)
         const lastName = data.lastName;
         const timezoneOffset = data.timezoneOffset;
 
-        const app = state.app;
+        const app = state.game;
         const promises = app.promises;
 
         const version = state.config.content.defaultNarrativeGroup;
@@ -244,7 +244,7 @@ export function deletePlayer (
 {
         const email = req.body.email;
 
-        const app = state.app;
+        const app = state.game;
         const promises = app.promises;
 
         const promise = promises.deletePlayer(email);
@@ -345,13 +345,13 @@ export function localReply (state: App.State, req: any, res: any)
 
 export function pause (state: App.State, req: any, res: any)
 {
-        state.server.paused = true;
+        state.paused = true;
         res.sendStatus(200);
 }
 
 export function unpause (state: App.State, req: any, res: any)
 {
-        state.server.paused = false;
+        state.paused = false;
         res.sendStatus(200);
 }
 
@@ -363,7 +363,7 @@ export function loadMessage (state: App.State, req: any, res: any)
                         threadName: string;
                 } = req.body;
 
-        const app = state.app;
+        const app = state.game;
         const config = state.config;
 
         const path = config.content.narrativeFolder;
@@ -386,7 +386,7 @@ export function saveMessage (state: App.State, req: any, res: any)
                         message: Message.ThreadMessage;
                 } = req.body;
 
-        const app = state.app;
+        const app = state.game;
         const config = state.config;
 
         const narrativeName = data.narrativeName;
@@ -416,7 +416,7 @@ export function saveReplyOption (
                         value: ReplyOption.ReplyOptions;
                 } = req.body;
 
-        const app = state.app;
+        const app = state.game;
         const config = state.config;
 
         const { name, narrativeName, value } = data;
@@ -443,7 +443,7 @@ export function deleteReplyOption (
                         name: string;
                 } = req.body;
 
-        const app = state.app;
+        const app = state.game;
         const config = state.config;
 
         const { name, narrativeName } = data;
@@ -469,7 +469,7 @@ export function deleteMessage (
                         messageName: string;
                 } = req.body;
 
-        const app = state.app;
+        const app = state.game;
         const config = state.config;
 
         const narrativeName = data.narrativeName;
@@ -496,7 +496,7 @@ export function saveString (state: App.State, req: any, res: any)
                         value: string;
                 } = req.body;
 
-        const app = state.app;
+        const app = state.game;
         const config = state.config;
 
         const narrativeName = data.narrativeName;
@@ -523,7 +523,7 @@ export function deleteString (
                         name: string;
                 } = req.body;
 
-        const app = state.app;
+        const app = state.game;
         const config = state.config;
 
         const narrativeName = data.narrativeName;
@@ -545,7 +545,7 @@ export function deleteString (
 
 export function narratives (state: App.State, req: any, res: any)
 {
-        const app = state.app;
+        const app = state.game;
         const config = state.config;
         const data: {} = req.query;
 
@@ -562,7 +562,7 @@ export function validateData (
 {
         const data: { narrativeName: string; } = req.query;
 
-        const app = state.app;
+        const app = state.game;
         const config = state.config;
 
         const path = config.content.narrativeFolder;
@@ -601,7 +601,7 @@ export function handleReplyRequest (
         if (careersEmail) {
                 return handleCareersEmail(state, reply);
         } else {
-                const app = state.app;
+                const app = state.game;
                 const { data, promises } = app;
                 return PromisesReply.handleReplyMessage(
                         reply,
@@ -618,7 +618,7 @@ export function beginGame (
         playerData: PlayerApplicationData,
         threadMessageName: string)
 {
-        const app = state.app;
+        const app = state.game;
         const promises = app.promises;
 
         const publicKey: string = null;
@@ -640,7 +640,7 @@ export function beginGame (
 
 export function endGame (state: App.State, email: string)
 {
-        const app = state.app;
+        const app = state.game;
         const promises = app.promises;
 
         return Promises.endGame(email, promises);
@@ -652,7 +652,7 @@ export function handleCareersEmail (
 {
         const defaultNarrativeGroup =
                 state.config.content.defaultNarrativeGroup;
-        const groupData = App.getGroupData(state.app, defaultNarrativeGroup);
+        const groupData = App.getGroupData(state.game, defaultNarrativeGroup);
 
         const email = reply.from;
         const subject = reply.subject;
@@ -686,7 +686,7 @@ export function handleResignation (
         groupData: State.GameData,
         email: string)
 {
-        const app = state.app;
+        const app = state.game;
         const promises = app.promises;
 
         const messageName = state.config.content.resignationThread;
@@ -719,7 +719,7 @@ export function handleInvalidApplication (
         groupData: State.GameData,
         email: string)
 {
-        const app = state.app;
+        const app = state.game;
         const messageName = state.config.content.invalidApplicationThread;
         const threadStartName: string = null;
         const inReplyToId: string = null;
