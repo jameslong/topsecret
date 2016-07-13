@@ -1,16 +1,16 @@
-/// <reference path='../../../typings/aws-sdk/aws-sdk.d.ts'/>
-/// <reference path='../../../typings/dynamodb-doc/dynamodb-doc.d.ts'/>
+/// <reference path='../../typings/aws-sdk/aws-sdk.d.ts'/>
+/// <reference path='../../typings/dynamodb-doc/dynamodb-doc.d.ts'/>
 
-import Config = require('../config');
+import Config = require('./config');
 import DynamoDB = require('dynamodb-doc');
-import DBTypes = require('../../../core/src/app/dbtypes');
-import Func = require('../../../core/src/app/utils/function');
-import Log = require('../../../core/src/app/log');
-import Map = require('../../../core/src/app/utils/map');
-import Message = require('../../../core/src/app/message');
-import MessageHelpers = require('../../../core/src/app/messagehelpers');
-import Player = require('../../../core/src/app/player');
-import Request = require('../../../core/src/app/requesttypes');
+import DBTypes = require('../../core/src/app/dbtypes');
+import Func = require('../../core/src/app/utils/function');
+import Log = require('../../core/src/app/log');
+import Map = require('../../core/src/app/utils/map');
+import Message = require('../../core/src/app/message');
+import MessageHelpers = require('../../core/src/app/messagehelpers');
+import Player = require('../../core/src/app/player');
+import Request = require('../../core/src/app/requesttypes');
 
 import AWS = require('aws-sdk');
 

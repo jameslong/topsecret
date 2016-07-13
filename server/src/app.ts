@@ -2,11 +2,12 @@ import Clock = require('./../../core/src/app/clock');
 import Config = require('./config');
 import Data = require('../../core/src/app/data');
 import DataValidation = require('../../core/src/app/datavalidation');
+import DynamoDB = require('./dynamodb');
 import FileSystem = require('../../core/src/app/filesystem');
-import DBSetup = require('./db/dbsetup');
 import DBTypes = require('./../../core/src/app/dbtypes');
 import KBPGP = require('./../../core/src/app/kbpgp');
 import Helpers = require('./../../core/src/app/utils/helpers');
+import LocalDB = require('../../core/src/app/localdb');
 import Log = require('./../../core/src/app/log');
 import Main = require('./../../core/src/app/main');
 import Map = require('./../../core/src/app/utils/map');
@@ -95,8 +96,11 @@ export function onGameData (
                 config.content.textFooter,
                 config.mailgun.apiKey,
                 config.emailDomain);
-        const promises = DBSetup.createPromiseFactories(config, send);
-
+        const calls = config.useDynamoDB ?
+                DynamoDB.createDynamoDBCalls(config.aws) :
+                LocalDB.createLocalDBCalls(
+                        LocalDB.createDB(), config.debugDBTimeoutMs);
+        const promises = DBTypes.createPromiseFactories(calls, send);
 
         const gameState: State.State = {
                 data: null,
