@@ -96,10 +96,10 @@ export function addPlayerLocal (
         db: DBState,
         playerState: DBTypes.AddPlayerParams)
 {
-        var error: Request.Error = undefined;
+        let error: Request.Error = undefined;
 
-        var email = playerState.email;
-        var inUse = (db.players[email] !== undefined);
+        const email = playerState.email;
+        const inUse = (db.players[email] !== undefined);
 
         if (inUse) {
                 error = {
@@ -117,10 +117,10 @@ export function updatePlayerLocal (
         db: DBState,
         player: DBTypes.UpdatePlayerParams)
 {
-        var error: Request.Error = undefined;
+        let error: Request.Error = undefined;
 
-        var email = player.email;
-        var inUse = (db.players[email] !== undefined);
+        const email = player.email;
+        const inUse = (db.players[email] !== undefined);
 
         if (inUse) {
                 db.players[email] = player;
@@ -138,9 +138,9 @@ export function deletePlayerLocal (
         db: DBState,
         email: DBTypes.DeletePlayerParams)
 {
-        var error: Request.Error = undefined;
+        let error: Request.Error = undefined;
 
-        var playerExists = (db.players[email] !== undefined);
+        const playerExists = (db.players[email] !== undefined);
         const player = playerExists ? db.players[email] : null;
 
         if (playerExists) {
@@ -159,7 +159,7 @@ export function deleteAllMessagesLocal (
         db: DBState,
         email: DBTypes.DeleteAllMessagesParams)
 {
-        var error: Request.Error = undefined;
+        let error: Request.Error = undefined;
 
         db.messages = Map.filter(db.messages, function (messageState)
                 {
@@ -173,9 +173,9 @@ export function addMessageLocal (
         db: DBState,
         messageState: DBTypes.AddMessageParams)
 {
-        var error: Request.Error = undefined;
+        let error: Request.Error = undefined;
 
-        var id = messageState.id;
+        const id = messageState.id;
 
         db.messages[id] = messageState;
 
@@ -186,9 +186,9 @@ export function updateMessageLocal (
         db: DBState,
         messageState: DBTypes.UpdateMessageParams)
 {
-        var error: Request.Error = undefined;
+        let error: Request.Error = undefined;
 
-        var id = messageState.id;
+        const id = messageState.id;
 
         db.messages[id] = messageState;
 
@@ -199,9 +199,9 @@ export function deleteMessageLocal (
         db: DBState,
         id: DBTypes.DeleteMessageParams)
 {
-        var error: Request.Error = undefined;
+        let error: Request.Error = undefined;
 
-        var messageState = db.messages[id];
+        const messageState = db.messages[id];
         delete db.messages[id];
 
         return returnPromise(error, messageState);
@@ -211,9 +211,9 @@ export function getMessageLocal (
         db: DBState,
         id: DBTypes.GetMessageParams)
 {
-        var error: Request.Error = undefined;
+        let error: Request.Error = undefined;
 
-        var messageState = (db.messages[id] || null);
+        const messageState = (db.messages[id] || null);
 
         return returnPromise(error, messageState);
 }
@@ -256,6 +256,6 @@ export function getPlayerLocal (
         db: DBState,
         email: DBTypes.GetPlayerParams)
 {
-        var data = db.players[email] || null;
+        const data = db.players[email] || null;
         return returnPromise(null, data);
 }

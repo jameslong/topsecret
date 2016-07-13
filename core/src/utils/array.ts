@@ -80,11 +80,10 @@ export function nextValue<T>(array: T[], value: T)
 
 export function partition<T> (list: T[], predicate: Predicate<T>): T[][]
 {
-        var pass: T[] = [];
-        var fail: T[] = [];
+        let pass: T[] = [];
+        let fail: T[] = [];
 
-        list.forEach(function (value, index, list)
-        {
+        list.forEach((value, index, list) => {
                 (predicate(value, index, list) ? pass : fail).push(value);
         });
 
@@ -110,10 +109,10 @@ export function some<T> (list: T[], predicate: Predicate<T>)
 
 export function valueOf<T> (list: T[], predicate: Predicate<T>): T
 {
-        var length = list.length;
+        const length = list.length;
 
-        for (var index = 0; index < length; index += 1) {
-                var value = list[index];
+        for (let index = 0; index < length; index += 1) {
+                const value = list[index];
                 if (predicate(value, index, list)) {
                         return value;
                 }

@@ -18,7 +18,7 @@ export interface MessageState {
         threadStartName: string;
 }
 
-export var ThreadMessageTypes = {
+export const ThreadMessageTypes = {
         DEFAULT: 'default',
         EMPTY: 'empty',
 };

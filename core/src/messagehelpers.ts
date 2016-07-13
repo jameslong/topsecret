@@ -93,9 +93,9 @@ export function getSelectedReply (
         options: Message.NamedThreadDelay[],
         reply: string): string
 {
-        var replyBodyLower = reply.toLowerCase();
+        const replyBodyLower = reply.toLowerCase();
 
-        var selectedOption = Arr.valueOf(options, (option) => {
+        const selectedOption = Arr.valueOf(options, (option) => {
                         return Arr.every(option.matches, (match) =>
                                 Str.containsWord(replyBodyLower, match))
                 });
@@ -120,7 +120,7 @@ export function createMessageId (email: string, uid: number): string
 
 export function insertMessageVars (body: string, vars: Map.Map<Script.Atom>)
 {
-        var replacer = function (match: string, $1: string): string
+        const replacer = function (match: string, $1: string): string
                 {
                         return (`${vars[$1]}` || match);
                 };
@@ -130,7 +130,7 @@ export function insertMessageVars (body: string, vars: Map.Map<Script.Atom>)
 export function hasReplyOptions (
         name: string, threadData: Map.Map<Message.ThreadMessage>): boolean
 {
-        var threadMessage = threadData[name];
+        const threadMessage = threadData[name];
         return (threadMessage.replyOptions !== null);
 }
 

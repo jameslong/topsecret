@@ -82,7 +82,7 @@ export function generateKeyPair (userid: string, asp: Kbpgp.ASP)
 
 export function signEncrypt (data: EncryptData)
 {
-        var params = {
+        const params = {
                 msg: data.text,
                 encrypt_for: data.to,
                 sign_with: data.from,

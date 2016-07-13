@@ -173,7 +173,7 @@ export function isValidKeyReply (
 
 export function extractPublicKey (message: string): string
 {
-        var reg = /-----BEGIN PGP PUBLIC KEY BLOCK-----[\s\S]*?-----END PGP PUBLIC KEY BLOCK-----/;
-        var matches = message.match(reg);
+        const reg = /-----BEGIN PGP PUBLIC KEY BLOCK-----[\s\S]*?-----END PGP PUBLIC KEY BLOCK-----/;
+        const matches = message.match(reg);
         return (matches ? matches[0] : null);
 }

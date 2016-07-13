@@ -11,8 +11,8 @@ export function concatClassNames (map: Map.Map<boolean>)
 
 export function contains (superset: string, subset: string): boolean
 {
-        var supersetLC = superset.toLowerCase();
-        var subsetLC = subset.toLowerCase();
+        const supersetLC = superset.toLowerCase();
+        const subsetLC = subset.toLowerCase();
 
         return (supersetLC.indexOf(subsetLC) !== -1);
 }
@@ -55,7 +55,7 @@ export function removePath (text: string)
 export function split<T> (
         text: string, separator: string, replacer: (text: string) => T): T[]
 {
-        var parts = text.split(separator);
+        const parts = text.split(separator);
         return parts.map(replacer);
 }
 
