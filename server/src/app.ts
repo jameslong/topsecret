@@ -1,7 +1,6 @@
 import Clock = require('./../../core/src/clock');
 import Config = require('./config');
 import Data = require('../../core/src/data');
-import DataValidation = require('../../core/src/datavalidation');
 import DynamoDB = require('./dynamodb');
 import FileSystem = require('../../core/src/filesystem');
 import DBTypes = require('./../../core/src/dbtypes');
@@ -66,7 +65,7 @@ export function createGameState (
         const replyOptionSchema = FileSystem.loadJSONSync<JSON>(
                 content.replyOptionSchemaPath);
         const dataErrors = narrativeData.reduce((result, narrative) => {
-                const errors = DataValidation.getDataErrors(
+                const errors = Data.getDataErrors(
                         narrative,
                         profileSchema,
                         messageSchema,
