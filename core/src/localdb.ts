@@ -6,7 +6,6 @@ import MathUtils = require('./utils/math');
 import Message = require('./message');
 import Player = require('./player');
 import Prom = require('./utils/promise');
-import Request = require('./requesttypes');
 
 export interface DBState {
         players: Map.Map<Player.PlayerState>;
@@ -19,6 +18,11 @@ export function createDB (): DBState
                 players: {},
                 messages: {},
         };
+}
+
+export interface Error {
+        code: string;
+        message: string;
 }
 
 type DBPromise<T, U> = <T, U>(db: DBState, params: T)=> Promise<U>;
@@ -52,7 +56,7 @@ export function createLocalDBCalls (db: DBState, timeoutMs: number)
         };
 }
 
-function promise<T> (err: Request.Error, result: T)
+function promise<T> (err: Error, result: T)
 {
         return new Promise<T>((resolve, reject) =>
                 err ? reject(err) : resolve(result)
@@ -63,7 +67,7 @@ export function addPlayer (
         db: DBState,
         playerState: DBTypes.AddPlayerParams)
 {
-        let error: Request.Error = undefined;
+        let error: Error = undefined;
 
         const email = playerState.email;
         const inUse = (db.players[email] !== undefined);
@@ -84,7 +88,7 @@ export function updatePlayer (
         db: DBState,
         player: DBTypes.UpdatePlayerParams)
 {
-        let error: Request.Error = undefined;
+        let error: Error = undefined;
 
         const email = player.email;
         const inUse = (db.players[email] !== undefined);
@@ -105,7 +109,7 @@ export function deletePlayer (
         db: DBState,
         email: DBTypes.DeletePlayerParams)
 {
-        let error: Request.Error = undefined;
+        let error: Error = undefined;
 
         const playerExists = (db.players[email] !== undefined);
         const player = playerExists ? db.players[email] : null;
@@ -126,7 +130,7 @@ export function deleteAllMessages (
         db: DBState,
         email: DBTypes.DeleteAllMessagesParams)
 {
-        let error: Request.Error = undefined;
+        let error: Error = undefined;
 
         db.messages = Map.filter(db.messages, function (messageState)
                 {
@@ -140,7 +144,7 @@ export function addMessage (
         db: DBState,
         messageState: DBTypes.AddMessageParams)
 {
-        let error: Request.Error = undefined;
+        let error: Error = undefined;
 
         const id = messageState.id;
 
@@ -153,7 +157,7 @@ export function updateMessage (
         db: DBState,
         messageState: DBTypes.UpdateMessageParams)
 {
-        let error: Request.Error = undefined;
+        let error: Error = undefined;
 
         const id = messageState.id;
 
@@ -166,7 +170,7 @@ export function deleteMessage (
         db: DBState,
         id: DBTypes.DeleteMessageParams)
 {
-        let error: Request.Error = undefined;
+        let error: Error = undefined;
 
         const messageState = db.messages[id];
         delete db.messages[id];
@@ -178,7 +182,7 @@ export function getMessage (
         db: DBState,
         id: DBTypes.GetMessageParams)
 {
-        let error: Request.Error = undefined;
+        let error: Error = undefined;
 
         const messageState = (db.messages[id] || null);
 

@@ -16,7 +16,6 @@ import Message = require('./../../core/src/message');
 import PostHandler = require('./requesthandler');
 import Profile = require('./../../core/src/profile');
 import Prom = require('./../../core/src/utils/promise');
-import Request = require('./../../core/src/requesttypes');
 import Server = require('./server');
 import State = require('./../../core/src/state');
 

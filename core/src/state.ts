@@ -5,7 +5,6 @@ import Map = require('./utils/map');
 import Message = require('./message');
 import Profile = require('./profile');
 import ReplyOption = require('./replyoption');
-import Request = require('./requesttypes');
 
 export interface NarrativeData {
         name: string;

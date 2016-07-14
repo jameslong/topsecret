@@ -6,7 +6,6 @@ import Kbpgp = require('kbpgp');
 import Log = require('./log');
 import Map = require('./utils/map');
 import Profile = require('./profile');
-import Request = require('./requesttypes');
 import Str = require('./utils/string');
 
 export type KeyManagers = Map.Map<Kbpgp.KeyManagerInstance>;

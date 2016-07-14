@@ -8,7 +8,6 @@ import Player = require('./player');
 import Prom = require('./utils/promise');
 import Promises = require('./promises');
 import ReplyOption = require('./replyoption');
-import Request = require('./requesttypes');
 import State = require('./state');
 
 export function tick (

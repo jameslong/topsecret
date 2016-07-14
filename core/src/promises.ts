@@ -4,7 +4,6 @@ import Main = require('./main');
 import Message = require('./message');
 import Player = require('./player');
 import Prom = require('./utils/promise');
-import Request = require('./requesttypes');
 import Script = require('./script');
 import State = require('./state');
 

@@ -12,7 +12,6 @@ import Player = require('../../core/src/player');
 import Promises = require('../../core/src/promises');
 import PromisesReply = require('../../core/src/promisesreply');
 import ReplyOption = require('../../core/src/replyoption');
-import Request = require('../../core/src/requesttypes');
 import Server = require('./server');
 import State = require('../../core/src/state');
 import Str = require('../../core/src/utils/string');

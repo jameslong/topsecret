@@ -9,7 +9,6 @@ import Log = require('../../core/src/log');
 import Map = require('../../core/src/utils/map');
 import Message = require('../../core/src/message');
 import Player = require('../../core/src/player');
-import Request = require('../../core/src/requesttypes');
 
 import AWS = require('aws-sdk');
 
@@ -51,16 +50,21 @@ export function createDynamoDBCalls (config: Config.ConfigState): DBTypes.DBCall
         };
 }
 
+export interface Error {
+        code: string;
+        message: string;
+}
+
 export function promise<T, U, V> (
         request: string,
         docClient: DynamoDoc,
-        requestFn: (params: T, callback: Request.Callback<U>) => void,
+        requestFn: (params: T, callback: (error: Error, data: U)=>void) => void,
         params: T,
         map: (result: U) => V = Func.identity): Promise<V>
 {
         return new Promise((resolve, reject) => {
                 requestFn.call(docClient, params,
-                        (error: Request.Error, result: U) => {
+                        (error: Error, result: U) => {
                                 if (error) {
                                         Log.metric({
                                                 type: 'AWS_REQUEST_ERROR',

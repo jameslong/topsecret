@@ -2,7 +2,6 @@
 
 import Log = require('./../../core/src/log');
 import Message = require('./../../core/src/message');
-import Request = require('./../../core/src/requesttypes');
 import Str = require('./../../core/src/utils/string');
 
 import MailgunModule = require('mailgun-js');
