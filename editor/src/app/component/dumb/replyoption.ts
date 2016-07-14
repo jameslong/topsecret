@@ -2,7 +2,6 @@ import Arr = require('../../../../../core/src/utils/array');
 import Helpers = require('../../../../../core/src/utils/helpers');
 import EditorMessage = require('../../editormessage');
 import Message = require('../../../../../core/src/message');
-import MessageHelpers = require('../../../../../core/src/messagehelpers');
 import Narrative = require('../../narrative');
 import React = require('react');
 import ReplyOption = require('../../../../../core/src/replyoption');
@@ -150,7 +149,7 @@ function onAddDelay (
         onSet: (option: ReplyOption.ReplyOption) => void,
         option: ReplyOption.ReplyOption)
 {
-        const delay = MessageHelpers.createReplyThreadDelay();
+        const delay = Message.createReplyThreadDelay();
         const delays = Arr.push(option.messageDelays, delay);
         setDelays(onSet, option, delays);
 }

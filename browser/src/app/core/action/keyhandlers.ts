@@ -13,7 +13,6 @@ import MathUtils = require('../../../../../core/src/utils/math');
 import Map = require('../../../../../core/src/utils/map');
 import Menu = require('../menu');
 import MessageCore = require('../../../../../core/src/message');
-import MessageHelpers = require('../../../../../core/src/messagehelpers');
 import PromisesReply = require('../../../../../core/src/promisesreply');
 import Redux = require('../redux/redux');
 import Client = require('../client');

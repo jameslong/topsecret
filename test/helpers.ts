@@ -7,7 +7,6 @@ import KBPGP = require('../core/src/kbpgp');
 import LocalDB = require('../core/src/localdb');
 import Main = require('../core/src/main');
 import Message = require('../core/src/message');
-import MessageHelpers = require('../core/src/messagehelpers');
 import Player = require('../core/src/player');
 import State = require('../core/src/state');
 
@@ -32,7 +31,7 @@ export function createMessage0 ()
         const threadStartName: string = null;
         const numberOfChildren = 3;
         const sentTimestampMs = 1465226704795;
-        return MessageHelpers.createMessageState(
+        return Message.createMessageState(
                 email,
                 id,
                 name,
@@ -50,7 +49,7 @@ export function createMessage1 ()
         const threadStartName: string = null;
         const numberOfChildren = 2;
         const sentTimestampMs = 1465226704795;
-        return MessageHelpers.createMessageState(
+        return Message.createMessageState(
                 email,
                 id,
                 name,
@@ -67,7 +66,7 @@ export function createMessage (
         const messageData = groupData.messages[name];
         const numberOfChildren = messageData.children.length;
         const sentTimestampMs = Date.now();
-        return MessageHelpers.createMessageState(
+        return Message.createMessageState(
                 email,
                 id,
                 name,

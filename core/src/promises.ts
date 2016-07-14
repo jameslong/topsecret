@@ -2,7 +2,6 @@ import DBTypes = require('./dbtypes');
 import KbpgpHelpers = require('./kbpgp');
 import Main = require('./main');
 import Message = require('./message');
-import MessageHelpers = require('./messagehelpers');
 import Player = require('./player');
 import Prom = require('./utils/promise');
 import Request = require('./requesttypes');
@@ -248,7 +247,7 @@ function createMessageState (
         const newThreadStartName = newThreadMessage.threadSubject ?
                 newThreadMessage.name : threadStartName;
 
-        return MessageHelpers.createMessageState(
+        return Message.createMessageState(
                 playerEmail,
                 id,
                 name,

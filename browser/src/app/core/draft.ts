@@ -1,6 +1,5 @@
 import Helpers = require('../../../../core/src/utils/helpers');
 import Message = require('./message');
-import MessageHelpers = require('../../../../core/src/messagehelpers');
 import MessageCore = require('../../../../core/src/message');
 import Str = require('../../../../core/src/utils/string');
 

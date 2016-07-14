@@ -7,7 +7,6 @@ import Helpers = require('../../../../core/src/utils/helpers');
 import LocalDB = require('../../../../core/src/localdb');
 import Main = require('../../../../core/src/main');
 import Message = require('../../../../core/src/message');
-import MessageHelpers = require('../../../../core/src/messagehelpers');
 import Player = require('../../../../core/src/player');
 import Promises = require('../../../../core/src/promises');
 import Redux = require('./redux/redux');
@@ -68,7 +67,7 @@ function createPromises (id: Id, db: LocalDB.DBState)
 
 export function send (id: Id, data: Message.MessageData) {
         const uid = (id.uid + 1);
-        const messageId = MessageHelpers.createMessageId(data.from, uid);
+        const messageId = Message.createMessageId(data.from, uid);
         id.uid += 1;
 
         const reply = {

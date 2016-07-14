@@ -75,6 +75,5 @@ export function createPromiseFactories (calls: DBCalls, send: SendMessage)
                 getMessage: calls.getMessage,
                 getMessages: calls.getMessages,
                 getPlayer: calls.getPlayer,
-
         };
 }

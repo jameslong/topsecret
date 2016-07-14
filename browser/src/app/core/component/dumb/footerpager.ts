@@ -1,5 +1,5 @@
 import Message = require('../../message');
-import MessageHelpers = require('../../../../../../core/src/messagehelpers');
+import MessageCore = require('../../../../../../core/src/message');
 import React = require('react');
 
 import Core = require('../core');
@@ -17,7 +17,7 @@ function renderFooterPager(props: FooterPagerProps)
         const activeMessage = props.activeMessage;
         const numMessages = messages.length;
         const activeIndex = messages.indexOf(activeMessage.id) + 1;
-        const from = MessageHelpers.removeFriendlyFromEmail(activeMessage.from);
+        const from = MessageCore.removeFriendlyFromEmail(activeMessage.from);
         const subject = activeMessage.subject;
         return Div({},
                 Div({ className: 'infobar-major' },

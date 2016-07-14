@@ -4,7 +4,6 @@ import DBTypes = require('./dbtypes');
 import Fun = require('./utils/function');
 import Map = require('./utils/map');
 import Message = require('./message');
-import MessageHelpers = require('./messagehelpers');
 import Player = require('./player');
 import Prom = require('./utils/promise');
 import Promises = require('./promises');
@@ -268,7 +267,7 @@ export function createPlayerlessMessageData (
         inReplyToId: string)
 {
         const quotedReply = '';
-        return MessageHelpers.createMessageData(
+        return Message.createMessageData(
                 messageName,
                 threadStartName,
                 inReplyToId,
@@ -286,7 +285,7 @@ export function createMessageData (
         inReplyToId: string,
         quotedReply: string)
 {
-        return MessageHelpers.createMessageData(
+        return Message.createMessageData(
                 messageName,
                 threadStartName,
                 inReplyToId,

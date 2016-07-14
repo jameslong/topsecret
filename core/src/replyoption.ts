@@ -1,6 +1,5 @@
 import Arr = require('./utils/array');
 import Message = require('./message');
-import MessageHelpers = require('./messagehelpers');
 
 export type ReplyOption = ReplyOptionKeyword | ReplyOptionValidPGPKey | ReplyOptionDefault;
 export type ReplyOptions = ReplyOption[];
@@ -33,7 +32,7 @@ export function createReplyOptionKeyword (): ReplyOptionKeyword
                         condition: '',
                         matches: []
                 },
-                messageDelays: [MessageHelpers.createReplyThreadDelay()]
+                messageDelays: [Message.createReplyThreadDelay()]
         };
 }
 

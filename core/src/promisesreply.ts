@@ -4,7 +4,6 @@ import KBPGP = require('./kbpgp');
 import Log = require('./log');
 import Map = require('./utils/map');
 import Message = require('./message');
-import MessageHelpers = require('./messagehelpers');
 import Player = require('./player');
 import Profile = require('./profile');
 import Prom = require('./utils/promise');
@@ -62,7 +61,7 @@ export function handleTimelyReply (
                                 const keyManagers = [keyManager, from];
                                 const keyRing = KBPGP.createKeyRing(keyManagers);
                                 return KBPGP.decryptVerify(keyRing, strippedBody).then(plaintext => {
-                                        const newStrippedBody = MessageHelpers.stripBody(plaintext);
+                                        const newStrippedBody = Message.stripBody(plaintext);
                                         const newBody = plaintext;
                                         return handleDecryptedReplyMessage(
                                                 newBody,

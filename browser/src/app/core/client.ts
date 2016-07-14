@@ -12,8 +12,7 @@ import Kbpgp = require('kbpgp');
 import KbpgpHelpers = require('../../../../core/src/kbpgp');
 import Map = require('../../../../core/src/utils/map');
 import Main = require('./main');
-import Message = require('./message');
-import MessageHelpers = require('../../../../core/src/messagehelpers');
+import Message = require('../../../../core/src/message');
 import Player = require('./player');
 import Profile = require('../../../../core/src/profile');
 import Redux = require('./redux/redux');
@@ -109,7 +108,7 @@ export function tickClient ()
 export function nextMessageId (client: Client, from: string)
 {
         const id = (client.messageId + 1);
-        return MessageHelpers.createMessageId(from, id);
+        return Message.createMessageId(from, id);
 }
 
 export function getActiveMessage (client: Client)

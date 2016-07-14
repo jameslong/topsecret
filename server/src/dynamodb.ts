@@ -8,7 +8,6 @@ import Func = require('../../core/src/utils/function');
 import Log = require('../../core/src/log');
 import Map = require('../../core/src/utils/map');
 import Message = require('../../core/src/message');
-import MessageHelpers = require('../../core/src/messagehelpers');
 import Player = require('../../core/src/player');
 import Request = require('../../core/src/requesttypes');
 

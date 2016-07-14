@@ -8,7 +8,6 @@ import Helpers = require('../../core/src/utils/helpers');
 import Log = require('../../core/src/log');
 import Main = require('../../core/src/main');
 import Message = require('../../core/src/message');
-import MessageHelpers = require('../../core/src/messagehelpers');
 import Player = require('../../core/src/player');
 import Promises = require('../../core/src/promises');
 import PromisesReply = require('../../core/src/promisesreply');
@@ -312,7 +311,7 @@ export function localReply (state: App.State, req: any, res: any)
                 } = req.body;
 
         const body = data.body;
-        const strippedBody = MessageHelpers.stripBody(body);
+        const strippedBody = Message.stripBody(body);
 
         Log.metric({
                 type: 'MESSAGE_RECEIVED',
