@@ -36,138 +36,97 @@ export function update (
         message: Message.MessageState,
         player: Player.PlayerState)
 {
-        const promises = app.promises;
-        const groupData = app.narratives[player.version];
-        const messageData = groupData.messages[message.name];
-        const replyOptions = groupData.replyOptions;
+        const narrative = app.narratives[player.version];
         const timestampMs = Clock.gameTimeMs(clock);
-        const state = { message, player, timestampMs };
+        const promises = app.promises;
+        const state = { message, player, timestampMs, promises, narrative };
 
-        const children = pendingChildren(
-                app, groupData, state, timestampMs, promises);
-        const response = pendingResponse(
-                app, groupData, state, timestampMs, promises);
-        const sequence = children.concat(response);
-
-        return Prom.executeSequentially(sequence, state).then(state =>
-                Promises.updatePlayer(state, promises)
-        ).then(state =>
-                isExpired(state.message, messageData, replyOptions) ?
-                        Promises.expired(groupData, state, promises) :
-                        Promises.update(state, promises)
-        );
+        return handleChildren(state).then(handleResponse).then(updateMessage);
 }
 
-function pendingChildren (
-        app: State.GameState,
-        groupData: State.NarrativeState,
-        state: Promises.UpdateInfo,
-        currentMs: number,
-        promises: DBTypes.PromiseFactories)
+function handleChildren (state: Promises.UpdateState)
 {
-        const { message, player } = state;
+        const { message, player, narrative, timestampMs, promises } = state;
         const offsetHours = player.utcOffset;
-
-        const messageData = groupData.messages[message.name];
+        const messageData = narrative.messages[message.name];
         const children = messageData.children;
         const sentMs = message.sentTimestampMs;
 
         const indices = children.map((child, index) => index);
-        const unsent = indices.filter(index => !message.childrenSent[index]);
-        const expired = unsent.filter(index =>
-                isExpiredThreadDelay(children[index], offsetHours, sentMs, currentMs)
+        const pending = indices.filter(index =>
+                !message.childrenSent[index] &&
+                isExpiredThreadDelay(children[index], offsetHours, sentMs, timestampMs));
+        const pendingPromises = pending.map((child, index) =>
+                (state: Promises.UpdateState) => Promises.child(state, index)
         );
 
-        return expired.map(index =>
-                (state: Promises.UpdateInfo) =>
-                        Promises.child(
-                                state,
-                                index,
-                                groupData,
-                                promises)
-        );
+        return Prom.executeSequentially(pendingPromises, state);
 }
 
-function pendingResponse (
-        app: State.GameState,
-        groupData: State.NarrativeState,
-        state: Promises.UpdateInfo,
-        currentMs: number,
-        promises: DBTypes.PromiseFactories)
+function handleResponse (state: Promises.UpdateState)
 {
-        const { message, player } = state;
-        const offsetHours = player.utcOffset;
-        const messageData = groupData.messages[message.name];
-        const sentMs = message.sentTimestampMs;
+        const { message, narrative } = state;
+        const messageData = narrative.messages[message.name];
         const hasReplyOptions = messageData.replyOptions;
-        const replyOptions = groupData.replyOptions;
-        const reply = message.reply;
+        const hasReply = message.reply !== null;
+        const hasFallback = messageData.fallback !== null;
 
-
-        if (!hasReplyOptions) {
-                return [];
-        }
-
-        if (reply) {
-                const replyTimestampMs = reply.timestampMs;
-                const replyIndex = reply.index;
-                const messageReplyOptions = replyOptions[messageData.replyOptions];
-                const options = messageReplyOptions[replyIndex].messageDelays;
-                const sent = reply.sent;
-                const indices = options.map((option, index) => index);
-                const unsent = indices.filter(index =>
-                        sent.indexOf(index) === -1);
-                const ready = unsent.filter(index => isExpiredThreadDelay(
-                        options[index], offsetHours, replyTimestampMs, currentMs));
-
-                return ready.map(index => pendingReply(
-                        groupData, state, index, promises));
-        } else {
-                const readyFallback =
-                        messageData.fallback &&
-                        hasExpiredFallback(
-                                message,
-                                messageData,
-                                offsetHours,
-                                sentMs,
-                                currentMs);
-                if (readyFallback) {
-                        return [pendingFallback(groupData, state, promises)];
+        if (hasReplyOptions) {
+                if (hasReply) {
+                        return handleReply(state);
+                } else if (hasFallback) {
+                        return handleFallback(state);
                 }
         }
 
-        return [];
+        return Promise.resolve(state);
 }
 
-function pendingReply (
-        groupData: State.NarrativeState,
-        state: Promises.UpdateInfo,
-        index: number,
-        promises: DBTypes.PromiseFactories)
+function handleReply (state: Promises.UpdateState)
 {
-        const { message, player } = state;
+        const { message, player, narrative, timestampMs, promises } = state;
+        const utcOffset = player.utcOffset;
+        const reply = message.reply;
+        const replyTimestampMs = reply.timestampMs;
+        const replyIndex = reply.index;
+        const messageData = narrative.messages[message.name];
+        const replyOptions = narrative.replyOptions[messageData.replyOptions];
+        const options = replyOptions[replyIndex].messageDelays;
+        const sent = reply.sent;
+        const indices = options.map((option, index) => index);
+        const pending = indices.filter(index =>
+                sent.indexOf(index) === -1 && isExpiredThreadDelay(
+                        options[index], utcOffset, replyTimestampMs, timestampMs));
 
-        const messageName = message.name;
-        const threadMessage = groupData.messages[messageName];
+        const pendingPromises = pending.map(index =>
+                (state: Promises.UpdateState) => Promises.reply(state, index));
 
-        return (state: Promises.UpdateInfo) =>
-                Promises.reply(
-                        state,
-                        index,
-                        groupData,
-                        promises);
+        return Prom.executeSequentially(pendingPromises, state);
 }
 
-function pendingFallback (
-        groupData: State.NarrativeState,
-        state: Promises.UpdateInfo,
-        promises: DBTypes.PromiseFactories)
+function handleFallback (state: Promises.UpdateState)
 {
-        return (state: Promises.UpdateInfo) =>
-                Promises.fallback(
-                        state,
-                        groupData,
-                        promises);
+        const { message, player, narrative, timestampMs, promises } = state;
+        const utcOffset = player.utcOffset;
+        const messageData = narrative.messages[message.name];
+        const sentMs = message.sentTimestampMs;
+        const expired = hasExpiredFallback(
+                message, messageData, utcOffset, sentMs, timestampMs);
+
+        return expired ?
+                Promises.fallback(state) :
+                Promise.resolve(state);
+}
+
+function updateMessage (state: Promises.UpdateState)
+{
+        const { message, player, narrative, timestampMs, promises } = state;
+        const messageData = narrative.messages[message.name];
+        const replyOptions = narrative.replyOptions;
+
+        return isExpired(state.message, messageData, replyOptions) ?
+                Promises.expired(state) :
+                Promises.update(state);
 }
 
 function hasPendingChildren (message: Message.MessageState)

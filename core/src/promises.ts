@@ -7,23 +7,21 @@ import Prom = require('./utils/promise');
 import Script = require('./script');
 import State = require('./gamestate');
 
-export interface UpdateInfo {
+export interface UpdateState {
         message: Message.MessageState;
         player: Player.PlayerState;
         timestampMs: number;
+        promises: DBTypes.PromiseFactories;
+        narrative: State.NarrativeState;
 }
 
-export function child (
-        state: UpdateInfo,
-        childIndex: number,
-        groupData: State.NarrativeState,
-        promises: DBTypes.PromiseFactories)
+export function child (state: UpdateState, childIndex: number)
 {
-        const { message, player, timestampMs } = state;
+        const { message, player, narrative, timestampMs, promises } = state;
         const threadStartName = message.threadStartName;
         const inReplyToId = message.id;
 
-        const messageData = groupData.messages[message.name];
+        const messageData = narrative.messages[message.name];
         const child = messageData.children[childIndex];
         const name = child.name;
         const condition = child.condition;
@@ -37,7 +35,7 @@ export function child (
                         quotedReply,
                         player,
                         timestampMs,
-                        groupData,
+                        narrative,
                         promises) :
                 Promise.resolve(message);
 
@@ -47,19 +45,15 @@ export function child (
         });
 }
 
-export function reply (
-        state: UpdateInfo,
-        index: number,
-        groupData: State.NarrativeState,
-        promises: DBTypes.PromiseFactories)
+export function reply (state: UpdateState, index: number)
 {
-        const { message, player, timestampMs } = state;
+        const { message, player, narrative, timestampMs, promises } = state;
         const threadStartName = message.threadStartName;
         const inReplyToId = message.id;
         const quotedReply = message.reply.body;
 
-        const messageData = groupData.messages[message.name];
-        const replyOptions = groupData.replyOptions[messageData.replyOptions];
+        const messageData = narrative.messages[message.name];
+        const replyOptions = narrative.replyOptions[messageData.replyOptions];
         const replyDelay = replyOptions[message.reply.index].messageDelays[index];
         const name = replyDelay.name;
 
@@ -70,7 +64,7 @@ export function reply (
                 quotedReply,
                 player,
                 timestampMs,
-                groupData,
+                narrative,
                 promises);
 
         return send.then(result => {
@@ -79,16 +73,13 @@ export function reply (
         });
 }
 
-export function fallback (
-        state: UpdateInfo,
-        groupData: State.NarrativeState,
-        promises: DBTypes.PromiseFactories)
+export function fallback (state: UpdateState)
 {
-        const { message, player, timestampMs } = state;
+        const { message, player, narrative, timestampMs, promises } = state;
         const threadStartName = message.threadStartName;
         const inReplyToId = message.id;
 
-        const messageData = groupData.messages[message.name];
+        const messageData = narrative.messages[message.name];
         const fallback = messageData.fallback;
         const name = fallback.name;
         const condition = fallback.condition;
@@ -102,7 +93,7 @@ export function fallback (
                         quotedReply,
                         player,
                         timestampMs,
-                        groupData,
+                        narrative,
                         promises) :
                 Promise.resolve(message);
 
@@ -160,27 +151,23 @@ export function encryptSendStoreChild (
         });
 }
 
-export function update (state: UpdateInfo, promises: DBTypes.PromiseFactories)
+export function update (state: UpdateState)
 {
-        return promises.updateMessage(state.message).then(
+        return state.promises.updateMessage(state.message).then(
                 message => state);
 }
 
-export function updatePlayer (
-        state: UpdateInfo, promises: DBTypes.PromiseFactories)
+export function updatePlayer (state: UpdateState)
 {
-        return promises.updatePlayer(state.player).then(
+        return state.promises.updatePlayer(state.player).then(
                 player => state);
 }
 
-export function expired (
-        groupData: State.NarrativeState,
-        state: UpdateInfo,
-        promises: DBTypes.PromiseFactories): Promise<any>
+export function expired (state: UpdateState): Promise<any>
 {
-        const { message, player } = state;
+        const { message, player, narrative, promises } = state;
         const email = player.email;
-        const messageData = groupData.messages[message.name];
+        const messageData = narrative.messages[message.name];
 
         return messageData.endGame ?
                 endGame(email, promises) :
@@ -188,8 +175,7 @@ export function expired (
 }
 
 export function endGame (
-        email: string,
-        promises: DBTypes.PromiseFactories): Promise<any>
+        email: string, promises: DBTypes.PromiseFactories): Promise<any>
 {
         return promises.deleteAllMessages(email).then(result =>
                 promises.deletePlayer(email));
