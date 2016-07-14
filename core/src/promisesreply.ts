@@ -9,13 +9,13 @@ import Profile = require('./profile');
 import Prom = require('./utils/promise');
 import ReplyOption = require('./replyoption');
 import Script = require('./script');
-import State = require('./state');
+import State = require('./gamestate');
 import Str = require('./utils/string');
 
 export function handleReplyMessage (
         reply: Message.MailgunReply,
         timestampMs: number,
-        data: Map.Map<State.GameData>,
+        data: Map.Map<State.NarrativeState>,
         promises: DBTypes.PromiseFactories)
 {
         const email = reply.from;
@@ -40,7 +40,7 @@ export function handleTimelyReply (
         timestampMs: number,
         player: Player.PlayerState,
         message: Message.MessageState,
-        data: Map.Map<State.GameData>,
+        data: Map.Map<State.NarrativeState>,
         promises: DBTypes.PromiseFactories)
 {
         const groupName = player.version;
@@ -92,7 +92,7 @@ export function handleDecryptedReplyMessage (
         timestampMs: number,
         player: Player.PlayerState,
         messageState: Message.MessageState,
-        groupData: State.GameData,
+        groupData: State.NarrativeState,
         promises: DBTypes.PromiseFactories)
 {
         const threadMessage = groupData.messages[messageState.name];

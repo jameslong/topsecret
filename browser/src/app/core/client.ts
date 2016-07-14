@@ -17,7 +17,7 @@ import Player = require('./player');
 import Profile = require('../../../../core/src/profile');
 import Redux = require('./redux/redux');
 import Server = require('./server');
-import State = require('../../../../core/src/state');
+import State = require('../../../../core/src/gamestate');
 import UI = require('./ui');
 
 export interface Client {
@@ -44,7 +44,7 @@ export interface SaveData {
 export function createClientFromSaveData (
         settings: ConfigData.GameSettings,
         appData: AppData.AppData,
-        gameData: State.Data,
+        gameData: State.NarrativeStates,
         openFile: (path: string) => void,
         openExternal: (path: string) => void,
         saveData: RuntimeClient): Client
@@ -78,7 +78,7 @@ export function createClientFromSaveData (
 export function createClient (
         settings: ConfigData.GameSettings,
         appData: AppData.AppData,
-        gameData: State.Data,
+        gameData: State.NarrativeStates,
         player: Player.Player,
         openFile: (path: string) => void,
         openExternal: (path: string) => void)

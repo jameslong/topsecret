@@ -16,12 +16,12 @@ import PostHandler = require('./requesthandler');
 import Profile = require('./../../core/src/profile');
 import Prom = require('./../../core/src/utils/promise');
 import Server = require('./server');
-import State = require('./../../core/src/state');
+import State = require('./../../core/src/gamestate');
 
 export interface State {
         config: Config.ConfigState;
         clock: Clock.Clock;
-        game: State.State;
+        game: State.GameState;
         lastEvaluatedKey: string; // Used to request next message from db
         paused: boolean;
         server: Server.ServerState;
@@ -46,9 +46,9 @@ export function createState (config: Config.ConfigState)
         });
 }
 
-export function getGroupData (app: State.State, groupName: string)
+export function getGroupData (app: State.GameState, groupName: string)
 {
-        return app.data[groupName];
+        return app.narratives[groupName];
 }
 
 export function createGameState (
@@ -75,7 +75,7 @@ export function createGameState (
                 }
                 return result;
         }, []);
-        const promise = new Promise<State.NarrativeData[]>((resolve, reject) =>
+        const promise = new Promise<Data.NarrativeData[]>((resolve, reject) =>
                 dataErrors.length ?
                         reject(dataErrors) :
                         resolve(narrativeData)
@@ -94,7 +94,7 @@ export function createGameState (
 export function onGameData (
         config: Config.ConfigState,
         server: Server.ServerState,
-        gameData: State.GameData[])
+        gameData: State.NarrativeState[])
 {
         const { useEmail, emailDomain } = config;
         const { htmlFooter, textFooter } = config.content;
@@ -110,14 +110,14 @@ export function onGameData (
                         LocalDB.createDB(), config.debugDBTimeoutMs);
         const promises = DBTypes.createPromiseFactories(calls, send);
 
-        const gameState: State.State = {
-                data: null,
+        const gameState: State.GameState = {
+                narratives: null,
                 promises,
         };
 
         if (gameData) {
                 const mappedGameData = Helpers.mapFromNameArray(gameData);
-                gameState.data = mappedGameData;
+                gameState.narratives = mappedGameData;
         }
 
         return gameState;

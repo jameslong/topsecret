@@ -5,7 +5,7 @@ import Helpers = require('../core/src/utils/helpers');
 import Main = require('../browser/src/app/core/main');
 import electron = require('electron');
 const shell = electron.shell;
-import State = require('../core/src/state');
+import State = require('../core/src/gamestate');
 
 window.onload = () => {
         const resources = (<any>process)['resourcesPath'];

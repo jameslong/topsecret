@@ -4,7 +4,7 @@ import Map = require('./utils/map');
 import Player = require('./player');
 import ReplyOption = require('./replyoption');
 import Script = require('./script');
-import State = require('./state');
+import State = require('./gamestate');
 import Str = require('./utils/string');
 
 export interface ReplyState {
@@ -130,7 +130,7 @@ export function createMessageData (
         inReplyToId: string,
         quotedBody: string,
         to: string,
-        groupData: State.GameData,
+        groupData: State.NarrativeState,
         vars: Player.PlayerVars): MessageData
 {
         const { messages, strings, profiles } = groupData;

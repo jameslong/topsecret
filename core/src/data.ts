@@ -8,8 +8,18 @@ import Message = require('./message');
 import Profile = require('./profile');
 import ReplyOption = require('./replyoption');
 import Script = require('./script');
-import State = require('./state');
+import State = require('./gamestate');
 import validator = require('is-my-json-valid');
+
+export interface NarrativeData {
+        name: string;
+        profiles: Map.Map<Profile.Profile>;
+        messages: Map.Map<Message.ThreadMessage>;
+        replyOptions: Map.Map<ReplyOption.ReplyOption[]>;
+        strings: Map.Map<string>;
+        attachments: Map.Map<string>;
+}
+export type Narratives = Map.Map<NarrativeData>;
 
 export interface Path {
         basename: (path: string, ext?: string) => string;
@@ -36,13 +46,13 @@ export function loadGameData (path: string, name: string)
         return State.addKeyManagers(narrative);
 }
 
-export function initKeyManagers (data: State.NarrativeData[])
+export function initKeyManagers (data: NarrativeData[])
 {
         const promises = data.map(narrative => State.addKeyManagers(narrative));
         return Promise.all(promises);
 }
 
-export function loadNarrative (stem: string, name: string): State.NarrativeData
+export function loadNarrative (stem: string, name: string): NarrativeData
 {
         const path = join(stem, name);
         const profilesPath = join(path, 'profiles');
@@ -91,7 +101,7 @@ export function deleteMessage (path: string)
 }
 
 export function getDataErrors (
-        data: State.NarrativeData,
+        data: NarrativeData,
         profileSchema: JSON,
         messageSchema: JSON,
         replyOptionSchema: JSON): Object[]

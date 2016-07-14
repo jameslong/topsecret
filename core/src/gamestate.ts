@@ -1,33 +1,21 @@
+import Data = require('./data');
 import DBTypes = require('./dbtypes');
 import Kbpgp = require('./kbpgp');
 import Helpers = require('./utils/helpers');
 import Map = require('./utils/map');
-import Message = require('./message');
 import Profile = require('./profile');
-import ReplyOption = require('./replyoption');
 
-export interface NarrativeData {
-        name: string;
-        profiles: Map.Map<Profile.Profile>;
-        messages: Map.Map<Message.ThreadMessage>;
-        replyOptions: Map.Map<ReplyOption.ReplyOption[]>;
-        strings: Map.Map<string>;
-        attachments: Map.Map<string>;
-}
-
-export interface GameData extends NarrativeData {
+export interface NarrativeState extends Data.NarrativeData {
         keyManagers: Kbpgp.KeyManagers;
 }
+export type NarrativeStates = Map.Map<NarrativeState>;
 
-export type Narratives = Map.Map<NarrativeData>;
-export type Data = Map.Map<GameData>;
-
-export interface State {
-        data: Data;
+export interface GameState {
+        narratives: NarrativeStates;
         promises: DBTypes.PromiseFactories;
 }
 
-export function addKeyManagers (data: NarrativeData): Promise<GameData>
+export function addKeyManagers (data: Data.NarrativeData): Promise<NarrativeState>
 {
         const keyData = Helpers.arrayFromMap<Profile.Profile, Kbpgp.KeyData>(
                 data.profiles, profile => {

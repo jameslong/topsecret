@@ -10,7 +10,7 @@ import Message = require('../../../../core/src/message');
 import Player = require('../../../../core/src/player');
 import Promises = require('../../../../core/src/promises');
 import Redux = require('./redux/redux');
-import State = require('../../../../core/src/state');
+import State = require('../../../../core/src/gamestate');
 
 interface Id {
         uid: number;
@@ -22,12 +22,12 @@ export interface RuntimeServer {
         id: Id;
 }
 export interface Server extends RuntimeServer {
-        app: State.State;
+        app: State.GameState;
 }
 
 export function createServerFromSaveData (
         settings: ConfigData.GameSettings,
-        data: State.Data,
+        narratives: State.NarrativeStates,
         saveData: RuntimeServer)
 {
         const lastEvaluatedKey = saveData.lastEvaluatedKey;
@@ -36,7 +36,7 @@ export function createServerFromSaveData (
         const promises = createPromises(id, db);
 
         const app = {
-                data,
+                narratives,
                 promises,
         };
         return { app, lastEvaluatedKey, db, id };
@@ -51,7 +51,8 @@ export function createRuntimeServer (): RuntimeServer
         };
 }
 
-export function createServer (settings: ConfigData.GameSettings, data: State.Data)
+export function createServer (
+        settings: ConfigData.GameSettings, data: State.NarrativeStates)
 {
         const runtimeServer = createRuntimeServer();
         return createServerFromSaveData(settings, data, runtimeServer);
@@ -97,7 +98,7 @@ export function beginGame (
         const player = Player.createPlayerState(
                 email, publicKey, version, firstName, lastName, timezoneOffset);
 
-        const groupData = server.app.data[version];
+        const groupData = server.app.narratives[version];
         const promises = server.app.promises;
         const timestampMs = Clock.gameTimeMs(clock);
 

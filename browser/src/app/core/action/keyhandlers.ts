@@ -272,7 +272,7 @@ export function encryptSend (client: Client.Client): Redux.Action<any>
                 return PromisesReply.handleReplyMessage(
                         encryptedReply,
                         timestampMs,
-                        app.data,
+                        app.narratives,
                         app.promises).then(result => reply)
         }).then(reply => {
                 const message = Draft.createMessageFromReply(reply, timestampMs);

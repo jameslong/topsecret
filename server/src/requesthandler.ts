@@ -12,7 +12,7 @@ import Promises = require('../../core/src/promises');
 import PromisesReply = require('../../core/src/promisesreply');
 import ReplyOption = require('../../core/src/replyoption');
 import Server = require('./server');
-import State = require('../../core/src/state');
+import State = require('../../core/src/gamestate');
 import Str = require('../../core/src/utils/string');
 
 interface RequestHandler { (state: App.State, req: any, res: any): void; }
@@ -599,18 +599,18 @@ export function handleReplyRequest (
                 return handleCareersEmail(state, reply);
         } else {
                 const app = state.game;
-                const { data, promises } = app;
+                const { narratives, promises } = app;
                 return PromisesReply.handleReplyMessage(
                         reply,
                         timestampMs,
-                        data,
+                        narratives,
                         promises);
         }
 }
 
 export function beginGame (
         state: App.State,
-        groupData: State.GameData,
+        groupData: State.NarrativeState,
         email: string,
         playerData: PlayerApplicationData,
         threadMessageName: string)
@@ -680,7 +680,7 @@ export function handleCareersEmail (
 
 export function handleResignation (
         state: App.State,
-        groupData: State.GameData,
+        groupData: State.NarrativeState,
         email: string)
 {
         const app = state.game;
@@ -693,7 +693,7 @@ export function handleResignation (
 
 export function handleValidApplication (
         state: App.State,
-        groupData: State.GameData,
+        groupData: State.NarrativeState,
         email: string,
         playerData: PlayerApplicationData)
 {
@@ -713,7 +713,7 @@ export function handleValidApplication (
 
 export function handleInvalidApplication (
         state: App.State,
-        groupData: State.GameData,
+        groupData: State.NarrativeState,
         email: string)
 {
         const app = state.game;

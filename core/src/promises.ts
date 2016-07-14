@@ -5,7 +5,7 @@ import Message = require('./message');
 import Player = require('./player');
 import Prom = require('./utils/promise');
 import Script = require('./script');
-import State = require('./state');
+import State = require('./gamestate');
 
 export interface UpdateInfo {
         message: Message.MessageState;
@@ -16,7 +16,7 @@ export interface UpdateInfo {
 export function child (
         state: UpdateInfo,
         childIndex: number,
-        groupData: State.GameData,
+        groupData: State.NarrativeState,
         promises: DBTypes.PromiseFactories)
 {
         const { message, player, timestampMs } = state;
@@ -50,7 +50,7 @@ export function child (
 export function reply (
         state: UpdateInfo,
         index: number,
-        groupData: State.GameData,
+        groupData: State.NarrativeState,
         promises: DBTypes.PromiseFactories)
 {
         const { message, player, timestampMs } = state;
@@ -81,7 +81,7 @@ export function reply (
 
 export function fallback (
         state: UpdateInfo,
-        groupData: State.GameData,
+        groupData: State.NarrativeState,
         promises: DBTypes.PromiseFactories)
 {
         const { message, player, timestampMs } = state;
@@ -119,7 +119,7 @@ export function encryptSendStoreChild (
         quotedReply: string,
         player: Player.PlayerState,
         timestampMs: number,
-        groupData: State.GameData,
+        groupData: State.NarrativeState,
         promises: DBTypes.PromiseFactories)
 {
         const data = Main.createMessageData(
@@ -174,7 +174,7 @@ export function updatePlayer (
 }
 
 export function expired (
-        groupData: State.GameData,
+        groupData: State.NarrativeState,
         state: UpdateInfo,
         promises: DBTypes.PromiseFactories): Promise<any>
 {
@@ -199,7 +199,7 @@ export function beginGame (
         name: string,
         player: Player.PlayerState,
         timestampMs: number,
-        groupData: State.GameData,
+        groupData: State.NarrativeState,
         promises: DBTypes.PromiseFactories)
 {
         const threadStartName: string = null;
@@ -221,7 +221,7 @@ export function beginGame (
 export function resign (
         name: string,
         email: string,
-        groupData: State.GameData,
+        groupData: State.NarrativeState,
         promises: DBTypes.PromiseFactories)
 {
         const threadStartName: string = null;
@@ -234,7 +234,7 @@ export function resign (
 }
 
 function createMessageState (
-        groupData: State.GameData,
+        groupData: State.NarrativeState,
         playerEmail: string,
         id: string,
         name: string,

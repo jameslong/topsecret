@@ -18,12 +18,12 @@ import Reducers = require('./action/reducers');
 import Redux = require('./redux/redux');
 import Root = require('./component/smart/root');
 import Server = require('./server');
-import State = require('../../../../core/src/state');
+import State = require('../../../../core/src/gamestate');
 import Player = require('./player');
 import UI = require('./ui');
 
 export function init (
-        gameData: State.Data,
+        gameData: State.NarrativeStates,
         openFile: (path: string) => void,
         openExternal: (path: string) => void)
 {
@@ -72,7 +72,7 @@ export function init (
 }
 
 export function newGame (
-        gameData: State.Data,
+        gameData: State.NarrativeStates,
         player: Player.Player,
         openFile: (path: string) => void,
         openExternal: (path: string) => void)
@@ -100,7 +100,7 @@ export function newGame (
 }
 
 export function newGameFromSave (
-        gameData: State.Data,
+        gameData: State.NarrativeStates,
         openFile: (path: string) => void,
         openExternal: (path: string) => void,
         saveData: Client.SaveData)

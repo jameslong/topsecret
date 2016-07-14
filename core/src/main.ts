@@ -8,10 +8,10 @@ import Player = require('./player');
 import Prom = require('./utils/promise');
 import Promises = require('./promises');
 import ReplyOption = require('./replyoption');
-import State = require('./state');
+import State = require('./gamestate');
 
 export function tick (
-        app: State.State, clock: Clock.Clock, exclusiveStartKey: string)
+        app: State.GameState, clock: Clock.Clock, exclusiveStartKey: string)
 {
         const maxResults = 1;
         const params = { exclusiveStartKey, maxResults };
@@ -31,13 +31,13 @@ export function tick (
 }
 
 export function update (
-        app: State.State,
+        app: State.GameState,
         clock: Clock.Clock,
         message: Message.MessageState,
         player: Player.PlayerState)
 {
         const promises = app.promises;
-        const groupData = app.data[player.version];
+        const groupData = app.narratives[player.version];
         const messageData = groupData.messages[message.name];
         const replyOptions = groupData.replyOptions;
         const timestampMs = Clock.gameTimeMs(clock);
@@ -59,8 +59,8 @@ export function update (
 }
 
 function pendingChildren (
-        app: State.State,
-        groupData: State.GameData,
+        app: State.GameState,
+        groupData: State.NarrativeState,
         state: Promises.UpdateInfo,
         currentMs: number,
         promises: DBTypes.PromiseFactories)
@@ -89,8 +89,8 @@ function pendingChildren (
 }
 
 function pendingResponse (
-        app: State.State,
-        groupData: State.GameData,
+        app: State.GameState,
+        groupData: State.NarrativeState,
         state: Promises.UpdateInfo,
         currentMs: number,
         promises: DBTypes.PromiseFactories)
@@ -140,7 +140,7 @@ function pendingResponse (
 }
 
 function pendingReply (
-        groupData: State.GameData,
+        groupData: State.NarrativeState,
         state: Promises.UpdateInfo,
         index: number,
         promises: DBTypes.PromiseFactories)
@@ -159,7 +159,7 @@ function pendingReply (
 }
 
 function pendingFallback (
-        groupData: State.GameData,
+        groupData: State.NarrativeState,
         state: Promises.UpdateInfo,
         promises: DBTypes.PromiseFactories)
 {
@@ -259,7 +259,7 @@ export function isExpiredThreadDelayAbsolute (
 }
 
 export function createPlayerlessMessageData (
-        groupData: State.GameData,
+        groupData: State.NarrativeState,
         email: string,
         messageName: string,
         threadStartName: string,
@@ -277,7 +277,7 @@ export function createPlayerlessMessageData (
 }
 
 export function createMessageData (
-        groupData: State.GameData,
+        groupData: State.NarrativeState,
         player: Player.PlayerState,
         messageName: string,
         threadStartName: string,

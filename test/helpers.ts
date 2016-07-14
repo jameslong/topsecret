@@ -8,7 +8,7 @@ import LocalDB = require('../core/src/localdb');
 import Main = require('../core/src/main');
 import Message = require('../core/src/message');
 import Player = require('../core/src/player');
-import State = require('../core/src/state');
+import State = require('../core/src/gamestate');
 
 export function createPlayer0 ()
 {
@@ -59,7 +59,7 @@ export function createMessage1 ()
 }
 
 export function createMessage (
-        name: string, email: string, groupData: State.GameData)
+        name: string, email: string, groupData: State.NarrativeState)
 {
         const id = `<${name}.${email}>`;
         const threadStartName: string = null;
