@@ -42,7 +42,7 @@ function onSetMessage (
         name: string,
         value: Message.Message)
 {
-        const action = Actions.setMessage({ narrativeId, name, value });
+        const action = Actions.setMessageContent({ narrativeId, name, value });
         Redux.handleAction(action);
 }
 
