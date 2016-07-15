@@ -38,9 +38,7 @@ function renderMessageContainer (props: MessageContainerProps)
 const MessageContainer = React.createFactory(renderMessageContainer);
 
 function onSetMessage (
-        narrativeId: string,
-        name: string,
-        value: Message.Message)
+        narrativeId: string, name: string, value: Message.Message)
 {
         const action = Actions.setMessageContent({ narrativeId, name, value });
         Redux.handleAction(action);

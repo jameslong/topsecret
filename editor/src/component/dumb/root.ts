@@ -6,7 +6,7 @@ import State = require('../../state');
 import Core = require('../core');
 import Div = Core.Div;
 import EditAreaContainer = require('../smart/editareacontainer');
-import EditPanelContainer = require('../../editor/content/messageedit/editpanelcontainer');
+import EditPanelContainer = require('../../editor/content/messagepanel/editpanelcontainer');
 import MenuBarContainer = require('../../editor/toolbar/toolbarcontainer');
 
 interface RootProps extends React.Props<any> {
