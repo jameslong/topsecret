@@ -1,4 +1,4 @@
-import ActionCreators = require('../../action/actioncreators');
+import Actions = require('../../actions/actions');
 import Arr = require('../../../../core/src/utils/array');
 import EditorMessage = require('../../editormessage');
 import MessageDelay = require('../../messagedelay');
@@ -62,14 +62,14 @@ const EditMessageContainer = React.createFactory(renderEditMessageContainer);
 function onDelete (narrativeId: string, name: string)
 {
         const names = [name];
-        const action = ActionCreators.deleteMessages({ names, narrativeId });
+        const action = Actions.deleteMessages({ names, narrativeId });
         Redux.handleAction(action);
 }
 
 function onSetNameScratchpad (
         narrativeId: string, messageName: string, newName: string)
 {
-        const action = ActionCreators.setEditedMessageName({
+        const action = Actions.setEditedMessageName({
                 narrativeId,
                 name: messageName,
                 value: newName,
@@ -79,7 +79,7 @@ function onSetNameScratchpad (
 
 function onSetName (narrativeId: string, name: string, newName: string)
 {
-        const action = ActionCreators.setMessageName({
+        const action = Actions.setMessageName({
                 narrativeId,
                 name,
                 value: newName,
@@ -89,7 +89,7 @@ function onSetName (narrativeId: string, name: string, newName: string)
 
 function onSetSubject (narrativeId: string, name: string, value: string)
 {
-        const action = ActionCreators.setMessageSubject({
+        const action = Actions.setMessageSubject({
                 narrativeId,
                 name,
                 value,
@@ -100,7 +100,7 @@ function onSetSubject (narrativeId: string, name: string, value: string)
 function onSetString (
         narrativeId: string, stringName: string, value: string)
 {
-        const action = ActionCreators.setString({
+        const action = Actions.setString({
                 narrativeId,
                 name: stringName,
                 value: value,
@@ -111,7 +111,7 @@ function onSetString (
 function onSetEndGame (
         narrativeId: string, messageName: string, newEndGame: boolean)
 {
-        const action = ActionCreators.setMessageEndGame({
+        const action = Actions.setMessageEndGame({
                 narrativeId,
                 name: messageName,
                 value: newEndGame,
@@ -122,7 +122,7 @@ function onSetEndGame (
 function onSetEncrypted (
         narrativeId: string, messageName: string, newEncrypted: boolean)
 {
-        const action = ActionCreators.setMessageEncrypted({
+        const action = Actions.setMessageEncrypted({
                 narrativeId,
                 name: messageName,
                 value: newEncrypted,
@@ -133,7 +133,7 @@ function onSetEncrypted (
 function onSetAttachment (
         narrativeId: string, messageName: string, newPath: string)
 {
-        const action = ActionCreators.setMessageAttachment({
+        const action = Actions.setMessageAttachment({
                 narrativeId,
                 name: messageName,
                 value: newPath,
@@ -144,7 +144,7 @@ function onSetAttachment (
 function onSetScript (
         narrativeId: string, messageName: string, newScript: string)
 {
-        const action = ActionCreators.setMessageScript({
+        const action = Actions.setMessageScript({
                 narrativeId,
                 name: messageName,
                 value: newScript,
@@ -168,7 +168,7 @@ function onSetChildren (
         messageName: string,
         delays: MessageDelay.MessageDelay[])
 {
-        const action = ActionCreators.setMessageChildren({
+        const action = Actions.setMessageChildren({
                 narrativeId,
                 name: messageName,
                 value: delays,
@@ -197,7 +197,7 @@ function onSetFallback (
         messageName: string,
         newDelay: MessageDelay.MessageDelay)
 {
-        const action = ActionCreators.setMessageFallback({
+        const action = Actions.setMessageFallback({
                 narrativeId,
                 name: messageName,
                 value: newDelay,

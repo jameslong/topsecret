@@ -1,4 +1,4 @@
-import ActionCreators = require('./action/actioncreators');
+import Actions = require('./actions/actions');
 import EditorMessage = require('./editormessage');
 import Redux = require('./redux/redux');
 import State = require('./state');
@@ -28,13 +28,13 @@ function onKeyDown (e: KeyboardEvent, state: State.State)
 
 function onUndo ()
 {
-        const action = ActionCreators.undo();
+        const action = Actions.undo();
         Redux.handleAction(action);
 }
 
 function onRedo ()
 {
-        const action = ActionCreators.redo();
+        const action = Actions.redo();
         Redux.handleAction(action);
 }
 
@@ -46,6 +46,6 @@ function onDelete (state: State.State)
         const namesMap = EditorMessage.getSelectedMessages(messages);
         const names = Object.keys(namesMap);
         const params = { names, narrativeId };
-        const action = ActionCreators.deleteMessages(params);
+        const action = Actions.deleteMessages(params);
         Redux.handleAction(action);
 }

@@ -1,4 +1,4 @@
-import ActionCreators = require('../../action/actioncreators');
+import Actions = require('../../actions/actions');
 import React = require('react');
 import Redux = require('../../redux/redux');
 import State = require('../../state');
@@ -36,13 +36,13 @@ const MenuBarContainer = React.createFactory(renderMenuBarContainer);
 
 function onAddMessage (narrativeId: string)
 {
-        const action = ActionCreators.createMessage(narrativeId);
+        const action = Actions.createMessage(narrativeId);
         Redux.handleAction(action);
 }
 
 function onSelectNarrative (name: string)
 {
-        const action = ActionCreators.setActiveNarrative(name);
+        const action = Actions.setActiveNarrative(name);
         Redux.handleAction(action);
 }
 

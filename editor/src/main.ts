@@ -8,7 +8,7 @@ import EventHandler = require('./eventhandler');
 import Redux = require('./redux/redux');
 import Root = require('./component/dumb/root');
 import State = require('./state');
-import StateReducers = require('./action/statereducers');
+import StateReducers = require('./reducers/statereducers');
 
 const wrapper = document.getElementById('wrapper');
 

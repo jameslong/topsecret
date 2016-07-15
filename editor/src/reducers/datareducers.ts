@@ -1,4 +1,4 @@
-import Actions = require('./actions');
+import Actions = require('../actions/actions');
 import Config = require('../config');
 import Edge = require('../edge');
 import Helpers = require('./../../../core/src/utils/helpers');

@@ -1,4 +1,4 @@
-import ActionCreators = require('../../action/actioncreators');
+import Actions = require('../../actions/actions');
 import EditorMessage = require('../../editormessage');
 import React = require('react');
 import Redux = require('../../redux/redux');
@@ -53,25 +53,25 @@ function onClick (
 
 function onSelect (narrativeId: string, name: string)
 {
-        const action = ActionCreators.selectMessage({ name, narrativeId });
+        const action = Actions.selectMessage({ name, narrativeId });
         Redux.handleAction(action);
 }
 
 function onDeselect (narrativeId: string, name: string)
 {
-        const action = ActionCreators.deselectMessage({ name, narrativeId });
+        const action = Actions.deselectMessage({ name, narrativeId });
         Redux.handleAction(action);
 }
 
 function onUniqueSelect (narrativeId: string, name: string)
 {
-        const action = ActionCreators.uniqueSelectMessage({ name, narrativeId });
+        const action = Actions.uniqueSelectMessage({ name, narrativeId });
         Redux.handleAction(action);
 }
 
 function onDoubleClick (name: string)
 {
-        const action = ActionCreators.openMessage(name);
+        const action = Actions.openMessage(name);
         Redux.handleAction(action);
 }
 

@@ -1,4 +1,4 @@
-import ActionCreators = require('./action/actioncreators');
+import Actions = require('./actions/actions');
 import Map = require('./../../core/src/utils/map');
 import Message = require('./../../core/src/message');
 import MathUtils = require('./math');

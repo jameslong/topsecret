@@ -1,7 +1,7 @@
 /// <reference path="../../typings/jquery/jquery.d.ts" />
 
 import $ = require('jquery');
-import ActionCreators = require('./action/actioncreators');
+import Actions = require('./actions/actions');
 import Map = require('./../../core/src/utils/map');
 import EditorMessage = require('./editormessage');
 import Narrative = require('./narrative');
@@ -26,7 +26,7 @@ function onNarratives(data: Narrative.NarrativesData)
         console.log('loaded narratives');
 
         const narratives = Map.map(data, Narrative.convertToNarrative);
-        const action = ActionCreators.setGameData(narratives);
+        const action = Actions.setGameData(narratives);
         Redux.handleAction(action);
 }
 

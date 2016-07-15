@@ -1,4 +1,4 @@
-import Actions = require('./actions');
+import Actions = require('../actions/actions');
 import Arr = require('./../../../core/src/utils/array');
 import AsyncRequest = require('../asyncrequest');
 import Config = require('../config');

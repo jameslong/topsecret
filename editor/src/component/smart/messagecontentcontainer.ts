@@ -1,4 +1,4 @@
-import ActionCreators = require('../../action/actioncreators');
+import Actions = require('../../actions/actions');
 import EditMessageContainer = require('../smart/editmessagecontainer');
 import EditorMessage = require('../../editormessage');
 import Message = require('../../../../core/src/message');
@@ -44,7 +44,7 @@ function onSetMessageContent (
         messageName: string,
         newContent: Message.Message)
 {
-        const action = ActionCreators.setMessageContent({
+        const action = Actions.setMessageContent({
                 narrativeId,
                 name: messageName,
                 value: newContent,
@@ -54,7 +54,7 @@ function onSetMessageContent (
 
 function onSetBody (narrativeId: string, name: string, value: string)
 {
-        const action = ActionCreators.setMessageBody({
+        const action = Actions.setMessageBody({
                 narrativeId,
                 name,
                 value,

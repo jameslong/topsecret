@@ -1,4 +1,4 @@
-import ActionCreators = require('../../action/actioncreators');
+import Actions = require('../../actions/actions');
 import EditorMessage = require('../../editormessage');
 import Narrative = require('../../narrative');
 import React = require('react');
@@ -36,7 +36,7 @@ function setReplyOptions (
         name: string,
         replyOptions: ReplyOption.ReplyOptions)
 {
-        const action = ActionCreators.setMessageReplyOptions({
+        const action = Actions.setMessageReplyOptions({
                 narrativeId,
                 name: name,
                 value: replyOptions,

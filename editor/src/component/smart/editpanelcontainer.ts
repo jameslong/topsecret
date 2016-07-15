@@ -1,4 +1,4 @@
-import ActionCreators = require('../../action/actioncreators');
+import Actions = require('../../actions/actions');
 import React = require('react');
 import Redux = require('../../redux/redux');
 import State = require('../../state');
@@ -26,7 +26,7 @@ function onClick (narrativeId: string, e: MouseEvent)
 {
         e.stopPropagation();
 
-        const action = ActionCreators.closeMessage(narrativeId);
+        const action = Actions.closeMessage(narrativeId);
         Redux.handleAction(action);
 }
 

@@ -1,4 +1,4 @@
-import ActionCreators = require('../../action/actioncreators');
+import Actions = require('../../actions/actions');
 import Core = require('../core');
 import Draggable = require('./draggable');
 import Div = Core.Div;
@@ -47,7 +47,7 @@ function onDrop (narrativeId: string, e: DragEvent)
                 y: deltaY,
         };
 
-        const action = ActionCreators.endDrag({
+        const action = Actions.endDrag({
                 id: dragData.id,
                 narrativeId,
                 delta: delta,
