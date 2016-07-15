@@ -1,5 +1,4 @@
 import Actions = require('../../../../actions/actions');
-import EditMessageContainer = require('../editmessagecontainer');
 import Message = require('../../../../../../core/src/message');
 import Narrative = require('../../../../narrative');
 import Profile = require('../../../../profile');

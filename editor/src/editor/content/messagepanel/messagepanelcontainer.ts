@@ -1,24 +1,21 @@
 import Actions = require('../../../actions/actions');
-import Arr = require('../../../../../core/src/utils/array');
-import EditorMessage = require('../../../editormessage');
 import MessageDelay = require('../../../messagedelay');
 import React = require('react');
 import Redux = require('../../../redux/redux');
 import State = require('../../../state');
 
-import EditMessage = require('./editmessage');
+import MessagePanel = require('./messagepanel');
 
-interface EditMessageContainerProps extends React.Props<any> {
-        name: string;
-        narrativeId: string;
-        store: State.Store;
-};
+interface MessagePanelContainerProps extends React.Props<any> {
+        store: State.Store
+}
 
-function renderEditMessageContainer (props: EditMessageContainerProps)
+function renderMessagePanelContainer (props: MessagePanelContainerProps)
 {
-        const name = props.name;
+        const store = props.store;
+        const narrativeId = store.ui.activeNarrativeId;
+        const name = store.ui.activeMessageId;
         const newName = props.store.data.nameScratchpad[name];
-        const narrativeId = props.narrativeId;
 
         const onSetNameScratchpadLocal = (newName: string) =>
                 onSetNameScratchpad(narrativeId, name, newName);
@@ -39,10 +36,11 @@ function renderEditMessageContainer (props: EditMessageContainerProps)
                 onSetChildren(narrativeId, name, delays);
         const onSetFallbackLocal = (delay: MessageDelay.MessageDelay) =>
                 onSetFallback(narrativeId, name, delay);
+        const onBlurLocal = (e: MouseEvent) => onBlur(narrativeId, e);
 
-        const editMessageProps = {
+        const messagePanelProps = {
                 name,
-                store: props.store,
+                store,
                 onSetNameScratchpad: onSetNameScratchpadLocal,
                 onSetName: onSetNameLocal,
                 onSetSubject: onSetSubjectLocal,
@@ -53,11 +51,12 @@ function renderEditMessageContainer (props: EditMessageContainerProps)
                 onSetScript: onSetScriptLocal,
                 onSetChildren: onSetChildrenLocal,
                 onSetFallback: onSetFallbackLocal,
+                onBlur: onBlurLocal,
         };
-        return EditMessage(editMessageProps);
+        return MessagePanel(messagePanelProps);
 }
 
-const EditMessageContainer = React.createFactory(renderEditMessageContainer);
+const MessagePanelContainer = React.createFactory(renderMessagePanelContainer);
 
 function onDelete (narrativeId: string, name: string)
 {
@@ -152,17 +151,6 @@ function onSetScript (
         Redux.handleAction(action);
 }
 
-function onSetChild (
-        narrativeId: string,
-        message: EditorMessage.EditorMessage,
-        delay: MessageDelay.MessageDelay,
-        index: number)
-{
-        const children = message.children;
-        const newChildren = Arr.set(children, index, delay);
-        onSetChildren(narrativeId, message.name, newChildren);
-}
-
 function onSetChildren (
         narrativeId: string,
         messageName: string,
@@ -174,22 +162,6 @@ function onSetChildren (
                 value: delays,
         });
         Redux.handleAction(action);
-}
-
-function onAddChild (narrativeId: string, message: EditorMessage.EditorMessage)
-{
-        const newChild = MessageDelay.createMessageDelay();
-        const children = message.children;
-        const newChildren = Arr.push(children, newChild);
-        onSetChildren(narrativeId, message.name, newChildren);
-}
-
-function onRemoveChild (
-        narrativeId: string, message: EditorMessage.EditorMessage, index: number)
-{
-        const children = message.children;
-        const newChildren = Arr.deleteIndex(children, index);
-        onSetChildren(narrativeId, message.name, newChildren);
 }
 
 function onSetFallback (
@@ -205,15 +177,12 @@ function onSetFallback (
         Redux.handleAction(action);
 }
 
-function onAddFallback (narrativeId: string, messageName: string)
+function onBlur (narrativeId: string, e: MouseEvent)
 {
-        const newDelay = MessageDelay.createMessageDelay();
-        onSetFallback(narrativeId, messageName, newDelay);
+        e.stopPropagation();
+
+        const action = Actions.closeMessage(narrativeId);
+        Redux.handleAction(action);
 }
 
-function onRemoveFallback (narrativeId: string, messageName: string)
-{
-        onSetFallback(narrativeId, messageName, null);
-}
-
-export = EditMessageContainer;
+export = MessagePanelContainer;

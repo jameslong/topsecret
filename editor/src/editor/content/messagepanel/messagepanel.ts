@@ -24,7 +24,7 @@ import ReplyOptionsContainer = require('./replyoptions/replyoptionscontainer');
 import TextComponent = require('../../../component/dumb/text');
 import TextInputValidated = require('../../../component/textinputvalidated');
 
-interface EditMessageProps extends React.Props<any> {
+interface MessagePanelProps extends React.Props<any> {
         name: string,
         store: State.Store;
         onSetNameScratchpad: (newName: string) => void;
@@ -37,9 +37,10 @@ interface EditMessageProps extends React.Props<any> {
         onSetScript: (script: string) => void;
         onSetChildren: (delays: MessageDelay.MessageDelays) => void;
         onSetFallback: (delay: MessageDelay.MessageDelay) => void;
+        onBlur: (e: MouseEvent) => void;
 };
 
-function renderEditMessage (props: EditMessageProps)
+function renderMessagePanel (props: MessagePanelProps)
 {
         const store = props.store;
         const narrativeId = store.ui.activeNarrativeId;
@@ -83,7 +84,7 @@ function renderEditMessage (props: EditMessageProps)
         const script = createScript(message, props.onSetScript);
 
         const dataLists = createDataLists(narrative);
-        return Div({ className: 'edit-message'},
+        const editMessage = Div({ className: 'edit-message'},
                 dataLists,
                 ComponentHelpers.wrapInGroup(
                         ComponentHelpers.wrapInSubgroup(name)
@@ -101,9 +102,21 @@ function renderEditMessage (props: EditMessageProps)
                         ComponentHelpers.wrapInSubgroup(endGame, encrypted)
                 )
         );
+
+        const panelProps = {
+                className: 'message-panel',
+                onClick: props.onBlur,
+        };
+
+        const contentProps = {
+                className: 'message-panel-content',
+                onClick: (e: MouseEvent) => e.stopPropagation(),
+        };
+
+        return Div(panelProps, Div(contentProps, editMessage));
 }
 
-const EditMessage = React.createFactory(renderEditMessage);
+const MessagePanel = React.createFactory(renderMessagePanel);
 
 function createName (
         messageName: string,
@@ -384,4 +397,4 @@ function createDataList (id: string, names: string[])
         return Core.DataList({ id: id }, options);
 }
 
-export = EditMessage;
+export = MessagePanel;

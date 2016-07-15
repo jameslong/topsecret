@@ -10,7 +10,6 @@ import TextInputValidated = require('../../../component/textinputvalidated');
 import ComponentHelpers = require('../../../component/helpers');
 import Core = require('../../../component/core');
 import Div = Core.Div;
-import EditMessage = require('./editmessage');
 import NumberComponent = require('../../../component/dumb/number');
 import TextComponent = require('../../../component/dumb/text');
 
