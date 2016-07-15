@@ -1,4 +1,4 @@
-.menu-bar {
+.toolbar {
         width: 100%;
         text-align: right;
         position: fixed;
@@ -6,7 +6,7 @@
         left: 0;
 }
 
-.menu-bar-save-status {
+.toolbar-save-status {
         display: inline-block;
         color: hsl(240, 5%, 90%);
         padding-right: 0.5rem;

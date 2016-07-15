@@ -1,10 +1,10 @@
 import React = require('react');
 
-import Core = require('../core');
+import Core = require('../../component/core');
 import Div = Core.Div;
 import Label = Core.Label;
-import ButtonInput = require('./buttoninput');
-import SelectInput = require('./selectinput');
+import ButtonInput = require('../../component/dumb/buttoninput');
+import SelectInput = require('../../component/dumb/selectinput');
 
 interface MenuBarProps extends React.Props<any> {
         narrativeNames: string[];
@@ -23,7 +23,7 @@ function renderMenuBar (props: MenuBarProps)
         const activeMessage = props.activeMessageId;
 
         const saveText = props.saving ? 'Saving...' : 'All changes saved';
-        const saveStatus = Div({ className: 'menu-bar-save-status' }, saveText);
+        const saveStatus = Div({ className: 'toolbar-save-status' }, saveText);
         const narrativeSelect = createNarrativeSelect(
                 props.onSelectNarrative,
                 narrativeNames,
@@ -31,7 +31,7 @@ function renderMenuBar (props: MenuBarProps)
         const addMessage = createAddMessage(props.onAddMessage);
         const test = createTest(activeMessage, props.onTest);
 
-        return Div({ className: 'menu-bar' },
+        return Div({ className: 'toolbar' },
                 saveStatus, narrativeSelect, addMessage, test);
 }
 

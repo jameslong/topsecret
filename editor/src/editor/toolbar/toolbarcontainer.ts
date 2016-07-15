@@ -3,7 +3,7 @@ import React = require('react');
 import Redux = require('../../redux/redux');
 import State = require('../../state');
 
-import MenuBar = require('../dumb/menubar');
+import MenuBar = require('./toolbar');
 
 interface MenuBarContainerProps extends React.Props<any> {
         narrativeNames: string[];
