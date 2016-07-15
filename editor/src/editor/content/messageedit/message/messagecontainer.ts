@@ -6,9 +6,9 @@ import Profile = require('../../../../profile');
 import React = require('react');
 import Redux = require('../../../../redux/redux');
 
-import MessageContent = require('./messagecontent');
+import MessageComponent = require('./message');
 
-interface MessageContentContainerProps extends React.Props<any> {
+interface MessageContainerProps extends React.Props<any> {
         message: Message.Message;
         profiles: Profile.Profiles;
         strings: Narrative.Strings;
@@ -16,12 +16,12 @@ interface MessageContentContainerProps extends React.Props<any> {
         narrativeId: string;
 };
 
-function renderMessageContentContainer (props: MessageContentContainerProps)
+function renderMessageContainer (props: MessageContainerProps)
 {
         const name = props.name;
         const narrativeId = props.narrativeId;
         const onSet = (content: Message.Message) =>
-                onSetMessageContent(narrativeId, name, content);
+                onSetMessage(narrativeId, name, content);
         const onSetBodyLocal = (value: string) =>
                 onSetBody(narrativeId, name, value);
         const contentProps = {
@@ -32,33 +32,24 @@ function renderMessageContentContainer (props: MessageContentContainerProps)
                 onSet,
                 onSetBody: onSetBodyLocal,
         };
-        return MessageContent(contentProps);
+        return MessageComponent(contentProps);
 }
 
-const MessageContentContainer =
-        React.createFactory(renderMessageContentContainer);
+const MessageContainer = React.createFactory(renderMessageContainer);
 
-function onSetMessageContent (
+function onSetMessage (
         narrativeId: string,
-        messageName: string,
-        newContent: Message.Message)
+        name: string,
+        value: Message.Message)
 {
-        const action = Actions.setMessageContent({
-                narrativeId,
-                name: messageName,
-                value: newContent,
-        });
+        const action = Actions.setMessage({ narrativeId, name, value });
         Redux.handleAction(action);
 }
 
 function onSetBody (narrativeId: string, name: string, value: string)
 {
-        const action = Actions.setMessageBody({
-                narrativeId,
-                name,
-                value,
-        });
+        const action = Actions.setMessageBody({ narrativeId, name, value });
         Redux.handleAction(action);
 }
 
-export = MessageContentContainer;
+export = MessageContainer;

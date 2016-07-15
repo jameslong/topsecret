@@ -17,7 +17,7 @@ import TextList = require('../../../../component/dumb/textlist');
 type OnSet = (content: Message.Message) => void;
 type OnSetBody = (value: string) => void;
 
-interface MessageContentProps extends React.Props<any> {
+interface MessageProps extends React.Props<any> {
         message: Message.Message;
         profiles: Profile.Profiles;
         strings: Narrative.Strings;
@@ -26,7 +26,7 @@ interface MessageContentProps extends React.Props<any> {
         onSetBody: OnSetBody;
 };
 
-function renderMessageContent (props: MessageContentProps)
+function renderMessage (props: MessageProps)
 {
         const onSet = props.onSet;
         const onSetBody = props.onSetBody;
@@ -43,7 +43,7 @@ function renderMessageContent (props: MessageContentProps)
         );
 }
 
-const MessageContent = React.createFactory(renderMessageContent);
+const MessageComponent = React.createFactory(renderMessage);
 
 function onSetFrom (
         onSet: OnSet,
@@ -92,4 +92,4 @@ function createFrom (
         return ComponentHelpers.wrapInLabel('From', from);
 }
 
-export = MessageContent;
+export = MessageComponent;

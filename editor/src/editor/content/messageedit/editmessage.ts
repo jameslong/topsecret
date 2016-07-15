@@ -16,7 +16,7 @@ import Option = Core.Option;
 import ButtonInput = require('../../../component/dumb/buttoninput');
 import Checkbox = require('../../../component/dumb/checkbox');
 import InputLabel = require('../../../component/dumb/inputlabel');
-import MessageContentContainer = require('./message/messagecontentcontainer');
+import MessageContainer = require('./message/messagecontainer');
 import MessageDelayComponent = require('./messagedelay');
 import Multiple = require('../../../component/dumb/multiple');
 import Optional = require('../../../component/dumb/optional');
@@ -148,7 +148,7 @@ function createMessageContent (
                 name: message.name,
                 narrativeId,
         };
-        return MessageContentContainer(messageProps);
+        return MessageContainer(messageProps);
 }
 
 function createReplyOptions (
