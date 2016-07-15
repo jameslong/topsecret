@@ -1,6 +1,6 @@
-/// <reference path="../../../typings/react/react.d.ts" />
-/// <reference path="../../../typings/react/react-global.d.ts" />
-///<reference path="../../../typings/es6-polyfill/es6-polyfill.d.ts" />
+/// <reference path="../../typings/react/react.d.ts" />
+/// <reference path="../../typings/react/react-global.d.ts" />
+///<reference path="../../typings/es6-polyfill/es6-polyfill.d.ts" />
 
 import AsyncRequest = require('./asyncrequest');
 import Config = require('./config');

@@ -1,12 +1,12 @@
-/// <reference path="../../../typings/jquery/jquery.d.ts" />
+/// <reference path="../../typings/jquery/jquery.d.ts" />
 
 import $ = require('jquery');
 import ActionCreators = require('./action/actioncreators');
-import Map = require('./../../../core/src/utils/map');
+import Map = require('./../../core/src/utils/map');
 import EditorMessage = require('./editormessage');
 import Narrative = require('./narrative');
 import Redux = require('./redux/redux');
-import ReplyOption = require('./../../../core/src/replyoption');
+import ReplyOption = require('./../../core/src/replyoption');
 
 export function requestNarratives (url: string)
 {

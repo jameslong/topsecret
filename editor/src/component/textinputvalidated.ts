@@ -1,4 +1,4 @@
-/// <reference path="../../../../typings/react/react.d.ts"/>
+/// <reference path="../../../typings/react/react.d.ts"/>
 import React = require('react');
 import TextComponent = require('./dumb/text');
 import TextAreaInput = require('./dumb/textareainput');

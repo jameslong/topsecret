@@ -1,10 +1,10 @@
-import Arr = require('../../../../../core/src/utils/array');
-import Helpers = require('../../../../../core/src/utils/helpers');
+import Arr = require('../../../../core/src/utils/array');
+import Helpers = require('../../../../core/src/utils/helpers');
 import EditorMessage = require('../../editormessage');
-import Message = require('../../../../../core/src/message');
+import Message = require('../../../../core/src/message');
 import Narrative = require('../../narrative');
 import React = require('react');
-import ReplyOption = require('../../../../../core/src/replyoption');
+import ReplyOption = require('../../../../core/src/replyoption');
 import TextInputValidated = require('../textinputvalidated');
 
 import ComponentHelpers = require('../helpers');

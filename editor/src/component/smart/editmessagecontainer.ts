@@ -1,5 +1,5 @@
 import ActionCreators = require('../../action/actioncreators');
-import Arr = require('../../../../../core/src/utils/array');
+import Arr = require('../../../../core/src/utils/array');
 import EditorMessage = require('../../editormessage');
 import MessageDelay = require('../../messagedelay');
 import React = require('react');

@@ -1,9 +1,9 @@
-import Helpers = require('./../../../core/src/utils/helpers');
-import Map = require('./../../../core/src/utils/map');
+import Helpers = require('./../../core/src/utils/helpers');
+import Map = require('./../../core/src/utils/map');
 import EditorMessage = require('./editormessage');
 import MessageDelay = require('./messagedelay');
 import Profile = require('./profile');
-import ReplyOption = require('./../../../core/src/replyoption');
+import ReplyOption = require('./../../core/src/replyoption');
 import State = require('./state');
 
 export type Strings = Map.Map<string>;
