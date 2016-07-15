@@ -6,7 +6,7 @@ import AsyncRequest = require('./asyncrequest');
 import Config = require('./config');
 import EventHandler = require('./eventhandler');
 import Redux = require('./redux/redux');
-import Root = require('./component/dumb/root');
+import Editor = require('./editor/editor');
 import State = require('./state');
 import StateReducers = require('./reducers/statereducers');
 
@@ -42,7 +42,7 @@ const state: State.State = {
         dirty: false,
 };
 
-const getStateFn = Redux.init(state, StateReducers.state, Root, wrapper);
+const getStateFn = Redux.init(state, StateReducers.state, Editor, wrapper);
 
 AsyncRequest.requestNarratives(config.serverURL);
 EventHandler.addKeyHandlers(getStateFn);

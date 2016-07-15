@@ -4,19 +4,19 @@ import Narrative = require('../../narrative');
 import React = require('react');
 import State = require('../../state');
 
-import Core = require('../../editor/common/core');
+import Core = require('../common/core');
 import Div = Core.Div;
-import Edge = require('../../editor/content/edge/edge');
-import NodeContainer = require('../../editor/content/node/nodecontainer');
-import Surface = require('./surface');
-import SurfaceSVG = require('./surfacesvg');
+import SVG = Core.SVG;
+import Dragzone = require('./dragzone');
+import Edge = require('./edge/edge');
+import NodeContainer = require('./node/nodecontainer');
 
-interface EditAreaProps extends React.Props<any> {
+interface ContentProps extends React.Props<any> {
         store: State.Store;
         onClick: (e: MouseEvent) => void,
 };
 
-function renderEditArea (props: EditAreaProps)
+function renderContent (props: ContentProps)
 {
         const store = props.store;
         const narrativeId = store.ui.activeNarrativeId;
@@ -45,14 +45,17 @@ function renderEditArea (props: EditAreaProps)
                 onClick: props.onClick,
         };
 
-        const surfaceProps = { narrativeId };
+        const surfaceSVG = SVG({ className: 'surface-svg' }, connections);
+        const dragzoneProps = {
+                className: 'surface-dragzone',
+                narrativeId,
+        };
+        const surface = Div({ className: 'surface' },
+                Dragzone(dragzoneProps, messageComponents));
 
-        return Div(editProps,
-                SurfaceSVG(null, connections),
-                Surface(surfaceProps, messageComponents)
-        );
+        return Div(editProps, surfaceSVG, surface);
 }
 
-const EditArea = React.createFactory(renderEditArea);
+const Content = React.createFactory(renderContent);
 
-export = EditArea;
+export = Content;

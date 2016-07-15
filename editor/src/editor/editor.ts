@@ -1,19 +1,19 @@
-import EditorMessage = require('../../editormessage');
-import Narrative = require('../../narrative');
+import EditorMessage = require('../editormessage');
+import Narrative = require('../narrative');
 import React = require('react');
-import State = require('../../state');
+import State = require('../state');
 
-import Core = require('../../editor/common/core');
+import Core = require('./common/core');
 import Div = Core.Div;
-import EditAreaContainer = require('../smart/editareacontainer');
-import EditPanelContainer = require('../../editor/content/messagepanel/messagepanelcontainer');
-import MenuBarContainer = require('../../editor/toolbar/toolbarcontainer');
+import ContentContainer = require('./content/contentcontainer');
+import MessagePanelContainer = require('./content/messagepanel/messagepanelcontainer');
+import ToolbarContainer = require('./toolbar/toolbarcontainer');
 
-interface RootProps extends React.Props<any> {
+interface EditorProps extends React.Props<any> {
         state: State.State;
 }
 
-function renderRoot (props: RootProps)
+function renderEditor (props: EditorProps)
 {
         const state = props.state;
         const store = State.getActiveStore(state);
@@ -22,7 +22,7 @@ function renderRoot (props: RootProps)
         const activeNarrativeId = store.ui.activeNarrativeId;
         const activeMessage = store.ui.activeMessageId;
 
-        const message = activeMessage ? EditPanelContainer({ store }) : null;
+        const message = activeMessage ? MessagePanelContainer({ store }) : null;
 
         if (activeMessage) {
                 window.document.body.classList.add('open-modal');
@@ -41,13 +41,13 @@ function renderRoot (props: RootProps)
                 saving: state.dirty,
         };
 
-        return Div({ className: 'root' },
-                EditAreaContainer({ store }),
-                MenuBarContainer(menuBarProps),
+        return Div({ className: 'editor' },
+                ContentContainer({ store }),
+                ToolbarContainer(menuBarProps),
                 message
         );
 }
 
-const Root = React.createFactory(renderRoot);
+const Editor = React.createFactory(renderEditor);
 
-export = Root;
+export = Editor;

@@ -6,7 +6,7 @@ import ReactUtils = require('../../../redux/react');
 import Core = require('../../common/core');
 import Div = Core.Div;
 import Absolute = require('../../common/absolute');
-import Draggable = require('../../../component/smart/draggable');
+import Draggable = require('../../common/draggable');
 
 interface NodeProps {
         message: EditorMessage.EditorMessage;

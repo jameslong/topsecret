@@ -3,24 +3,24 @@ import React = require('react');
 import Redux = require('../../redux/redux');
 import State = require('../../state');
 
-import EditArea = require('../dumb/editarea');
+import Content = require('./content');
 
-interface EditAreaContainerProps extends React.Props<any> {
+interface ContentContainerProps extends React.Props<any> {
         store: State.Store;
 };
 
-function renderEditAreaContainer (props: EditAreaContainerProps)
+function renderContentContainer (props: ContentContainerProps)
 {
         const store = props.store;
         const narrativeId = store.ui.activeNarrativeId;
-        const editAreaProps = {
+        const contentProps = {
                 store,
                 onClick: (e: MouseEvent) => onClick(narrativeId, e),
         };
-        return EditArea(editAreaProps);
+        return Content(contentProps);
 }
 
-const EditAreaContainer = React.createFactory(renderEditAreaContainer);
+const ContentContainer = React.createFactory(renderContentContainer);
 
 function onClick (narrativeId: string, e: MouseEvent)
 {
@@ -30,4 +30,4 @@ function onClick (narrativeId: string, e: MouseEvent)
         Redux.handleAction(action);
 }
 
-export = EditAreaContainer;
+export = ContentContainer;
