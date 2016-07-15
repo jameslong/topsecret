@@ -1,11 +1,11 @@
-import Actions = require('../../actions/actions');
-import EditorMessage = require('../../editormessage');
-import Narrative = require('../../narrative');
+import Actions = require('../../../../actions/actions');
+import EditorMessage = require('../../../../editormessage');
+import Narrative = require('../../../../narrative');
 import React = require('react');
-import Redux = require('../../redux/redux');
-import ReplyOption = require('../../../../core/src/replyoption');
+import Redux = require('../../../../redux/redux');
+import ReplyOption = require('../../../../../../core/src/replyoption');
 
-import ReplyOptions = require('../dumb/replyoptions');
+import ReplyOptions = require('./replyoptions');
 
 interface ReplyOptionsContainerProps extends React.Props<any> {
         name: string;

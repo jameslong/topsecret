@@ -1,19 +1,18 @@
-import Arr = require('../../../../core/src/utils/array');
-import Helpers = require('../../../../core/src/utils/helpers');
-import Map = require('../../../../core/src/utils/map');
-import Message = require('../../../../core/src/message');
-import EditorMessage = require('../../editormessage');
-import Narrative = require('../../narrative');
-import Profile = require('../../profile');
+import Arr = require('../../../../../../core/src/utils/array');
+import Helpers = require('../../../../../../core/src/utils/helpers');
+import Map = require('../../../../../../core/src/utils/map');
+import Message = require('../../../../../../core/src/message');
+import EditorMessage = require('../../../../editormessage');
+import Narrative = require('../../../../narrative');
+import Profile = require('../../../../profile');
 import React = require('react');
-import TextInputValidated = require('../textinputvalidated');
+import TextInputValidated = require('../../../../component/textinputvalidated');
 
-import ComponentHelpers = require('../helpers');
-import Core = require('../core');
+import ComponentHelpers = require('../../../../component/helpers');
+import Core = require('../../../../component/core');
 import Div = Core.Div;
-import EditMessage = require('./editmessage');
-import TextComponent = require('./text');
-import TextList = require('./textlist');
+import TextComponent = require('../../../../component/dumb/text');
+import TextList = require('../../../../component/dumb/textlist');
 
 type OnSet = (content: Message.Message) => void;
 type OnSetBody = (value: string) => void;

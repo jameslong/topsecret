@@ -1,10 +1,10 @@
-import Narrative = require('../../narrative');
+import Narrative = require('../../../narrative');
 import React = require('react');
-import State = require('../../state');
+import State = require('../../../state');
 
-import Core = require('../core');
+import Core = require('../../../component/core');
 import Div = Core.Div;
-import EditMessageContainer = require('../smart/editmessagecontainer');
+import EditMessageContainer = require('./editmessagecontainer');
 
 interface EditPanelProps {
         store: State.Store;

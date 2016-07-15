@@ -1,18 +1,17 @@
-import Arr = require('../../../../core/src/utils/array');
-import Helpers = require('../../../../core/src/utils/helpers');
-import Map = require('../../../../core/src/utils/map');
-import Message = require('../../../../core/src/message');
-import EditorMessage = require('../../editormessage');
-import Narrative = require('../../narrative');
+import Arr = require('../../../../../../core/src/utils/array');
+import Helpers = require('../../../../../../core/src/utils/helpers');
+import Map = require('../../../../../../core/src/utils/map');
+import Message = require('../../../../../../core/src/message');
+import EditorMessage = require('../../../../editormessage');
+import Narrative = require('../../../../narrative');
 import React = require('react');
-import TextInputValidated = require('../textinputvalidated');
+import TextInputValidated = require('../../../../component/textinputvalidated');
 
-import ComponentHelpers = require('../helpers');
-import Core = require('../core');
+import ComponentHelpers = require('../../../../component/helpers');
+import Core = require('../../../../component/core');
 import Div = Core.Div;
-import EditMessage = require('./editmessage');
-import NumberComponent = require('./number');
-import TextComponent = require('./text');
+import NumberComponent = require('../../../../component/dumb/number');
+import TextComponent = require('../../../../component/dumb/text');
 
 interface ReplyThreadDelayProps extends React.Props<any> {
         delay: Message.ReplyThreadDelay;

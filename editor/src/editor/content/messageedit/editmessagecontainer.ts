@@ -1,12 +1,12 @@
-import Actions = require('../../actions/actions');
-import Arr = require('../../../../core/src/utils/array');
-import EditorMessage = require('../../editormessage');
-import MessageDelay = require('../../messagedelay');
+import Actions = require('../../../actions/actions');
+import Arr = require('../../../../../core/src/utils/array');
+import EditorMessage = require('../../../editormessage');
+import MessageDelay = require('../../../messagedelay');
 import React = require('react');
-import Redux = require('../../redux/redux');
-import State = require('../../state');
+import Redux = require('../../../redux/redux');
+import State = require('../../../state');
 
-import EditMessage = require('../dumb/editmessage');
+import EditMessage = require('./editmessage');
 
 interface EditMessageContainerProps extends React.Props<any> {
         name: string;

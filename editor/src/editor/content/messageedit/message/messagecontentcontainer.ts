@@ -1,13 +1,12 @@
-import Actions = require('../../actions/actions');
-import EditMessageContainer = require('../smart/editmessagecontainer');
-import EditorMessage = require('../../editormessage');
-import Message = require('../../../../core/src/message');
-import Narrative = require('../../narrative');
-import Profile = require('../../profile');
+import Actions = require('../../../../actions/actions');
+import EditMessageContainer = require('../editmessagecontainer');
+import Message = require('../../../../../../core/src/message');
+import Narrative = require('../../../../narrative');
+import Profile = require('../../../../profile');
 import React = require('react');
-import Redux = require('../../redux/redux');
+import Redux = require('../../../../redux/redux');
 
-import MessageContent = require('../dumb/messagecontent');
+import MessageContent = require('./messagecontent');
 
 interface MessageContentContainerProps extends React.Props<any> {
         message: Message.Message;

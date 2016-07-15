@@ -1,12 +1,12 @@
-import Arr = require('../../../../core/src/utils/array');
-import EditorMessage = require('../../editormessage');
-import Narrative = require('../../narrative');
+import Arr = require('../../../../../../core/src/utils/array');
+import EditorMessage = require('../../../../editormessage');
+import Narrative = require('../../../../narrative');
 import React = require('react');
-import ReplyOption = require('../../../../core/src/replyoption');
+import ReplyOption = require('../../../../../../core/src/replyoption');
 
-import Core = require('../core');
+import Core = require('../../../../component/core');
 import Div = Core.Div;
-import Multiple = require('./multiple');
+import Multiple = require('../../../../component/dumb/multiple');
 import ReplyOptionComponent = require('./replyoption');
 
 type OnSet = (options: ReplyOption.ReplyOptions) => void;

@@ -1,20 +1,19 @@
-import Arr = require('../../../../core/src/utils/array');
-import Helpers = require('../../../../core/src/utils/helpers');
-import EditorMessage = require('../../editormessage');
-import Message = require('../../../../core/src/message');
-import Narrative = require('../../narrative');
+import Arr = require('../../../../../../core/src/utils/array');
+import Helpers = require('../../../../../../core/src/utils/helpers');
+import EditorMessage = require('../../../../editormessage');
+import Message = require('../../../../../../core/src/message');
+import Narrative = require('../../../../narrative');
 import React = require('react');
-import ReplyOption = require('../../../../core/src/replyoption');
-import TextInputValidated = require('../textinputvalidated');
+import ReplyOption = require('../../../../../../core/src/replyoption');
+import TextInputValidated = require('../../../../component/textinputvalidated');
 
-import ComponentHelpers = require('../helpers');
-import Core = require('../core');
+import ComponentHelpers = require('../../../../component/helpers');
+import Core = require('../../../../component/core');
 import Div = Core.Div;
-import EditMessage = require('./editmessage');
 import ReplyThreadDelay = require('./replythreaddelay');
-import Multiple = require('./multiple');
-import TextComponent = require('./text');
-import TextList = require('./textlist');
+import Multiple = require('../../../../component/dumb/multiple');
+import TextComponent = require('../../../../component/dumb/text');
+import TextList = require('../../../../component/dumb/textlist');
 
 interface ReplyOptionProps extends React.Props<any> {
         onSet: (option: ReplyOption.ReplyOption) => void;

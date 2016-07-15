@@ -1,9 +1,9 @@
-import Actions = require('../../actions/actions');
+import Actions = require('../../../actions/actions');
 import React = require('react');
-import Redux = require('../../redux/redux');
-import State = require('../../state');
+import Redux = require('../../../redux/redux');
+import State = require('../../../state');
 
-import EditPanel = require('../dumb/editpanel');
+import EditPanel = require('./editpanel');
 
 interface EditPanelContainerProps extends React.Props<any> {
         store: State.Store
