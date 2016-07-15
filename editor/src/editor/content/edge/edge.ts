@@ -1,20 +1,20 @@
-import Edge = require('../../edge');
-import MathUtils = require('../../math');
+import Edge = require('../../../edge');
+import MathUtils = require('../../../math');
 import React = require('react');
 
-import Core = require('../core');
+import Core = require('../../../component/core');
 import G = Core.G;
 
-interface ArrowClassProps extends React.Props<any> {
+interface EdgeClassProps extends React.Props<any> {
         edge: Edge.Edge;
 }
 
-function renderArrow (props: ArrowClassProps) {
+function renderEdge (props: EdgeClassProps) {
         const edge = props.edge;
         const start = edge.line.start;
         const end = edge.line.end;
 
-        const arrowhead = createArrowhead(start, end);
+        const arrowhead = createEdgehead(start, end);
 
         const line = Core.Line({
                 x1: start.x,
@@ -29,9 +29,9 @@ function renderArrow (props: ArrowClassProps) {
         return G({ className: className }, line, arrowhead);
 }
 
-const Arrow = React.createFactory(renderArrow);
+const EdgeComponent = React.createFactory(renderEdge);
 
-function createArrowhead (start: MathUtils.Coord, end: MathUtils.Coord)
+function createEdgehead (start: MathUtils.Coord, end: MathUtils.Coord)
 {
         const width = 10;
         const height = 10;
@@ -70,14 +70,14 @@ function getClassName (type: Edge.Type)
 {
         switch (type) {
         case Edge.Type.Fallback:
-                return 'arrow-fallback';
+                return 'edge-fallback';
         case Edge.Type.Child:
-                return 'arrow-child';
+                return 'edge-child';
         case Edge.Type.ReplyOption:
-                return 'arrow-reply-option';
+                return 'edge-reply-option';
         default:
                 return '';
         }
 }
 
-export = Arrow;
+export = EdgeComponent;

@@ -6,7 +6,7 @@ import State = require('../../state');
 
 import Core = require('../core');
 import Div = Core.Div;
-import Arrow = require('./arrow');
+import Edge = require('../../editor/content/edge/edge');
 import NodeContainer = require('../smart/nodecontainer');
 import Surface = require('./surface');
 import SurfaceSVG = require('./surfacesvg');
@@ -34,7 +34,7 @@ function renderEditArea (props: EditAreaProps)
 
         const edges = store.data.edges;
         const connections = edges.map(
-                edge => Arrow({
+                edge => Edge({
                         key: edge.name,
                         edge,
                 })

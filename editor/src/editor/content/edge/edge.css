@@ -1,13 +1,13 @@
-.arrow-fallback, .arrow-child, .arrow-reply-option {
+.edge-fallback, .edge-child, .edge-reply-option {
         stroke-width: 4px;
         stroke: hsl(240, 5%, 90%);
         fill: hsl(240, 5%, 90%);
 }
 
-.arrow-fallback .line {
+.edge-fallback .line {
         stroke-dasharray: 30,5;
 }
 
-.arrow-reply-option .line {
+.edge-reply-option .line {
         stroke-dasharray: 10,5;
 }
