@@ -7,7 +7,7 @@ import State = require('../../state');
 import Core = require('../core');
 import Div = Core.Div;
 import Edge = require('../../editor/content/edge/edge');
-import NodeContainer = require('../smart/nodecontainer');
+import NodeContainer = require('../../editor/content/node/nodecontainer');
 import Surface = require('./surface');
 import SurfaceSVG = require('./surfacesvg');
 

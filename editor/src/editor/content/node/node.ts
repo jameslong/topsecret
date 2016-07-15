@@ -1,12 +1,12 @@
-import EditorMessage = require('../../editormessage');
-import Misc = require('../../misc');
+import EditorMessage = require('../../../editormessage');
+import Misc = require('../../../misc');
 import React = require('react');
-import ReactUtils = require('../../redux/react');
+import ReactUtils = require('../../../redux/react');
 
-import Core = require('../core');
+import Core = require('../../../component/core');
 import Div = Core.Div;
-import Absolute = require('./absolute');
-import Draggable = require('../smart/draggable');
+import Absolute = require('../../../component/dumb/absolute');
+import Draggable = require('../../../component/smart/draggable');
 
 interface NodeProps {
         message: EditorMessage.EditorMessage;

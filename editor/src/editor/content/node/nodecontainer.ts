@@ -1,9 +1,9 @@
-import Actions = require('../../actions/actions');
-import EditorMessage = require('../../editormessage');
+import Actions = require('../../../actions/actions');
+import EditorMessage = require('../../../editormessage');
 import React = require('react');
-import Redux = require('../../redux/redux');
+import Redux = require('../../../redux/redux');
 
-import NodeComponent = require('../dumb/node');
+import NodeComponent = require('./node');
 
 interface NodeContainerProps extends React.Props<any> {
         message: EditorMessage.EditorMessage;
