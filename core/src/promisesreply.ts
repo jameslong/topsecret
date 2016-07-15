@@ -4,19 +4,18 @@ import KBPGP = require('./kbpgp');
 import Log = require('./log');
 import Map = require('./utils/map');
 import Message = require('./message');
-import MessageHelpers = require('./messagehelpers');
 import Player = require('./player');
 import Profile = require('./profile');
 import Prom = require('./utils/promise');
 import ReplyOption = require('./replyoption');
 import Script = require('./script');
-import State = require('./state');
+import State = require('./gamestate');
 import Str = require('./utils/string');
 
 export function handleReplyMessage (
         reply: Message.MailgunReply,
         timestampMs: number,
-        data: Map.Map<State.GameData>,
+        data: Map.Map<State.NarrativeState>,
         promises: DBTypes.PromiseFactories)
 {
         const email = reply.from;
@@ -41,7 +40,7 @@ export function handleTimelyReply (
         timestampMs: number,
         player: Player.PlayerState,
         message: Message.MessageState,
-        data: Map.Map<State.GameData>,
+        data: Map.Map<State.NarrativeState>,
         promises: DBTypes.PromiseFactories)
 {
         const groupName = player.version;
@@ -62,7 +61,7 @@ export function handleTimelyReply (
                                 const keyManagers = [keyManager, from];
                                 const keyRing = KBPGP.createKeyRing(keyManagers);
                                 return KBPGP.decryptVerify(keyRing, strippedBody).then(plaintext => {
-                                        const newStrippedBody = MessageHelpers.stripBody(plaintext);
+                                        const newStrippedBody = Message.stripBody(plaintext);
                                         const newBody = plaintext;
                                         return handleDecryptedReplyMessage(
                                                 newBody,
@@ -93,7 +92,7 @@ export function handleDecryptedReplyMessage (
         timestampMs: number,
         player: Player.PlayerState,
         messageState: Message.MessageState,
-        groupData: State.GameData,
+        groupData: State.NarrativeState,
         promises: DBTypes.PromiseFactories)
 {
         const threadMessage = groupData.messages[messageState.name];
@@ -173,7 +172,7 @@ export function isValidKeyReply (
 
 export function extractPublicKey (message: string): string
 {
-        var reg = /-----BEGIN PGP PUBLIC KEY BLOCK-----[\s\S]*?-----END PGP PUBLIC KEY BLOCK-----/;
-        var matches = message.match(reg);
+        const reg = /-----BEGIN PGP PUBLIC KEY BLOCK-----[\s\S]*?-----END PGP PUBLIC KEY BLOCK-----/;
+        const matches = message.match(reg);
         return (matches ? matches[0] : null);
 }

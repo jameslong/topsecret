@@ -1,9 +1,9 @@
 import Actions = require('./actions');
-import Arr = require('../../../../../core/src/app/utils/array');
-import Clock = require('../../../../../core/src/app/clock');
+import Arr = require('../../../../../core/src/utils/array');
+import Clock = require('../../../../../core/src/clock');
 import Data = require('../data');
-import Helpers = require('../../../../../core/src/app/utils/helpers');
-import Map = require('../../../../../core/src/app/utils/map');
+import Helpers = require('../../../../../core/src/utils/helpers');
+import Map = require('../../../../../core/src/utils/map');
 import Message = require('../message');
 import Redux = require('../redux/redux');
 

@@ -1,6 +1,6 @@
 import Actions = require('./actions');
 import Config = require('../config');
-import Helpers = require('./../../../../core/src/app/utils/helpers');
+import Helpers = require('./../../../../core/src/utils/helpers');
 import Redux = require('../redux/redux');
 import State = require('../state');
 

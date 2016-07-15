@@ -1,11 +1,11 @@
-import Arr = require('../../../../../core/src/app/utils/array');
-import Map = require('../../../../../core/src/app/utils/map');
+import Arr = require('../../../../../core/src/utils/array');
+import Map = require('../../../../../core/src/utils/map');
 import EditorMessage = require('../../editormessage');
 import MessageDelay = require('../../messagedelay');
 import Misc = require('../../misc');
 import Narrative = require('../../narrative');
 import React = require('react');
-import ReplyOption = require('../../../../../core/src/app/replyoption');
+import ReplyOption = require('../../../../../core/src/replyoption');
 import Profile = require('../../profile');
 import State = require('../../state');
 

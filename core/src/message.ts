@@ -1,13 +1,105 @@
 import Arr = require('./utils/array');
 import Log = require('./log');
 import Map = require('./utils/map');
-import Message = require('./message');
 import Player = require('./player');
-import Profile = require('./profile');
 import ReplyOption = require('./replyoption');
 import Script = require('./script');
-import State = require('./state');
+import State = require('./gamestate');
 import Str = require('./utils/string');
+
+export interface ReplyState {
+        index: number;
+        sent: number[];
+        timestampMs: number;
+        body: string;
+}
+
+export interface MessageState {
+        email: string;
+        id: string;
+        name: string;
+        reply: ReplyState;
+        sentTimestampMs: number;
+        childrenSent: boolean[];
+        fallbackSent: boolean;
+        threadStartName: string;
+}
+
+export const ThreadMessageTypes = {
+        DEFAULT: 'default',
+        EMPTY: 'empty',
+};
+
+export interface MessageReceiver {
+        message: Message;
+        receiver: string;
+}
+
+export interface Coord {
+        x: number;
+        y: number;
+}
+
+export interface ThreadMessage {
+        name: string;
+        threadSubject: string;
+        position: Coord;
+        endGame: boolean;
+        message: Message;
+        encrypted: boolean;
+        script: string;
+        receiver?: string; // For unsolicited player-to-character emails (where message is null)
+        replyOptions: string;
+        children: ThreadDelay[];
+        fallback: ThreadDelay;
+        attachment: string;
+}
+
+export interface ReplyThreadDelay {
+        name: string;
+        delay: [number, number, number]; // days, hours, minutes
+}
+
+export interface ThreadDelay {
+        name: string;
+        delay: [number, number, number]; // days, hours, minutes
+        condition: string;
+}
+
+export interface NamedThreadDelay {
+        name: string;
+        matches: string[];
+        threadDelay: ThreadDelay;
+}
+
+export interface Message {
+        from: string;
+        body: string;
+}
+
+export interface MessageData {
+        name: string;
+        from: string;
+        to: string;
+        subject: string;
+        body: string;
+        inReplyToId: string;
+        attachment: string;
+}
+
+export interface Reply {
+        id: string;
+        from: string;
+        to: string;
+        subject: string;
+        body: string;
+        inReplyToId: string;
+        attachment: string;
+}
+
+export interface MailgunReply extends Reply {
+        strippedBody: string; // Same as body but with quoted text removed
+}
 
 export function createMessageState (
         email: string,
@@ -16,7 +108,7 @@ export function createMessageState (
         sentTimestampMs: number,
         threadStartName: string,
         numberOfChildren: number)
-        : Message.MessageState
+        : MessageState
 {
         const childrenSent = Arr.createArray(numberOfChildren, false);
 
@@ -38,8 +130,8 @@ export function createMessageData (
         inReplyToId: string,
         quotedBody: string,
         to: string,
-        groupData: State.GameData,
-        vars: Player.PlayerVars): Message.MessageData
+        groupData: State.NarrativeState,
+        vars: Player.PlayerVars): MessageData
 {
         const { messages, strings, profiles } = groupData;
 
@@ -90,12 +182,12 @@ export function removeFriendlyFromEmail (email: string)
 }
 
 export function getSelectedReply (
-        options: Message.NamedThreadDelay[],
+        options: NamedThreadDelay[],
         reply: string): string
 {
-        var replyBodyLower = reply.toLowerCase();
+        const replyBodyLower = reply.toLowerCase();
 
-        var selectedOption = Arr.valueOf(options, (option) => {
+        const selectedOption = Arr.valueOf(options, (option) => {
                         return Arr.every(option.matches, (match) =>
                                 Str.containsWord(replyBodyLower, match))
                 });
@@ -106,7 +198,7 @@ export function getSelectedReply (
 export function getReplyDelay (
         replyIndex: number,
         delayIndex: number,
-        message: Message.ThreadMessage,
+        message: ThreadMessage,
         replyOptions: Map.Map<ReplyOption.ReplyOption[]>)
 {
         const options = replyOptions[message.replyOptions];
@@ -120,7 +212,7 @@ export function createMessageId (email: string, uid: number): string
 
 export function insertMessageVars (body: string, vars: Map.Map<Script.Atom>)
 {
-        var replacer = function (match: string, $1: string): string
+        const replacer = function (match: string, $1: string): string
                 {
                         return (`${vars[$1]}` || match);
                 };
@@ -128,9 +220,9 @@ export function insertMessageVars (body: string, vars: Map.Map<Script.Atom>)
 }
 
 export function hasReplyOptions (
-        name: string, threadData: Map.Map<Message.ThreadMessage>): boolean
+        name: string, threadData: Map.Map<ThreadMessage>): boolean
 {
-        var threadMessage = threadData[name];
+        const threadMessage = threadData[name];
         return (threadMessage.replyOptions !== null);
 }
 
@@ -139,7 +231,7 @@ export function stripBody (body: string)
         return Str.filterByLines(body, line => !Str.beginsWith(line, '> '));
 }
 
-export function createThreadDelay (): Message.ThreadDelay
+export function createThreadDelay (): ThreadDelay
 {
         return {
                 name: '',
@@ -148,7 +240,7 @@ export function createThreadDelay (): Message.ThreadDelay
         };
 }
 
-export function createReplyThreadDelay (): Message.ReplyThreadDelay
+export function createReplyThreadDelay (): ReplyThreadDelay
 {
         return {
                 name: '',

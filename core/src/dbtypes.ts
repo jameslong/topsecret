@@ -1,6 +1,5 @@
 import Kbpgp = require('./kbpgp');
 import Message = require('./message');
-import Request = require('./requesttypes');
 import Player = require('./player');
 import Prom = require('./utils/promise');
 
@@ -75,6 +74,5 @@ export function createPromiseFactories (calls: DBCalls, send: SendMessage)
                 getMessage: calls.getMessage,
                 getMessages: calls.getMessages,
                 getPlayer: calls.getPlayer,
-
         };
 }

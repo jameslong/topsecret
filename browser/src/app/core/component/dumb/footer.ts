@@ -1,5 +1,5 @@
 import Client = require('../../client');
-import Clock = require('../../../../../../core/src/app/clock');
+import Clock = require('../../../../../../core/src/clock');
 import EditSubject = require('../smart/editsubject');
 import EditTo = require('../smart/editto');
 import FooterCompose = require('./footercompose');

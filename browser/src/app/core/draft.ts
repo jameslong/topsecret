@@ -1,8 +1,7 @@
-import Helpers = require('../../../../core/src/app/utils/helpers');
+import Helpers = require('../../../../core/src/utils/helpers');
 import Message = require('./message');
-import MessageHelpers = require('../../../../core/src/app/messagehelpers');
-import MessageCore = require('../../../../core/src/app/message');
-import Str = require('../../../../core/src/app/utils/string');
+import MessageCore = require('../../../../core/src/message');
+import Str = require('../../../../core/src/utils/string');
 
 export interface Draft {
         content: Message.MessageContent;

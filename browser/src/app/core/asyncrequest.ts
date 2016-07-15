@@ -1,14 +1,15 @@
 /// <reference path="../../../../typings/jquery/jquery.d.ts" />
 
 import $ = require('jquery');
-import Helpers = require('../../../../core/src/app/utils/helpers');
-import State = require('../../../../core/src/app/state');
+import Data = require('../../../../core/src/data');
+import Helpers = require('../../../../core/src/utils/helpers');
+import State = require('../../../../core/src/gamestate');
 
 export function narratives (url: string)
 {
         const requestURL = url + '/narratives';
         const data = {};
-        return get<State.Narratives>(requestURL, data).then(data => {
+        return get<Data.Narratives>(requestURL, data).then(data => {
                 const tasks = Helpers.arrayFromMap(data,
                         narrative => State.addKeyManagers(narrative));
                 return Promise.all(tasks);

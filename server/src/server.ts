@@ -2,8 +2,8 @@
 /// <reference path='../../typings/express/express.d.ts'/>
 /// <reference path='../../typings/multer/multer.d.ts'/>
 
-import Log = require('./../../core/src/app/log');
-import Message = require('./../../core/src/app/message');
+import Log = require('./../../core/src/log');
+import Message = require('./../../core/src/message');
 
 import express = require('express');
 import bodyParser = require('body-parser');

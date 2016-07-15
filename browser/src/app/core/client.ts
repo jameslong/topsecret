@@ -1,24 +1,23 @@
 import ActionCreators = require('./action/actioncreators');
 import AppData = require('./data/appdata');
-import Clock = require('../../../../core/src/app/clock');
+import Clock = require('../../../../core/src/clock');
 import Command = require('./command');
 import ConfigData = require('./data/config');
 import Data = require('./data');
 import Draft = require('./draft');
 import Folder = require('./folder');
-import Func = require('../../../../core/src/app/utils/function');
-import Helpers = require('../../../../core/src/app/utils/helpers');
+import Func = require('../../../../core/src/utils/function');
+import Helpers = require('../../../../core/src/utils/helpers');
 import Kbpgp = require('kbpgp');
-import KbpgpHelpers = require('../../../../core/src/app/kbpgp');
-import Map = require('../../../../core/src/app/utils/map');
+import KbpgpHelpers = require('../../../../core/src/kbpgp');
+import Map = require('../../../../core/src/utils/map');
 import Main = require('./main');
-import Message = require('./message');
-import MessageHelpers = require('../../../../core/src/app/messagehelpers');
+import Message = require('../../../../core/src/message');
 import Player = require('./player');
-import Profile = require('../../../../core/src/app/profile');
+import Profile = require('../../../../core/src/profile');
 import Redux = require('./redux/redux');
 import Server = require('./server');
-import State = require('../../../../core/src/app/state');
+import State = require('../../../../core/src/gamestate');
 import UI = require('./ui');
 
 export interface Client {
@@ -45,7 +44,7 @@ export interface SaveData {
 export function createClientFromSaveData (
         settings: ConfigData.GameSettings,
         appData: AppData.AppData,
-        gameData: State.Data,
+        gameData: State.NarrativeStates,
         openFile: (path: string) => void,
         openExternal: (path: string) => void,
         saveData: RuntimeClient): Client
@@ -79,7 +78,7 @@ export function createClientFromSaveData (
 export function createClient (
         settings: ConfigData.GameSettings,
         appData: AppData.AppData,
-        gameData: State.Data,
+        gameData: State.NarrativeStates,
         player: Player.Player,
         openFile: (path: string) => void,
         openExternal: (path: string) => void)
@@ -109,7 +108,7 @@ export function tickClient ()
 export function nextMessageId (client: Client, from: string)
 {
         const id = (client.messageId + 1);
-        return MessageHelpers.createMessageId(from, id);
+        return Message.createMessageId(from, id);
 }
 
 export function getActiveMessage (client: Client)

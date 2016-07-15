@@ -1,8 +1,8 @@
-import Arr = require('../../../../../core/src/app/utils/array');
+import Arr = require('../../../../../core/src/utils/array');
 import EditorMessage = require('../../editormessage');
 import Narrative = require('../../narrative');
 import React = require('react');
-import ReplyOption = require('../../../../../core/src/app/replyoption');
+import ReplyOption = require('../../../../../core/src/replyoption');
 
 import Core = require('../core');
 import Div = Core.Div;

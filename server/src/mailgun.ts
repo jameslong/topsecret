@@ -1,9 +1,8 @@
 /// <reference path='../../typings/mailgun-js/mailgun-js.d.ts'/>
 
-import Log = require('./../../core/src/app/log');
-import Message = require('./../../core/src/app/message');
-import Request = require('./../../core/src/app/requesttypes');
-import Str = require('./../../core/src/app/utils/string');
+import Log = require('./../../core/src/log');
+import Message = require('./../../core/src/message');
+import Str = require('./../../core/src/utils/string');
 
 import MailgunModule = require('mailgun-js');
 

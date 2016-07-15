@@ -1,4 +1,4 @@
-/// <reference path='../../../typings/kbpgp/kbpgp.d.ts'/>
+/// <reference path='../../typings/kbpgp/kbpgp.d.ts'/>
 
 import Arr = require('./utils/array');
 import Helpers = require('./utils/helpers');
@@ -6,7 +6,6 @@ import Kbpgp = require('kbpgp');
 import Log = require('./log');
 import Map = require('./utils/map');
 import Profile = require('./profile');
-import Request = require('./requesttypes');
 import Str = require('./utils/string');
 
 export type KeyManagers = Map.Map<Kbpgp.KeyManagerInstance>;
@@ -82,7 +81,7 @@ export function generateKeyPair (userid: string, asp: Kbpgp.ASP)
 
 export function signEncrypt (data: EncryptData)
 {
-        var params = {
+        const params = {
                 msg: data.text,
                 encrypt_for: data.to,
                 sign_with: data.from,

@@ -1,20 +1,19 @@
 import ActionCreators = require('./actioncreators');
-import Arr = require('../../../../../core/src/app/utils/array');
-import Clock = require('../../../../../core/src/app/clock');
+import Arr = require('../../../../../core/src/utils/array');
+import Clock = require('../../../../../core/src/clock');
 import Data = require('../data');
 import Draft = require('../draft');
 import Folder = require('../folder');
-import Func = require('../../../../../core/src/app/utils/function');
-import Helpers = require('../../../../../core/src/app/utils/helpers');
+import Func = require('../../../../../core/src/utils/function');
+import Helpers = require('../../../../../core/src/utils/helpers');
 import Kbpgp = require('kbpgp');
-import KbpgpHelpers = require('../../../../../core/src/app/kbpgp');
+import KbpgpHelpers = require('../../../../../core/src/kbpgp');
 import LocalStorage = require('../localstorage');
-import MathUtils = require('../../../../../core/src/app/utils/math');
-import Map = require('../../../../../core/src/app/utils/map');
+import MathUtils = require('../../../../../core/src/utils/math');
+import Map = require('../../../../../core/src/utils/map');
 import Menu = require('../menu');
-import MessageCore = require('../../../../../core/src/app/message');
-import MessageHelpers = require('../../../../../core/src/app/messagehelpers');
-import PromisesReply = require('../../../../../core/src/app/promisesreply');
+import MessageCore = require('../../../../../core/src/message');
+import PromisesReply = require('../../../../../core/src/promisesreply');
 import Redux = require('../redux/redux');
 import Client = require('../client');
 import UI = require('../ui');
@@ -273,7 +272,7 @@ export function encryptSend (client: Client.Client): Redux.Action<any>
                 return PromisesReply.handleReplyMessage(
                         encryptedReply,
                         timestampMs,
-                        app.data,
+                        app.narratives,
                         app.promises).then(result => reply)
         }).then(reply => {
                 const message = Draft.createMessageFromReply(reply, timestampMs);

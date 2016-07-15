@@ -1,9 +1,9 @@
-import Func = require('./../../../core/src/app/utils/function');
-import Helpers = require('./../../../core/src/app/utils/helpers');
-import Map = require('./../../../core/src/app/utils/map');
-import Message = require('../../../core/src/app/message');
+import Func = require('./../../../core/src/utils/function');
+import Helpers = require('./../../../core/src/utils/helpers');
+import Map = require('./../../../core/src/utils/map');
+import Message = require('../../../core/src/message');
 import Profile = require('./profile');
-import ReplyOption = require('./../../../core/src/app/replyoption');
+import ReplyOption = require('./../../../core/src/replyoption');
 
 type Strings = Map.Map<string>;
 

@@ -1,7 +1,7 @@
 import Helpers = require('../helpers');
 import Message = require('../../message');
 import React = require('react');
-import Str = require('../../../../../../core/src/app/utils/string');
+import Str = require('../../../../../../core/src/utils/string');
 
 import Core = require('../core');
 import Div = Core.Div;

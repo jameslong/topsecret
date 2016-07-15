@@ -4,30 +4,8 @@ import Helpers = require('./utils/helpers');
 import Map = require('./utils/map');
 import MathUtils = require('./utils/math');
 import Message = require('./message');
-import MessageHelpers = require('./messagehelpers');
 import Player = require('./player');
 import Prom = require('./utils/promise');
-import Request = require('./requesttypes');
-
-/*
-
-SCHEMA
-
-table: players
-
-playerId
-        email
-        messageUID
-
-table: messages
-
-id
-        email: string;
-        name: string;
-        reply: ReplyState;
-        sentTimestampMs: number;
-
-*/
 
 export interface DBState {
         players: Map.Map<Player.PlayerState>;
@@ -42,9 +20,14 @@ export function createDB (): DBState
         };
 }
 
+export interface Error {
+        code: string;
+        message: string;
+}
+
 type DBPromise<T, U> = <T, U>(db: DBState, params: T)=> Promise<U>;
 
-function delayFactory<T, U> (
+function delay<T, U> (
         db: DBState,
         timeoutMs: number,
         promise: DBPromise<T, U>): Prom.Factory<T, U>
@@ -53,53 +36,41 @@ function delayFactory<T, U> (
                 promise(db, params));
 }
 
-
 export function createLocalDBCalls (db: DBState, timeoutMs: number)
         : DBTypes.DBCalls
 {
         const factory = <T, U>(promise: DBPromise<T, U>) =>
-                delayFactory<T, U>(db, timeoutMs, promise);
-
-        const addPlayer = factory(addPlayerLocal);
-        const updatePlayer = factory(updatePlayerLocal);
-        const deletePlayer = factory(deletePlayerLocal);
-        const deleteAllMessages = factory( deleteAllMessagesLocal);
-        const addMessage = factory(addMessageLocal);
-        const updateMessage = factory(updateMessageLocal);
-        const deleteMessage = factory(deleteMessageLocal);
-        const getMessage = factory(getMessageLocal);
-        const getMessages = factory(getMessagesLocal);
-        const getPlayer = factory(getPlayerLocal);
+                delay<T, U>(db, timeoutMs, promise);
 
         return {
-                addPlayer,
-                updatePlayer,
-                deletePlayer,
-                deleteAllMessages,
-                addMessage,
-                updateMessage,
-                deleteMessage,
-                getMessage,
-                getMessages,
-                getPlayer,
+                addPlayer: factory(addPlayer),
+                updatePlayer: factory(updatePlayer),
+                deletePlayer: factory(deletePlayer),
+                deleteAllMessages: factory(deleteAllMessages),
+                addMessage: factory(addMessage),
+                updateMessage: factory(updateMessage),
+                deleteMessage: factory(deleteMessage),
+                getMessage: factory(getMessage),
+                getMessages: factory(getMessages),
+                getPlayer: factory(getPlayer),
         };
 }
 
-function returnPromise<T> (err: Request.Error, result: T)
+function promise<T> (err: Error, result: T)
 {
         return new Promise<T>((resolve, reject) =>
                 err ? reject(err) : resolve(result)
         );
 }
 
-export function addPlayerLocal (
+export function addPlayer (
         db: DBState,
         playerState: DBTypes.AddPlayerParams)
 {
-        var error: Request.Error = undefined;
+        let error: Error = undefined;
 
-        var email = playerState.email;
-        var inUse = (db.players[email] !== undefined);
+        const email = playerState.email;
+        const inUse = (db.players[email] !== undefined);
 
         if (inUse) {
                 error = {
@@ -110,17 +81,17 @@ export function addPlayerLocal (
                 db.players[email] = playerState;
         }
 
-        return returnPromise(error, playerState);
+        return promise(error, playerState);
 }
 
-export function updatePlayerLocal (
+export function updatePlayer (
         db: DBState,
         player: DBTypes.UpdatePlayerParams)
 {
-        var error: Request.Error = undefined;
+        let error: Error = undefined;
 
-        var email = player.email;
-        var inUse = (db.players[email] !== undefined);
+        const email = player.email;
+        const inUse = (db.players[email] !== undefined);
 
         if (inUse) {
                 db.players[email] = player;
@@ -131,16 +102,16 @@ export function updatePlayerLocal (
                 };
         }
 
-        return returnPromise(error, player);
+        return promise(error, player);
 }
 
-export function deletePlayerLocal (
+export function deletePlayer (
         db: DBState,
         email: DBTypes.DeletePlayerParams)
 {
-        var error: Request.Error = undefined;
+        let error: Error = undefined;
 
-        var playerExists = (db.players[email] !== undefined);
+        const playerExists = (db.players[email] !== undefined);
         const player = playerExists ? db.players[email] : null;
 
         if (playerExists) {
@@ -152,73 +123,73 @@ export function deletePlayerLocal (
                 };
         }
 
-        return returnPromise(error, player);
+        return promise(error, player);
 }
 
-export function deleteAllMessagesLocal (
+export function deleteAllMessages (
         db: DBState,
         email: DBTypes.DeleteAllMessagesParams)
 {
-        var error: Request.Error = undefined;
+        let error: Error = undefined;
 
         db.messages = Map.filter(db.messages, function (messageState)
                 {
                         return messageState.email !== email;
                 });
 
-        return returnPromise(error, email);
+        return promise(error, email);
 }
 
-export function addMessageLocal (
+export function addMessage (
         db: DBState,
         messageState: DBTypes.AddMessageParams)
 {
-        var error: Request.Error = undefined;
+        let error: Error = undefined;
 
-        var id = messageState.id;
+        const id = messageState.id;
 
         db.messages[id] = messageState;
 
-        return returnPromise(error, messageState);
+        return promise(error, messageState);
 }
 
-export function updateMessageLocal (
+export function updateMessage (
         db: DBState,
         messageState: DBTypes.UpdateMessageParams)
 {
-        var error: Request.Error = undefined;
+        let error: Error = undefined;
 
-        var id = messageState.id;
+        const id = messageState.id;
 
         db.messages[id] = messageState;
 
-        return returnPromise(error, messageState);
+        return promise(error, messageState);
 }
 
-export function deleteMessageLocal (
+export function deleteMessage (
         db: DBState,
         id: DBTypes.DeleteMessageParams)
 {
-        var error: Request.Error = undefined;
+        let error: Error = undefined;
 
-        var messageState = db.messages[id];
+        const messageState = db.messages[id];
         delete db.messages[id];
 
-        return returnPromise(error, messageState);
+        return promise(error, messageState);
 }
 
-export function getMessageLocal (
+export function getMessage (
         db: DBState,
         id: DBTypes.GetMessageParams)
 {
-        var error: Request.Error = undefined;
+        let error: Error = undefined;
 
-        var messageState = (db.messages[id] || null);
+        const messageState = (db.messages[id] || null);
 
-        return returnPromise(error, messageState);
+        return promise(error, messageState);
 }
 
-export function getMessagesLocal (
+export function getMessages (
         db: DBState,
         params: DBTypes.GetMessagesParams)
 {
@@ -249,13 +220,13 @@ export function getMessagesLocal (
                         null : lastSelectedKey;
         }
 
-        return returnPromise(null, { lastEvaluatedKey, messages });
+        return promise(null, { lastEvaluatedKey, messages });
 }
 
-export function getPlayerLocal (
+export function getPlayer (
         db: DBState,
         email: DBTypes.GetPlayerParams)
 {
-        var data = db.players[email] || null;
-        return returnPromise(null, data);
+        const data = db.players[email] || null;
+        return promise(null, data);
 }

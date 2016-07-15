@@ -1,29 +1,27 @@
-import Clock = require('./../../core/src/app/clock');
+import Clock = require('./../../core/src/clock');
 import Config = require('./config');
-import Data = require('../../core/src/app/data');
-import DataValidation = require('../../core/src/app/datavalidation');
+import Data = require('../../core/src/data');
 import DynamoDB = require('./dynamodb');
-import FileSystem = require('../../core/src/app/filesystem');
-import DBTypes = require('./../../core/src/app/dbtypes');
-import KBPGP = require('./../../core/src/app/kbpgp');
-import Helpers = require('./../../core/src/app/utils/helpers');
-import LocalDB = require('../../core/src/app/localdb');
-import Log = require('./../../core/src/app/log');
-import Main = require('./../../core/src/app/main');
+import FileSystem = require('../../core/src/filesystem');
+import DBTypes = require('./../../core/src/dbtypes');
+import KBPGP = require('./../../core/src/kbpgp');
+import Helpers = require('./../../core/src/utils/helpers');
+import LocalDB = require('../../core/src/localdb');
+import Log = require('./../../core/src/log');
+import Main = require('./../../core/src/main');
 import Mailgun = require('./mailgun');
-import Map = require('./../../core/src/app/utils/map');
-import Message = require('./../../core/src/app/message');
+import Map = require('./../../core/src/utils/map');
+import Message = require('./../../core/src/message');
 import PostHandler = require('./requesthandler');
-import Profile = require('./../../core/src/app/profile');
-import Prom = require('./../../core/src/app/utils/promise');
-import Request = require('./../../core/src/app/requesttypes');
+import Profile = require('./../../core/src/profile');
+import Prom = require('./../../core/src/utils/promise');
 import Server = require('./server');
-import State = require('./../../core/src/app/state');
+import State = require('./../../core/src/gamestate');
 
 export interface State {
         config: Config.ConfigState;
         clock: Clock.Clock;
-        game: State.State;
+        game: State.GameState;
         lastEvaluatedKey: string; // Used to request next message from db
         paused: boolean;
         server: Server.ServerState;
@@ -48,9 +46,9 @@ export function createState (config: Config.ConfigState)
         });
 }
 
-export function getGroupData (app: State.State, groupName: string)
+export function getGroupData (app: State.GameState, groupName: string)
 {
-        return app.data[groupName];
+        return app.narratives[groupName];
 }
 
 export function createGameState (
@@ -67,7 +65,7 @@ export function createGameState (
         const replyOptionSchema = FileSystem.loadJSONSync<JSON>(
                 content.replyOptionSchemaPath);
         const dataErrors = narrativeData.reduce((result, narrative) => {
-                const errors = DataValidation.getDataErrors(
+                const errors = Data.getDataErrors(
                         narrative,
                         profileSchema,
                         messageSchema,
@@ -77,7 +75,7 @@ export function createGameState (
                 }
                 return result;
         }, []);
-        const promise = new Promise<State.NarrativeData[]>((resolve, reject) =>
+        const promise = new Promise<Data.NarrativeData[]>((resolve, reject) =>
                 dataErrors.length ?
                         reject(dataErrors) :
                         resolve(narrativeData)
@@ -96,7 +94,7 @@ export function createGameState (
 export function onGameData (
         config: Config.ConfigState,
         server: Server.ServerState,
-        gameData: State.GameData[])
+        gameData: State.NarrativeState[])
 {
         const { useEmail, emailDomain } = config;
         const { htmlFooter, textFooter } = config.content;
@@ -112,14 +110,14 @@ export function onGameData (
                         LocalDB.createDB(), config.debugDBTimeoutMs);
         const promises = DBTypes.createPromiseFactories(calls, send);
 
-        const gameState: State.State = {
-                data: null,
+        const gameState: State.GameState = {
+                narratives: null,
                 promises,
         };
 
         if (gameData) {
                 const mappedGameData = Helpers.mapFromNameArray(gameData);
-                gameState.data = mappedGameData;
+                gameState.narratives = mappedGameData;
         }
 
         return gameState;

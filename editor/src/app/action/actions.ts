@@ -1,10 +1,10 @@
 import MathUtils = require('../math');
 import EditorMessage = require('../editormessage');
-import Message = require('../../../../core/src/app/message');
+import Message = require('../../../../core/src/message');
 import MessageDelay = require('../messagedelay');
 import Narrative = require('../narrative');
 import Redux = require('../redux/redux');
-import ReplyOption = require('../../../../core/src/app/replyoption');
+import ReplyOption = require('../../../../core/src/replyoption');
 
 export const Types = {
         UNDO: 'UNDO',

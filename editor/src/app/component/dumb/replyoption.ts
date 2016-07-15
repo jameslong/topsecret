@@ -1,11 +1,10 @@
-import Arr = require('../../../../../core/src/app/utils/array');
-import Helpers = require('../../../../../core/src/app/utils/helpers');
+import Arr = require('../../../../../core/src/utils/array');
+import Helpers = require('../../../../../core/src/utils/helpers');
 import EditorMessage = require('../../editormessage');
-import Message = require('../../../../../core/src/app/message');
-import MessageHelpers = require('../../../../../core/src/app/messagehelpers');
+import Message = require('../../../../../core/src/message');
 import Narrative = require('../../narrative');
 import React = require('react');
-import ReplyOption = require('../../../../../core/src/app/replyoption');
+import ReplyOption = require('../../../../../core/src/replyoption');
 import TextInputValidated = require('../textinputvalidated');
 
 import ComponentHelpers = require('../helpers');
@@ -150,7 +149,7 @@ function onAddDelay (
         onSet: (option: ReplyOption.ReplyOption) => void,
         option: ReplyOption.ReplyOption)
 {
-        const delay = MessageHelpers.createReplyThreadDelay();
+        const delay = Message.createReplyThreadDelay();
         const delays = Arr.push(option.messageDelays, delay);
         setDelays(onSet, option, delays);
 }

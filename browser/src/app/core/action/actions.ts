@@ -1,8 +1,8 @@
 /// <reference path="../../../../../typings/kbpgp/kbpgp.d.ts"/>
 
 import Client = require('../client');
-import Map = require('../../../../../core/src/app/utils/map');
-import MessageCore = require('../../../../../core/src/app/message');
+import Map = require('../../../../../core/src/utils/map');
+import MessageCore = require('../../../../../core/src/message');
 import Message = require('../message');
 import Player = require('../player');
 import Redux = require('../redux/redux');

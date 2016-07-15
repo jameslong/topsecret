@@ -1,3 +1,5 @@
+/// <reference path='../../typings/is-my-json-valid/is-my-json-valid.d.ts'/>
+
 import FileSystem = require('./filesystem');
 import Func = require('./utils/function');
 import Helpers = require('./utils/helpers');
@@ -5,7 +7,19 @@ import Map = require('./utils/map');
 import Message = require('./message');
 import Profile = require('./profile');
 import ReplyOption = require('./replyoption');
-import State = require('./state');
+import Script = require('./script');
+import State = require('./gamestate');
+import validator = require('is-my-json-valid');
+
+export interface NarrativeData {
+        name: string;
+        profiles: Map.Map<Profile.Profile>;
+        messages: Map.Map<Message.ThreadMessage>;
+        replyOptions: Map.Map<ReplyOption.ReplyOption[]>;
+        strings: Map.Map<string>;
+        attachments: Map.Map<string>;
+}
+export type Narratives = Map.Map<NarrativeData>;
 
 export interface Path {
         basename: (path: string, ext?: string) => string;
@@ -32,13 +46,13 @@ export function loadGameData (path: string, name: string)
         return State.addKeyManagers(narrative);
 }
 
-export function initKeyManagers (data: State.NarrativeData[])
+export function initKeyManagers (data: NarrativeData[])
 {
         const promises = data.map(narrative => State.addKeyManagers(narrative));
         return Promise.all(promises);
 }
 
-export function loadNarrative (stem: string, name: string): State.NarrativeData
+export function loadNarrative (stem: string, name: string): NarrativeData
 {
         const path = join(stem, name);
         const profilesPath = join(path, 'profiles');
@@ -84,4 +98,62 @@ export function saveMessage (path: string, message: Message.ThreadMessage)
 export function deleteMessage (path: string)
 {
         FileSystem.deleteFile(path);
+}
+
+export function getDataErrors (
+        data: NarrativeData,
+        profileSchema: JSON,
+        messageSchema: JSON,
+        replyOptionSchema: JSON): Object[]
+{
+        const profileErrors = getJSONDirErrors(profileSchema, data.profiles);
+        const messageErrors = getJSONDirErrors(messageSchema, data.messages);
+        const replyOptionErrors = getJSONDirErrors(
+                replyOptionSchema, data.replyOptions);
+
+        const messageList = <Message.ThreadMessage[]>Helpers.arrayFromMap(
+                data.messages);
+        const scriptErrors = getListErrors(messageList,
+                message => Script.getScriptErrors(message.script));
+
+        return profileErrors.concat(
+                messageErrors, replyOptionErrors, scriptErrors);
+}
+
+interface SchemaValidateFn<T> {
+        (object: T): boolean;
+        errors: Object[];
+}
+
+export function getJSONDirErrors<T> (
+        schema: Object, data: Map.Map<T>): Object[]
+{
+        const validate = validator(schema);
+
+        return Map.reduce(data, (result, element, key) => {
+                const error = getError(validate, element, key);
+                if (error) {
+                        result.push(error);
+                }
+                return result;
+        }, []);
+}
+
+export function getError<T> (
+        validateFn: SchemaValidateFn<T>, object: T, name: string): Object
+{
+        return validateFn(object) ? '' : { [name]: validateFn.errors };
+}
+
+function getListErrors<T extends { name: string }> (
+        list: T[], validate: (element: T) => string)
+{
+        return list.reduce((result, element) => {
+                const error = validate(element);
+                if (error) {
+                        console.log('error:', element.name, error);
+                        result.push({ [element.name]: error });
+                }
+                return result;
+        }, []);
 }

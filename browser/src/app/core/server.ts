@@ -1,17 +1,16 @@
 import ActionCreators = require('./action/actioncreators');
 import AppPlayer = require('./player');
-import Clock = require('../../../../core/src/app/clock');
+import Clock = require('../../../../core/src/clock');
 import ConfigData = require('./data/config');
-import DBTypes = require('../../../../core/src/app/dbtypes');
-import Helpers = require('../../../../core/src/app/utils/helpers');
-import LocalDB = require('../../../../core/src/app/localdb');
-import Main = require('../../../../core/src/app/main');
-import Message = require('../../../../core/src/app/message');
-import MessageHelpers = require('../../../../core/src/app/messagehelpers');
-import Player = require('../../../../core/src/app/player');
-import Promises = require('../../../../core/src/app/promises');
+import DBTypes = require('../../../../core/src/dbtypes');
+import Helpers = require('../../../../core/src/utils/helpers');
+import LocalDB = require('../../../../core/src/localdb');
+import Main = require('../../../../core/src/main');
+import Message = require('../../../../core/src/message');
+import Player = require('../../../../core/src/player');
+import Promises = require('../../../../core/src/promises');
 import Redux = require('./redux/redux');
-import State = require('../../../../core/src/app/state');
+import State = require('../../../../core/src/gamestate');
 
 interface Id {
         uid: number;
@@ -23,12 +22,12 @@ export interface RuntimeServer {
         id: Id;
 }
 export interface Server extends RuntimeServer {
-        app: State.State;
+        app: State.GameState;
 }
 
 export function createServerFromSaveData (
         settings: ConfigData.GameSettings,
-        data: State.Data,
+        narratives: State.NarrativeStates,
         saveData: RuntimeServer)
 {
         const lastEvaluatedKey = saveData.lastEvaluatedKey;
@@ -37,7 +36,7 @@ export function createServerFromSaveData (
         const promises = createPromises(id, db);
 
         const app = {
-                data,
+                narratives,
                 promises,
         };
         return { app, lastEvaluatedKey, db, id };
@@ -52,7 +51,8 @@ export function createRuntimeServer (): RuntimeServer
         };
 }
 
-export function createServer (settings: ConfigData.GameSettings, data: State.Data)
+export function createServer (
+        settings: ConfigData.GameSettings, data: State.NarrativeStates)
 {
         const runtimeServer = createRuntimeServer();
         return createServerFromSaveData(settings, data, runtimeServer);
@@ -68,7 +68,7 @@ function createPromises (id: Id, db: LocalDB.DBState)
 
 export function send (id: Id, data: Message.MessageData) {
         const uid = (id.uid + 1);
-        const messageId = MessageHelpers.createMessageId(data.from, uid);
+        const messageId = Message.createMessageId(data.from, uid);
         id.uid += 1;
 
         const reply = {
@@ -98,7 +98,7 @@ export function beginGame (
         const player = Player.createPlayerState(
                 email, publicKey, version, firstName, lastName, timezoneOffset);
 
-        const groupData = server.app.data[version];
+        const groupData = server.app.narratives[version];
         const promises = server.app.promises;
         const timestampMs = Clock.gameTimeMs(clock);
 

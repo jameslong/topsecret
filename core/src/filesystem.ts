@@ -1,4 +1,4 @@
-/// <reference path="../../../typings/node/node.d.ts"/>
+/// <reference path="../../typings/node/node.d.ts"/>
 
 import Data = require('./data');
 import Helpers = require('./utils/helpers');
@@ -36,7 +36,7 @@ export function isDirectorySync(path: string, filename: string): boolean
 export function loadJSONSync<T>(path: string): T
 {
         const encoding = 'utf8';
-        var data = fs.readFileSync(path, encoding);
+        const data = fs.readFileSync(path, encoding);
         return JSON.parse(data);
 }
 
@@ -61,7 +61,7 @@ export function loadJSONDirAsMap<T>(path: string): Map.Map<T>
 
 export function saveJSONSync(path: string, data: Object)
 {
-        var dataString = JSON.stringify(data, null, 8);
+        const dataString = JSON.stringify(data, null, 8);
         fs.writeFileSync(path, dataString);
 }
 

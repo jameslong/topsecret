@@ -1,4 +1,4 @@
-import Arr = require('../../../../core/src/app/utils/array');
+import Arr = require('../../../../core/src/utils/array');
 
 interface SaveData { name: string }
 

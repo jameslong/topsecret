@@ -2,7 +2,7 @@
 /// <reference path="../typings/mocha/mocha.d.ts" />
 /// <reference path="../typings/es6-polyfill/es6-polyfill.d.ts" />
 
-import Promises = require('../core/src/app/promises');
+import Promises = require('../core/src/promises');
 import TestHelpers = require('./helpers');
 
 import Chai = require('chai');
@@ -60,17 +60,19 @@ describe('Promises', function () {
                         const childIndex = 0;
                         const timestampMs = Date.now();
 
-                        return TestHelpers.testGameData().then(groupData => {
+                        return TestHelpers.testGameData().then(narrative => {
                                 const message = TestHelpers.createMessage(
                                         'children_expired',
                                         player.email,
-                                        groupData);
-                                const state = { player, message, timestampMs };
-                                return Promises.child(
-                                        state,
-                                        childIndex,
-                                        groupData,
-                                        promises)
+                                        narrative);
+                                const state = {
+                                        player,
+                                        message,
+                                        timestampMs,
+                                        narrative,
+                                        promises,
+                                };
+                                return Promises.child(state, childIndex);
                         });
                 })
         });
@@ -82,24 +84,25 @@ describe('Promises', function () {
                         const replyIndex = 0;
                         const timestampMs = Date.now();
 
-                        return TestHelpers.testGameData().then(groupData => {
+                        return TestHelpers.testGameData().then(narrative => {
                                 const message = TestHelpers.createMessage(
                                         'reply_expired',
                                         player.email,
-                                        groupData);
+                                        narrative);
                                 message.reply = {
                                         body: '',
                                         timestampMs: 0,
                                         index: replyIndex,
                                         sent: [],
                                 };
-                                const state = { player, message, timestampMs };
-
-                                return Promises.reply(
-                                        state,
-                                        replyIndex,
-                                        groupData,
-                                        promises)
+                                const state = {
+                                        player,
+                                        message,
+                                        timestampMs,
+                                        narrative,
+                                        promises,
+                                };
+                                return Promises.reply(state, replyIndex)
                         });
                 })
         });

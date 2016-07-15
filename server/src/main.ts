@@ -6,8 +6,8 @@ const log = Logging.log; // Required for bunyan module to be included in build
 
 import App = require('./app');
 import Config = require('./config');
-import Helpers = require('../../core/src/app/utils/helpers');
-import Log = require('./../../core/src/app/log');
+import Helpers = require('../../core/src/utils/helpers');
+import Log = require('./../../core/src/log');
 
 Config.releaseMode ?
         Log.debug('RELEASE MODE') :

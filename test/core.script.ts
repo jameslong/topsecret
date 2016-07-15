@@ -1,7 +1,7 @@
 /// <reference path="../typings/chai-as-promised/chai-as-promised.d.ts"/>
 /// <reference path="../typings/mocha/mocha.d.ts" />
 /// <reference path="../typings/es6-polyfill/es6-polyfill.d.ts" />
-import Script = require('../core/src/app/script');
+import Script = require('../core/src/script');
 
 import Chai = require('chai');
 const assert = Chai.assert;

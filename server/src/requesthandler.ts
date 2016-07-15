@@ -1,22 +1,19 @@
 import App = require('./app');
 const Auth = require('basic-auth');
-import Clock = require('../../core/src/app/clock');
-import Data = require('../../core/src/app/data');
-import DataValidation = require('../../core/src/app/datavalidation');
-import FileSystem = require('../../core/src/app/filesystem');
-import Helpers = require('../../core/src/app/utils/helpers');
-import Log = require('../../core/src/app/log');
-import Main = require('../../core/src/app/main');
-import Message = require('../../core/src/app/message');
-import MessageHelpers = require('../../core/src/app/messagehelpers');
-import Player = require('../../core/src/app/player');
-import Promises = require('../../core/src/app/promises');
-import PromisesReply = require('../../core/src/app/promisesreply');
-import ReplyOption = require('../../core/src/app/replyoption');
-import Request = require('../../core/src/app/requesttypes');
+import Clock = require('../../core/src/clock');
+import Data = require('../../core/src/data');
+import FileSystem = require('../../core/src/filesystem');
+import Helpers = require('../../core/src/utils/helpers');
+import Log = require('../../core/src/log');
+import Main = require('../../core/src/main');
+import Message = require('../../core/src/message');
+import Player = require('../../core/src/player');
+import Promises = require('../../core/src/promises');
+import PromisesReply = require('../../core/src/promisesreply');
+import ReplyOption = require('../../core/src/replyoption');
 import Server = require('./server');
-import State = require('../../core/src/app/state');
-import Str = require('../../core/src/app/utils/string');
+import State = require('../../core/src/gamestate');
+import Str = require('../../core/src/utils/string');
 
 interface RequestHandler { (state: App.State, req: any, res: any): void; }
 
@@ -312,7 +309,7 @@ export function localReply (state: App.State, req: any, res: any)
                 } = req.body;
 
         const body = data.body;
-        const strippedBody = MessageHelpers.stripBody(body);
+        const strippedBody = Message.stripBody(body);
 
         Log.metric({
                 type: 'MESSAGE_RECEIVED',
@@ -576,7 +573,7 @@ export function validateData (
                 content.messageSchemaPath);
         const replyOptionSchema = FileSystem.loadJSONSync<JSON>(
                 content.replyOptionSchemaPath);
-        const dataErrors = DataValidation.getDataErrors(
+        const dataErrors = Data.getDataErrors(
                 narrativeData,
                 profileSchema,
                 messageSchema,
@@ -602,18 +599,18 @@ export function handleReplyRequest (
                 return handleCareersEmail(state, reply);
         } else {
                 const app = state.game;
-                const { data, promises } = app;
+                const { narratives, promises } = app;
                 return PromisesReply.handleReplyMessage(
                         reply,
                         timestampMs,
-                        data,
+                        narratives,
                         promises);
         }
 }
 
 export function beginGame (
         state: App.State,
-        groupData: State.GameData,
+        groupData: State.NarrativeState,
         email: string,
         playerData: PlayerApplicationData,
         threadMessageName: string)
@@ -683,7 +680,7 @@ export function handleCareersEmail (
 
 export function handleResignation (
         state: App.State,
-        groupData: State.GameData,
+        groupData: State.NarrativeState,
         email: string)
 {
         const app = state.game;
@@ -696,7 +693,7 @@ export function handleResignation (
 
 export function handleValidApplication (
         state: App.State,
-        groupData: State.GameData,
+        groupData: State.NarrativeState,
         email: string,
         playerData: PlayerApplicationData)
 {
@@ -716,7 +713,7 @@ export function handleValidApplication (
 
 export function handleInvalidApplication (
         state: App.State,
-        groupData: State.GameData,
+        groupData: State.NarrativeState,
         email: string)
 {
         const app = state.game;
