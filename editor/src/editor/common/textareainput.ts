@@ -1,6 +1,6 @@
 import React = require('react');
 
-import Core = require('../core');
+import Core = require('./core');
 import TextArea = Core.TextArea;
 
 interface TextAreaProps extends React.Props<any> {

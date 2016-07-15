@@ -4,9 +4,9 @@ import Narrative = require('../../../../narrative');
 import React = require('react');
 import ReplyOption = require('../../../../../../core/src/replyoption');
 
-import Core = require('../../../../component/core');
+import Core = require('../../../common/core');
 import Div = Core.Div;
-import Multiple = require('../../../../component/dumb/multiple');
+import Multiple = require('../../../common/multiple');
 import ReplyOptionComponent = require('./replyoption');
 
 type OnSet = (options: ReplyOption.ReplyOptions) => void;

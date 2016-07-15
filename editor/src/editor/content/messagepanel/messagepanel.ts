@@ -9,20 +9,20 @@ import ReplyOption = require('../../../../../core/src/replyoption');
 import Profile = require('../../../profile');
 import State = require('../../../state');
 
-import ComponentHelpers = require('../../../component/helpers');
-import Core = require('../../../component/core');
+import ComponentHelpers = require('../../common/helpers');
+import Core = require('../../common/core');
 import Div = Core.Div;
 import Option = Core.Option;
-import ButtonInput = require('../../../component/dumb/buttoninput');
-import Checkbox = require('../../../component/dumb/checkbox');
-import InputLabel = require('../../../component/dumb/inputlabel');
+import ButtonInput = require('../../common/buttoninput');
+import Checkbox = require('../../common/checkbox');
+import InputLabel = require('../../common/inputlabel');
 import MessageContainer = require('./message/messagecontainer');
 import MessageDelayComponent = require('./messagedelay');
-import Multiple = require('../../../component/dumb/multiple');
-import Optional = require('../../../component/dumb/optional');
+import Multiple = require('../../common/multiple');
+import Optional = require('../../common/optional');
 import ReplyOptionsContainer = require('./replyoptions/replyoptionscontainer');
-import TextComponent = require('../../../component/dumb/text');
-import TextInputValidated = require('../../../component/textinputvalidated');
+import TextComponent = require('../../common/text');
+import TextInputValidated = require('../../common/textinputvalidated');
 
 interface MessagePanelProps extends React.Props<any> {
         name: string,

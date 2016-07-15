@@ -2,7 +2,7 @@ import Edge = require('../../../edge');
 import MathUtils = require('../../../math');
 import React = require('react');
 
-import Core = require('../../../component/core');
+import Core = require('../../common/core');
 import G = Core.G;
 
 interface EdgeClassProps extends React.Props<any> {

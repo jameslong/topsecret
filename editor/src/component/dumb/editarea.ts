@@ -4,7 +4,7 @@ import Narrative = require('../../narrative');
 import React = require('react');
 import State = require('../../state');
 
-import Core = require('../core');
+import Core = require('../../editor/common/core');
 import Div = Core.Div;
 import Edge = require('../../editor/content/edge/edge');
 import NodeContainer = require('../../editor/content/node/nodecontainer');

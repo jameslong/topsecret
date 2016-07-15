@@ -1,10 +1,10 @@
 import React = require('react');
 
-import Core = require('../../component/core');
+import Core = require('../common/core');
 import Div = Core.Div;
 import Label = Core.Label;
-import ButtonInput = require('../../component/dumb/buttoninput');
-import SelectInput = require('../../component/dumb/selectinput');
+import ButtonInput = require('../common/buttoninput');
+import SelectInput = require('../common/selectinput');
 
 interface MenuBarProps extends React.Props<any> {
         narrativeNames: string[];

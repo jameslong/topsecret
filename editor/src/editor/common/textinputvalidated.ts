@@ -1,8 +1,8 @@
-/// <reference path="../../../typings/react/react.d.ts"/>
+/// <reference path="../../../../typings/react/react.d.ts"/>
 import React = require('react');
-import TextComponent = require('./dumb/text');
-import TextAreaInput = require('./dumb/textareainput');
-import TextList = require('./dumb/textlist');
+import TextComponent = require('./text');
+import TextAreaInput = require('./textareainput');
+import TextList = require('./textlist');
 
 interface TextProps extends React.Props<any> {
         placeholder: string;

@@ -3,7 +3,7 @@ import Narrative = require('../../narrative');
 import React = require('react');
 import State = require('../../state');
 
-import Core = require('../core');
+import Core = require('../../editor/common/core');
 import Div = Core.Div;
 import EditAreaContainer = require('../smart/editareacontainer');
 import EditPanelContainer = require('../../editor/content/messagepanel/messagepanelcontainer');

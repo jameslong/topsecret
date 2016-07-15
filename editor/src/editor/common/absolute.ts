@@ -1,7 +1,7 @@
 import MathUtils = require('../../math');
 import React = require('react');
 
-import Core = require('../core');
+import Core = require('./core');
 import Div = Core.Div;
 
 interface AbsoluteProps extends React.Props<any> {

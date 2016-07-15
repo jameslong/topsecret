@@ -1,5 +1,5 @@
 import Actions = require('../../actions/actions');
-import Core = require('../core');
+import Core = require('../../editor/common/core');
 import Draggable = require('./draggable');
 import Div = Core.Div;
 import React = require('react');

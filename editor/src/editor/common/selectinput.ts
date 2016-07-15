@@ -1,6 +1,6 @@
 import React = require('react');
 
-import Core = require('../core');
+import Core = require('./core');
 import Option = Core.Option;
 import Select = Core.Select;
 

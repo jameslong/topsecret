@@ -5,15 +5,15 @@ import Message = require('../../../../../../core/src/message');
 import Narrative = require('../../../../narrative');
 import React = require('react');
 import ReplyOption = require('../../../../../../core/src/replyoption');
-import TextInputValidated = require('../../../../component/textinputvalidated');
+import TextInputValidated = require('../../../common/textinputvalidated');
 
-import ComponentHelpers = require('../../../../component/helpers');
-import Core = require('../../../../component/core');
+import ComponentHelpers = require('../../../common/helpers');
+import Core = require('../../../common/core');
 import Div = Core.Div;
 import ReplyThreadDelay = require('./replythreaddelay');
-import Multiple = require('../../../../component/dumb/multiple');
-import TextComponent = require('../../../../component/dumb/text');
-import TextList = require('../../../../component/dumb/textlist');
+import Multiple = require('../../../common/multiple');
+import TextComponent = require('../../../common/text');
+import TextList = require('../../../common/textlist');
 
 interface ReplyOptionProps extends React.Props<any> {
         onSet: (option: ReplyOption.ReplyOption) => void;

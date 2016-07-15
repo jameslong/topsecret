@@ -5,13 +5,13 @@ import Message = require('../../../../../../core/src/message');
 import EditorMessage = require('../../../../editormessage');
 import Narrative = require('../../../../narrative');
 import React = require('react');
-import TextInputValidated = require('../../../../component/textinputvalidated');
+import TextInputValidated = require('../../../common/textinputvalidated');
 
-import ComponentHelpers = require('../../../../component/helpers');
-import Core = require('../../../../component/core');
+import ComponentHelpers = require('../../../common/helpers');
+import Core = require('../../../common/core');
 import Div = Core.Div;
-import NumberComponent = require('../../../../component/dumb/number');
-import TextComponent = require('../../../../component/dumb/text');
+import NumberComponent = require('../../../common/number');
+import TextComponent = require('../../../common/text');
 
 interface ReplyThreadDelayProps extends React.Props<any> {
         delay: Message.ReplyThreadDelay;

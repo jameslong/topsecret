@@ -1,7 +1,7 @@
 import Misc = require('../../misc');
 import React = require('react');
 
-import Core = require('../core');
+import Core = require('../../editor/common/core');
 import Div = Core.Div;
 
 interface DraggableProps extends React.Props<any> {

@@ -1,6 +1,6 @@
 import Core = require('./core');
 import Div = Core.Div;
-import InputLabel = require('./dumb/inputlabel');
+import InputLabel = require('./inputlabel');
 
 export function wrapInLabel<P>(label: string, ...components: React.ReactElement<any>[])
 {

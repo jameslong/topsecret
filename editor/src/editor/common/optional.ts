@@ -1,6 +1,6 @@
 import React = require('react');
 
-import Core = require('../core');
+import Core = require('./core');
 import Div = Core.Div;
 import ButtonInput = require('./buttoninput');
 

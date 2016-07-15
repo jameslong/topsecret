@@ -1,6 +1,6 @@
 import React = require('react');
 
-import Core = require('../core');
+import Core = require('./core');
 import Input = Core.Input;
 
 interface NumberProps extends React.Props<any> {

@@ -6,13 +6,13 @@ import EditorMessage = require('../../../../editormessage');
 import Narrative = require('../../../../narrative');
 import Profile = require('../../../../profile');
 import React = require('react');
-import TextInputValidated = require('../../../../component/textinputvalidated');
+import TextInputValidated = require('../../../common/textinputvalidated');
 
-import ComponentHelpers = require('../../../../component/helpers');
-import Core = require('../../../../component/core');
+import ComponentHelpers = require('../../../common/helpers');
+import Core = require('../../../common/core');
 import Div = Core.Div;
-import TextComponent = require('../../../../component/dumb/text');
-import TextList = require('../../../../component/dumb/textlist');
+import TextComponent = require('../../../common/text');
+import TextList = require('../../../common/textlist');
 
 type OnSet = (content: Message.Message) => void;
 type OnSetBody = (value: string) => void;

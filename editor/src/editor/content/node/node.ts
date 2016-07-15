@@ -3,9 +3,9 @@ import Misc = require('../../../misc');
 import React = require('react');
 import ReactUtils = require('../../../redux/react');
 
-import Core = require('../../../component/core');
+import Core = require('../../common/core');
 import Div = Core.Div;
-import Absolute = require('../../../component/dumb/absolute');
+import Absolute = require('../../common/absolute');
 import Draggable = require('../../../component/smart/draggable');
 
 interface NodeProps {

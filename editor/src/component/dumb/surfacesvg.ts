@@ -1,6 +1,6 @@
 import React = require('react');
 
-import Core = require('../core');
+import Core = require('../../editor/common/core');
 import SVG = Core.SVG;
 
 interface SurfaceSVGProps extends React.Props<any> {};
