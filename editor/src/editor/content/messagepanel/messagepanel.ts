@@ -2,7 +2,6 @@ import Arr = require('../../../../../core/src/utils/array');
 import Map = require('../../../../../core/src/utils/map');
 import EditorMessage = require('../../../editormessage');
 import Message = require('../../../../../core/src/message');
-import Misc = require('../../../misc');
 import Narrative = require('../../../narrative');
 import React = require('react');
 import ReplyOption = require('../../../../../core/src/replyoption');

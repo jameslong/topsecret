@@ -1,5 +1,4 @@
 import EditorMessage = require('../../../editormessage');
-import Misc = require('../../../misc');
 import React = require('react');
 import ReactUtils = require('../../../redux/react');
 

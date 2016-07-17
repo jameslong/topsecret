@@ -1,4 +1,3 @@
-import Misc = require('../../misc');
 import React = require('react');
 
 import Core = require('../../editor/common/core');
