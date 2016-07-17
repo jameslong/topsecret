@@ -1,0 +1,13 @@
+.toolbar {
+        width: 100%;
+        text-align: right;
+        position: fixed;
+        top: 0;
+        left: 0;
+}
+
+.toolbar-save-status {
+        display: inline-block;
+        color: hsl(240, 5%, 90%);
+        padding-right: 0.5rem;
+}

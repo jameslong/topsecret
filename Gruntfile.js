@@ -80,7 +80,7 @@ module.exports = function (grunt)
                         },
                         editor_lib: {
                                 expand: true,
-                                cwd: './editor/src/lib',
+                                cwd: './editor/lib',
                                 src: ['**/*.js'],
                                 dest: './editor/build/lib',
                                 filter: 'isFile'
