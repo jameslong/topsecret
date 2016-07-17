@@ -3,7 +3,6 @@ import Map = require('./../../core/src/utils/map');
 import Message = require('./../../core/src/message');
 import MathUtils = require('./math');
 import EditorMessage = require('./editormessage');
-import MessageDelay = require('./messagedelay');
 import Narrative = require('./narrative');
 import Redux = require('./redux/redux');
 import ReplyOption = require('./../../core/src/replyoption');

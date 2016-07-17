@@ -1,6 +1,5 @@
 import MathUtils = require('../math');
 import Message = require('../../../core/src/message');
-import MessageDelay = require('../messagedelay');
 import Narrative = require('../narrative');
 import Redux = require('../redux/redux');
 import ReplyOption = require('../../../core/src/replyoption');
@@ -157,11 +156,11 @@ export type SetMessageContentParams = NameValueParameters<Message.Message>;
 export interface SetMessageContent extends Redux.Action<SetMessageContentParams> {}
 export const setMessageContent = createActionCreator<SetMessageContentParams>(Types.SET_MESSAGE_CONTENT);
 
-export type SetMessageFallbackParams = NameValueParameters<MessageDelay.MessageDelay>;
+export type SetMessageFallbackParams = NameValueParameters<Message.ThreadDelay>;
 export interface SetMessageFallback extends Redux.Action<SetMessageFallbackParams> {}
 export const setMessageFallback = createActionCreator<SetMessageFallbackParams>(Types.SET_MESSAGE_FALLBACK);
 
-export type SetMessageChildrenParams = NameValueParameters<MessageDelay.MessageDelay[]>;
+export type SetMessageChildrenParams = NameValueParameters<Message.ThreadDelay[]>;
 export interface SetMessageChildren extends Redux.Action<SetMessageChildrenParams> {}
 export const setMessageChildren = createActionCreator<SetMessageChildrenParams>(Types.SET_MESSAGE_CHILDREN);
 

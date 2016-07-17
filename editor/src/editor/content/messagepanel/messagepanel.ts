@@ -1,7 +1,7 @@
 import Arr = require('../../../../../core/src/utils/array');
 import Map = require('../../../../../core/src/utils/map');
 import EditorMessage = require('../../../editormessage');
-import MessageDelay = require('../../../messagedelay');
+import Message = require('../../../../../core/src/message');
 import Misc = require('../../../misc');
 import Narrative = require('../../../narrative');
 import React = require('react');
@@ -35,8 +35,8 @@ interface MessagePanelProps extends React.Props<any> {
         onSetEncrypted: (encrypted: boolean) => void;
         onSetAttachment: (attachment: string) => void;
         onSetScript: (script: string) => void;
-        onSetChildren: (delays: MessageDelay.MessageDelays) => void;
-        onSetFallback: (delay: MessageDelay.MessageDelay) => void;
+        onSetChildren: (delays: Message.ThreadDelay[]) => void;
+        onSetFallback: (delay: Message.ThreadDelay) => void;
         onBlur: (e: MouseEvent) => void;
 };
 
@@ -270,9 +270,9 @@ function createSubject (
 }
 
 function onSetChild (
-        onSetChildren: (delays: MessageDelay.MessageDelays) => void,
+        onSetChildren: (delays: Message.ThreadDelay[]) => void,
         message: EditorMessage.EditorMessage,
-        delay: MessageDelay.MessageDelay,
+        delay: Message.ThreadDelay,
         index: number)
 {
         const children = message.children;
@@ -281,17 +281,17 @@ function onSetChild (
 }
 
 function onAddChild (
-        onSetChildren: (delays: MessageDelay.MessageDelays) => void,
+        onSetChildren: (delays: Message.ThreadDelay[]) => void,
         message: EditorMessage.EditorMessage)
 {
-        const newChild = MessageDelay.createMessageDelay();
+        const newChild = Message.createThreadDelay();
         const children = message.children;
         const newChildren = Arr.push(children, newChild);
         onSetChildren(newChildren);
 }
 
 function onRemoveChild (
-        onSetChildren: (delays: MessageDelay.MessageDelays) => void,
+        onSetChildren: (delays: Message.ThreadDelay[]) => void,
         message: EditorMessage.EditorMessage, index: number)
 {
         const children = message.children;
@@ -300,7 +300,7 @@ function onRemoveChild (
 }
 
 function createChildren (
-        onSetChildren: (delays: MessageDelay.MessageDelays) => void,
+        onSetChildren: (delays: Message.ThreadDelay[]) => void,
         message: EditorMessage.EditorMessage,
         messages: EditorMessage.EditorMessages)
 {
@@ -309,7 +309,7 @@ function createChildren (
                 onRemoveChild(onSetChildren, message, index);
         const delays = message.children;
         const children = delays.map((delay, index) => {
-                const onSet = (delay: MessageDelay.MessageDelay) =>
+                const onSet = (delay: Message.ThreadDelay) =>
                         onSetChild(onSetChildren, message, delay, index);
                 const props = {
                         delay: delay,
@@ -326,14 +326,14 @@ function createChildren (
         return Multiple(multipleProps);
 }
 
-function onAddFallback (onSetFallback: (delay: MessageDelay.MessageDelay) => void)
+function onAddFallback (onSetFallback: (delay: Message.ThreadDelay) => void)
 {
-        const newDelay = MessageDelay.createMessageDelay();
+        const newDelay = Message.createThreadDelay();
         onSetFallback(newDelay);
 }
 
 function createFallback (
-        onSetFallback: (delay: MessageDelay.MessageDelay) => void,
+        onSetFallback: (delay: Message.ThreadDelay) => void,
         message: EditorMessage.EditorMessage,
         messages: EditorMessage.EditorMessages)
 {

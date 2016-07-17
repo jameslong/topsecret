@@ -1,5 +1,5 @@
 import Actions = require('../../../actions/actions');
-import MessageDelay = require('../../../messagedelay');
+import Message = require('../../../../../core/src/message');
 import React = require('react');
 import Redux = require('../../../redux/redux');
 import State = require('../../../state');
@@ -32,9 +32,9 @@ function renderMessagePanelContainer (props: MessagePanelContainerProps)
                 onSetAttachment(narrativeId, name, path);
         const onSetScriptLocal = (script: string) =>
                 onSetScript(narrativeId, name, script);
-        const onSetChildrenLocal = (delays: MessageDelay.MessageDelays) =>
+        const onSetChildrenLocal = (delays: Message.ThreadDelay[]) =>
                 onSetChildren(narrativeId, name, delays);
-        const onSetFallbackLocal = (delay: MessageDelay.MessageDelay) =>
+        const onSetFallbackLocal = (delay: Message.ThreadDelay) =>
                 onSetFallback(narrativeId, name, delay);
         const onBlurLocal = (e: MouseEvent) => onBlur(narrativeId, e);
 
@@ -154,7 +154,7 @@ function onSetScript (
 function onSetChildren (
         narrativeId: string,
         messageName: string,
-        delays: MessageDelay.MessageDelay[])
+        delays: Message.ThreadDelay[])
 {
         const action = Actions.setMessageChildren({
                 narrativeId,
@@ -167,7 +167,7 @@ function onSetChildren (
 function onSetFallback (
         narrativeId: string,
         messageName: string,
-        newDelay: MessageDelay.MessageDelay)
+        newDelay: Message.ThreadDelay)
 {
         const action = Actions.setMessageFallback({
                 narrativeId,

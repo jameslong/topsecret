@@ -2,7 +2,7 @@ import Arr = require('../../../../../core/src/utils/array');
 import Helpers = require('../../../../../core/src/utils/helpers');
 import Map = require('../../../../../core/src/utils/map');
 import EditorMessage = require('../../../editormessage');
-import MessageDelay = require('../../../messagedelay');
+import Message = require('../../../../../core/src/message');
 import Narrative = require('../../../narrative');
 import React = require('react');
 import TextInputValidated = require('../../common/textinputvalidated');
@@ -14,8 +14,8 @@ import NumberComponent = require('../../common/number');
 import TextComponent = require('../../common/text');
 
 interface MessageDelayProps extends React.Props<any> {
-        delay: MessageDelay.MessageDelay;
-        onChange: (delay: MessageDelay.MessageDelay) => void;
+        delay: Message.ThreadDelay;
+        onChange: (delay: Message.ThreadDelay) => void;
         messages: EditorMessage.EditorMessages;
 };
 
