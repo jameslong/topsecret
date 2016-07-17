@@ -1,6 +1,14 @@
-import Config = require('./config');
 import Edge = require('./edge');
+import MathUtils = require('./math');
 import Narrative = require('./narrative');
+
+export interface Config {
+        serverURL: string;
+        autosaveDelayms: number;
+        maxUndos: number;
+        gridSize: number;
+        vertexSize: MathUtils.Coord;
+}
 
 export interface UI {
         activeNarrativeId: string;
@@ -19,7 +27,7 @@ export interface Store {
 };
 
 export interface State {
-        config: Config.Config;
+        config: Config;
         past: Store[];
         present: Store;
         future: Store[];

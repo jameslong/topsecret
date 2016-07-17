@@ -1,7 +1,7 @@
 import Actions = require('../../../../actions/actions');
 import Message = require('../../../../../../core/src/message');
 import Narrative = require('../../../../narrative');
-import Profile = require('../../../../profile');
+import Profile = require('../../../../../../core/src/profile');
 import React = require('react');
 import Redux = require('../../../../redux/redux');
 

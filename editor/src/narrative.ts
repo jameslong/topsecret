@@ -2,7 +2,7 @@ import Helpers = require('./../../core/src/utils/helpers');
 import Map = require('./../../core/src/utils/map');
 import EditorMessage = require('./editormessage');
 import MessageDelay = require('./messagedelay');
-import Profile = require('./profile');
+import Profile = require('../../core/src/profile');
 import ReplyOption = require('./../../core/src/replyoption');
 import State = require('./state');
 

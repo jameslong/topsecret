@@ -4,7 +4,7 @@ import Map = require('../../../../../../core/src/utils/map');
 import Message = require('../../../../../../core/src/message');
 import EditorMessage = require('../../../../editormessage');
 import Narrative = require('../../../../narrative');
-import Profile = require('../../../../profile');
+import Profile = require('../../../../../../core/src/profile');
 import React = require('react');
 import TextInputValidated = require('../../../common/textinputvalidated');
 

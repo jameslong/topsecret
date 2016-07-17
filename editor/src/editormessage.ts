@@ -2,7 +2,7 @@ import Func = require('./../../core/src/utils/function');
 import Helpers = require('./../../core/src/utils/helpers');
 import Map = require('./../../core/src/utils/map');
 import Message = require('../../core/src/message');
-import Profile = require('./profile');
+import Profile = require('../../core/src/profile');
 import ReplyOption = require('./../../core/src/replyoption');
 
 type Strings = Map.Map<string>;

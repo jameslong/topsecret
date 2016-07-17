@@ -1,7 +1,6 @@
 import Actions = require('../actions/actions');
 import Arr = require('./../../../core/src/utils/array');
 import AsyncRequest = require('../asyncrequest');
-import Config = require('../config');
 import Edge = require('../edge');
 import Helpers = require('./../../../core/src/utils/helpers');
 import Map = require('./../../../core/src/utils/map');

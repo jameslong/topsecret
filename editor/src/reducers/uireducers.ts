@@ -1,11 +1,10 @@
 import Actions = require('../actions/actions');
-import Config = require('../config');
 import Helpers = require('./../../../core/src/utils/helpers');
 import Redux = require('../redux/redux');
 import State = require('../state');
 
 export function ui (
-        state: State.UI, config: Config.Config, action: Redux.Action<any>)
+        state: State.UI, config: State.Config, action: Redux.Action<any>)
 {
         switch (action.type) {
         case Actions.Types.SET_ACTIVE_NARRATIVE:
@@ -35,7 +34,7 @@ export function ui (
 
 function handleSetActiveNarrative (
         state: State.UI,
-        config: Config.Config,
+        config: State.Config,
         action: Actions.SetActiveNarrative)
 {
         const name = action.parameters;
@@ -44,7 +43,7 @@ function handleSetActiveNarrative (
 
 function handleOpenMessage (
         state: State.UI,
-        config: Config.Config,
+        config: State.Config,
         action: Actions.OpenMessage)
 {
         const name = action.parameters;
@@ -53,7 +52,7 @@ function handleOpenMessage (
 
 function handleCloseMessage (
         state: State.UI,
-        config: Config.Config,
+        config: State.Config,
         action: Actions.CloseMessage)
 {
         return Helpers.assign(state, { activeMessageId: null });
@@ -61,7 +60,7 @@ function handleCloseMessage (
 
 function handleDeleteMessages (
         state: State.UI,
-        config: Config.Config,
+        config: State.Config,
         action: Actions.DeleteMessages)
 {
         return Helpers.assign(state, { activeMessageId: null });
@@ -69,7 +68,7 @@ function handleDeleteMessages (
 
 function handleSetMessageName (
         state: State.UI,
-        config: Config.Config,
+        config: State.Config,
         action: Actions.SetMessageName)
 {
         const name = action.parameters.name;

@@ -6,7 +6,7 @@ import Misc = require('../../../misc');
 import Narrative = require('../../../narrative');
 import React = require('react');
 import ReplyOption = require('../../../../../core/src/replyoption');
-import Profile = require('../../../profile');
+import Profile = require('../../../../../core/src/profile');
 import State = require('../../../state');
 
 import ComponentHelpers = require('../../common/helpers');

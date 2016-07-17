@@ -10,6 +10,7 @@ export interface Profile {
         privateKey: string;
         passphrase: string;
 }
+export type Profiles = Map.Map<Profile>;
 
 export function getProfileByEmail (
         email: string, profiles: Map.Map<Profile>): Profile

@@ -1,5 +1,4 @@
 import Actions = require('../actions/actions');
-import Config = require('../config');
 import Edge = require('../edge');
 import Helpers = require('./../../../core/src/utils/helpers');
 import Map = require('./../../../core/src/utils/map');
@@ -10,7 +9,7 @@ import Redux = require('../redux/redux');
 import State = require('../state');
 
 export function data (
-        state: State.Data, config: Config.Config, action: Redux.Action<any>)
+        state: State.Data, config: State.Config, action: Redux.Action<any>)
 {
         switch (action.type) {
         case Actions.Types.END_DRAG:
@@ -112,7 +111,7 @@ export function data (
 
 function handleEndDrag (
         state: State.Data,
-        config: Config.Config,
+        config: State.Config,
         action: Actions.EndDrag)
 {
         const gridSize = config.gridSize;
@@ -174,7 +173,7 @@ function roundToNearestMultiple (multiple: number, value: number)
 
 function handleSetActiveNarrative (
         state: State.Data,
-        config: Config.Config,
+        config: State.Config,
         action: Actions.SetActiveNarrative)
 {
         const name = action.parameters;
@@ -192,7 +191,7 @@ function handleSetActiveNarrative (
 
 function handleCloseMessage (
         state: State.Data,
-        config: Config.Config,
+        config: State.Config,
         action: Actions.CloseMessage)
 {
         const narrativeId = action.parameters;
@@ -200,7 +199,7 @@ function handleCloseMessage (
 }
 
 function onNarrativeUpdate (
-        data: State.Data, narrativeId: string, config: Config.Config)
+        data: State.Data, narrativeId: string, config: State.Config)
 {
         const narratives = data.narrativesById;
         const narrative = narratives[narrativeId];
@@ -226,7 +225,7 @@ function onNarrativeUpdate (
 
 function handleCreateMessage (
         state: State.Data,
-        config: Config.Config,
+        config: State.Config,
         action: Actions.CreateMessage)
 {
         const narrativeId = action.parameters;
@@ -279,7 +278,7 @@ function getCentrePosition (): MathUtils.Coord
 
 function handleDeleteMessages (
         state: State.Data,
-        config: Config.Config,
+        config: State.Config,
         action: Actions.DeleteMessages)
 {
         const parameters = action.parameters;
@@ -300,7 +299,7 @@ function handleDeleteMessages (
 
 function handleSelectMessage (
         state: State.Data,
-        config: Config.Config,
+        config: State.Config,
         action: Actions.SelectMessage)
 {
         const parameters = action.parameters;
@@ -323,7 +322,7 @@ function handleSelectMessage (
 
 function handleUniqueSelectMessage (
         state: State.Data,
-        config: Config.Config,
+        config: State.Config,
         action: Actions.UniqueSelectMessage)
 {
         const parameters = action.parameters;
@@ -349,7 +348,7 @@ function handleUniqueSelectMessage (
 
 function handleDeselectMessage (
         state: State.Data,
-        config: Config.Config,
+        config: State.Config,
         action: Actions.DeselectMessage)
 {
         const parameters = action.parameters;
@@ -379,7 +378,7 @@ function handleDeselectMessage (
 
 function handleDeselectAllMessages (
         state: State.Data,
-        config: Config.Config,
+        config: State.Config,
         action: Actions.DeselectAllMessages)
 {
         const narrativeId = action.parameters;
@@ -406,7 +405,7 @@ function handleDeselectAllMessages (
 
 function handleSetEditedMessageName (
         state: State.Data,
-        config: Config.Config,
+        config: State.Config,
         action: Actions.SetEditedMessageName)
 {
         const parameters = action.parameters;
@@ -420,7 +419,7 @@ function handleSetEditedMessageName (
 
 function handleSetMessageName (
         state: State.Data,
-        config: Config.Config,
+        config: State.Config,
         action: Actions.SetMessageName)
 {
         const parameters = action.parameters;
@@ -510,7 +509,7 @@ function setMessageProperty (
 
 function handleSetMessageSubject (
         state: State.Data,
-        config: Config.Config,
+        config: State.Config,
         action: Actions.SetMessageSubject)
 {
         const { name, narrativeId, value } = action.parameters;
@@ -535,7 +534,7 @@ function handleSetMessageSubject (
 
 function handleSetMessageBody (
         state: State.Data,
-        config: Config.Config,
+        config: State.Config,
         action: Actions.SetMessageBody)
 {
         const { name, narrativeId, value } = action.parameters;
@@ -562,7 +561,7 @@ function handleSetMessageBody (
 
 function handleSetMessageEndGame (
         state: State.Data,
-        config: Config.Config,
+        config: State.Config,
         action: Actions.SetMessageEndGame)
 {
         const parameters = action.parameters;
@@ -576,7 +575,7 @@ function handleSetMessageEndGame (
 
 function handleSetMessageEncrypted (
         state: State.Data,
-        config: Config.Config,
+        config: State.Config,
         action: Actions.SetMessageEncrypted)
 {
         const parameters = action.parameters;
@@ -590,7 +589,7 @@ function handleSetMessageEncrypted (
 
 function handleSetMessageAttachment (
         state: State.Data,
-        config: Config.Config,
+        config: State.Config,
         action: Actions.SetMessageAttachment)
 {
         const parameters = action.parameters;
@@ -604,7 +603,7 @@ function handleSetMessageAttachment (
 
 function handleSetMessageScript (
         state: State.Data,
-        config: Config.Config,
+        config: State.Config,
         action: Actions.SetMessageScript)
 {
         const parameters = action.parameters;
@@ -618,7 +617,7 @@ function handleSetMessageScript (
 
 function handleSetMessagePosition (
         state: State.Data,
-        config: Config.Config,
+        config: State.Config,
         action: Actions.SetMessagePosition)
 {
         const parameters = action.parameters;
@@ -632,7 +631,7 @@ function handleSetMessagePosition (
 
 function handleSetMessageContent (
         state: State.Data,
-        config: Config.Config,
+        config: State.Config,
         action: Actions.SetMessageContent)
 {
         const parameters = action.parameters;
@@ -646,7 +645,7 @@ function handleSetMessageContent (
 
 function handleSetMessageFallback (
         state: State.Data,
-        config: Config.Config,
+        config: State.Config,
         action: Actions.SetMessageFallback)
 {
         const parameters = action.parameters;
@@ -660,7 +659,7 @@ function handleSetMessageFallback (
 
 function handleSetMessageChildren (
         state: State.Data,
-        config: Config.Config,
+        config: State.Config,
         action: Actions.SetMessageChildren)
 {
         const parameters = action.parameters;
@@ -673,7 +672,7 @@ function handleSetMessageChildren (
 }
 function handleSetMessageReplyOptions (
         state: State.Data,
-        config: Config.Config,
+        config: State.Config,
         action: Actions.SetMessageReplyOptions)
 {
         const { name, narrativeId, value } = action.parameters;
@@ -698,7 +697,7 @@ function handleSetMessageReplyOptions (
 
 function handleSetString (
         state: State.Data,
-        config: Config.Config,
+        config: State.Config,
         action: Actions.SetString)
 {
         const parameters = action.parameters;

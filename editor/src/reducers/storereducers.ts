@@ -1,4 +1,3 @@
-import Config = require('../config');
 import DataReducers = require('./datareducers');
 import Redux = require('../redux/redux');
 import State = require('../state');
@@ -6,7 +5,7 @@ import UIReducers = require('./uireducers');
 
 export function store (
         state: State.Store,
-        config: Config.Config,
+        config: State.Config,
         action: Redux.Action<any>): State.Store
 {
         return {
