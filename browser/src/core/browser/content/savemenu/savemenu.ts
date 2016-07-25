@@ -1,13 +1,13 @@
-import Menu = require('../../menu');
+import Menu = require('../../../menu');
 import React = require('react');
-import SelectableRows = require('./selectablerows');
+import SelectableRows = require('../../dumb/selectablerows');
 
-interface LoadProps extends React.Props<any> {
+interface SaveProps extends React.Props<any> {
         activeIndex: number;
-        saves: Menu.LoadMenuItem[];
+        saves: Menu.SaveMenuItem[];
 }
 
-function renderLoad(props: LoadProps)
+function renderSave(props: SaveProps)
 {
         const { activeIndex, saves } = props;
         const highlightedIndices: number[] = [];
@@ -16,6 +16,6 @@ function renderLoad(props: LoadProps)
         return SelectableRows({ rowData, selectedIndex, highlightedIndices });
 }
 
-const Load = React.createFactory(renderLoad);
+const Save = React.createFactory(renderSave);
 
-export = Load;
+export = Save;

@@ -1,4 +1,4 @@
-import ConfirmText = require('./confirmtext');
+import ConfirmText = require('../dumb/confirmtext');
 import React = require('react');
 
 import Core = require('../common/core');

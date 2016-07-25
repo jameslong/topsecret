@@ -1,12 +1,12 @@
-import EncryptionType = require('../../folder');
+import EncryptionType = require('../../../folder');
 import Kbpgp = require('kbpgp');
-import KbpgpHelpers = require('../../../../../core/src/kbpgp');
-import Helpers = require('../../../../../core/src/utils/helpers');
-import Map = require('../../../../../core/src/utils/map');
-import Player = require('../../player');
-import Profile = require('../../../../../core/src/profile');
+import KbpgpHelpers = require('../../../../../../core/src/kbpgp');
+import Helpers = require('../../../../../../core/src/utils/helpers');
+import Map = require('../../../../../../core/src/utils/map');
+import Player = require('../../../player');
+import Profile = require('../../../../../../core/src/profile');
 import React = require('react');
-import SelectableRows = require('./selectablerows');
+import SelectableRows = require('../../dumb/selectablerows');
 
 interface EncryptionProps extends React.Props<any> {
         knownKeyIds: string[];

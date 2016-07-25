@@ -1,5 +1,5 @@
 import ActionCreators = require('../../action/actioncreators');
-import EditBar = require('../dumb/editbar');
+import EditBar = require('./editbar');
 import React = require('react');
 import Redux = require('../../redux/redux');
 

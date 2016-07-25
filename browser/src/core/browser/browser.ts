@@ -10,7 +10,7 @@ import Core = require('./common/core');
 import Div = Core.Div;
 import Img = Core.Img;
 
-import Content = require('./dumb/content');
+import Content = require('./content/content');
 import FeedbackButton = require('./feedbackbutton/feedbackbutton');
 import Footer = require('./footer/footer');
 import NewGame = require('./newgame/newgame');

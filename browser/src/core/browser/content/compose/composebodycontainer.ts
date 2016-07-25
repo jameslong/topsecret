@@ -1,8 +1,8 @@
-import ActionCreators = require('../../action/actioncreators');
-import Draft = require('../../draft');
-import ComposeBody = require('../dumb/composebody');
+import ActionCreators = require('../../../action/actioncreators');
+import Draft = require('../../../draft');
+import ComposeBody = require('./composebody');
 import React = require('react');
-import Redux = require('../../redux/redux');
+import Redux = require('../../../redux/redux');
 
 interface ComposeBodyContainerProps extends React.Props<any> {
         draft: Draft.Draft;

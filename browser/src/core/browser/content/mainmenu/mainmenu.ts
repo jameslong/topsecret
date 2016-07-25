@@ -1,7 +1,7 @@
-import Map = require('../../../../../core/src/utils/map');
-import Menu = require('../../menu');
+import Map = require('../../../../../../core/src/utils/map');
+import Menu = require('../../../menu');
 import React = require('react');
-import SelectableRows = require('./selectablerows');
+import SelectableRows = require('../../dumb/selectablerows');
 
 interface MainMenuProps extends React.Props<any> {
         activeMainMenuIndex: number;

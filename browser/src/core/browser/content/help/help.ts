@@ -1,8 +1,8 @@
-import Command = require('../../command');
-import Data = require('../../data');
-import Helpers = require('../../../../../core/src/utils/helpers');
+import Command = require('../../../command');
+import Data = require('../../../data');
+import Helpers = require('../../../../../../core/src/utils/helpers');
 import React = require('react');
-import SelectableRows = require('./selectablerows');
+import SelectableRows = require('../../dumb/selectablerows');
 
 interface HelpProps extends React.Props<any> {
         commands: Command.Command[];

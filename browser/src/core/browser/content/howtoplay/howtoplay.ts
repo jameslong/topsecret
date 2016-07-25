@@ -1,9 +1,9 @@
-import Map = require('../../../../../core/src/utils/map');
-import Menu = require('../../menu');
+import Map = require('../../../../../../core/src/utils/map');
+import Menu = require('../../../menu');
 import React = require('react');
-import SelectableRows = require('./selectablerows');
+import SelectableRows = require('../../dumb/selectablerows');
 
-import Core = require('../common/core');
+import Core = require('../../common/core');
 const Br = Core.Br;
 const Div = Core.Div;
 const P = Core.P;

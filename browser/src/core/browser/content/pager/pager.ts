@@ -1,9 +1,9 @@
-import Message = require('../../message');
-import Meta = require('./meta');
-import Helpers = require('../common/helpers');
+import Message = require('../../../message');
+import Meta = require('../../dumb/meta');
+import Helpers = require('../../common/helpers');
 import React = require('react');
 
-import Core = require('../common/core');
+import Core = require('../../common/core');
 import Div = Core.Div;
 
 interface PagerProps extends React.Props<any> {

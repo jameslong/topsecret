@@ -1,7 +1,7 @@
-import FolderType = require('../../folder');
-import Map = require('../../../../../core/src/utils/map');
+import FolderType = require('../../../folder');
+import Map = require('../../../../../../core/src/utils/map');
 import React = require('react');
-import SelectableRows = require('./selectablerows');
+import SelectableRows = require('../../dumb/selectablerows');
 
 interface FolderProps extends React.Props<any> {
         foldersById: Map.Map<FolderType.Folder>;

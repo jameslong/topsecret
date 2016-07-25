@@ -1,10 +1,10 @@
-import Arr = require('../../../../../core/src/utils/array');
-import Data = require('../../data');
-import Helpers = require('../../../../../core/src/utils/helpers');
-import Func = require('../../../../../core/src/utils/function');
-import Map = require('../../../../../core/src/utils/map');
-import Message = require('../../message');
-import SelectableRows = require('./selectablerows');
+import Arr = require('../../../../../../core/src/utils/array');
+import Data = require('../../../data');
+import Helpers = require('../../../../../../core/src/utils/helpers');
+import Func = require('../../../../../../core/src/utils/function');
+import Map = require('../../../../../../core/src/utils/map');
+import Message = require('../../../message');
+import SelectableRows = require('../../dumb/selectablerows');
 import React = require('react');
 
 interface IndexProps extends React.Props<any> {

@@ -1,10 +1,10 @@
-import Draft = require('../../draft');
-import Helpers = require('../common/helpers');
-import Message = require('../../message');
+import Draft = require('../../../draft');
+import Helpers = require('../../common/helpers');
+import Message = require('../../../message');
 import React = require('react');
-import UI = require('../../ui');
+import UI = require('../../../ui');
 
-import Core = require('../common/core');
+import Core = require('../../common/core');
 import Div = Core.Div;
 
 interface ComposeProps extends React.Props<any> {
