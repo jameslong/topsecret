@@ -11,10 +11,10 @@ import Div = Core.Div;
 import Img = Core.Img;
 
 import Content = require('./dumb/content');
-import FeedbackButton = require('./dumb/feedbackbutton');
+import FeedbackButton = require('./feedbackbutton/feedbackbutton');
 import Footer = require('./footer/footer');
-import NewGame = require('./dumb/newgame');
-import NewGameLoading = require('./dumb/newgameloading');
+import NewGame = require('./newgame/newgame');
+import NewGameLoading = require('./newgame/newgameloading');
 import Header = require('./header/header');
 
 interface BrowserProps extends React.Props<any> {
