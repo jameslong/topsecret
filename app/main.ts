@@ -2,7 +2,7 @@
 
 import Data = require('../core/src/data');
 import Helpers = require('../core/src/utils/helpers');
-import Main = require('../browser/src/app/core/main');
+import Main = require('../browser/src/core/main');
 import electron = require('electron');
 const shell = electron.shell;
 import State = require('../core/src/gamestate');
