@@ -1,4 +1,4 @@
-import Actions = require('../../action/actions');
+import Actions = require('../../actions/actions');
 import EditBar = require('./editbar');
 import React = require('react');
 import Redux = require('../../redux/redux');

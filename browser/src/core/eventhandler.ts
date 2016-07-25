@@ -1,4 +1,4 @@
-import Actions = require('./action/actions');
+import Actions = require('./actions/actions');
 import Redux = require('./redux/redux');
 
 export function addKeyHandlers ()

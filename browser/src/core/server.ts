@@ -1,4 +1,4 @@
-import Actions = require('./action/actions');
+import Actions = require('./actions/actions');
 import AppPlayer = require('./player');
 import Clock = require('../../../core/src/clock');
 import ConfigData = require('./data/config');

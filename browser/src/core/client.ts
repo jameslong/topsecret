@@ -1,4 +1,4 @@
-import Actions = require('./action/actions');
+import Actions = require('./actions/actions');
 import AppData = require('./data/appdata');
 import Clock = require('../../../core/src/clock');
 import Command = require('./command');

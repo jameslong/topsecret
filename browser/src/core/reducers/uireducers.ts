@@ -1,4 +1,4 @@
-import Actions = require('./actions');
+import Actions = require('../actions/actions');
 import Arr = require('../../../../core/src/utils/array');
 import Helpers = require('../../../../core/src/utils/helpers');
 import Folder = require('../folder');

@@ -1,4 +1,4 @@
-import Actions = require('./actions');
+import Actions = require('../actions/actions');
 import Data = require('../data');
 import DataReducers = require('./datareducers');
 import DraftReducers = require('./draftreducers');

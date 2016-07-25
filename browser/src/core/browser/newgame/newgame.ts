@@ -1,4 +1,4 @@
-import Actions = require('../../action/actions');
+import Actions = require('../../actions/actions');
 import ButtonInput = require('../common/buttoninput');
 import Client = require('../../client');
 import Kbpgp = require('kbpgp');

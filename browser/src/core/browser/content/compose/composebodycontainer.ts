@@ -1,4 +1,4 @@
-import Actions = require('../../../action/actions');
+import Actions = require('../../../actions/actions');
 import Draft = require('../../../draft');
 import ComposeBody = require('./composebody');
 import React = require('react');

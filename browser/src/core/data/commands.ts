@@ -1,6 +1,6 @@
 import Command = require('../command');
 import Data = require('../data');
-import KeyHandlers = require('../action/keyhandlers');
+import KeyHandlers = require('../reducers/keyhandlers');
 import UI = require('../ui');
 
 const KeyCodes = {

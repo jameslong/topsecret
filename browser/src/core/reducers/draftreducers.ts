@@ -1,4 +1,4 @@
-import Actions = require('./actions');
+import Actions = require('../actions/actions');
 import Draft = require('../draft');
 import Helpers = require('../../../../core/src/utils/helpers');
 import Message = require('../message');

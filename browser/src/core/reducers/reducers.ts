@@ -1,5 +1,5 @@
 import Redux = require('../redux/redux');
-import Actions = require('./actions');
+import Actions = require('../actions/actions');
 import Client = require('../client');
 import ClientReducers = require('./clientreducers');
 import UI = require('../ui');

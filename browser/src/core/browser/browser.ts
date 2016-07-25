@@ -1,4 +1,4 @@
-import Actions = require('../action/actions');
+import Actions = require('../actions/actions');
 import Command = require('../command');
 import Data = require('../data');
 import React = require('react');

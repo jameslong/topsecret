@@ -1,4 +1,4 @@
-import Actions = require('./actions');
+import Actions = require('../actions/actions');
 import Arr = require('../../../../core/src/utils/array');
 import Clock = require('../../../../core/src/clock');
 import Data = require('../data');
