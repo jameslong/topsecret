@@ -1,4 +1,4 @@
-import ActionCreators = require('./action/actioncreators');
+import Actions = require('./action/actions');
 import AppPlayer = require('./player');
 import Clock = require('../../../core/src/clock');
 import ConfigData = require('./data/config');
@@ -81,7 +81,7 @@ export function send (id: Id, data: Message.MessageData) {
                 inReplyToId: data.inReplyToId,
                 attachment: data.attachment,
         };
-        const action = ActionCreators.receiveReply(reply);
+        const action = Actions.receiveReply(reply);
         Redux.handleAction(action);
         return Promise.resolve(messageId);
 }

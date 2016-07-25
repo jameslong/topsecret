@@ -1,4 +1,4 @@
-import ActionCreators = require('./actioncreators');
+import Actions = require('./actions');
 import Arr = require('../../../../core/src/utils/array');
 import Clock = require('../../../../core/src/clock');
 import Data = require('../data');
@@ -21,17 +21,17 @@ import UI = require('../ui');
 // Key event action creators
 export function exit (client: Client.Client)
 {
-        return ActionCreators.setMode(UI.Modes.INDEX_INBOX);
+        return Actions.setMode(UI.Modes.INDEX_INBOX);
 }
 
 export function openMainMenu (client: Client.Client)
 {
-        return ActionCreators.setMode(UI.Modes.MAIN_MENU);
+        return Actions.setMode(UI.Modes.MAIN_MENU);
 }
 
 export function exitMainMenu (client: Client.Client)
 {
-        return ActionCreators.setMode(UI.Modes.INDEX_INBOX);
+        return Actions.setMode(UI.Modes.INDEX_INBOX);
 }
 
 export function nextMenuOption (client: Client.Client)
@@ -40,7 +40,7 @@ export function nextMenuOption (client: Client.Client)
         const items = Menu.getMainMenuItems(client.ui.hasSeenInbox);
         const max = items.length - 1;
         const index = MathUtils.inRange(0, max, currentIndex + 1);
-        return ActionCreators.setActiveMenuIndex(index);
+        return Actions.setActiveMenuIndex(index);
 }
 
 export function previousMenuOption (client: Client.Client)
@@ -49,7 +49,7 @@ export function previousMenuOption (client: Client.Client)
         const items = Menu.getMainMenuItems(client.ui.hasSeenInbox);
         const max = items.length - 1;
         const index = MathUtils.inRange(0, max, currentIndex - 1);
-        return ActionCreators.setActiveMenuIndex(index);
+        return Actions.setActiveMenuIndex(index);
 }
 
 export function selectMenuOption (client: Client.Client): Redux.Action<any>
@@ -62,19 +62,19 @@ export function selectMenuOption (client: Client.Client): Redux.Action<any>
         switch (type) {
         case 'CONTINUE_GAME':
         case 'RESUME_GAME':
-                return ActionCreators.setMode(UI.Modes.INDEX_INBOX);
+                return Actions.setMode(UI.Modes.INDEX_INBOX);
 
         case 'NEW_GAME':
-                return ActionCreators.setMode(UI.Modes.NEW_GAME);
+                return Actions.setMode(UI.Modes.NEW_GAME);
 
         case 'HOW_TO_PLAY':
-                return ActionCreators.setMode(UI.Modes.HOW_TO_PLAY);
+                return Actions.setMode(UI.Modes.HOW_TO_PLAY);
 
         case 'SAVE':
-                return ActionCreators.setMode(UI.Modes.SAVE_MENU);
+                return Actions.setMode(UI.Modes.SAVE_MENU);
 
         case 'LOAD':
-                return ActionCreators.setMode(UI.Modes.LOAD_MENU);
+                return Actions.setMode(UI.Modes.LOAD_MENU);
 
         default:
                 return null;
@@ -83,7 +83,7 @@ export function selectMenuOption (client: Client.Client): Redux.Action<any>
 
 export function exitSave (client: Client.Client)
 {
-        return ActionCreators.setMode(UI.Modes.MAIN_MENU);
+        return Actions.setMode(UI.Modes.MAIN_MENU);
 }
 
 export function save (client: Client.Client)
@@ -112,7 +112,7 @@ export function nextSave (client: Client.Client)
         const items = Menu.getSaveMenuItems();
         const max = items.length - 1;
         const index = MathUtils.inRange(0, max, currentIndex + 1);
-        return ActionCreators.setActiveSaveIndex(index);
+        return Actions.setActiveSaveIndex(index);
 }
 
 export function previousSave (client: Client.Client)
@@ -121,12 +121,12 @@ export function previousSave (client: Client.Client)
         const items = Menu.getSaveMenuItems();
         const max = items.length - 1;
         const index = MathUtils.inRange(0, max, currentIndex - 1);
-        return ActionCreators.setActiveSaveIndex(index);
+        return Actions.setActiveSaveIndex(index);
 }
 
 export function exitLoad (client: Client.Client)
 {
-        return ActionCreators.setMode(UI.Modes.MAIN_MENU);
+        return Actions.setMode(UI.Modes.MAIN_MENU);
 }
 
 export function load (client: Client.Client)
@@ -138,7 +138,7 @@ export function load (client: Client.Client)
                 const saveName = item.text;
                 console.log('Loading', saveName);
                 const saveData = LocalStorage.load<Client.SaveData>(saveName);
-                return ActionCreators.importSaveData(saveData);
+                return Actions.importSaveData(saveData);
         }
 }
 
@@ -148,7 +148,7 @@ export function nextLoad (client: Client.Client)
         const items = Menu.getLoadMenuItems();
         const max = items.length - 1;
         const index = MathUtils.inRange(0, max, currentIndex + 1);
-        return ActionCreators.setActiveLoadIndex(index);
+        return Actions.setActiveLoadIndex(index);
 }
 
 export function previousLoad (client: Client.Client)
@@ -157,7 +157,7 @@ export function previousLoad (client: Client.Client)
         const items = Menu.getLoadMenuItems();
         const max = items.length - 1;
         const index = MathUtils.inRange(0, max, currentIndex - 1);
-        return ActionCreators.setActiveLoadIndex(index);
+        return Actions.setActiveLoadIndex(index);
 }
 
 export function deleteSave (client: Client.Client)
@@ -174,35 +174,35 @@ export function deleteSave (client: Client.Client)
 
 export function exitHowToPlay (client: Client.Client)
 {
-        return ActionCreators.setMode(UI.Modes.MAIN_MENU);
+        return Actions.setMode(UI.Modes.MAIN_MENU);
 }
 
 export function help (client: Client.Client)
 {
-        return ActionCreators.setMode(UI.Modes.HELP);
+        return Actions.setMode(UI.Modes.HELP);
 }
 
 export function encryption (client: Client.Client)
 {
-        return ActionCreators.setMode(UI.Modes.ENCRYPTION);
+        return Actions.setMode(UI.Modes.ENCRYPTION);
 }
 
 export function displayMessage (client: Client.Client)
 {
-        return ActionCreators.displayMessage(client.ui.activeMessageId);
+        return Actions.displayMessage(client.ui.activeMessageId);
 }
 
 export function mail (client: Client.Client)
 {
         const sender = client.data.player.email;
-        return ActionCreators.composeMessage({ sender });
+        return Actions.composeMessage({ sender });
 }
 
 export function reply (client: Client.Client)
 {
         const sender = client.data.player.email;
         const message = Client.getActiveMessage(client);
-        return ActionCreators.composeReply({ sender, message });
+        return Actions.composeReply({ sender, message });
 }
 
 export function nextMessage (client: Client.Client)
@@ -211,7 +211,7 @@ export function nextMessage (client: Client.Client)
         const messageIds = client.data.messageIdsByFolderId[activeFolderId];
         const id = client.ui.activeMessageId;
         const nextId = Arr.nextValue(messageIds, id);
-        return ActionCreators.setActiveMessage(nextId);
+        return Actions.setActiveMessage(nextId);
 }
 
 export function previousMessage (client: Client.Client)
@@ -220,13 +220,13 @@ export function previousMessage (client: Client.Client)
         const messageIds = client.data.messageIdsByFolderId[activeFolderId];
         const id = client.ui.activeMessageId;
         const previousId = Arr.previousValue(messageIds, id);
-        return ActionCreators.setActiveMessage(previousId);
+        return Actions.setActiveMessage(previousId);
 }
 
 export function exitHelp (client: Client.Client)
 {
         const mode = client.ui.previousMode;
-        return ActionCreators.setMode(mode);
+        return Actions.setMode(mode);
 }
 
 export function encryptSend (client: Client.Client): Redux.Action<any>
@@ -276,12 +276,12 @@ export function encryptSend (client: Client.Client): Redux.Action<any>
                         app.promises).then(result => reply)
         }).then(reply => {
                 const message = Draft.createMessageFromReply(reply, timestampMs);
-                const action = ActionCreators.sendMessage({
+                const action = Actions.sendMessage({
                         message, parentId: inReplyToId });
                 Redux.handleAction(action);
         }).catch(err => console.log(err));
 
-        return ActionCreators.sendingMessage(true);
+        return Actions.sendingMessage(true);
 }
 
 export function openAttachment (client: Client.Client): Redux.Action<any>
@@ -320,25 +320,25 @@ export function decrypt (client: Client.Client): Redux.Action<any>
                 const keyRing = KbpgpHelpers.createKeyRing(instances);
                 return KbpgpHelpers.decryptVerify(keyRing, body);
         }).then(decryptedBody => {
-                const action = ActionCreators.decryptMessage({
+                const action = Actions.decryptMessage({
                         messageId, decryptedBody
                 });
                 Redux.handleAction(action);
         }).catch(err => {
                 console.log(err);
-                const action = ActionCreators.decryptMessage({
+                const action = Actions.decryptMessage({
                         messageId,
                         decryptedBody: body
                 });
                 Redux.handleAction(action);
         });
 
-        return ActionCreators.decryptingMessage(true);
+        return Actions.decryptingMessage(true);
 }
 
 export function folder (client: Client.Client)
 {
-        return ActionCreators.setMode(UI.Modes.FOLDER);
+        return Actions.setMode(UI.Modes.FOLDER);
 }
 
 export function displayFolder (client: Client.Client)
@@ -354,7 +354,7 @@ export function displayFolder (client: Client.Client)
                 messageId: activeMessageId,
                 folderType: folder.type,
         };
-        return ActionCreators.displayFolder(params);
+        return Actions.displayFolder(params);
 }
 
 export function nextFolder (client: Client.Client)
@@ -362,7 +362,7 @@ export function nextFolder (client: Client.Client)
         const activeFolderId = client.ui.activeFolderId;
         const folders = client.data.folders;
         const nextId = Arr.nextValue(folders, activeFolderId);
-        return ActionCreators.setActiveFolder(nextId);
+        return Actions.setActiveFolder(nextId);
 }
 
 export function previousFolder (client: Client.Client)
@@ -370,7 +370,7 @@ export function previousFolder (client: Client.Client)
         const activeFolderId = client.ui.activeFolderId;
         const folders = client.data.folders;
         const previousId = Arr.previousValue(folders, activeFolderId);
-        return ActionCreators.setActiveFolder(previousId);
+        return Actions.setActiveFolder(previousId);
 }
 
 export function displayNextMessage (client: Client.Client)
@@ -379,7 +379,7 @@ export function displayNextMessage (client: Client.Client)
         const messageIds = client.data.messageIdsByFolderId[activeFolderId];
         const id = client.ui.activeMessageId;
         const nextId = Arr.nextValue(messageIds, id);
-        return ActionCreators.displayMessage(nextId);
+        return Actions.displayMessage(nextId);
 }
 
 export function displayPreviousMessage (client: Client.Client)
@@ -388,27 +388,27 @@ export function displayPreviousMessage (client: Client.Client)
         const messageIds = client.data.messageIdsByFolderId[activeFolderId];
         const id = client.ui.activeMessageId;
         const previousId = Arr.previousValue(messageIds, id);
-        return ActionCreators.displayMessage(previousId);
+        return Actions.displayMessage(previousId);
 }
 
 export function editBody (client: Client.Client)
 {
-        return ActionCreators.editBody();
+        return Actions.editBody();
 }
 
 export function endEditBody (client: Client.Client)
 {
-        return ActionCreators.endEditBody();
+        return Actions.endEditBody();
 }
 
 export function editSubject (client: Client.Client)
 {
-        return ActionCreators.editSubject(true);
+        return Actions.editSubject(true);
 }
 
 export function editTo (client: Client.Client)
 {
-        return ActionCreators.editTo(true);
+        return Actions.editTo(true);
 }
 
 export function nextKey (client: Client.Client)
@@ -416,7 +416,7 @@ export function nextKey (client: Client.Client)
         const index = client.ui.activeKeyIndex;
         const ids = client.data.profiles;
         const nextIndex = MathUtils.inRange(0, ids.length - 1, index + 1);
-        return ActionCreators.setActiveKeyIndex(nextIndex);
+        return Actions.setActiveKeyIndex(nextIndex);
 }
 
 export function previousKey (client: Client.Client)
@@ -424,7 +424,7 @@ export function previousKey (client: Client.Client)
         const index = client.ui.activeKeyIndex;
         const ids = client.data.profiles;
         const nextIndex = MathUtils.inRange(0, ids.length - 1, index - 1);
-        return ActionCreators.setActiveKeyIndex(nextIndex);
+        return Actions.setActiveKeyIndex(nextIndex);
 }
 
 export function importKeys (client: Client.Client): Redux.Action<any>
@@ -437,21 +437,21 @@ export function importKeys (client: Client.Client): Redux.Action<any>
                 const profile = profilesById[id];
                 return (armouredKeys.indexOf(profile.publicKey) !== -1);
         });
-        return ActionCreators.importKeys(newProfileIds)
+        return Actions.importKeys(newProfileIds)
 }
 
 export function tickFaster (client: Client.Client)
 {
-        return ActionCreators.tickFaster();
+        return Actions.tickFaster();
 }
 
 export function tickSlower (client: Client.Client)
 {
-        return ActionCreators.tickSlower();
+        return Actions.tickSlower();
 }
 
 export function addTimeOffset (client: Client.Client)
 {
         const offsetMs = 6 * 3600 * 1000;
-        return ActionCreators.addTimeOffset(offsetMs);
+        return Actions.addTimeOffset(offsetMs);
 }

@@ -1,4 +1,4 @@
-import ActionCreators = require('../action/actioncreators');
+import Actions = require('../action/actions');
 import Command = require('../command');
 import Data = require('../data');
 import React = require('react');
@@ -55,7 +55,7 @@ function renderGame (state: Client.Client)
 
 function onClick (e: MouseEvent)
 {
-        const action = ActionCreators.blur();
+        const action = Actions.blur();
         Redux.handleAction(action);
 }
 

@@ -1,4 +1,4 @@
-import ActionCreators = require('../../action/actioncreators');
+import Actions = require('../../action/actions');
 import ButtonInput = require('../common/buttoninput');
 import Client = require('../../client');
 import Kbpgp = require('kbpgp');
@@ -88,22 +88,22 @@ function onSubmit (state: Client.Client, e: any)
                 const asp = new Kbpgp.ASP({
                         progress_hook: (info) => {
                                 const text = KbpgpHelpers.formatProgress(info);
-                                const action = ActionCreators.newGameLoadingInfo(
+                                const action = Actions.newGameLoadingInfo(
                                         text);
                                 Redux.handleAction(action);
                         }
                 });
 
                 const connecting = Prom.delay(100).then(res => {
-                        const action = ActionCreators.newGameLoadingInfo(
+                        const action = Actions.newGameLoadingInfo(
                                 'connecting to NSA network...');
                         Redux.handleAction(action);
                 }).then(res => Prom.delay(1500)).then(res => {
-                        const action = ActionCreators.newGameLoadingInfo(
+                        const action = Actions.newGameLoadingInfo(
                                 'connection successful');
                         Redux.handleAction(action);
                 }).then(res => Prom.delay(500)).then(res => {
-                        const action = ActionCreators.newGameLoadingInfo(
+                        const action = Actions.newGameLoadingInfo(
                                 'generating PGP key pair...');
                         Redux.handleAction(action);
                 }).then(res => Prom.delay(1500)).then(res => {
@@ -119,12 +119,12 @@ function onSubmit (state: Client.Client, e: any)
                                         privateKey: keyPair[1],
                                         passphrase,
                                 };
-                                const action = ActionCreators.newGame(player);
+                                const action = Actions.newGame(player);
                                 Redux.handleAction(action);
                         });
                 });
 
-                const action = ActionCreators.newGameLogin();
+                const action = Actions.newGameLogin();
                 Redux.handleAction(action);
         }
 

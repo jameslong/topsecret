@@ -1,4 +1,4 @@
-import ActionCreators = require('../../../action/actioncreators');
+import Actions = require('../../../action/actions');
 import Draft = require('../../../draft');
 import ComposeBody = require('./composebody');
 import React = require('react');
@@ -23,7 +23,7 @@ function onChange (e: KeyboardEvent, body: string)
 {
         e.stopPropagation();
 
-        const action = ActionCreators.setDraftBody(body);
+        const action = Actions.setDraftBody(body);
         Redux.handleAction(action);
 }
 
@@ -31,7 +31,7 @@ function onKeyDown (e: KeyboardEvent)
 {
         if (e.keyCode === 27) {
                 e.stopPropagation();
-                const action = ActionCreators.endEditBody();
+                const action = Actions.endEditBody();
                 Redux.handleAction(action);
         }
 }

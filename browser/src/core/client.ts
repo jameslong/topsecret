@@ -1,4 +1,4 @@
-import ActionCreators = require('./action/actioncreators');
+import Actions = require('./action/actions');
 import AppData = require('./data/appdata');
 import Clock = require('../../../core/src/clock');
 import Command = require('./command');
@@ -101,7 +101,7 @@ export function createClient (
 
 export function tickClient ()
 {
-        const action = ActionCreators.tick();
+        const action = Actions.tick();
         Redux.handleAction(action);
 }
 

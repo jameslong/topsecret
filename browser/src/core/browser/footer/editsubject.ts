@@ -1,4 +1,4 @@
-import ActionCreators = require('../../action/actioncreators');
+import Actions = require('../../action/actions');
 import EditBar = require('./editbar');
 import React = require('react');
 import Redux = require('../../redux/redux');
@@ -24,7 +24,7 @@ function onChange (e: KeyboardEvent, subject: string)
 {
         e.stopPropagation();
 
-        const action = ActionCreators.setDraftSubject(subject);
+        const action = Actions.setDraftSubject(subject);
         Redux.handleAction(action);
 }
 

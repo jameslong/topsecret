@@ -1,4 +1,4 @@
-import ActionCreators = require('../../action/actioncreators');
+import Actions = require('../../action/actions');
 import EditBar = require('./editbar');
 import React = require('react');
 import Redux = require('../../redux/redux');
@@ -23,7 +23,7 @@ const EditTo = React.createFactory(renderEditTo);
 function onChange (e: KeyboardEvent, to: string)
 {
         e.stopPropagation();
-        const action = ActionCreators.setDraftTo(to);
+        const action = Actions.setDraftTo(to);
         Redux.handleAction(action);
 }
 

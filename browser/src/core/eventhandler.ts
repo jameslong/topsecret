@@ -1,4 +1,4 @@
-import ActionCreators = require('./action/actioncreators');
+import Actions = require('./action/actions');
 import Redux = require('./redux/redux');
 
 export function addKeyHandlers ()
@@ -8,6 +8,6 @@ export function addKeyHandlers ()
 
 function onKeyDown (e: KeyboardEvent)
 {
-        const action = ActionCreators.keyDown(e);
+        const action = Actions.keyDown(e);
         Redux.handleAction(action);
 }
