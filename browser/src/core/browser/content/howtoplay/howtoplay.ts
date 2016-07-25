@@ -1,7 +1,7 @@
 import Map = require('../../../../../../core/src/utils/map');
 import Menu = require('../../../menu');
 import React = require('react');
-import SelectableRows = require('../../dumb/selectablerows');
+import SelectableRows = require('../../common/selectablerows');
 
 import Core = require('../../common/core');
 const Br = Core.Br;

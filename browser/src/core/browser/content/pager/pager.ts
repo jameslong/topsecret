@@ -1,5 +1,5 @@
 import Message = require('../../../message');
-import Meta = require('../../dumb/meta');
+import Meta = require('../../common/meta');
 import Helpers = require('../../common/helpers');
 import React = require('react');
 

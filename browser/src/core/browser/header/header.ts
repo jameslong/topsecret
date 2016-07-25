@@ -1,5 +1,5 @@
 import Command = require('../../command');
-import UnorderedList = require('../dumb/unorderedlist');
+import UnorderedList = require('../common/unorderedlist');
 import React = require('react');
 
 import Core = require('../common/core');

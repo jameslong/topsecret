@@ -6,7 +6,7 @@ import Map = require('../../../../../../core/src/utils/map');
 import Player = require('../../../player');
 import Profile = require('../../../../../../core/src/profile');
 import React = require('react');
-import SelectableRows = require('../../dumb/selectablerows');
+import SelectableRows = require('../../common/selectablerows');
 
 interface EncryptionProps extends React.Props<any> {
         knownKeyIds: string[];

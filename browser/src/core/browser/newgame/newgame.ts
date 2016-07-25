@@ -1,12 +1,12 @@
 import ActionCreators = require('../../action/actioncreators');
-import ButtonInput = require('../dumb/buttoninput');
+import ButtonInput = require('../common/buttoninput');
 import Client = require('../../client');
 import Kbpgp = require('kbpgp');
 import KbpgpHelpers = require('../../../../../core/src/kbpgp');
 import Prom = require('../../../../../core/src/utils/promise');
 import React = require('react');
 import Redux = require('../../redux/redux');
-import Text = require('../dumb/text');
+import Text = require('../common/text');
 
 import Core = require('../common/core');
 import Div = Core.Div;

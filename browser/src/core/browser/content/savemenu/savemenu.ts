@@ -1,6 +1,6 @@
 import Menu = require('../../../menu');
 import React = require('react');
-import SelectableRows = require('../../dumb/selectablerows');
+import SelectableRows = require('../../common/selectablerows');
 
 interface SaveProps extends React.Props<any> {
         activeIndex: number;

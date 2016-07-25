@@ -7,7 +7,7 @@ import UI = require('../../../ui');
 import Core = require('../../common/core');
 import Div = Core.Div;
 
-import TextAreaInput = require('../../dumb/textareainput');
+import TextAreaInput = require('../../common/textareainput');
 
 interface ComposeProps extends React.Props<any> {
         draft: Draft.Draft;
