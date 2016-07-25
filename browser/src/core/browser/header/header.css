@@ -1,0 +1,17 @@
+.header {
+        flex-shrink: 0;
+        background-color: var(--infobar-bg-colour);
+        color: var(--infobar-font-colour);
+        padding: 0 0.25rem;
+}
+
+.header ul {
+        padding: 0;
+        margin: 0;
+}
+
+.header ul li {
+        display: inline-block;
+        text-decoration: none;
+        padding-right: 1rem;
+}

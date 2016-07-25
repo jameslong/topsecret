@@ -15,7 +15,7 @@ import FeedbackButton = require('./dumb/feedbackbutton');
 import Footer = require('./dumb/footer');
 import NewGame = require('./dumb/newgame');
 import NewGameLoading = require('./dumb/newgameloading');
-import Header = require('./dumb/header');
+import Header = require('./header/header');
 
 interface BrowserProps extends React.Props<any> {
         state: Client.Client;
@@ -42,7 +42,7 @@ function renderGame (state: Client.Client)
         const displayedCommands = commands.filter(
                 command => command.shortDesc.length > 0);
 
-        const header = createHeader(state.ui.mode, displayedCommands);
+        const header = Header({ commands: displayedCommands });
         const footer = Footer({ state });
         const content = Content({ state });
         const feedback = FeedbackButton({ openExternal: state.openExternal });
@@ -57,12 +57,6 @@ function onClick (e: MouseEvent)
 {
         const action = ActionCreators.blur();
         Redux.handleAction(action);
-}
-
-function createHeader (mode: string, commands: Command.Command[])
-{
-        const data = commands.map(Command.getCommandSummary);
-        return Header({ values: data });
 }
 
 export = Browser;
