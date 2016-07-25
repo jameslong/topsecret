@@ -1,7 +1,7 @@
 import ConfirmText = require('./confirmtext');
 import React = require('react');
 
-import Core = require('../core');
+import Core = require('../common/core');
 import Div = Core.Div;
 import Span = Core.Span;
 

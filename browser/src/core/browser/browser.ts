@@ -1,27 +1,27 @@
-import ActionCreators = require('../../action/actioncreators');
-import Command = require('../../command');
-import Data = require('../../data');
+import ActionCreators = require('../action/actioncreators');
+import Command = require('../command');
+import Data = require('../data');
 import React = require('react');
-import Redux = require('../../redux/redux');
-import Client = require('../../client');
-import UI = require('../../ui');
+import Redux = require('../redux/redux');
+import Client = require('../client');
+import UI = require('../ui');
 
-import Core = require('../core');
+import Core = require('./common/core');
 import Div = Core.Div;
 import Img = Core.Img;
 
-import Content = require('../dumb/content');
-import FeedbackButton = require('../dumb/feedbackbutton');
-import Footer = require('../dumb/footer');
-import NewGame = require('../dumb/newgame');
-import NewGameLoading = require('../dumb/newgameloading');
-import Header = require('../dumb/header');
+import Content = require('./dumb/content');
+import FeedbackButton = require('./dumb/feedbackbutton');
+import Footer = require('./dumb/footer');
+import NewGame = require('./dumb/newgame');
+import NewGameLoading = require('./dumb/newgameloading');
+import Header = require('./dumb/header');
 
-interface RootProps extends React.Props<any> {
+interface BrowserProps extends React.Props<any> {
         state: Client.Client;
 }
 
-function renderRoot(props: RootProps): React.ReactElement<any>
+function renderBrowser(props: BrowserProps): React.ReactElement<any>
 {
         const state = props.state;
         if (state.ui.mode === UI.Modes.NEW_GAME) {
@@ -34,7 +34,7 @@ function renderRoot(props: RootProps): React.ReactElement<any>
         }
 }
 
-const Root = React.createFactory(renderRoot);
+const Browser = React.createFactory(renderBrowser);
 
 function renderGame (state: Client.Client)
 {
@@ -47,9 +47,9 @@ function renderGame (state: Client.Client)
         const content = Content({ state });
         const feedback = FeedbackButton({ openExternal: state.openExternal });
         const fastforward = state.data.clock.timeFactor > 1 ?
-                Div({ className: 'root-fastforward' }) : null;
+                Div({ className: 'browser-fastforward' }) : null;
 
-        return Div({ className: 'root', onClick },
+        return Div({ className: 'browser', onClick },
                 header, content, footer, feedback, fastforward);
 }
 
@@ -65,4 +65,4 @@ function createHeader (mode: string, commands: Command.Command[])
         return Header({ values: data });
 }
 
-export = Root;
+export = Browser;

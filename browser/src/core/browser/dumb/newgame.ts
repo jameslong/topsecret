@@ -8,7 +8,7 @@ import React = require('react');
 import Redux = require('../../redux/redux');
 import Text = require('./text');
 
-import Core = require('../core');
+import Core = require('../common/core');
 import Div = Core.Div;
 import Form = Core.Form;
 import Span = Core.Span;

@@ -1,6 +1,6 @@
 import React = require('react');
 
-import Core = require('../core');
+import Core = require('../common/core');
 import Input = Core.Input;
 
 interface OnChange {

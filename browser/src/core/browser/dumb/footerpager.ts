@@ -2,7 +2,7 @@ import Message = require('../../message');
 import MessageCore = require('../../../../../core/src/message');
 import React = require('react');
 
-import Core = require('../core');
+import Core = require('../common/core');
 import Div = Core.Div;
 import Span = Core.Span;
 

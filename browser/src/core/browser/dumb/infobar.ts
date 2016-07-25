@@ -1,6 +1,6 @@
 import React = require('react');
 
-import Core = require('../core');
+import Core = require('../common/core');
 import Div = Core.Div;
 
 interface InfoBarProps extends React.Props<any> {}

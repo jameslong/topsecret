@@ -3,7 +3,7 @@ import Map = require('../../../../../core/src/utils/map');
 import React = require('react');
 import Str = require('../../../../../core/src/utils/string');
 
-import Core = require('../core');
+import Core = require('../common/core');
 import Table = Core.Table;
 import TBody = Core.TBody;
 import TD = Core.TD;

@@ -1,5 +1,5 @@
 import React = require('react');
-import Core = require('../core');
+import Core = require('../common/core');
 import Div = Core.Div
 
 interface FeedbackButtonProps extends React.Props<any> {

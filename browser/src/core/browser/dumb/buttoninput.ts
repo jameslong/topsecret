@@ -1,6 +1,6 @@
 import React = require('react');
 
-import Core = require('../core');
+import Core = require('../common/core');
 import Button = Core.Button;
 
 interface ButtonProps extends React.Props<any> {

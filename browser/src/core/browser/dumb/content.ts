@@ -15,7 +15,7 @@ import React = require('react');
 import SaveMenu = require('./savemenu');
 import UI = require('../../ui');
 
-import Core = require('../core');
+import Core = require('../common/core');
 import Div = Core.Div;
 
 interface ContentProps extends React.Props<any> {

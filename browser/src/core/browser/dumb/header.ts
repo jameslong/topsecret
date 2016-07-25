@@ -2,7 +2,7 @@ import InfoBar = require('./infobar');
 import UnorderedList = require('./unorderedlist');
 import React = require('react');
 
-import Core = require('../core');
+import Core = require('../common/core');
 import Div = Core.Div;
 
 interface HeaderProps extends React.Props<any> {

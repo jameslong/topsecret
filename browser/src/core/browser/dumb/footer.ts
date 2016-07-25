@@ -11,7 +11,7 @@ import React = require('react');
 import StatusBar = require('../dumb/statusbar');
 import UI = require('../../ui');
 
-import Core = require('../core');
+import Core = require('../common/core');
 import Div = Core.Div;
 import Span = Core.Span;
 

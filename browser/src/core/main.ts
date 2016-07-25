@@ -6,6 +6,7 @@ import MessageData = require('./data/messages');
 import CommandData = require('./data/commands');
 import PlayerData = require('./data/player');
 
+import Browser = require('./browser/browser');
 import Client = require('./client');
 import Clock = require('../../../core/src/clock');
 import Data = require('./data');
@@ -16,7 +17,6 @@ import LocalStorage = require('./localstorage');
 import Prom = require('../../../core/src/utils/promise');
 import Reducers = require('./action/reducers');
 import Redux = require('./redux/redux');
-import Root = require('./browser/smart/root');
 import Server = require('./server');
 import State = require('../../../core/src/gamestate');
 import Player = require('./player');
@@ -56,8 +56,8 @@ export function init (
                         openExternal);
 
         const wrapper = document.getElementById('wrapper');
-        const getClient = Redux.init(client, Reducers.reduce, Root, wrapper);
-        Redux.render(client, Root, wrapper);
+        const getClient = Redux.init(client, Reducers.reduce, Browser, wrapper);
+        Redux.render(client, Browser, wrapper);
 
         EventHandler.addKeyHandlers();
 

@@ -3,7 +3,7 @@ import Menu = require('../../menu');
 import React = require('react');
 import SelectableRows = require('./selectablerows');
 
-import Core = require('../core');
+import Core = require('../common/core');
 const Br = Core.Br;
 const Div = Core.Div;
 const P = Core.P;

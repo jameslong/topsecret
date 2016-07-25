@@ -1,9 +1,9 @@
-import Helpers = require('../helpers');
+import Helpers = require('../common/helpers');
 import Message = require('../../message');
 import React = require('react');
 import Str = require('../../../../../core/src/utils/string');
 
-import Core = require('../core');
+import Core = require('../common/core');
 import Div = Core.Div;
 
 interface MetaProps extends React.Props<any> {

@@ -1,5 +1,5 @@
 import React = require('react');
-import Core = require('../core');
+import Core = require('../common/core');
 import TextArea = Core.TextArea;
 
 interface OnChange {
