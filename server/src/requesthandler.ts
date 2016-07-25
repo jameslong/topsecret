@@ -2,6 +2,7 @@ import App = require('./app');
 const Auth = require('basic-auth');
 import Clock = require('../../core/src/clock');
 import Data = require('../../core/src/data');
+import DataValidation = require('./datavalidation');
 import FileSystem = require('../../core/src/filesystem');
 import Helpers = require('../../core/src/utils/helpers');
 import Log = require('../../core/src/log');
@@ -573,7 +574,7 @@ export function validateData (
                 content.messageSchemaPath);
         const replyOptionSchema = FileSystem.loadJSONSync<JSON>(
                 content.replyOptionSchemaPath);
-        const dataErrors = Data.getDataErrors(
+        const dataErrors = DataValidation.getDataErrors(
                 narrativeData,
                 profileSchema,
                 messageSchema,

@@ -46,7 +46,7 @@ module.exports = function (grunt)
                         },
                         browser_lib: {
                                 expand: true,
-                                cwd: './browser/src/lib',
+                                cwd: './browser/lib',
                                 src: ['**/*.js'],
                                 dest: './browser/build/lib',
                                 filter: 'isFile'

@@ -1,7 +1,7 @@
 require.config({
         // app entry point
         baseURL: [""],
-        deps: ["./browser/src/app/main"],
+        deps: ["./browser/src/main"],
         paths: {
                 "jquery": "../../node_modules/jquery/dist/jquery",
                 "kbpgp": "lib/kbpgp/kbpgp-2.0.8",
