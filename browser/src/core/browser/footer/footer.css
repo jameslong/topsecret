@@ -1,0 +1,72 @@
+.footer {
+        background-color: var(--main-bg-colour);
+        flex-shrink: 0;
+}
+
+.footer-infobar-content {
+        display: flex;
+        width: 100%;
+}
+
+.footer-infobar-time {
+        display: inline-block;
+        margin-left: auto;
+}
+
+.infobar {
+        background-color: var(--infobar-bg-colour);
+        color: var(--infobar-font-colour);
+        padding: 0 0.25rem;
+}
+
+.infobar ul {
+        padding: 0;
+        margin: 0;
+}
+
+.infobar ul li {
+        display: inline-block;
+        text-decoration: none;
+        padding-right: 1rem;
+}
+
+.infobar-major {
+        padding-right: 4em;
+        display: inline-block;
+}
+
+.infobar-major span:not(:last-child) {
+        padding-right: 2em;
+}
+
+.infobar-content {
+        display: inline;
+}
+
+.infobar-time {
+        display: inline;
+        text-align: right;
+}
+
+.statusbar-empty {
+        font-weight: bold;
+        color: var(--main-bg-colour);
+}
+
+.statusbar-ongoing::after {
+        content: "...";
+}
+
+.statusbar input {
+        border: none;
+        background-color: inherit;
+        color: inherit;
+        font-size: inherit;
+        font-family: inherit;
+        width: 50em;
+        padding: 0;
+}
+
+.statusbar input:focus {
+        outline: none;
+}

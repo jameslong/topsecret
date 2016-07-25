@@ -12,7 +12,7 @@ import Img = Core.Img;
 
 import Content = require('./dumb/content');
 import FeedbackButton = require('./dumb/feedbackbutton');
-import Footer = require('./dumb/footer');
+import Footer = require('./footer/footer');
 import NewGame = require('./dumb/newgame');
 import NewGameLoading = require('./dumb/newgameloading');
 import Header = require('./header/header');

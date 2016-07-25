@@ -6,9 +6,7 @@ import FooterCompose = require('./footercompose');
 import FooterIndex = require('./footerindex');
 import FooterFolder = require('./footerfolder');
 import FooterPager = require('./footerpager');
-import InfoBar = require('./infobar');
 import React = require('react');
-import StatusBar = require('../dumb/statusbar');
 import UI = require('../../ui');
 
 import Core = require('../common/core');
@@ -25,10 +23,11 @@ function renderFooter(props: FooterProps)
 
         const infoBarContent = createInfoBarContent(state);
         const infoBarTime = createInfoBarTime(state);
-        const content = Div({ className: 'footer-infobar-content' },
+        const infoBarChild = Div({ className: 'footer-infobar-content' },
                 infoBarContent, infoBarTime);
-        const infoBar = InfoBar({}, content);
-        const statusBar = StatusBar({}, createStatusBarContent(state));
+        const infoBar = Div({ className: 'infobar' }, infoBarChild);
+        const statusBarContent = createStatusBarContent(state);
+        const statusBar = Div({ className: 'statusbar' }, statusBarContent);
 
         return Div({ className: 'footer' }, infoBar, statusBar);
 }
