@@ -4,10 +4,10 @@
 
 [Top Secret](https://playtopsecret.com) is a video game about the Snowden leaks played by email. This repo contains the game server, content editor, and browser/desktop clients. Stay up to date about the game via the [blog](https://playtopsecret.com/blog.html), [forum](http://forum.playtopsecret.com), and [Twitter account](https://twitter.com/jamestyro).
 
-![Top Secret Offline Version](/img/gamescreenshot.jpg?raw=true)
+![Top Secret Offline Version](/img/gamescreenshot.png?raw=true)
 *You can play by email or offline using the desktop app.*
 
-![Top Secret Editor](/img/editorscreenshot.jpg?raw=true)
+![Top Secret Editor](/img/editorscreenshot.png?raw=true)
 *The visual editor to create game content.*
 
 ## Dependencies
