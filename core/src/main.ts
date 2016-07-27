@@ -171,10 +171,15 @@ function isExpired (
         messageData: Message.ThreadMessage,
         replyOptions: Map.Map<ReplyOption.ReplyOptions>)
 {
-        return !hasPendingChildren(message) &&
-                !hasUnsentFallback(message, messageData) &&
-                (message.fallbackSent ||
-                        !hasUnsentReplies(message, messageData, replyOptions));
+        const resolvedChildren = !hasPendingChildren(message);
+        const resolvedReplies = !hasUnsentReplies(
+                message, messageData, replyOptions);
+        const resolvedFallback = !hasUnsentFallback(message, messageData);
+        const resolvedResponse = messageData.fallback ?
+                resolvedReplies || resolvedFallback :
+                resolvedReplies;
+
+        return (resolvedChildren && resolvedResponse);
 }
 
 export function isExpiredThreadDelay (
