@@ -2,7 +2,7 @@
         "name": "pgp_reply",
         "threadSubject": "pgp_reply_subject",
         "position": {
-                "x": 990,
+                "x": 825,
                 "y": 385
         },
         "endGame": false,
