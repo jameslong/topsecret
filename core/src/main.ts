@@ -56,7 +56,7 @@ function handleChildren (state: Promises.UpdateState)
         const pending = indices.filter(index =>
                 !message.childrenSent[index] &&
                 isExpiredThreadDelay(children[index], offsetHours, sentMs, timestampMs));
-        const pendingPromises = pending.map((child, index) =>
+        const pendingPromises = pending.map(index =>
                 (state: Promises.UpdateState) => Promises.child(state, index)
         );
 
