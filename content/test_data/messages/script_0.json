@@ -5,6 +5,7 @@
                 "x": 275,
                 "y": 715
         },
+        "startGame": false,
         "endGame": false,
         "message": {
                 "from": "james",
@@ -23,7 +24,8 @@
                                 0,
                                 0,
                                 0
-                        ]
+                        ],
+                        "absolute": false
                 }
         ],
         "fallback": {
@@ -33,7 +35,8 @@
                         0,
                         0,
                         0
-                ]
+                ],
+                "absolute": false
         },
         "attachment": null
 }

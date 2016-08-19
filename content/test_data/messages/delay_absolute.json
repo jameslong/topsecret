@@ -2,13 +2,13 @@
         "name": "delay_absolute",
         "threadSubject": "delay_absolute_subject",
         "position": {
-                "x": 990,
+                "x": 1166,
                 "y": 55
         },
+        "startGame": true,
         "endGame": false,
         "message": {
                 "from": "james",
-                "to": [],
                 "body": "delay_absolute_body"
         },
         "encrypted": true,
@@ -22,8 +22,9 @@
                         "delay": [
                                 1,
                                 9,
-                                0
-                        ]
+                                15
+                        ],
+                        "absolute": true
                 }
         ],
         "fallback": null,

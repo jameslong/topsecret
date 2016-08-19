@@ -5,6 +5,7 @@
                 "x": 55,
                 "y": 55
         },
+        "startGame": false,
         "endGame": false,
         "message": {
                 "from": "james",
@@ -25,7 +26,8 @@
                                 0,
                                 0,
                                 0
-                        ]
+                        ],
+                        "absolute": false
                 },
                 {
                         "name": "child_1",
@@ -34,7 +36,8 @@
                                 0,
                                 0,
                                 0
-                        ]
+                        ],
+                        "absolute": false
                 }
         ],
         "fallback": null,

@@ -5,6 +5,8 @@
                 "x": 946,
                 "y": 495
         },
+        "startGame": false,
+        "startGame": false,
         "endGame": false,
         "message": {
                 "from": "james",
