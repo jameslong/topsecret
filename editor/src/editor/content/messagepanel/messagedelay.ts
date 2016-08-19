@@ -10,6 +10,7 @@ import TextInputValidated = require('../../common/textinputvalidated');
 import ComponentHelpers = require('../../common/helpers');
 import Core = require('../../common/core');
 import Div = Core.Div;
+import Checkbox = require('../../common/checkbox');
 import NumberComponent = require('../../common/number');
 import TextComponent = require('../../common/text');
 
@@ -75,8 +76,16 @@ function renderMessageDelay (props: MessageDelayProps)
         const min = Div({ className: 'message-delay-min' },
                 NumberComponent(minProps));
 
+        const onSetAbsoluteLocal = (value: boolean) =>
+                onSetAbsolute(props, value);
+        const absoluteProps = {
+                checked: messageDelay.absolute,
+                onChange: onSetAbsoluteLocal,
+        };
+        const absolute = Checkbox(absoluteProps);
+
         const child = ComponentHelpers.wrapInLabel('Name/delay',
-                name, condition, day, hour, min);
+                name, condition, day, hour, min, absolute);
 
         return Div({ className: 'message-delay' }, child);
 }
@@ -115,6 +124,12 @@ function onSetTime (data: MessageDelayProps, index: number, value: number)
         const delay = data.delay.delay;
         const newDelay = Arr.set(delay, index, value);
         const newData = Helpers.assign(data.delay, { delay: newDelay });
+        data.onChange(newData);
+}
+
+function onSetAbsolute (data: MessageDelayProps, absolute: boolean)
+{
+        const newData = Helpers.assign(data.delay, { absolute });
         data.onChange(newData);
 }
 

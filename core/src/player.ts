@@ -13,6 +13,7 @@ export interface PlayerState {
         messageUID: number;
         version: string;
         utcOffset: number;
+        utcStartDate: number;
         emptyMessages: Map.Map<string>; // from profile name to message id
         vars: PlayerVars;
 }
@@ -31,6 +32,7 @@ export function createPlayerState (
                 messageUID: 0,
                 version,
                 utcOffset,
+                utcStartDate: 0,
                 emptyMessages: {},
                 vars: {
                         firstName,

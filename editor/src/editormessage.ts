@@ -22,6 +22,7 @@ export function convertToMessage (data: Message.ThreadMessage): EditorMessage
                 name: data.name,
                 threadSubject: data.threadSubject,
                 position: data.position,
+                startGame: data.startGame,
                 endGame: data.endGame,
                 message: data.message,
                 encrypted: data.encrypted,

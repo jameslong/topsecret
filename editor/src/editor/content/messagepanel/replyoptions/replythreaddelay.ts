@@ -10,6 +10,7 @@ import TextInputValidated = require('../../../common/textinputvalidated');
 import ComponentHelpers = require('../../../common/helpers');
 import Core = require('../../../common/core');
 import Div = Core.Div;
+import Checkbox = require('../../../common/checkbox');
 import NumberComponent = require('../../../common/number');
 import TextComponent = require('../../../common/text');
 
@@ -63,7 +64,16 @@ function renderReplyThreadDelay (props: ReplyThreadDelayProps)
         const min = Div({ className: 'reply-delay-min' },
                 NumberComponent(minProps));
 
-        return Div({ className: 'reply-delay' }, name, day, hour, min);
+        const onSetAbsoluteLocal = (value: boolean) =>
+                onSetAbsolute(props, value);
+        const absoluteProps = {
+                checked: messageDelay.absolute,
+                onChange: onSetAbsoluteLocal,
+        };
+        const absolute = Checkbox(absoluteProps);
+
+        return Div({ className: 'reply-delay' },
+                name, day, hour, min, absolute);
 }
 
 const ReplyThreadDelay = React.createFactory(renderReplyThreadDelay);
@@ -94,6 +104,12 @@ function onSetTime (data: ReplyThreadDelayProps, index: number, value: number)
         const delay = data.delay.delay;
         const newDelay = Arr.set(delay, index, value);
         const newData = Helpers.assign(data.delay, { delay: newDelay });
+        data.onChange(newData);
+}
+
+function onSetAbsolute (data: ReplyThreadDelayProps, absolute: boolean)
+{
+        const newData = Helpers.assign(data.delay, { absolute });
         data.onChange(newData);
 }
 

@@ -23,6 +23,7 @@ export const Types = {
         SET_MESSAGE_NAME: 'SET_MESSAGE_NAME',
         SET_MESSAGE_SUBJECT: 'SET_MESSAGE_SUBJECT',
         SET_MESSAGE_BODY: 'SET_MESSAGE_BODY',
+        SET_MESSAGE_START_GAME: 'SET_MESSAGE_START_GAME',
         SET_MESSAGE_END_GAME: 'SET_MESSAGE_END_GAME',
         SET_MESSAGE_ENCRYPTED: 'SET_MESSAGE_ENCRYPTED',
         SET_MESSAGE_POSITION: 'SET_MESSAGE_POSITION',
@@ -131,6 +132,10 @@ export const setMessageSubject = createActionCreator<SetMessageSubjectParams>(Ty
 export type SetMessageBodyParams = NameValueParameters<string>;
 export interface SetMessageBody extends Redux.Action<SetMessageBodyParams> {}
 export const setMessageBody = createActionCreator<SetMessageBodyParams>(Types.SET_MESSAGE_BODY);
+
+export type SetMessageStartGameParams = NameValueParameters<boolean>;
+export interface SetMessageStartGame extends Redux.Action<SetMessageStartGameParams> {}
+export const setMessageStartGame = createActionCreator<SetMessageStartGameParams>(Types.SET_MESSAGE_START_GAME);
 
 export type SetMessageEndGameParams = NameValueParameters<boolean>;
 export interface SetMessageEndGame extends Redux.Action<SetMessageEndGameParams> {}

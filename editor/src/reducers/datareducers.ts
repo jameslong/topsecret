@@ -64,6 +64,10 @@ export function data (
                 const setBody = <Actions.SetMessageBody><any>action;
                 return handleSetMessageBody(state, config, setBody);
 
+        case Actions.Types.SET_MESSAGE_START_GAME:
+                const setStartGame = <Actions.SetMessageStartGame><any>action;
+                return handleSetMessageStartGame(state, config, setStartGame);
+
         case Actions.Types.SET_MESSAGE_END_GAME:
                 const setEndGame = <Actions.SetMessageEndGame><any>action;
                 return handleSetMessageEndGame(state, config, setEndGame);
@@ -238,6 +242,7 @@ function handleCreateMessage (
                 name,
                 threadSubject: '',
                 position,
+                startGame: false,
                 endGame: false,
                 message: {
                         from: '',
@@ -557,6 +562,20 @@ function handleSetMessageBody (
                 stringsById: newStrings, messagesById: newMessages });
         const newNarratives = Map.set(narratives, newNarrative.name, newNarrative);
         return Helpers.assign(state, { narrativesById: newNarratives });
+}
+
+function handleSetMessageStartGame (
+        state: State.Data,
+        config: State.Config,
+        action: Actions.SetMessageStartGame)
+{
+        const parameters = action.parameters;
+        return setMessageProperty(
+                parameters.name,
+                'startGame',
+                parameters.value,
+                parameters.narrativeId,
+                state);
 }
 
 function handleSetMessageEndGame (

@@ -147,6 +147,9 @@ export function encryptSendStoreChild (
                 const script = messageData.script;
                 player.vars[result.name] = true;
                 Script.executeScript(script, player);
+                if (messageData.startGame) {
+                        player.utcStartDate = timestampMs;
+                }
                 return result;
         });
 }

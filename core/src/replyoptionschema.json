@@ -13,9 +13,10 @@
                                         "minItems": 3,
                                         "maxItems": 3,
                                         "uniqueItems": false
-                                }
+                                },
+                                "absolute": { "type": "boolean" }
                         },
-                        "required": ["name", "delay"]
+                        "required": ["name", "delay", "absolute"]
                 },
                 "messageDelays": {
                         "type": "array",
