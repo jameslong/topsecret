@@ -20,7 +20,7 @@
                         "name": "delay_child_0",
                         "condition": "",
                         "delay": [
-                                1,
+                                2,
                                 9,
                                 15
                         ],
