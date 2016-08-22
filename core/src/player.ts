@@ -32,7 +32,7 @@ export function createPlayerState (
                 messageUID: 0,
                 version,
                 utcOffset,
-                utcStartDate: 0,
+                utcStartDate: Number.MAX_VALUE, // If unset, no absolute delays will expire
                 emptyMessages: {},
                 vars: {
                         firstName,

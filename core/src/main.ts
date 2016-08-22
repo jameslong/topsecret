@@ -47,7 +47,7 @@ export function update (
 function handleChildren (state: Promises.UpdateState)
 {
         const { message, player, narrative, timestampMs, promises } = state;
-        const offsetHours = player.utcOffset;
+        const { utcOffset, utcStartDate } = player;
         const messageData = narrative.messages[message.name];
         const children = messageData.children;
         const sentMs = message.sentTimestampMs;
@@ -55,7 +55,12 @@ function handleChildren (state: Promises.UpdateState)
         const indices = children.map((child, index) => index);
         const pending = indices.filter(index =>
                 !message.childrenSent[index] &&
-                isExpiredThreadDelay(children[index], offsetHours, sentMs, timestampMs));
+                isExpiredThreadDelay(
+                        children[index],
+                        utcOffset,
+                        utcStartDate,
+                        sentMs,
+                        timestampMs));
         const pendingPromises = pending.map(index =>
                 (state: Promises.UpdateState) => Promises.child(state, index)
         );
@@ -85,7 +90,7 @@ function handleResponse (state: Promises.UpdateState)
 function handleReply (state: Promises.UpdateState)
 {
         const { message, player, narrative, timestampMs, promises } = state;
-        const utcOffset = player.utcOffset;
+        const { utcOffset, utcStartDate } = player;
         const reply = message.reply;
         const replyTimestampMs = reply.timestampMs;
         const replyIndex = reply.index;
@@ -95,8 +100,13 @@ function handleReply (state: Promises.UpdateState)
         const sent = reply.sent;
         const indices = options.map((option, index) => index);
         const pending = indices.filter(index =>
-                sent.indexOf(index) === -1 && isExpiredThreadDelay(
-                        options[index], utcOffset, replyTimestampMs, timestampMs));
+                sent.indexOf(index) === -1 &&
+                isExpiredThreadDelay(
+                        options[index],
+                        utcOffset,
+                        utcStartDate,
+                        replyTimestampMs,
+                        timestampMs));
 
         const pendingPromises = pending.map(index =>
                 (state: Promises.UpdateState) => Promises.reply(state, index));
@@ -107,11 +117,16 @@ function handleReply (state: Promises.UpdateState)
 function handleFallback (state: Promises.UpdateState)
 {
         const { message, player, narrative, timestampMs, promises } = state;
-        const utcOffset = player.utcOffset;
+        const { utcOffset, utcStartDate } = player;
         const messageData = narrative.messages[message.name];
         const sentMs = message.sentTimestampMs;
         const expired = hasExpiredFallback(
-                message, messageData, utcOffset, sentMs, timestampMs);
+                message,
+                messageData,
+                utcOffset,
+                utcStartDate,
+                sentMs,
+                timestampMs);
 
         return expired ?
                 Promises.fallback(state) :
@@ -158,12 +173,18 @@ function hasExpiredFallback (
         message: Message.MessageState,
         messageData: Message.ThreadMessage,
         offsetHours: number,
+        utcStartDate: number,
         sentMs: number,
         currentMs: number)
 {
         const fallback = messageData.fallback;
         return hasUnsentFallback(message, messageData) &&
-                isExpiredThreadDelay(fallback, offsetHours, sentMs, currentMs);
+                isExpiredThreadDelay(
+                        fallback,
+                        offsetHours,
+                        utcStartDate,
+                        sentMs,
+                        currentMs);
 }
 
 function isExpired (
@@ -185,18 +206,49 @@ function isExpired (
 export function isExpiredThreadDelay (
         threadDelay: Message.ReplyThreadDelay,
         offsetHours: number,
+        utcStartDate: number,
         sentMs: number,
         currentMs: number)
 {
-        const relative = threadDelay.delay[0] === 0;
-
-        return relative ?
-                isExpiredThreadDelayRelative(threadDelay, sentMs, currentMs) :
+        return threadDelay.absolute ?
                 isExpiredThreadDelayAbsolute(
+                        threadDelay, offsetHours, utcStartDate, currentMs) :
+                isExpiredThreadDelayRelative(
                         threadDelay, offsetHours, sentMs, currentMs);
 }
 
+export function isExpiredThreadDelayAbsolute (
+        threadDelay: Message.ReplyThreadDelay,
+        offsetHours: number,
+        utcStartDate: number,
+        currentMs: number)
+{
+        const [days, hours, mins] = threadDelay.delay;
+        const ref = new Date(utcStartDate);
+        const required = new Date();
+        required.setUTCDate(ref.getUTCDate() + days);
+        required.setUTCHours(hours);
+        required.setUTCMinutes(mins);
+        const requiredMs = required.getTime() - (offsetHours * 3600 * 1000);
+
+        return (currentMs > requiredMs);
+}
+
 export function isExpiredThreadDelayRelative (
+        threadDelay: Message.ReplyThreadDelay,
+        offsetHours: number,
+        sentMs: number,
+        currentMs: number)
+{
+        const relativeWithDay = threadDelay.delay[0] === 0;
+
+        return relativeWithDay ?
+                isExpiredThreadDelayRelativeWithoutDay(threadDelay, sentMs, currentMs) :
+                isExpiredThreadDelayRelativeWithDay(
+                        threadDelay, offsetHours, sentMs, currentMs);
+}
+
+export function isExpiredThreadDelayRelativeWithoutDay (
         threadDelay: Message.ReplyThreadDelay, sentMs: number, currentMs: number)
 {
         const [days, hours, mins] = threadDelay.delay;
@@ -205,7 +257,7 @@ export function isExpiredThreadDelayRelative (
         return (delayMs > requiredMs);
 }
 
-export function isExpiredThreadDelayAbsolute (
+export function isExpiredThreadDelayRelativeWithDay (
         threadDelay: Message.ReplyThreadDelay,
         offsetHours: number,
         sentMs: number,
