@@ -47,7 +47,8 @@ export function update (
 function handleChildren (state: Promises.UpdateState)
 {
         const { message, player, narrative, timestampMs, promises } = state;
-        const { utcOffset, utcStartDate } = player;
+        const utcOffset = player.utcOffset;
+        const utcStartDate = <number>player.vars['utcStartDate'];
         const messageData = narrative.messages[message.name];
         const children = messageData.children;
         const sentMs = message.sentTimestampMs;
@@ -90,7 +91,8 @@ function handleResponse (state: Promises.UpdateState)
 function handleReply (state: Promises.UpdateState)
 {
         const { message, player, narrative, timestampMs, promises } = state;
-        const { utcOffset, utcStartDate } = player;
+        const utcOffset = player.utcOffset;
+        const utcStartDate = <number>player.vars['utcStartDate'];
         const reply = message.reply;
         const replyTimestampMs = reply.timestampMs;
         const replyIndex = reply.index;
@@ -117,7 +119,8 @@ function handleReply (state: Promises.UpdateState)
 function handleFallback (state: Promises.UpdateState)
 {
         const { message, player, narrative, timestampMs, promises } = state;
-        const { utcOffset, utcStartDate } = player;
+        const utcOffset = player.utcOffset;
+        const utcStartDate = <number>player.vars['utcStartDate'];
         const messageData = narrative.messages[message.name];
         const sentMs = message.sentTimestampMs;
         const expired = hasExpiredFallback(

@@ -1,3 +1,4 @@
+import Date = require('./utils/date');
 import Player = require('./player');
 
 /*
@@ -140,21 +141,22 @@ export function atom (token: string): Atom
         }
 }
 
-export function evaluate (expression: Expression, env: Env)
+export function evaluate (expression: Expression, env: Env, timestampMs: number)
 {
         if (Array.isArray(expression)) {
                 if (expression.length === 0) {
                         return undefined;
                 } else if (Array.isArray(expression[0])) {
-                        expression.forEach(exp => evaluateExpression(exp, env));
+                        expression.forEach(exp =>
+                                evaluateExpression(exp, env, timestampMs));
                         return undefined;
                 }
         }
-        return evaluateExpression(expression, env);
+        return evaluateExpression(expression, env, timestampMs);
 }
 
-export function evaluateExpression (expression: Expression, env: Env)
-        :Atom
+export function evaluateExpression (
+        expression: Expression, env: Env, timestampMs: number) :Atom
 {
         if (typeof expression === 'number' || typeof expression ==='boolean') {
                 return expression;
@@ -171,14 +173,18 @@ export function evaluateExpression (expression: Expression, env: Env)
                 const [proc, ...exp] = expression;
                 if (proc === 'define') {
                         const [name, val] = exp;
-                        env.core.define(name, evaluate(val, env), env.custom);
+                        env.core.define(name, evaluate(val, env, timestampMs), env.custom);
                         return undefined;
                 } else if (proc === 'set') {
                         const [name, val] = exp;
-                        env.core.set(name, evaluate(val, env), env.custom);
+                        env.core.set(name, evaluate(val, env, timestampMs), env.custom);
                         return undefined;
+                } else if (proc === 'getGameDay') {
+                        return Date.getDaysBetween(
+                                <number>(env.custom['utcStartDate']),
+                                timestampMs);
                 } else {
-                        const args = exp.map(e => evaluate(e, env));
+                        const args = exp.map(e => evaluate(e, env, timestampMs));
                         return env.core[proc](...args);
                 }
         }
@@ -190,26 +196,28 @@ export function parse (script: string)
         return ast(tokens);
 }
 
-export function parseEval (script: string, env = standardEnv())
+export function parseEval (
+        script: string, env: Env, timestampMs: number)
 {
         const ast = parse(script);
-        return evaluate(ast, env);
+        return evaluate(ast, env, timestampMs);
 }
 
 export function getScriptErrors (script: string): string
 {
         try {
-                parseEval(script);
+                parseEval(script, standardEnv(), 0);
                 return '';
         } catch (e) {
                 return e;
         }
 }
 
-export function executeScript (script: string, player: Player.PlayerState)
+export function executeScript (
+        script: string, player: Player.PlayerState, timestampMs: number)
 {
         const env = standardEnv(player.vars);
-        const result = parseEval(script, env);
+        const result = parseEval(script, env, timestampMs);
         Object.assign(player.vars, env.custom);
         return result;
 }

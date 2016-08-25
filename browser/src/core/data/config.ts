@@ -34,7 +34,7 @@ function getQueryStringParams (): GameSettings
         const timeFactorParam = getQueryVariable('timeFactor');
         const timeFactor = timeFactorParam ? parseFloat(timeFactorParam) : null;
         const dayParam = getQueryVariable('day');
-        const day = dayParam ? parseInt(dayParam) : null;
+        const day = dayParam !== null ? parseInt(dayParam) : null;
         return {
                 version,
                 beginGameMessage,
@@ -59,7 +59,7 @@ export function createConfig (): ConfigData
                 beginGameMessage: params.beginGameMessage,
                 initialUIMode: params.initialUIMode || defaultSettings.initialUIMode,
                 timeFactor: params.timeFactor || defaultSettings.timeFactor,
-                day: params.day || defaultSettings.day,
+                day: params.day !== null ? params.day : defaultSettings.day,
         };
         const hasCustomSettings = params.beginGameMessage !== null;
         const settings = hasCustomSettings ? customSettings : defaultSettings;

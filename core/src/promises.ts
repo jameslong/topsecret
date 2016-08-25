@@ -27,7 +27,7 @@ export function child (state: UpdateState, childIndex: number)
         const condition = child.condition;
         const quotedReply = '';
 
-        const send = !condition || Script.executeScript(condition, player) ?
+        const send = !condition || Script.executeScript(condition, player, timestampMs) ?
                 encryptSendStoreChild(
                         name,
                         threadStartName,
@@ -85,7 +85,7 @@ export function fallback (state: UpdateState)
         const condition = fallback.condition;
         const quotedReply = '';
 
-        const send = !condition || Script.executeScript(condition, player) ?
+        const send = !condition || Script.executeScript(condition, player, timestampMs) ?
                 encryptSendStoreChild(
                         name,
                         threadStartName,
@@ -146,9 +146,9 @@ export function encryptSendStoreChild (
         }).then(result => {
                 const script = messageData.script;
                 player.vars[result.name] = true;
-                Script.executeScript(script, player);
+                Script.executeScript(script, player, timestampMs);
                 if (messageData.startGame) {
-                        player.utcStartDate = timestampMs;
+                        player.vars['utcStartDate'] = timestampMs;
                 }
                 return result;
         });
