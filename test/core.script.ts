@@ -223,6 +223,7 @@ describe('Script', function () {
                                 const input = '(getGameDay)';
                                 const env = Script.standardEnv();
                                 const timestampMs = Date.now();
+                                env.custom['utcStartDate'] = timestampMs;
                                 const day = Script.parseEval(
                                         input, env, timestampMs);
                                 assert.deepEqual(day, 0);
