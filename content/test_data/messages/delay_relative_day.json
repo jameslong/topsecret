@@ -1,8 +1,8 @@
 {
-        "name": "delay_relative",
-        "threadSubject": "delay_relative_subject",
+        "name": "delay_relative_day",
+        "threadSubject": "delay_relative_day_subject",
         "position": {
-                "x": 825,
+                "x": 990,
                 "y": 55
         },
         "startGame": false,
@@ -10,7 +10,7 @@
         "message": {
                 "from": "james",
                 "to": [],
-                "body": "delay_relative_body"
+                "body": "delay_relative_day_body"
         },
         "encrypted": true,
         "script": "",
@@ -21,9 +21,9 @@
                         "name": "delay_child_0",
                         "condition": "",
                         "delay": [
-                                0,
-                                0,
-                                10
+                                1,
+                                9,
+                                0
                         ],
                         "absolute": false
                 }

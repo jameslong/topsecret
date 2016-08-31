@@ -26,8 +26,12 @@ when in client/server (typescript does not support conditional imports)
 */
 console.info = (data: Object) => {
         log.info({ metric: data, time: getISOString() }, 'metric');
+        var prettyData = JSON.stringify(data, null, '    ');
+        console.log('metric: %s', prettyData);
 };
 
 console.error = (data: Object) => {
         log.error({ err: data, time: getISOString() }, 'error');
+        var prettyData = JSON.stringify(data, null, '    ');
+        console.log('error: %s', prettyData);
 };

@@ -23,7 +23,7 @@ function evalAssert (
         expectedOutput: any,
         env: Script.Env = Script.standardEnv())
 {
-        const output = Script.parseEval(input, env);
+        const output = Script.parseEval(input, env, 0);
         return assert.deepEqual(output, expectedOutput);
 }
 
@@ -80,7 +80,7 @@ describe('Script', function () {
                         it('should do nothing', function () {
                                 const input = '';
                                 const env = Script.standardEnv();
-                                Script.parseEval(input);
+                                Script.parseEval(input, env, 0);
                         })
                 });
 
@@ -182,7 +182,7 @@ describe('Script', function () {
                         it('should define new variable', function () {
                                 const input = '(define x 5)';
                                 const env = Script.standardEnv();
-                                Script.parseEval(input, env);
+                                Script.parseEval(input, env, 0);
                                 assert.deepEqual(env.custom['x'], 5);
                         })
                 });
@@ -191,7 +191,7 @@ describe('Script', function () {
                         it('should set variable value', function () {
                                 const input = '((define x 0)(set x 5))';
                                 const env = Script.standardEnv();
-                                Script.parseEval(input, env);
+                                Script.parseEval(input, env, 0);
                                 assert.deepEqual(env.custom['x'], 5);
                         })
                 });
@@ -202,7 +202,7 @@ describe('Script', function () {
                                 const read = 'x';
                                 const env = Script.standardEnv();
                                 const output = 'emily';
-                                Script.parseEval(define, env);
+                                Script.parseEval(define, env, 0);
                                 evalAssert(read, output, env);
                         })
                 });
@@ -213,9 +213,22 @@ describe('Script', function () {
                                 const env = Script.standardEnv();
                                 const read = 'x';
                                 const output = 6;
-                                Script.parseEval(input, env);
+                                Script.parseEval(input, env, 0);
                                 evalAssert(read, output, env);
                         })
                 });
+
+                describe('functions', function () {
+                        it('getGameDay', function () {
+                                const input = '(getGameDay)';
+                                const env = Script.standardEnv();
+                                const timestampMs = Date.now();
+                                env.custom['utcStartDate'] = timestampMs;
+                                const day = Script.parseEval(
+                                        input, env, timestampMs);
+                                assert.deepEqual(day, 0);
+                        })
+                });
+
         });
 });

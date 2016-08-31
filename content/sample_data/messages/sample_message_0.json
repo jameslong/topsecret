@@ -5,6 +5,7 @@
                 "x": 110,
                 "y": 110
         },
+        "startGame": false,
         "endGame": false,
         "message": {
                 "from": "james",

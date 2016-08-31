@@ -103,7 +103,7 @@ export function handleDecryptedReplyMessage (
                 const option = messageReplyOptions[index];
                 const condition = <string>((<any>option.parameters)['condition']);
                 return !condition ||
-                        <boolean><any>Script.executeScript(condition, player);
+                        <boolean><any>Script.executeScript(condition, player, timestampMs);
         });
 
         const validChecks = conditions.map(index =>

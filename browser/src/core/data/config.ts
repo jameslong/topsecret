@@ -5,6 +5,7 @@ export interface GameSettings {
         beginGameMessage: string;
         initialUIMode: string;
         timeFactor: number;
+        day: number;
 }
 
 export interface ConfigData {
@@ -32,28 +33,33 @@ function getQueryStringParams (): GameSettings
         const initialUIMode = getQueryVariable('uiMode') || null;
         const timeFactorParam = getQueryVariable('timeFactor');
         const timeFactor = timeFactorParam ? parseFloat(timeFactorParam) : null;
+        const dayParam = getQueryVariable('day');
+        const day = dayParam !== null ? parseInt(dayParam) : null;
         return {
                 version,
                 beginGameMessage,
                 initialUIMode,
                 timeFactor,
+                day,
         };
 }
 
 export function createConfig (): ConfigData
 {
         const params = getQueryStringParams();
-        const defaultSettings = {
+        const defaultSettings: GameSettings = {
                 version: '0',
                 beginGameMessage: 'welcome',
                 initialUIMode: 'MAIN_MENU',
                 timeFactor: 1,
+                day: null,
         };
         const customSettings = {
                 version: params.version,
                 beginGameMessage: params.beginGameMessage,
                 initialUIMode: params.initialUIMode || defaultSettings.initialUIMode,
                 timeFactor: params.timeFactor || defaultSettings.timeFactor,
+                day: params.day !== null ? params.day : defaultSettings.day,
         };
         const hasCustomSettings = params.beginGameMessage !== null;
         const settings = hasCustomSettings ? customSettings : defaultSettings;

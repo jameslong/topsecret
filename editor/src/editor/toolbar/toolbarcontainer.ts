@@ -50,7 +50,8 @@ function onTest (version: string, messageName: string)
 {
         const clientURL = '../../browser/build/index.html';
         const uiMode = 'INDEX_INBOX';
-        const querystring = `?version=${version}&messageName=${messageName}&uiMode=${uiMode}`;
+        const day = 0;
+        const querystring = `?version=${version}&messageName=${messageName}&uiMode=${uiMode}&day=${day}`;
         const url = `${clientURL}${querystring}`;
         window.open(url);
 }

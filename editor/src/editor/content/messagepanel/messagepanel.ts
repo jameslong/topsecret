@@ -30,6 +30,7 @@ interface MessagePanelProps extends React.Props<any> {
         onSetName: () => void;
         onSetSubject: (value: string) => void;
         onSetString: (name: string, value: string) => void;
+        onSetStartGame: (startGame: boolean) => void;
         onSetEndGame: (endGame: boolean) => void;
         onSetEncrypted: (encrypted: boolean) => void;
         onSetAttachment: (attachment: string) => void;
@@ -76,6 +77,7 @@ function renderMessagePanel (props: MessagePanelProps)
         const options = createReplyOptions(
                 narrativeId, message, replyOptions, messages);
 
+        const startGame = createStartGame(message, props.onSetStartGame);
         const endGame = createEndGame(message, props.onSetEndGame);
         const encrypted = createEncrypted(message, props.onSetEncrypted);
         const attachment = createAttachment(
@@ -98,7 +100,8 @@ function renderMessagePanel (props: MessagePanelProps)
                 ComponentHelpers.wrapInTitleGroup('Attachment', attachment),
                 ComponentHelpers.wrapInTitleGroup('Script', script),
                 ComponentHelpers.wrapInGroup(
-                        ComponentHelpers.wrapInSubgroup(endGame, encrypted)
+                        ComponentHelpers.wrapInSubgroup(
+                                startGame, endGame, encrypted)
                 )
         );
 
@@ -177,6 +180,18 @@ function createReplyOptions (
                 messages,
         };
         return ReplyOptionsContainer(replyOptionsProps);
+}
+
+function createStartGame (
+        message: EditorMessage.EditorMessage,
+        onSetStartGame: (startGame: boolean) => void)
+{
+        const newStartGameProps = {
+                checked: message.startGame,
+                onChange: onSetStartGame,
+        };
+        return ComponentHelpers.wrapInLabel(
+                'Start game', Checkbox(newStartGameProps));
 }
 
 function createEndGame (

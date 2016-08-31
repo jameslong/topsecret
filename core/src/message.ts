@@ -44,6 +44,7 @@ export interface ThreadMessage {
         name: string;
         threadSubject: string;
         position: Coord;
+        startGame: boolean;
         endGame: boolean;
         message: Message;
         encrypted: boolean;
@@ -57,12 +58,14 @@ export interface ThreadMessage {
 
 export interface ReplyThreadDelay {
         name: string;
-        delay: [number, number, number]; // days, hours, minutes
+        delay: [number, number, number]; // relative, [days, hours, minutes]
+        absolute: boolean; // If true, delay is absolute to player.utcStartDate
 }
 
 export interface ThreadDelay {
         name: string;
-        delay: [number, number, number]; // days, hours, minutes
+        delay: [number, number, number]; // relative, [days, hours, minutes]
+        absolute: boolean; // If true, delay is absolute to player.utcStartDate
         condition: string;
 }
 
@@ -237,6 +240,7 @@ export function createThreadDelay (): ThreadDelay
                 name: '',
                 condition: '',
                 delay: [0, 0, 0],
+                absolute: false,
         };
 }
 
@@ -245,5 +249,6 @@ export function createReplyThreadDelay (): ReplyThreadDelay
         return {
                 name: '',
                 delay: [0, 0, 0],
+                absolute: false,
         };
 }
