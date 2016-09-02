@@ -8,6 +8,8 @@ export function addKeyHandlers ()
 
 function onKeyDown (e: KeyboardEvent)
 {
-        const action = Actions.keyDown(e);
-        Redux.handleAction(action);
+        if (!(e.key === 'c' && e.ctrlKey)) {
+                const action = Actions.keyDown(e);
+                Redux.handleAction(action);
+        }
 }
