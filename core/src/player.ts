@@ -35,7 +35,7 @@ export function createPlayerState (
                 vars: {
                         firstName,
                         lastName,
-                        utcStartDate: 1000000, // If unset, no absolute delays will expire
+                        utcStartDate: 4105126861000, // If unset, no absolute delays will expire
                 },
         };
 }
