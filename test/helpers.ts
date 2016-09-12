@@ -75,6 +75,11 @@ export function createMessage (
                 numberOfChildren);
 }
 
+export function createGameKey ()
+{
+        return { gameKey: 'test key' };
+}
+
 export function testGameData ()
 {
         const contentPath = 'content';

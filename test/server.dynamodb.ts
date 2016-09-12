@@ -26,6 +26,7 @@ const modifiedPlayer = Helpers.assign(player, { utcOffset: 10 });
 const message0 = TestHelpers.createMessage0();
 const modifiedMessage0 = Helpers.assign(message0, { fallbackSent: true });
 const message1 = TestHelpers.createMessage1();
+const key = TestHelpers.createGameKey();
 
 describe('DB', function () {
         describe('addPlayer', function () {
@@ -146,6 +147,20 @@ describe('DB', function () {
                                 Chai.assert.eventually.isUndefined(get0Promise),
                                 Chai.assert.eventually.isUndefined(get1Promise),
                         ]);
+                })
+        });
+
+        describe('addGameKey', function () {
+                it('should return new game key', function () {
+                        const promise = db.addGameKey(key);
+                        return Chai.assert.eventually.deepEqual(promise, key);
+                })
+        });
+
+        describe('getGameKey', function () {
+                it('should return the game key', function () {
+                        const promise = db.getGameKey(key.gameKey);
+                        return Chai.assert.eventually.deepEqual(promise, key);
                 })
         });
 });

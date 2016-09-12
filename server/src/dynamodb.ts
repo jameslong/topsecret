@@ -30,6 +30,7 @@ export function createDynamoDBCalls (config: Config.ConfigState): DBTypes.DBCall
         const credentials = config.credentials;
         const messageTable = config.messagesTableName;
         const playerTable = config.playersTableName;
+        const gameKeyTable = config.gameKeyTableName;
         const accessKeyId = credentials.awsAccessKeyId;
         const secretAccessKey = credentials.awsSecretAccessKey;
         const region = credentials.awsRegion;
@@ -47,6 +48,8 @@ export function createDynamoDBCalls (config: Config.ConfigState): DBTypes.DBCall
                 deleteMessage: bind(doc, messageTable, deleteMessage),
                 getMessage: bind(doc, messageTable, getMessage),
                 getMessages: bind(doc, messageTable, getMessages),
+                addGameKey: bind(doc, gameKeyTable, addGameKey),
+                getGameKey: bind(doc, gameKeyTable, getGameKey),
         };
 }
 
@@ -286,6 +289,45 @@ export function deleteAllMessages (
                                 data) :
                         null
         );
+};
+
+export function addGameKey (
+        docClient: DynamoDoc,
+        gameKeyTableName: string,
+        key: DBTypes.AddGameKeyParams)
+{
+        const awsParams: DynamoDB.PutParams = {
+                Item: true,
+                TableName: gameKeyTableName,
+                ReturnValues: 'NONE',
+        };
+
+        return promise(
+                'addGameKey',
+                docClient,
+                docClient.put,
+                awsParams,
+                () => key);
+};
+
+export function getGameKey (
+        docClient: DynamoDoc,
+        gameKeyTableName: string,
+        gameKey: DBTypes.GetGameKeyParams)
+{
+        const awsParams: DynamoDB.GetParams = {
+                Key: {
+                        gameKey,
+                },
+                TableName: gameKeyTableName,
+        };
+
+        return promise(
+                'getGameKey',
+                docClient,
+                docClient.get,
+                awsParams,
+                extractItem);
 };
 
 export function extractAttributes<T> (data: { Attributes: T })
