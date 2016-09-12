@@ -23,7 +23,7 @@
                                         "ReadCapacityUnits": 5,
                                         "WriteCapacityUnits": 5
                                 },
-                                "TableName" : "game-keys-dev"
+                                "TableName" : "game-key-dev"
                         }
                 }
         }
