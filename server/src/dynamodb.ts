@@ -297,7 +297,7 @@ export function addGameKey (
         key: DBTypes.AddGameKeyParams)
 {
         const awsParams: DynamoDB.PutParams = {
-                Item: true,
+                Item: key,
                 TableName: gameKeyTableName,
                 ReturnValues: 'NONE',
         };
