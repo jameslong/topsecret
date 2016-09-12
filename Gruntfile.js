@@ -181,4 +181,5 @@ module.exports = function (grunt)
         grunt.registerTask('server', ['clean:server', 'ts:server']);
         grunt.registerTask('test', ['clean:test', 'ts:test', 'mochaTest:test']);
         grunt.registerTask('default', ['app', 'browser', 'editor', 'server']);
+        grunt.registerTask('travis', ['browser', 'editor', 'server', 'test']);
 }
