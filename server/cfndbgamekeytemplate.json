@@ -1,0 +1,30 @@
+{
+        "Description": "Top Secret dynamo db table for game keys",
+
+        "Resources": {
+
+                "GameKeyTable": {
+                        "Type" : "AWS::DynamoDB::Table",
+                        "Properties" : {
+                                "AttributeDefinitions" : [
+                                        {
+                                                "AttributeName": "gameKey",
+                                                "AttributeType": "S"
+                                        }
+                                ],
+                                "GlobalSecondaryIndexes" : [],
+                                "KeySchema" : [
+                                        {
+                                                "AttributeName": "gameKey",
+                                                "KeyType": "HASH"
+                                        }
+                                ],
+                                "ProvisionedThroughput" : {
+                                        "ReadCapacityUnits": 5,
+                                        "WriteCapacityUnits": 5
+                                },
+                                "TableName" : "game-keys-dev"
+                        }
+                }
+        }
+}
