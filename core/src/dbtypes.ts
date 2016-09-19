@@ -40,6 +40,13 @@ export type GetMessagesFact = Prom.Factory<GetMessagesParams, GetMessagesResult>
 export type GetPlayerParams = string;
 export type GetPlayerFact = Prom.Factory<GetPlayerParams, Player.PlayerState>;
 
+export type GameKey = { gameKey: string; };
+export type AddGameKeyParams = GameKey;
+export type AddGameKeyFact = Prom.Factory<AddGameKeyParams, GameKey>;
+
+export type GetGameKeyParams = string;
+export type GetGameKeyFact = Prom.Factory<GetGameKeyParams, GameKey>;
+
 export interface PromiseFactories extends DBCalls {
         send: Prom.Factory<Message.MessageData, string>;
 }
@@ -55,6 +62,8 @@ export interface DBCalls {
         getMessage: GetMessageFact;
         getMessages: GetMessagesFact;
         getPlayer: GetPlayerFact;
+        addGameKey: AddGameKeyFact;
+        getGameKey: GetGameKeyFact;
 }
 
 export type SendMessageParams = Message.MessageData;
@@ -74,5 +83,7 @@ export function createPromiseFactories (calls: DBCalls, send: SendMessage)
                 getMessage: calls.getMessage,
                 getMessages: calls.getMessages,
                 getPlayer: calls.getPlayer,
+                addGameKey: calls.addGameKey,
+                getGameKey: calls.getGameKey,
         };
 }

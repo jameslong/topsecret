@@ -194,4 +194,24 @@ describe('DB', function () {
                         ]);
                 })
         });
+
+        describe('addGameKey', function () {
+                it('should return the added key', function () {
+                        const db = TestHelpers.createDB();
+                        const key = TestHelpers.createGameKey();
+                        const promise = db.addGameKey(key);
+                        return Chai.assert.eventually.equal(promise, key);
+                })
+        });
+
+        describe('getGameKey', function () {
+                it('should return the key', function () {
+                        const db = TestHelpers.createDB();
+                        const key = TestHelpers.createGameKey();
+                        const promise = db.addGameKey(key).then(valid =>
+                                db.getGameKey(key.gameKey)
+                        );
+                        return Chai.assert.eventually.equal(promise, key);
+                })
+        });
 });

@@ -1,0 +1,21 @@
+{
+        "name": "transfer_request_valid",
+        "threadSubject": "transfer_request_valid_subject",
+        "position": {
+                "x": 1166,
+                "y": 385
+        },
+        "startGame": false,
+        "endGame": false,
+        "message": {
+                "from": "james",
+                "body": "transfer_request_valid_body"
+        },
+        "encrypted": true,
+        "script": "",
+        "receiver": null,
+        "replyOptions": "",
+        "children": [],
+        "fallback": null,
+        "attachment": null
+}
