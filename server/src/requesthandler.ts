@@ -175,6 +175,7 @@ export function beginDemo (state: App.State, req: any, res: any)
                 lastName: lastName,
                 usePGP: false,
                 utcOffset,
+                key: '',
         };
 
         const groupData = App.getGroupData(state.game, narrativeName);
@@ -664,14 +665,20 @@ export function handleCareersEmail (
                         groupData,
                         email);
         } else {
-                const playerData = extractPlayerData(strippedBody);
-
+                const playerData = strippedBody && extractPlayerData(strippedBody);
+                const getGameKey = state.game.promises.getGameKey;
                 return playerData  ?
-                        handleValidApplication(
-                                state,
-                                groupData,
-                                email,
-                                playerData) :
+                        getGameKey(playerData.key).then<any>(key =>
+                                key ? handleValidApplication(
+                                        state,
+                                        groupData,
+                                        email,
+                                        playerData) :
+                                handleInvalidApplication(
+                                        state,
+                                        groupData,
+                                        email)
+                        ) :
                         handleInvalidApplication(
                                 state,
                                 groupData,
@@ -740,6 +747,7 @@ export interface PlayerApplicationData {
         lastName: string;
         usePGP: boolean;
         utcOffset: number;
+        key: string;
 }
 
 export function extractPlayerData (applicationText: string)
@@ -749,6 +757,7 @@ export function extractPlayerData (applicationText: string)
         const lastNameLabel = 'Last Name:';
         const pgpLabel = 'Use PGP Encryption (Y/N):';
         const timezoneLabel = 'UTC offset (hours):';
+        const keyLabel = 'Security Key:';
 
         const firstName = extractFormField(applicationText, firstNameLabel);
         const lastName = extractFormField(applicationText, lastNameLabel);
@@ -757,13 +766,15 @@ export function extractPlayerData (applicationText: string)
         const timeOffset = extractFormField(applicationText, timezoneLabel);
         const validOffset = timeOffset && !isNaN(<number><any>timeOffset);
         const utcOffset = parseInt(timeOffset) || 0;
+        const key = extractFormField(applicationText, keyLabel);
 
-        return (firstName && lastName && pgp && validOffset) ?
+        return (firstName && lastName && pgp && validOffset && key) ?
                 {
                         firstName,
                         lastName,
                         usePGP,
                         utcOffset,
+                        key,
                 } :
                 null;
 }
