@@ -1,0 +1,21 @@
+{
+        "name": "dictionary_program_ultra",
+        "threadSubject": "",
+        "position": {
+                "x": 1056,
+                "y": 715
+        },
+        "startGame": false,
+        "endGame": false,
+        "message": {
+                "from": "dictionary",
+                "body": "dictionary_program_ultra_body"
+        },
+        "encrypted": true,
+        "script": "",
+        "receiver": null,
+        "replyOptions": "",
+        "children": [],
+        "fallback": null,
+        "attachment": null
+}

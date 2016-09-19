@@ -1,0 +1,21 @@
+{
+        "name": "dictionary_intro",
+        "threadSubject": "dictionary_intro_subject",
+        "position": {
+                "x": 715,
+                "y": 715
+        },
+        "startGame": false,
+        "endGame": false,
+        "message": {
+                "from": "dictionary",
+                "body": "dictionary_intro_body"
+        },
+        "encrypted": true,
+        "script": "",
+        "receiver": null,
+        "replyOptions": "",
+        "children": [],
+        "fallback": null,
+        "attachment": null
+}

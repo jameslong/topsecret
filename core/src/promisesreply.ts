@@ -1,5 +1,6 @@
 import Arr = require('./utils/array');
 import DBTypes = require('./dbtypes');
+import Dictionary = require('./dictionary');
 import KBPGP = require('./kbpgp');
 import Log = require('./log');
 import Map = require('./utils/map');
@@ -7,6 +8,7 @@ import Message = require('./message');
 import Player = require('./player');
 import Profile = require('./profile');
 import Prom = require('./utils/promise');
+import Promises = require('./promises');
 import ReplyOption = require('./replyoption');
 import Script = require('./script');
 import State = require('./gamestate');
@@ -21,18 +23,85 @@ export function handleReplyMessage (
         const email = reply.from;
         const inReplyToId = reply.inReplyToId;
 
-        return promises.getMessage(inReplyToId).then(message =>
-                message && !message.reply ?
-                        promises.getPlayer(email).then(player =>
-                                handleTimelyReply(
+        const dictionaryEmail = isDictionaryEmail(reply.to);
+        if (dictionaryEmail) {
+                return promises.getPlayer(email).then(player =>
+                        player ?
+                                handleDictionaryEmail(
                                         reply,
                                         timestampMs,
                                         player,
-                                        message,
                                         data,
-                                        promises)) :
-                        null
-        );
+                                        promises) :
+                                null
+                );
+        } else {
+                return promises.getMessage(inReplyToId).then(message =>
+                        message && !message.reply ?
+                                promises.getPlayer(email).then(player =>
+                                        handleTimelyReply(
+                                                reply,
+                                                timestampMs,
+                                                player,
+                                                message,
+                                                data,
+                                                promises)) :
+                                null
+                );
+        }
+}
+
+export function isDictionaryEmail (to: string): boolean
+{
+        return (to.toLowerCase().indexOf('dictionary') !== -1);
+}
+
+export function handleDictionaryEmail (
+        reply: Message.MailgunReply,
+        timestampMs: number,
+        player: Player.PlayerState,
+        data: Map.Map<State.NarrativeState>,
+        promises: DBTypes.PromiseFactories)
+{
+        const config = Dictionary.config;
+        const groupData = data[player.version];
+
+        if (player.publicKey) {
+                return KBPGP.loadKey(player.publicKey).then(from => {
+                        const profiles = groupData.profiles;
+                        const profile = Profile.getProfileByEmail(reply.to, profiles);
+                        const keyManager = groupData.keyManagers[profile.name];
+                        const keyManagers = [keyManager, from];
+                        const keyRing = KBPGP.createKeyRing(keyManagers);
+                        const strippedBody = reply.strippedBody;
+                        return KBPGP.decryptVerify(keyRing, strippedBody).then(plaintext => {
+                                const strippedBody = Message.stripBody(plaintext);
+                                const text = strippedBody.toLowerCase();
+                                const name = Dictionary.getCommandReply(text);
+                                return Promises.encryptSendStoreChild(
+                                        name,
+                                        config.help,
+                                        reply.id,
+                                        strippedBody,
+                                        player,
+                                        timestampMs,
+                                        groupData,
+                                        promises);
+                        })
+                });
+        } else {
+                const plaintext = reply.strippedBody.toLowerCase();
+                const strippedBody = Message.stripBody(plaintext);
+                return Promises.encryptSendStoreChild(
+                        name,
+                        config.help,
+                        reply.id,
+                        reply.strippedBody,
+                        player,
+                        timestampMs,
+                        groupData,
+                        promises);
+        }
 }
 
 export function handleTimelyReply (

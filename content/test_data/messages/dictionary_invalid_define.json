@@ -1,0 +1,21 @@
+{
+        "name": "dictionary_invalid_define",
+        "threadSubject": "",
+        "position": {
+                "x": 825,
+                "y": 825
+        },
+        "startGame": false,
+        "endGame": false,
+        "message": {
+                "from": "dictionary",
+                "body": "dictionary_invalid_define_body"
+        },
+        "encrypted": true,
+        "script": "",
+        "receiver": null,
+        "replyOptions": "",
+        "children": [],
+        "fallback": null,
+        "attachment": null
+}
