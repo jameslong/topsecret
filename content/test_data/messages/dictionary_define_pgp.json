@@ -1,0 +1,21 @@
+{
+        "name": "dictionary_define_pgp",
+        "threadSubject": "",
+        "position": {
+                "x": 1056,
+                "y": 825
+        },
+        "startGame": false,
+        "endGame": false,
+        "message": {
+                "from": "dictionary",
+                "body": "dictionary_define_pgp_body"
+        },
+        "encrypted": true,
+        "script": "",
+        "receiver": null,
+        "replyOptions": "",
+        "children": [],
+        "fallback": null,
+        "attachment": null
+}

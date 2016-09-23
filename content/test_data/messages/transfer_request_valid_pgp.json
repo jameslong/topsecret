@@ -1,0 +1,21 @@
+{
+        "name": "transfer_request_valid_pgp",
+        "threadSubject": "transfer_request_valid_pgp_subject",
+        "position": {
+                "x": 1386,
+                "y": 385
+        },
+        "startGame": false,
+        "endGame": false,
+        "message": {
+                "from": "james",
+                "body": "transfer_request_valid_pgp_body"
+        },
+        "encrypted": true,
+        "script": "",
+        "receiver": null,
+        "replyOptions": "",
+        "children": [],
+        "fallback": null,
+        "attachment": null
+}

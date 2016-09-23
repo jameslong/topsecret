@@ -10,6 +10,7 @@ import Prom = require('./utils/promise');
 export interface DBState {
         players: Map.Map<Player.PlayerState>;
         messages: Map.Map<Message.MessageState>;
+        gameKeys: Map.Map<DBTypes.GameKey>;
 }
 
 export function createDB (): DBState
@@ -17,6 +18,7 @@ export function createDB (): DBState
         return {
                 players: {},
                 messages: {},
+                gameKeys: {},
         };
 }
 
@@ -53,6 +55,8 @@ export function createLocalDBCalls (db: DBState, timeoutMs: number)
                 getMessage: factory(getMessage),
                 getMessages: factory(getMessages),
                 getPlayer: factory(getPlayer),
+                addGameKey: factory(addGameKey),
+                getGameKey: factory(getGameKey),
         };
 }
 
@@ -228,5 +232,33 @@ export function getPlayer (
         email: DBTypes.GetPlayerParams)
 {
         const data = db.players[email] || null;
+        return promise(null, data);
+}
+
+export function addGameKey (
+        db: DBState,
+        key: DBTypes.AddGameKeyParams)
+{
+        let error: Error = undefined;
+
+        const inUse = (db.gameKeys[key.gameKey] !== undefined);
+
+        if (inUse) {
+                error = {
+                        code: 'ADD GAME KEY',
+                        message: 'could not add game key',
+                };
+        } else {
+                db.gameKeys[key.gameKey] = key;
+        }
+
+        return promise(error, key);
+}
+
+export function getGameKey (
+        db: DBState,
+        key: DBTypes.GetGameKeyParams)
+{
+        const data = db.gameKeys[key] || null;
         return promise(null, data);
 }

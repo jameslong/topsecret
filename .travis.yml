@@ -3,4 +3,4 @@ node_js:
   - "4"
 before_install: npm install -g grunt-cli
 install: npm install && cd app && npm install && cd ..
-before_script: grunt
+before_script: grunt travis

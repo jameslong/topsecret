@@ -1,5 +1,6 @@
 import DBTypes = require('./dbtypes');
 import KbpgpHelpers = require('./kbpgp');
+import Log = require('./log');
 import Main = require('./main');
 import Message = require('./message');
 import Player = require('./player');
@@ -180,6 +181,11 @@ export function expired (state: UpdateState): Promise<any>
 export function endGame (
         email: string, promises: DBTypes.PromiseFactories): Promise<any>
 {
+        Log.metric({
+                type: 'END_GAME',
+                playerEmail: email,
+        });
+
         return promises.deleteAllMessages(email).then(result =>
                 promises.deletePlayer(email));
 }
@@ -194,6 +200,16 @@ export function beginGame (
         const threadStartName: string = null;
         const inReplyToId: string = null;
         const quotedReply = '';
+
+        Log.metric({
+                type: 'BEGIN_GAME',
+                playerEmail: player.email,
+                firstName: player.vars.firstName,
+                lastName: player.vars.lastName,
+                messageName: name,
+                narrativeName: groupData.name,
+                utcOffset: player.utcOffset,
+        });
 
         return promises.addPlayer(player).then(result =>
                 encryptSendStoreChild(

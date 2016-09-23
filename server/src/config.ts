@@ -20,6 +20,7 @@ export interface ConfigState {
         debugDBTimeoutMs: number;
         messagesTableName: string;
         playersTableName: string;
+        gameKeyTableName: string;
         emailDomain: string;
         updateIntervalMs: number;
         content: {
@@ -65,6 +66,7 @@ const debugConfig: ConfigState = {
         credentials: null,
         messagesTableName: 'message-dev',
         playersTableName: 'player-dev',
+        gameKeyTableName: 'game-key-dev',
         emailDomain: 'nsa.playtopsecret.com',
         updateIntervalMs: 1000,
         content: {
@@ -92,6 +94,7 @@ const releaseConfig: ConfigState = {
         credentials: null,
         messagesTableName: 'message-dev',
         playersTableName: 'player-dev',
+        gameKeyTableName: 'game-key-dev',
         emailDomain: 'nsa.playtopsecret.com',
         updateIntervalMs: 1000,
         content: {
