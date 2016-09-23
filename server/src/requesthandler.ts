@@ -766,7 +766,7 @@ export function extractPlayerData (applicationText: string)
         const timeOffset = extractFormField(applicationText, timezoneLabel);
         const validOffset = timeOffset && !isNaN(<number><any>timeOffset);
         const utcOffset = parseInt(timeOffset) || 0;
-        const key = extractFormField(applicationText, keyLabel);
+        const key = extractSecurityKeyField(applicationText, keyLabel);
 
         return (firstName && lastName && pgp && validOffset && key) ?
                 {
@@ -787,4 +787,25 @@ export function extractFormField (text: string, label: string): string
         return (matches.length > 0) ?
                 (matches[0].substring(label.length).trim() || null) :
                 null;
+}
+
+export function extractSecurityKeyField (text: string, label: string): string
+{
+        const lines = Str.splitByLines(text);
+        const length = lines.length;
+        for (let i = 0; i < length; i += 1) {
+                const line = lines[i];
+                if (Str.beginsWith(line, label)) {
+                        const key = line.substring(label.length).trim();
+                        if (key) {
+                                return key;
+                        } else if (i < length - 1) {
+                                const nextLine = lines[i + 1];
+                                return nextLine.trim() || null;
+                        } else {
+                                return null;
+                        }
+                }
+        }
+        return null;
 }
