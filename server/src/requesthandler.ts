@@ -791,21 +791,16 @@ export function extractFormField (text: string, label: string): string
 
 export function extractSecurityKeyField (text: string, label: string): string
 {
-        const lines = Str.splitByLines(text);
-        const length = lines.length;
-        for (let i = 0; i < length; i += 1) {
-                const line = lines[i];
-                if (Str.beginsWith(line, label)) {
-                        const key = line.substring(label.length).trim();
-                        if (key) {
-                                return key;
-                        } else if (i < length - 1) {
-                                const nextLine = lines[i + 1];
-                                return nextLine.trim() || null;
-                        } else {
-                                return null;
-                        }
-                }
+        const index = text.indexOf(label);
+        if (index !== -1) {
+                const start = index + label.length;
+                const end = text.indexOf(' ', start);
+                let key = text.substring(start, end);
+                key = key.replace(/[\r\n]+/g, '');
+                key = key.trim();
+                console.log('key:', key);
+                return key.trim();
+        } else {
+                return null;
         }
-        return null;
 }
