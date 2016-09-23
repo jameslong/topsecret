@@ -45,12 +45,12 @@ function renderGame (state: Client.Client)
         const header = Header({ commands: displayedCommands });
         const footer = Footer({ state });
         const content = Content({ state });
-        const feedback = FeedbackButton({ openExternal: state.openExternal });
+        // const feedback = FeedbackButton({ openExternal: state.openExternal });
         const fastforward = state.data.clock.timeFactor > 1 ?
                 Div({ className: 'browser-fastforward' }) : null;
 
         return Div({ className: 'browser', onClick },
-                header, content, footer, feedback, fastforward);
+                header, content, footer, fastforward);
 }
 
 function onClick (e: MouseEvent)
