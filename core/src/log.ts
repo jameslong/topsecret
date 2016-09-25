@@ -5,7 +5,7 @@ export const assert = (test: boolean, desc: string, meta?: Object) => {
                 error(desc, meta);
         }
 };
-type MetricType = 'AWS_REQUEST_ERROR' | 'BEGIN_GAME' | 'END_GAME' | 'MESSAGE_RECEIVED' | 'MESSAGE_SENT' | 'MESSAGE_NOT_SENT';
+type MetricType = 'AWS_REQUEST_ERROR' | 'PLAYER_APPLICATION' | 'BEGIN_GAME' | 'END_GAME' | 'MESSAGE_RECEIVED' | 'MESSAGE_SENT' | 'MESSAGE_NOT_SENT';
 interface Metric {
         type: MetricType;
 }

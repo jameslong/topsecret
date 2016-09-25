@@ -666,6 +666,16 @@ export function handleCareersEmail (
                         email);
         } else {
                 const playerData = strippedBody && extractPlayerData(strippedBody);
+                Log.metric({
+                        type: 'PLAYER_APPLICATION',
+                        playerEmail: email,
+                        firstName: playerData.firstName,
+                        lastName: playerData.lastName,
+                        usePGP: playerData.usePGP,
+                        utcOffset: playerData.utcOffset,
+                        securityKey: playerData.key,
+                });
+
                 const getGameKey = state.game.promises.getGameKey;
                 return playerData  ?
                         getGameKey(playerData.key).then<any>(key =>
