@@ -801,12 +801,13 @@ export function extractFormField (text: string, label: string): string
 
 export function extractSecurityKeyField (text: string, label: string): string
 {
+        text = text.replace(/\r\n/g, "\n");
         const index = text.indexOf(label);
         if (index !== -1) {
                 const start = index + label.length;
                 const end = text.indexOf('\n\n', start);
                 let key = text.substring(start, end);
-                key = key.replace(/[\r\n]+/g, '');
+                key = key.replace(/\n/g, '');
                 key = key.trim();
                 console.log('key:', key);
                 return key.trim();
