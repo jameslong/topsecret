@@ -804,7 +804,7 @@ export function extractSecurityKeyField (text: string, label: string): string
         const index = text.indexOf(label);
         if (index !== -1) {
                 const start = index + label.length;
-                const end = text.indexOf(' ', start);
+                const end = text.indexOf('\n\n', start);
                 let key = text.substring(start, end);
                 key = key.replace(/[\r\n]+/g, '');
                 key = key.trim();
