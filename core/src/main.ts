@@ -41,7 +41,7 @@ export function update (
         const promises = app.promises;
         const state = { message, player, timestampMs, promises, narrative };
 
-        return handleChildren(state).then(handleResponse).then(updateMessage);
+        return handleChildren(state).then(handleResponse).then(Promises.updatePlayer).then(updateMessage);
 }
 
 function handleChildren (state: Promises.UpdateState)
@@ -144,7 +144,7 @@ function updateMessage (state: Promises.UpdateState)
 
         return isExpired(state.message, messageData, replyOptions) ?
                 Promises.expired(state) :
-                Promises.update(state);
+                Promises.updateMessage(state);
 }
 
 function hasPendingChildren (message: Message.MessageState)

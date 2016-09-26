@@ -155,7 +155,7 @@ export function encryptSendStoreChild (
         });
 }
 
-export function update (state: UpdateState)
+export function updateMessage (state: UpdateState)
 {
         return state.promises.updateMessage(state.message).then(
                 message => state);
