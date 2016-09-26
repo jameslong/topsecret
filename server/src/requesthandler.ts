@@ -262,8 +262,8 @@ export function reply (state: App.State, req: any, res: any)
                         subject: string;
                 } = req.body;
 
-        const body = data['stripped-text'] || '';
-        const strippedBody = data['body-plain'] || '';
+        const body = data['body-plain'] || '';
+        const strippedBody = data['stripped-text'] || '';
 
         Log.metric({
                 type: 'MESSAGE_RECEIVED',

@@ -92,6 +92,7 @@ export function handleDictionaryEmail (
         } else {
                 const plaintext = reply.strippedBody.toLowerCase();
                 const strippedBody = Message.stripBody(plaintext);
+                const name = Dictionary.getCommandReply(strippedBody);
                 return Promises.encryptSendStoreChild(
                         name,
                         config.help,
