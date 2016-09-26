@@ -229,6 +229,8 @@ export function isExpiredThreadDelayAbsolute (
         const [days, hours, mins] = threadDelay.delay;
         const ref = new Date(utcStartDate);
         const required = new Date();
+        required.setUTCFullYear(ref.getUTCFullYear());
+        required.setUTCMonth(ref.getUTCMonth());
         required.setUTCDate(ref.getUTCDate() + days);
         required.setUTCHours(hours);
         required.setUTCMinutes(mins);
