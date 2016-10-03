@@ -669,15 +669,15 @@ export function handleCareersEmail (
                 Log.metric({
                         type: 'PLAYER_APPLICATION',
                         playerEmail: email,
-                        firstName: playerData.firstName,
-                        lastName: playerData.lastName,
-                        usePGP: playerData.usePGP,
-                        utcOffset: playerData.utcOffset,
-                        securityKey: playerData.key,
+                        firstName: playerData && playerData.firstName,
+                        lastName: playerData && playerData.lastName,
+                        usePGP: playerData && playerData.usePGP,
+                        utcOffset: playerData && playerData.utcOffset,
+                        securityKey: playerData && playerData.key,
                 });
 
                 const getGameKey = state.game.promises.getGameKey;
-                return playerData  ?
+                return playerData ?
                         getGameKey(playerData.key).then<any>(key =>
                                 key ? handleValidApplication(
                                         state,
