@@ -1,15 +1,15 @@
 {
-        "name": "transfer_request_valid_pgp",
-        "threadSubject": "transfer_request_valid_pgp_subject",
+        "name": "transfer_request_invalid_key",
+        "threadSubject": "",
         "position": {
-                "x": 1166,
-                "y": 495
+                "x": 1276,
+                "y": 825
         },
         "startGame": false,
         "endGame": false,
         "message": {
                 "from": "james",
-                "body": "transfer_request_valid_pgp_body"
+                "body": "transfer_request_invalid_key_body"
         },
         "encrypted": true,
         "script": "",

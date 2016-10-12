@@ -29,6 +29,10 @@ export interface ConfigState {
                 validApplicationThread: string;
                 validApplicationThreadPGP: string;
                 invalidApplicationThread: string;
+                invalidApplicationMissingFirstNameThread: string;
+                invalidApplicationMissingLastNameThread: string;
+                invalidApplicationMissingKeyThread: string;
+                invalidApplicationInvalidKeyThread: string;
                 resignationThread: string;
                 messageSchemaPath: string;
                 profileSchemaPath: string;
@@ -73,6 +77,10 @@ const debugConfig: ConfigState = {
                 validApplicationThread: 'transfer_request_valid',
                 validApplicationThreadPGP: 'transfer_request_valid_pgp',
                 invalidApplicationThread: 'transfer_request_invalid',
+                invalidApplicationMissingFirstNameThread: 'transfer_request_missing_first_name',
+                invalidApplicationMissingLastNameThread: 'transfer_request_missing_last_name',
+                invalidApplicationMissingKeyThread: 'transfer_request_missing_key',
+                invalidApplicationInvalidKeyThread: 'transfer_request_invalid_key',
                 resignationThread: 'resign',
                 narrativeFolder: '../../topsecret-content/game',
                 defaultNarrativeGroup: '0',
@@ -101,6 +109,10 @@ const releaseConfig: ConfigState = {
                 validApplicationThread: 'transfer_request_valid',
                 validApplicationThreadPGP: 'transfer_request_valid_pgp',
                 invalidApplicationThread: 'transfer_request_invalid',
+                invalidApplicationMissingFirstNameThread: 'transfer_request_missing_first_name',
+                invalidApplicationMissingLastNameThread: 'transfer_request_missing_last_name',
+                invalidApplicationMissingKeyThread: 'transfer_request_missing_key',
+                invalidApplicationInvalidKeyThread: 'transfer_request_invalid_key',
                 resignationThread: 'resign',
                 narrativeFolder: '../../topsecret-content/game',
                 defaultNarrativeGroup: '0',

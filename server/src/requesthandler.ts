@@ -665,19 +665,23 @@ export function handleCareersEmail (
                         groupData,
                         email);
         } else {
-                const playerData = strippedBody && extractPlayerData(strippedBody);
+                const playerData = extractPlayerData(strippedBody);
                 Log.metric({
                         type: 'PLAYER_APPLICATION',
                         playerEmail: email,
-                        firstName: playerData && playerData.firstName,
-                        lastName: playerData && playerData.lastName,
-                        usePGP: playerData && playerData.usePGP,
-                        utcOffset: playerData && playerData.utcOffset,
-                        securityKey: playerData && playerData.key,
+                        firstName: playerData.firstName,
+                        lastName: playerData.lastName,
+                        usePGP: playerData.usePGP,
+                        utcOffset: playerData.utcOffset,
+                        securityKey: playerData.key,
                 });
+                const validPlayerData =
+                        playerData.firstName &&
+                        playerData.lastName &&
+                        playerData.key;
 
                 const getGameKey = state.game.promises.getGameKey;
-                return playerData ?
+                return validPlayerData ?
                         getGameKey(playerData.key).then<any>(key =>
                                 key ? handleValidApplication(
                                         state,
@@ -687,12 +691,16 @@ export function handleCareersEmail (
                                 handleInvalidApplication(
                                         state,
                                         groupData,
-                                        email)
+                                        email,
+                                        playerData,
+                                        true)
                         ) :
                         handleInvalidApplication(
                                 state,
                                 groupData,
-                                email);
+                                email,
+                                playerData,
+                                false);
         }
 }
 
@@ -732,10 +740,25 @@ export function handleValidApplication (
 export function handleInvalidApplication (
         state: App.State,
         groupData: State.NarrativeState,
-        email: string)
+        email: string,
+        playerData: PlayerApplicationData,
+        invalidKey: boolean)
 {
         const app = state.game;
-        const messageName = state.config.content.invalidApplicationThread;
+        const content = state.config.content;
+        let messageName = '';
+        if (!playerData.firstName) {
+                messageName = content.invalidApplicationMissingFirstNameThread;
+        } else if (!playerData.lastName) {
+                messageName = content.invalidApplicationMissingLastNameThread;
+        } else if (!playerData.key) {
+                messageName = content.invalidApplicationMissingKeyThread;
+        } else if (invalidKey) {
+                messageName = content.invalidApplicationInvalidKeyThread;
+        } else {
+                messageName = content.invalidApplicationThread;
+        }
+
         const threadStartName: string = null;
         const inReplyToId: string = null;
         const data = Main.createPlayerlessMessageData(
@@ -768,6 +791,7 @@ export function extractPlayerData (applicationText: string)
         const pgpLabel = 'Use PGP Encryption (Y/N):';
         const timezoneLabel = 'UTC offset (hours):';
         const keyLabel = 'Security Key:';
+        applicationText = applicationText || '';
 
         const firstName = extractFormField(applicationText, firstNameLabel);
         const lastName = extractFormField(applicationText, lastNameLabel);
@@ -775,18 +799,16 @@ export function extractPlayerData (applicationText: string)
         const usePGP = (pgp && pgp.toLowerCase().indexOf('y') !== -1);
         const timeOffset = extractFormField(applicationText, timezoneLabel);
         const validOffset = timeOffset && !isNaN(<number><any>timeOffset);
-        const utcOffset = parseInt(timeOffset) || 0;
+        const utcOffset = validOffset ? parseInt(timeOffset) : 0;
         const key = extractSecurityKeyField(applicationText, keyLabel);
 
-        return (firstName && lastName && pgp && validOffset && key) ?
-                {
-                        firstName,
-                        lastName,
-                        usePGP,
-                        utcOffset,
-                        key,
-                } :
-                null;
+        return {
+                firstName,
+                lastName,
+                usePGP,
+                utcOffset,
+                key,
+        };
 }
 
 export function extractFormField (text: string, label: string): string
