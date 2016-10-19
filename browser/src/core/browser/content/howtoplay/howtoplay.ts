@@ -27,13 +27,44 @@ function renderHowToPlay(props: HowToPlayProps)
         const fastforwardHeader = P({ className: 'how-to-play-header' }, `Fast-forward`);
         const fastforward = P({}, `When waiting for messages, you can speed things up by pressing the '+' key (fast-forward).`);
 
+        const playByEmailHeader = P({ className: 'how-to-play-header' }, `Play by email`);
+        const playByEmail = P({},
+                `To play by email, send a completed copy of the form below to careers@nsa.playtopsecret.com.`,
+                Br({}),
+                Br({}),
+                `---- NSA Internal Transfer Request Form ---`,
+                Br({}),
+                Br({}),
+                `First Name:`,
+                Br({}),
+                `Last Name:`,
+                Br({}),
+                `Use PGP Encryption (Y/N):`,
+                Br({}),
+                `UTC offset (hours): 0`,
+                Br({}),
+                `Security Key: `,
+                Br({}),
+                Br({}),
+                `Please explain why you wish to join the Signals Intelligence division (200 words max):`,
+                Br({}),
+                Br({}),
+                `Please note the contents of your application may be used for promotional and training purposes. All information is stored securely by the United States Office of Personnel Management.`,
+                Br({}),
+                `---`,
+                Br({}),
+                Br({}),
+                `Your security key is available via the Humble Store, Itch.io or Kickstarter depending on how you purchased Top Secret.`);
+
         return Div({ className: 'how-to-play' },
                 keyboardHeader,
                 keyboard,
                 replyingHeader,
                 replying,
                 fastforwardHeader,
-                fastforward);
+                fastforward,
+                playByEmailHeader,
+                playByEmail);
 }
 
 const HowToPlay = React.createFactory(renderHowToPlay);
