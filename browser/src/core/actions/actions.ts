@@ -17,6 +17,7 @@ export const Types = {
         DIPLAY_MESSAGE: 'DIPLAY_MESSAGE',
 
         TICK: 'TICK',
+        STALL: 'STALL',
         TICK_FASTER: 'TICK_FASTER',
         TICK_SLOWER: 'TICK_SLOWER',
         ADD_TIME_OFFSET: 'ADD_TIME_OFFSET',
@@ -99,6 +100,9 @@ export const displayMessage = createActionCreator<DisplayMessageParams>(Types.DI
 
 export interface Tick extends Redux.Action<void> {}
 export const tick = createEmptyActionCreator(Types.TICK);
+
+export interface Stall extends Redux.Action<void> {}
+export const stall = createEmptyActionCreator(Types.STALL);
 
 export interface TickFaster extends Redux.Action<void> {}
 export const tickFaster = createEmptyActionCreator(Types.TICK_FASTER);

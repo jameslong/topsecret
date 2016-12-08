@@ -123,12 +123,26 @@ export function newGameFromSave (
 
 function tick (getClient: () => Client.Client)
 {
-        Client.tickClient();
+        const mode = getClient().ui.mode;
+        const pausedModes = [
+                UI.Modes.HOW_TO_PLAY,
+                UI.Modes.LOAD_MENU,
+                UI.Modes.MAIN_MENU,
+                UI.Modes.SAVE_MENU,
+                UI.Modes.NEW_GAME,
+                UI.Modes.NEW_GAME_LOADING];
+        const shouldTick = pausedModes.indexOf(mode) === -1;
 
-        const client = getClient();
-        const server = client.server;
-        const clock = client.data.clock;
-        return Server.tickServer(server, clock);
+        if (shouldTick) {
+                Client.tickClient();
+                const client = getClient();
+                const server = client.server;
+                const clock = client.data.clock;
+                return Server.tickServer(server, clock);
+        } else {
+                Client.stallClient();
+                return Promise.resolve(null);
+        }
 }
 
 export function startTick (getClient: () => Client.Client)

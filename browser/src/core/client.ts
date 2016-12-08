@@ -105,6 +105,12 @@ export function tickClient ()
         Redux.handleAction(action);
 }
 
+export function stallClient ()
+{
+        const action = Actions.stall();
+        Redux.handleAction(action);
+}
+
 export function nextMessageId (client: Client, from: string)
 {
         const id = (client.messageId + 1);

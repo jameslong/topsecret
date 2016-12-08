@@ -34,6 +34,10 @@ export function data (data: Data.Data, action: Redux.Action<any>)
                         const tick = <Actions.Tick><any>action;
                         return handleTick(data, tick);
 
+                case Actions.Types.STALL:
+                        const stall = <Actions.Stall><any>action;
+                        return handleStall(data, stall);
+
                 case Actions.Types.TICK_FASTER:
                         const tickFaster = <Actions.TickFaster><any>action;
                         return handleTickFaster(data, tickFaster);
@@ -108,6 +112,12 @@ function handleImportKeys (data: Data.Data, action: Actions.ImportKeys)
 function handleTick (data: Data.Data, action: Actions.Tick)
 {
         const clock = Clock.tick(data.clock);
+        return Helpers.assign(data, { clock });
+}
+
+function handleStall (data: Data.Data, action: Actions.Tick)
+{
+        const clock = Clock.updateAfterLoad(data.clock);
         return Helpers.assign(data, { clock });
 }
 
