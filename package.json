@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/jameslong/topsecret#readme",
   "dependencies": {
-    "aws-sdk": "^2.3.17",
+    "aws-sdk": "~2.3.17",
     "basic-auth": "^1.0.4",
     "body-parser": "^1.15.0",
     "bunyan": "^1.8.1",
@@ -44,7 +44,7 @@
     "node-inspector": "^0.12.7",
     "react": "^0.14.7",
     "react-dom": "^0.14.7",
-    "typescript": "^1.8.7"
+    "typescript": "^1.8.10"
   },
   "devDependencies": {}
 }
