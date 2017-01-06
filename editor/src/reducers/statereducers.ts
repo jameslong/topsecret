@@ -70,7 +70,7 @@ function handleSetGameData (state: State.State, action: Actions.SetGameData)
         const data = store.data;
 
         const names = Object.keys(narratives);
-        const name = names[0];
+        const name = names[names.length - 1];
         const narrative = newNarratives[name];
 
         const messages = narrative.messagesById;
