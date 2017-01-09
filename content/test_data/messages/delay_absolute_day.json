@@ -1,16 +1,15 @@
 {
-        "name": "delay_relative_day",
-        "threadSubject": "delay_relative_day_subject",
+        "name": "delay_absolute_day",
+        "threadSubject": "delay_absolute_day_subject",
         "position": {
-                "x": 935,
+                "x": 1166,
                 "y": 55
         },
-        "startGame": false,
+        "startGame": true,
         "endGame": false,
         "message": {
                 "from": "james",
-                "to": [],
-                "body": "delay_relative_day_body"
+                "body": "delay_absolute_day_body"
         },
         "encrypted": true,
         "script": "",
@@ -21,11 +20,11 @@
                         "name": "delay_child_0",
                         "condition": "",
                         "delay": [
-                                1,
+                                2,
                                 9,
-                                0
+                                15
                         ],
-                        "absolute": false
+                        "absolute": true
                 }
         ],
         "fallback": null,

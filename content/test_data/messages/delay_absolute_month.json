@@ -1,15 +1,15 @@
 {
-        "name": "delay_absolute",
-        "threadSubject": "delay_absolute_subject",
+        "name": "delay_absolute_month",
+        "threadSubject": "delay_absolute_month_subject",
         "position": {
-                "x": 1166,
+                "x": 1276,
                 "y": 55
         },
-        "startGame": true,
+        "startGame": false,
         "endGame": false,
         "message": {
                 "from": "james",
-                "body": "delay_absolute_body"
+                "body": "delay_absolute_month_body"
         },
         "encrypted": true,
         "script": "",
@@ -20,9 +20,9 @@
                         "name": "delay_child_0",
                         "condition": "",
                         "delay": [
-                                2,
-                                9,
-                                15
+                                35,
+                                11,
+                                27
                         ],
                         "absolute": true
                 }
