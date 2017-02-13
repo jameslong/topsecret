@@ -11,6 +11,7 @@ import Div = Core.Div;
 import Img = Core.Img;
 
 import Content = require('./content/content');
+import DebugInfo = require('./debug/debuginfo');
 import FeedbackButton = require('./feedbackbutton/feedbackbutton');
 import Footer = require('./footer/footer');
 import NewGame = require('./newgame/newgame');
@@ -48,9 +49,10 @@ function renderGame (state: Client.Client)
         // const feedback = FeedbackButton({ openExternal: state.openExternal });
         const fastforward = state.data.clock.timeFactor > 1 ?
                 Div({ className: 'browser-fastforward' }) : null;
+        const debugInfo = DebugInfo({ state });
 
         return Div({ className: 'browser', onClick },
-                header, content, footer, fastforward);
+                header, content, footer, fastforward, debugInfo);
 }
 
 function onClick (e: MouseEvent)

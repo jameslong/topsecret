@@ -5,6 +5,7 @@ export interface PlayerVars {
         [k: string]: Script.Atom;
         firstName: string;
         lastName: string;
+        utcStartDate: number;
 }
 
 export interface PlayerState {
@@ -38,4 +39,19 @@ export function createPlayerState (
                         utcStartDate: 4105126861000, // If unset, no absolute delays will expire
                 },
         };
+}
+
+export function gameVars(player: PlayerState)
+{
+        return Map.filter(player.vars, (variable, name) => isGameVar(name));
+}
+
+export function messagesSent(player: PlayerState)
+{
+        return Map.filter(player.vars, (variable, name) => isGameVar(name));
+}
+
+function isGameVar(variableName: string)
+{
+        return variableName.toUpperCase() == variableName;
 }
