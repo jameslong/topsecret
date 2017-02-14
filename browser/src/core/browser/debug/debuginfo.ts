@@ -35,10 +35,18 @@ const DebugInfo = React.createFactory(renderDebugInfo);
 
 function debugDay(clock: Clock.Clock, player: Player.PlayerState)
 {
-        const startMs = player.vars.utcStartDate;
-        const currentMs = Clock.gameTimeMs(clock);
+        const start = new Date(player.vars.utcStartDate);
+        const current = new Date(Clock.gameTimeMs(clock));
+        start.setUTCHours(0);
+        start.setUTCMinutes(0);
+        start.setUTCSeconds(0);
+        start.setUTCMilliseconds(0);
+        current.setUTCHours(0);
+        current.setUTCMinutes(0);
+        current.setUTCSeconds(0);
+        current.setUTCMilliseconds(0);
+        const diffMs = current.getTime() - start.getTime();
         const dayMs =1000 * 60 * 60 * 24;
-        const diffMs = currentMs - startMs
         const day = Math.floor(diffMs / dayMs);
 
         return P({}, `Day: ${day}`);

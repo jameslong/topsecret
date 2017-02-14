@@ -234,6 +234,7 @@ export function isExpiredThreadDelayAbsolute (
                 ref.getUTCDate() + days);
         required.setUTCHours(hours);
         required.setUTCMinutes(mins);
+        required.setUTCSeconds(0);
         const requiredMs = required.getTime() - (offsetHours * 3600 * 1000);
 
         return (currentMs > requiredMs);
@@ -276,6 +277,7 @@ export function isExpiredThreadDelayRelativeWithDay (
                 sent.getUTCDate() + days);
         required.setUTCHours(hours);
         required.setUTCMinutes(mins);
+        required.setUTCSeconds(0);
         const requiredMs = required.getTime() - (offsetHours * 3600 * 1000);
 
         return (currentMs > requiredMs);
