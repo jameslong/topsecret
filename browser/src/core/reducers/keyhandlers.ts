@@ -455,3 +455,8 @@ export function addTimeOffset (client: Client.Client)
         const offsetMs = 6 * 3600 * 1000;
         return Actions.addTimeOffset(offsetMs);
 }
+
+export function toggleDebugInfo (client: Client.Client)
+{
+        return Actions.toggleDebugInfo();
+}

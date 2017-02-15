@@ -116,6 +116,9 @@ export function ui (ui: UI.UI, action: Redux.Action<any>)
                         const saveData = <Actions.ImportSaveData><any>action;
                         return handleImportSaveData(ui, saveData);
 
+                case Actions.Types.TOGGLE_DEBUG_INFO:
+                        return handleToggleDebugInfo(ui);
+
                 default:
                         return ui;
         }
@@ -294,4 +297,9 @@ function handleNewGameLoadingInfo (
 function handleImportSaveData (ui: UI.UI, action: Actions.ImportSaveData)
 {
         return UI.setMode(ui, UI.Modes.INDEX_INBOX);
+}
+
+function handleToggleDebugInfo (ui: UI.UI)
+{
+        return Helpers.assign(ui, { showDebugInfo: !ui.showDebugInfo });
 }

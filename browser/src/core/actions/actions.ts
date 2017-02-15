@@ -51,6 +51,8 @@ export const Types = {
         NEW_GAME_LOGIN: 'NEW_GAME_LOGIN',
         NEW_GAME_LOADING_INFO: 'NEW_GAME_LOADING_INFO',
         SET_NEW_PLAYER_INFO: 'SET_NEW_GAME_PLAYER_INFO',
+
+        TOGGLE_DEBUG_INFO: 'TOGGLE_DEBUG_INFO'
 };
 
 function createAction<T> (type: string, parameters: T): Redux.Action<T>
@@ -221,3 +223,6 @@ export const newGameLogin = createEmptyActionCreator(Types.NEW_GAME_LOGIN);
 type NewGameLoadingInfoParams = string;
 export interface NewGameLoadingInfo extends Redux.Action<NewGameLoadingInfoParams> {}
 export const newGameLoadingInfo = createActionCreator<NewGameLoadingInfoParams>(Types.NEW_GAME_LOADING_INFO);
+
+export interface ToggleDebugInfo extends Redux.Action<void> {}
+export const toggleDebugInfo = createEmptyActionCreator(Types.TOGGLE_DEBUG_INFO);

@@ -49,7 +49,8 @@ function renderGame (state: Client.Client)
         // const feedback = FeedbackButton({ openExternal: state.openExternal });
         const fastforward = state.data.clock.timeFactor > 1 ?
                 Div({ className: 'browser-fastforward' }) : null;
-        const debugInfo = DebugInfo({ state });
+        const debugInfo = state.ui.showDebugInfo ?
+                DebugInfo({ state }) : null;
 
         return Div({ className: 'browser', onClick },
                 header, content, footer, fastforward, debugInfo);

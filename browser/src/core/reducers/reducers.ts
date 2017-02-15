@@ -17,20 +17,25 @@ export function reduce (
 
 export function mapKeyToAction (client: Client.Client, action: Actions.KeyDown)
 {
-        if (UI.isEditing(client.ui) ||
+        const event = action.parameters;
+
+        // DEBUG command
+        if (action.parameters.keyCode === 112 /*F1*/) {
+                event.preventDefault();
+                return Actions.toggleDebugInfo();
+        } else if (UI.isEditing(client.ui) ||
             client.ui.mode === UI.Modes.NEW_GAME_LOADING) {
                 return null;
+        } else {
+                event.preventDefault();
+
+                const key = event.keyCode;
+                const commands = Client.getCommands(client.data, client.ui.mode);
+
+                return commands.reduce((result, command) => {
+                        return command.keyCodes.indexOf(key) !== -1 ?
+                                command.actionCreator(client) :
+                                result;
+                        }, null);
         }
-
-        const event = action.parameters;
-        event.preventDefault(); // We only do this if not editing
-
-        const key = event.keyCode;
-        const commands = Client.getCommands(client.data, client.ui.mode);
-
-        return commands.reduce((result, command) => {
-                return command.keyCodes.indexOf(key) !== -1 ?
-                        command.actionCreator(client) :
-                        result;
-                }, null);
 }

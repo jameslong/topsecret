@@ -35,6 +35,7 @@ export interface UI {
         generatingKey: boolean;
         hasSeenInbox: boolean;
         loadingInfo: string[];
+        showDebugInfo: boolean;
 }
 
 export function createUI (
@@ -58,6 +59,7 @@ export function createUI (
                 generatingKey: false,
                 hasSeenInbox: false,
                 loadingInfo: [],
+                showDebugInfo: false
         };
 }
 
