@@ -12,3 +12,12 @@ export function getDaysBetween (timestampAMs: number, timestampBMs: number)
         const oneDay = (24 * 3600 * 1000);
         return Math.floor(diffMs / oneDay);
 }
+
+export function getTime (timestampMs: number)
+{
+        const date = new Date(timestampMs);
+        const hours = date.getUTCHours();
+        const mins = date.getUTCMinutes();
+        const ms = date.getUTCMilliseconds();
+        return `${hours}:${mins}:${ms}`;
+}

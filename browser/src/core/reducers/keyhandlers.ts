@@ -2,6 +2,7 @@ import Actions = require('../actions/actions');
 import Arr = require('../../../../core/src/utils/array');
 import Clock = require('../../../../core/src/clock');
 import Data = require('../data');
+import DateHelpers = require('../../../../core/src/utils/date');
 import Draft = require('../draft');
 import Folder = require('../folder');
 import Func = require('../../../../core/src/utils/function');
@@ -14,6 +15,7 @@ import Map = require('../../../../core/src/utils/map');
 import Menu = require('../menu');
 import MessageCore = require('../../../../core/src/message');
 import PromisesReply = require('../../../../core/src/promisesreply');
+import Player = require('../../../../core/src/player');
 import Redux = require('../redux/redux');
 import Client = require('../client');
 import UI = require('../ui');
@@ -94,11 +96,15 @@ export function save (client: Client.Client)
         if (item) {
                 let saveName = item.text;
                 if (item.type === 'NEW_SAVE') {
-                        const date = new Date();
-                        const displayDate = date.toString();
                         const player = client.data.player;
+                        const clock = client.data.clock;
+                        const timeMs = Clock.gameTimeMs(clock);
+                        const time = DateHelpers.getTime(timeMs);
+                        const players = client.server.db.players;
+                        const playerState = players[Object.keys(players)[0]];
+                        const day = Player.gameDay(clock, playerState);
                         const { firstName, lastName } = player;
-                        saveName = `${displayDate} - ${firstName} ${lastName}`
+                        saveName = `${firstName} ${lastName} - Day ${day} - ${time}`;
                 }
                 const saveData = Client.getSaveData(client, saveName);
                 console.log('Saving', saveData);

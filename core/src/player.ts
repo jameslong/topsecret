@@ -1,3 +1,4 @@
+import Clock = require('./clock');
 import Map = require('./utils/map');
 import Script = require('./script');
 
@@ -54,4 +55,21 @@ export function messagesSent(player: PlayerState)
 function isGameVar(variableName: string)
 {
         return variableName.toUpperCase() == variableName;
+}
+
+export function gameDay(clock: Clock.Clock, player: PlayerState)
+{
+        const start = new Date(player.vars.utcStartDate);
+        const current = new Date(Clock.gameTimeMs(clock));
+        start.setUTCHours(0);
+        start.setUTCMinutes(0);
+        start.setUTCSeconds(0);
+        start.setUTCMilliseconds(0);
+        current.setUTCHours(0);
+        current.setUTCMinutes(0);
+        current.setUTCSeconds(0);
+        current.setUTCMilliseconds(0);
+        const diffMs = current.getTime() - start.getTime();
+        const dayMs =1000 * 60 * 60 * 24;
+        return Math.floor(diffMs / dayMs);
 }
