@@ -71,5 +71,5 @@ export function gameDay(clock: Clock.Clock, player: PlayerState)
         current.setUTCMilliseconds(0);
         const diffMs = current.getTime() - start.getTime();
         const dayMs =1000 * 60 * 60 * 24;
-        return Math.floor(diffMs / dayMs);
+        return Math.max(0, Math.floor(diffMs / dayMs));
 }

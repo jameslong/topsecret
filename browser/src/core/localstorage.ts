@@ -8,7 +8,10 @@ export function save<T extends SaveData> (data: T)
         let existingData = localStorage.getItem('saves');
         let saves: T[] = existingData ? JSON.parse(existingData) : [];
         const index = Arr.find(saves, save => save.name === data.name);
-        index !== -1 ? saves[index] = data : saves.push(data);
+        if (index !== -1) {
+                saves.splice(index, 1);
+        }
+        saves.push(data);
         localStorage.setItem('saves', JSON.stringify(saves));
 }
 
@@ -47,6 +50,6 @@ export function getMostRecentSave<T extends SaveData> (): T
 {
         const saveNames = getSaveNames();
         return saveNames.length ?
-                load<T>(saveNames.sort()[saveNames.length - 1]) :
+                load<T>(saveNames[saveNames.length - 1]) :
                 null;
 }
