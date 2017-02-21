@@ -29,20 +29,22 @@ export interface Error {
 
 type DBPromise<T, U> = <T, U>(db: DBState, params: T)=> Promise<U>;
 
-function delay<T, U> (
+function delayAndDeepCopyParams<T, U> (
         db: DBState,
         timeoutMs: number,
         promise: DBPromise<T, U>): Prom.Factory<T, U>
 {
-        return (params: T) => Prom.delay(timeoutMs).then(result =>
-                promise(db, params));
+        return (params: T) => Prom.delay(timeoutMs).then(result => {
+                const paramsCopy = JSON.parse(JSON.stringify(params));
+                return promise(db, params);
+        });
 }
 
 export function createLocalDBCalls (db: DBState, timeoutMs: number)
         : DBTypes.DBCalls
 {
         const factory = <T, U>(promise: DBPromise<T, U>) =>
-                delay<T, U>(db, timeoutMs, promise);
+                delayAndDeepCopyParams<T, U>(db, timeoutMs, promise);
 
         return {
                 addPlayer: factory(addPlayer),
