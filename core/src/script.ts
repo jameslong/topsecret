@@ -70,13 +70,15 @@ export function coreEnv (): CoreEnv
                 ['=']: (...args: number[]) => operatorCheck(args, (a, b) => a === b),
                 define: (name: string, value: Atom, env: CustomEnv) => {
                         if (env[name] !== undefined) {
-                                throw(`${name} is already defined`);
+                                const message = `${name} is already defined`;
+                                throw({type: 'define', message });
                         }
                         env[name] = value;
                 },
                 set: (name: string, value: Atom, env: CustomEnv) => {
                         if (env[name] === undefined) {
-                                throw(`${name} is not defined`);
+                                const message = `${name} is not defined`;
+                                throw({type: 'set', message });
                         }
                         env[name] = value;
                 },
@@ -209,7 +211,12 @@ export function getScriptErrors (script: string): string
                 parseEval(script, standardEnv(), 0);
                 return '';
         } catch (e) {
-                return e;
+                if (typeof e === 'object' && e.type === 'set') {
+                        console.log(e.message)
+                        return '';
+                } else {
+                        return e;
+                }
         }
 }
 
