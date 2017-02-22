@@ -48,7 +48,7 @@ export function createConfig (): ConfigData
 {
         const params = getQueryStringParams();
         const defaultSettings: GameSettings = {
-                version: '1',
+                version: '2',
                 beginGameMessage: 'welcome',
                 initialUIMode: 'MAIN_MENU',
                 timeFactor: 1,
