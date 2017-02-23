@@ -58,7 +58,7 @@ export function loadCredentials(path: string)
         return credentials;
 }
 
-const htmlFooter = `<br><div style="border-top:1px solid #CCCCCC; font-size:12px;"><p>This message is part of Top Secret, a story you signed up for. Top Secret is currently in Early Access. There are bugs and the game is unfinished. You can give feedback about the game <a href="https://docs.google.com/forms/d/1dgz3smQ1AkvH6sRLPVC6vSHFP2mYq_KYPd4CmKS-w60/viewform">here</a>.</p><p>To stop playing, email careers@nsa.playtopsecret.com with the word 'resign' in the subject line.</p></div>`;
+const htmlFooter = `<br><div style="border-top:1px solid #CCCCCC; font-size:12px;"><p>This message is part of Top Secret, a story you signed up for.</p><p>To stop playing, email careers@nsa.playtopsecret.com with the word 'resign' in the subject line.</p></div>`;
 const textFooter = `\n\n-----\nThis message is part of Top Secret, a story you signed up for. To stop playing, email careers@nsa.playtopsecret.com with the word 'resign' in the subject line.`;
 
 const debugConfig: ConfigState = {
