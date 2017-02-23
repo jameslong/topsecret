@@ -19,5 +19,5 @@ const config = Helpers.assign(Config.config, { credentials });
 App.createState(config).then(state =>
         App.init(state)
 ).catch(err => {
-        Log.error(err);
+        Log.error(err, 'createState');
 });
