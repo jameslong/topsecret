@@ -11,6 +11,16 @@ export function createMailgun (key: string, domain: string): any
         return MailgunModule({apiKey: key, domain: domain});
 }
 
+function toHTML (text: string) {
+        const ps = text.split('\n\n');
+        const contents = ps.map(text => text.split('\n'));
+        const inner = contents.map(p => {
+                const brs = p.join('<br>');
+                return `<p>${brs}</p>`;
+        });
+        return inner.join('');
+}
+
 export function sendMail (
         mailgun: any,
         htmlFooter: string,
@@ -20,10 +30,8 @@ export function sendMail (
         const body = data.body;
         const text = `${body}${textFooter}`;
 
-        const ps = Str.split(body, '\n\n', text => `<p>${text}</p>`);
-        const elements = ps.map(text => text.replace('\n', '<br>'));
-        const elementsString = elements.join('');
-        const html = `<div>${elementsString}${htmlFooter}</div>`;
+        const htmlBody = toHTML(body);
+        const html = `<div>${htmlBody}${htmlFooter}</div>`;
 
         const mailgunData = {
                 from: data.from,
