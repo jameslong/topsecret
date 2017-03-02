@@ -187,7 +187,7 @@ export function beginDemo (state: App.State, req: any, res: any)
                 playerData,
                 newMessageName);
 
-        return createRequestCallback(res, promise);
+        return createRequestCallback(res, promise, 'beginGame');
 }
 
 export function endDemo (state: App.State, req: any, res: any)
@@ -204,7 +204,7 @@ export function endDemo (state: App.State, req: any, res: any)
         const promises = state.game.promises;
 
         const promise = endGame(state, data.email);
-        return createRequestCallback(res, promise);
+        return createRequestCallback(res, promise, 'endGame');
 }
 
 export function addPlayer (state: App.State, req: any, res: any)
@@ -235,7 +235,7 @@ export function addPlayer (state: App.State, req: any, res: any)
                 timezoneOffset);
 
         const promise = promises.addPlayer(player);
-        return createRequestCallback(res, promise);
+        return createRequestCallback(res, promise, 'addPlayer');
 }
 
 export function deletePlayer (
@@ -247,7 +247,7 @@ export function deletePlayer (
         const promises = app.promises;
 
         const promise = promises.deletePlayer(email);
-        return createRequestCallback(res, promise);
+        return createRequestCallback(res, promise, 'deletePlayer');
 }
 
 export function reply (state: App.State, req: any, res: any)
@@ -293,7 +293,7 @@ export function reply (state: App.State, req: any, res: any)
         if (reply.inReplyToId !== null) {
                 const promise = handleReplyRequest(
                         state, reply);
-                return createRequestCallback(res, promise);
+                return createRequestCallback(res, promise, 'reply');
         } else {
                 res.sentStatus(200);
         }
@@ -339,7 +339,7 @@ export function localReply (state: App.State, req: any, res: any)
         };
 
         const promise = handleReplyRequest(state, reply);
-        return createRequestCallback(res, promise);
+        return createRequestCallback(res, promise, 'localReply');
 }
 
 export function pause (state: App.State, req: any, res: any)
@@ -403,7 +403,7 @@ export function saveMessage (state: App.State, req: any, res: any)
         Log.debug('Message saved');
 
         const promise = App.updateGameState(state);
-        return createRequestCallback(res, promise);
+        return createRequestCallback(res, promise, 'saveMessage');
 }
 
 export function saveReplyOption (
@@ -431,7 +431,7 @@ export function saveReplyOption (
         Log.debug('Reply options saved');
 
         const promise = App.updateGameState(state);
-        return createRequestCallback(res, promise);
+        return createRequestCallback(res, promise, 'saveReplyOption');
 }
 
 export function deleteReplyOption (
@@ -457,7 +457,7 @@ export function deleteReplyOption (
         FileSystem.deleteFile(optionPath);
 
         const promise = App.updateGameState(state);
-        return createRequestCallback(res, promise);
+        return createRequestCallback(res, promise, 'deleteReplyOption');
 }
 
 export function deleteMessage (
@@ -484,7 +484,7 @@ export function deleteMessage (
         Data.deleteMessage(messagePath);
 
         const promise = App.updateGameState(state);
-        return createRequestCallback(res, promise);
+        return createRequestCallback(res, promise, 'deleteMessage');
 }
 
 export function saveString (state: App.State, req: any, res: any)
@@ -511,7 +511,7 @@ export function saveString (state: App.State, req: any, res: any)
         Log.debug('String saved: ' + data.name);
 
         const promise = App.updateGameState(state);
-        return createRequestCallback(res, promise);
+        return createRequestCallback(res, promise, 'saveString');
 }
 
 export function deleteString (
@@ -539,7 +539,7 @@ export function deleteString (
         Log.debug('String deleted: ' + data.name);
 
         const promise = App.updateGameState(state);
-        return createRequestCallback(res, promise);
+        return createRequestCallback(res, promise, 'deleteString');
 }
 
 export function narratives (state: App.State, req: any, res: any)
@@ -584,11 +584,15 @@ export function validateData (
         res.send(dataErrors);
 }
 
-export function createRequestCallback (res: any, promise: Promise<any>)
+export function createRequestCallback (
+        res: any, promise: Promise<any>, errorDesc: string)
 {
         return promise.then(result =>
                 res.sendStatus(200)
-        ).catch(err => res.sendStatus(500));
+        ).catch(err => {
+                Log.error(err, errorDesc);
+                return res.sendStatus(500);
+        });
 }
 
 export function handleReplyRequest (
