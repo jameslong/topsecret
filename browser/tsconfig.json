@@ -6,7 +6,8 @@
                 "module": "amd",
                 "sourceMap": true,
                 "noEmitOnError": true,
-                "outDir": "build"
+                "outDir": "build",
+                "moduleResolution": "node"
         },
         "files": [
                 "src/main.ts"

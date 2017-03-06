@@ -8,13 +8,15 @@ import Div = Core.Div;
 
 interface MetaProps extends React.Props<any> {
         message: Message.Message;
+        utcOffsetHours: number;
 }
 
 function renderMeta(props: MetaProps)
 {
         const message = props.message;
+        const offset = props.utcOffsetHours;
         const date = Helpers.wrapInLabel('Date',
-                Message.getDisplayDate(message.date));
+                Message.getDisplayDate(message.date, offset));
         const from = Helpers.wrapInLabel('From', message.from);
         const to = Helpers.wrapInLabel('To', message.to);
         const subject = Helpers.wrapInLabel('Subject', message.subject);

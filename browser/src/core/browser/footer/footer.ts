@@ -36,7 +36,8 @@ const Footer = React.createFactory(renderFooter);
 
 function createInfoBarTime (state: Client.Client)
 {
-        const displayTime = Clock.displayGameTime(state.data.clock);
+        const offset = state.data.player.timezoneOffset;
+        const displayTime = Clock.displayGameTime(state.data.clock, offset);
         return Div({ className: 'footer-infobar-time' }, displayTime);
 }
 

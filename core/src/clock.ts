@@ -36,9 +36,9 @@ export function gameTimeMs (clock: Clock)
         return clock.lastTickGameMs;
 }
 
-export function displayGameTime (clock: Clock)
+export function displayGameTime (clock: Clock, offsetHours: number)
 {
-        const timeMs = gameTimeMs(clock);
+        const timeMs = gameTimeMs(clock) + (offsetHours * 3600 * 1000);
         const date = new Date(timeMs);
         return date.toUTCString();
 }

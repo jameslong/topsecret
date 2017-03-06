@@ -10,11 +10,12 @@ import React = require('react');
 interface IndexProps extends React.Props<any> {
         activeMessageId: string;
         messages: Message.Message[];
+        utcOffsetHours: number;
 }
 
 function renderIndex(props: IndexProps)
 {
-        const { activeMessageId, messages } = props;
+        const { activeMessageId, messages, utcOffsetHours } = props;
         const messageIds = Object.keys(messages);
         const selectedId = props.activeMessageId;
         const selectedIndex = Arr.find(messages,
@@ -26,16 +27,19 @@ function renderIndex(props: IndexProps)
                 return result;
         }, []);
 
-        const rowData = messages.map(createRowData);
+        const createRow = (message: Message.Message, index: number) =>
+                createRowData(utcOffsetHours, message, index);
+        const rowData = messages.map(createRow);
         return SelectableRows({ rowData, selectedIndex, highlightedIndices });
 }
 
 const Index = React.createFactory(renderIndex);
 
-function createRowData (message: Message.Message, index: number)
+function createRowData (
+        utcOffsetHours: number, message: Message.Message, index: number)
 {
         const meta = Message.getMeta(message);
-        const date = Message.getDisplayDate(message.date);
+        const date = Message.getDisplayDate(message.date, utcOffsetHours);
         const from = Message.getDisplayName(message.from);
         const size = Message.getDisplaySize(message.body);
         const subject = message.subject;

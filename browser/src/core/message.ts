@@ -43,9 +43,11 @@ export function getDisplayName (from: string)
 }
 
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-export function getDisplayDate (dateStr: string)
+export function getDisplayDate (dateStr: string, offsetHours: number)
 {
-        const dateObj = new Date(dateStr);
+        const temp = new Date(dateStr);
+        const offsetTimestampMs = temp.getTime() + (offsetHours * 3600 * 1000);
+        const dateObj = new Date(offsetTimestampMs);
         const date = dateObj.getDate();
         const month = months[dateObj.getMonth()];
 

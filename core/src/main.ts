@@ -1,9 +1,12 @@
+/// <reference path='../../node_modules/moment/moment.d.ts'/>
+
 import Arr = require('./utils/array');
 import Clock = require('./clock');
 import DBTypes = require('./dbtypes');
 import Fun = require('./utils/function');
 import Map = require('./utils/map');
 import Message = require('./message');
+import moment = require('moment');
 import Player = require('./player');
 import Prom = require('./utils/promise');
 import Promises = require('./promises');
@@ -220,24 +223,23 @@ export function isExpiredThreadDelay (
                         threadDelay, offsetHours, sentMs, currentMs);
 }
 
+function toTimezoneMoment(utcTimeMs: number, offsetHours: number)
+{
+        return moment(utcTimeMs).utcOffset(offsetHours * 60);
+}
+
 export function isExpiredThreadDelayAbsolute (
         threadDelay: Message.ReplyThreadDelay,
         offsetHours: number,
-        utcStartDate: number,
-        currentMs: number)
+        utcStartMs: number,
+        utcCurrentMs: number)
 {
-        const [days, hours, mins] = threadDelay.delay;
-        const ref = new Date(utcStartDate);
-        const required = new Date(
-                ref.getUTCFullYear(),
-                ref.getUTCMonth(),
-                ref.getUTCDate() + days);
-        required.setUTCHours(hours);
-        required.setUTCMinutes(mins);
-        required.setUTCSeconds(0);
-        const requiredMs = required.getTime() - (offsetHours * 3600 * 1000);
-
-        return (currentMs > requiredMs);
+        const [days, hours, minutes] = threadDelay.delay;
+        const localCurrent = toTimezoneMoment(utcCurrentMs, offsetHours);
+        const localStart = toTimezoneMoment(utcStartMs, offsetHours);
+        const localRequired =  localStart.add({days});
+        localRequired.set({hours, minutes});
+        return localCurrent.isAfter(localRequired);
 }
 
 export function isExpiredThreadDelayRelative (
@@ -269,18 +271,8 @@ export function isExpiredThreadDelayRelativeWithDay (
         sentMs: number,
         currentMs: number)
 {
-        const [days, hours, mins] = threadDelay.delay;
-        const sent = new Date(sentMs);
-        const required = new Date(
-                sent.getUTCFullYear(),
-                sent.getUTCMonth(),
-                sent.getUTCDate() + days);
-        required.setUTCHours(hours);
-        required.setUTCMinutes(mins);
-        required.setUTCSeconds(0);
-        const requiredMs = required.getTime() - (offsetHours * 3600 * 1000);
-
-        return (currentMs > requiredMs);
+        return isExpiredThreadDelayAbsolute(
+                threadDelay, offsetHours, sentMs, currentMs);
 }
 
 export function createPlayerlessMessageData (

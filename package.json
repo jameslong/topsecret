@@ -40,6 +40,7 @@
     "mailgun-js": "^0.7.7",
     "mkdirp": "^0.5.1",
     "mocha": "^2.4.5",
+    "moment": "^2.17.1",
     "multer": "^0.1.8",
     "node-inspector": "^0.12.7",
     "react": "^0.14.7",
