@@ -51,7 +51,7 @@ export function sendMail (messageData: Message.MessageData)
         const id = generateMessageId();
         Log.metric({
                 type: 'MESSAGE_SENT',
-                playerEmail: messageData.from,
+                playerEmail: messageData.to,
                 message: {
                         name: messageData.name,
                         id,
