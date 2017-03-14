@@ -24,6 +24,10 @@ export function client (client: Client.Client, action: Redux.Action<any>)
                         temp = handleNewGame(temp, newGame);
                         break;
 
+                case Actions.Types.QUIT:
+                        client.quit();
+                        break;
+
                 default:
                         break;
         }
@@ -41,6 +45,7 @@ export function clientReducer (client: Client.Client, action: Redux.Action<any>)
                 messageId: messageId(client.messageId, action),
                 openFile: client.openFile,
                 openExternal: client.openExternal,
+                quit: client.quit,
         };
 }
 
@@ -58,15 +63,16 @@ function handleImportSaveData (
         client: Client.Client, action: Actions.ImportSaveData)
 {
         const saveData = action.parameters;
-        const { openFile, openExternal } = client;
+        const { openFile, openExternal, quit } = client;
         const gameData = client.server.app.narratives;
-        return Main.newGameFromSave(gameData, openFile, openExternal, saveData);
+        return Main.newGameFromSave(
+                gameData, openFile, openExternal, quit, saveData);
 }
 
 function handleNewGame (client: Client.Client, action: Actions.NewGame)
 {
         const player = action.parameters;
-        const { openFile, openExternal } = client;
+        const { openFile, openExternal, quit } = client;
         const gameData = client.server.app.narratives;
-        return Main.newGame(gameData, player, openFile, openExternal);
+        return Main.newGame(gameData, player, openFile, openExternal, quit);
 }

@@ -7,11 +7,12 @@ const serverURL = 'http://127.0.0.1:3000';
 AsyncRequest.narratives(serverURL).then(data => {
         const openFile = (path: string) => window.open(path);
         const openExternal = (path: string) => window.open(path);
+        const quit = () => { console.log('QUITTING'); };
         Map.forEach(data, group => {
                 group.attachments = Map.map(group.attachments,
                         attachment => `../${attachment}`);
         });
-        return Main.init(data, openFile, openExternal);
+        return Main.init(data, openFile, openExternal, quit);
 }).catch(err => {
         console.log(err);
         throw err;

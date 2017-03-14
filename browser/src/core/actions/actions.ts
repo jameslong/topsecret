@@ -52,7 +52,9 @@ export const Types = {
         NEW_GAME_LOADING_INFO: 'NEW_GAME_LOADING_INFO',
         SET_NEW_PLAYER_INFO: 'SET_NEW_GAME_PLAYER_INFO',
 
-        TOGGLE_DEBUG_INFO: 'TOGGLE_DEBUG_INFO'
+        TOGGLE_DEBUG_INFO: 'TOGGLE_DEBUG_INFO',
+
+        QUIT: 'QUIT'
 };
 
 function createAction<T> (type: string, parameters: T): Redux.Action<T>
@@ -226,3 +228,6 @@ export const newGameLoadingInfo = createActionCreator<NewGameLoadingInfoParams>(
 
 export interface ToggleDebugInfo extends Redux.Action<void> {}
 export const toggleDebugInfo = createEmptyActionCreator(Types.TOGGLE_DEBUG_INFO);
+
+export interface Quit extends Redux.Action<void> {}
+export const quit = createEmptyActionCreator(Types.QUIT);
