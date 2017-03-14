@@ -13,24 +13,37 @@ interface TextAreaProps extends React.Props<any> {
         onKeyDown?: OnChange
         className?: string;
         autofocus?: boolean;
+        cursorPosition?: number;
 };
 
-function renderTextArea(props: TextAreaProps)
-{
-        const onChange = (e: KeyboardEvent) => {
-                props.onChange(e, <string>((<any>e.target).value));
-        };
+const TextAreaInputClass = React.createClass({
+        componentDidMount: function() {
+                const props: TextAreaProps = this.props;
+                const cursorPosition = props.cursorPosition;
+                if (cursorPosition !== undefined) {
+                        const textArea = this.textArea;
+                        textArea.selectionStart = cursorPosition;
+                        textArea.selectionEnd = cursorPosition;
+                }
+        },
 
-        return TextArea({
-                placeholder: props.placeholder,
-                value: props.value,
-                onChange: onChange,
-                onKeyDown: props.onKeyDown,
-                className: props.className,
-                autoFocus: props.autofocus,
-        });
-}
+        render: function () {
+                const props: TextAreaProps = this.props;
+                const onChange = (e: KeyboardEvent) => {
+                        props.onChange(e, <string>((<any>e.target).value));
+                };
+                const ref = (textArea: any) => this.textArea = textArea;
 
-const TextAreaInput = React.createFactory(renderTextArea);
-
+                return TextArea({
+                        placeholder: props.placeholder,
+                        value: props.value,
+                        onChange: onChange,
+                        onKeyDown: props.onKeyDown,
+                        className: props.className,
+                        autoFocus: props.autofocus,
+                        ref: ref,
+                });
+        },
+});
+const TextAreaInput = React.createFactory(TextAreaInputClass);
 export = TextAreaInput;

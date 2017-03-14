@@ -26,6 +26,7 @@ function renderCompose(props: ComposeProps)
                 onChange: props.onChange,
                 onKeyDown: props.onKeyDown,
                 autofocus: true,
+                cursorPosition: 0,
         });
 
         return Div({ className: 'compose-body' }, textArea);
