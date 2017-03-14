@@ -8,7 +8,10 @@ export function addKeyHandlers ()
 
 function onKeyDown (e: KeyboardEvent)
 {
-        if (!(e.key === 'c' && e.ctrlKey)) {
+        const copying =
+                ((e.key === 'c' || e.keyCode === 67) && e.ctrlKey);
+
+        if (!copying) {
                 const action = Actions.keyDown(e);
                 Redux.handleAction(action);
         }
