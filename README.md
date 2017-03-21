@@ -1,3 +1,7 @@
+# NB. The most up-to-date and easy to use version of these tools can be found [here](https://github.com/jameslong/memo).
+
+---
+
 [![Build Status](https://travis-ci.org/jameslong/topsecret.svg?branch=master)](https://travis-ci.org/jameslong/topsecret)
 
 # topsecret
