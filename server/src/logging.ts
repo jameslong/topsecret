@@ -30,8 +30,16 @@ console.info = (data: Object) => {
         console.log('metric: %s', prettyData);
 };
 
-console.error = (err: Object, desc: string = '') => {
-        log.error({ err, desc, time: getISOString() }, 'error');
+console.error = (err: Error, desc: string = '') => {
+        const errWithStack = {
+                err,
+                stack: err.stack
+        };
+        log.error({
+                err: errWithStack,
+                desc,
+                time: getISOString()
+        }, 'error');
         var prettyData = JSON.stringify(err, null, '    ');
         console.log('error: %s', prettyData);
 };
