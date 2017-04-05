@@ -4,6 +4,7 @@ import Arr = require('./utils/array');
 import Clock = require('./clock');
 import DBTypes = require('./dbtypes');
 import Fun = require('./utils/function');
+import Log = require('./../../core/src/log');
 import Map = require('./utils/map');
 import Message = require('./message');
 import moment = require('moment');
@@ -25,9 +26,18 @@ export function tick (
                 const message = messages.length ? messages[0] : null;
 
                 return (message ?
-                        promises.getPlayer(message.email).then(player =>
-                                update(app, clock, message, player)
-                        ) :
+                        promises.getPlayer(message.email).then(player => {
+                                if (player) {
+                                        return update(app, clock, message, player);
+                                } else {
+                                        const error = {
+                                                playerEmail: message.email,
+                                                message
+                                        };
+                                        Log.error(error, "Player not found.");
+                                        return Promise.resolve(null);
+                                }
+                        }) :
                         Promise.resolve(null)
                 ).then(result => Promise.resolve(lastEvaluatedKey));
         });
