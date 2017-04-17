@@ -1,4 +1,5 @@
 import Map = require('./utils/map');
+import String = require('./utils/string');
 
 export interface Profile {
         name: string;
@@ -15,5 +16,6 @@ export type Profiles = Map.Map<Profile>;
 export function getProfileByEmail (
         email: string, profiles: Map.Map<Profile>): Profile
 {
-        return Map.valueOf(profiles, profile => profile.email === email);
+        return Map.valueOf(profiles, profile =>
+                String.contains(email, profile.email));
 }
